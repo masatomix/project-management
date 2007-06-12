@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="nu.mine.kino.plugin.configsample.actionSet"
+            label="サンプルのアクション・セット"
+            visible="true">
+         <menu
+               id="sampleMenu"
+               label="サンプル・メニュー(&amp;M)">
+            <separator name="sampleGroup"/>
+         </menu>
+         <action
+               class="nu.mine.kino.plugin.configsample.actions.NewExtensionLocationActionDelegate"
+               icon="icons/sample.gif"
+               id="nu.mine.kino.plugin.configsample.actions.NewExtensionLocationActionDelegate"
+               label="サンプル・アクション(&amp;S)"
+               menubarPath="sampleMenu/sampleGroup"
+               toolbarPath="sampleGroup"
+               tooltip="Hello, Eclipse world"/>
+      </actionSet>
+   </extension>
+
+</plugin>
