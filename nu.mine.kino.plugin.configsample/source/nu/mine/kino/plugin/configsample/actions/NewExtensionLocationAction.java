@@ -8,6 +8,7 @@ package nu.mine.kino.plugin.configsample.actions;
 
 import java.io.File;
 
+import nu.mine.kino.plugin.configsample.Activator;
 import nu.mine.kino.plugin.configsample.UpdateUIMessages;
 
 import org.eclipse.core.runtime.CoreException;
@@ -22,7 +23,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.update.configuration.IConfiguredSite;
 import org.eclipse.update.configuration.IInstallConfiguration;
 import org.eclipse.update.core.SiteManager;
-import org.eclipse.update.internal.ui.UpdateUI;
 import org.eclipse.update.operations.OperationsManager;
 
 /**
@@ -111,12 +111,12 @@ public class NewExtensionLocationAction extends Action {
             csite.verifyUpdatableStatus();
             config.addConfiguredSite(csite);
             boolean restartNeeded = SiteManager.getLocalSite().save();
-            UpdateUI.requestRestart(restartNeeded);
+            Activator.requestRestart(restartNeeded);
             return true;
         } catch (CoreException e) {
             String title = UpdateUIMessages.InstallWizard_TargetPage_location_error_title;
             ErrorDialog.openError(shell, title, null, e.getStatus());
-            UpdateUI.logException(e, false);
+            Activator.logException(e, false);
             return false;
         }
     }
