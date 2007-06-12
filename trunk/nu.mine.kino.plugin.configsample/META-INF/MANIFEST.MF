@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Configsample Plug-in
+Bundle-SymbolicName: nu.mine.kino.plugin.configsample;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: nu.mine.kino.plugin.configsample.Activator
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.update.configurator,
+ org.eclipse.update.core,
+ org.eclipse.update.scheduler,
+ org.eclipse.update.ui
+Eclipse-LazyStart: true
