@@ -35,8 +35,8 @@ public class NewExtensionLocationActionDelegate implements
      * @see IWorkbenchWindowActionDelegate#run
      */
     public void run(IAction action) {
-        MessageDialog.openInformation(window.getShell(),
-                "Configsample Plug-in", "Hello, Eclipse world");
+        // MessageDialog.openInformation(window.getShell(),
+        // "Configsample Plug-in", "Hello, Eclipse world");
         Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                 .getShell();
         NewExtensionLocationAction newExtensionLocationAction = new NewExtensionLocationAction(
