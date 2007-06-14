@@ -77,6 +77,9 @@ public class NewExtensionLocationAction extends Action {
     }
 
     /**
+     * 指定されたディレクトリがeclipseというディレクトリだったら、親ディレクトリ取得して再帰処理します。
+     * eclipseというディレクトリじゃなかったら、中にeclipseというディレクトリがあるか調べます。
+     * あったら更にその中に.eclipseextensionというファイルがあるか調べます。あればそのディレクトリを返します。
      * @param directory
      * @return the site file (including "eclipse" path) when directory is an
      *         eclipse exstension, null otherwise
