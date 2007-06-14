@@ -9,17 +9,17 @@
             visible="true">
          <menu
                id="sampleMenu"
-               label="サンプル・メニュー(&amp;M)">
+               label="アップデート(&amp;M)">
             <separator name="sampleGroup"/>
          </menu>
          <action
                class="nu.mine.kino.plugin.configsample.actions.NewExtensionLocationActionDelegate"
                icon="icons/sample.gif"
                id="nu.mine.kino.plugin.configsample.actions.NewExtensionLocationActionDelegate"
-               label="サンプル・アクション(&amp;S)"
+               label="実行(&amp;S)"
                menubarPath="sampleMenu/sampleGroup"
                toolbarPath="sampleGroup"
-               tooltip="Hello, Eclipse world"/>
+               tooltip="アップデート実行。"/>
       </actionSet>
    </extension>
 
