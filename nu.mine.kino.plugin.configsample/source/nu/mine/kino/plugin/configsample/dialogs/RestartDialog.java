@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.update.operations.OperationsManager;
 
 /**
+ * リスタートを促すダイアログ。
  * @author Masatomi KINO
  * @version $Revision$
  */
