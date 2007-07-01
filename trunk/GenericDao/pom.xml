@@ -13,6 +13,14 @@
 			<name>Masatomi KINO</name>
 		</developer>
 	</developers>
+	
+		<scm>
+    <connection>scm:svn:http://www.masatom.in/svnsamples/repo/trunk/GenericDao/</connection>
+    <developerConnection>scm:svn:http://www.masatom.in/svnsamples/repo/trunk/GenericDao/</developerConnection>
+		<url>http://www.masatom.in/pukiwiki/</url>
+	</scm>
+	
+	
 	<organization>
 		<name>Masatomi KINO Inc.</name>
 		<url>http://www.masatom.in/pukiwiki</url>
