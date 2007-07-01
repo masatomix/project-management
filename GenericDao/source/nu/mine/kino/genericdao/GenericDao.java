@@ -9,8 +9,9 @@ package nu.mine.kino.genericdao;
 import java.io.Serializable;
 
 /**
+ * Genericsを使ったDAOのインタフェース。
  * @author Masatomi KINO
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public interface GenericDao<T, PK extends Serializable> {
     PK create(T newInstance);
