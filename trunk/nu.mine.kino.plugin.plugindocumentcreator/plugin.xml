@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension-point id="formatters" name="Formatter" schema="schema/formatters.exsd"/>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="nu.mine.kino.plugin.plugindocumentcreator.actionSet1"
+            label="管理系アクションセット"
+            visible="true">
+         <action
+               class="nu.mine.kino.plugin.plugindocumentcreator.actions.MakeExtensionListActionDelegate"
+               icon="icons/page_excel.png"
+               id="nu.mine.kino.plugin.plugindocumentcreator.action1"
+               label="ドキュメントを作成する..."
+               menubarPath="documentMenu/marker"
+               style="push"/>
+         <menu
+               id="documentMenu"
+               label="管理(&amp;M)"
+               >
+            <groupMarker name="marker"/>
+            <groupMarker name="marker2"/>
+         </menu>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            category="nu.mine.kino.plugin.plugindocumentcreator.category"
+            class="nu.mine.kino.plugin.plugindocumentcreator.wizards.MakeExtensionListWizard"
+            icon="icons/page_excel.png"
+            id="nu.mine.kino.plugin.plugindocumentcreator.wizard1"
+            name="ドキュメント作成"
+            project="false"/>
+      <category
+            id="nu.mine.kino.plugin.plugindocumentcreator.category"
+            name="管理系"/>
+   </extension>
+
+
+</plugin>
