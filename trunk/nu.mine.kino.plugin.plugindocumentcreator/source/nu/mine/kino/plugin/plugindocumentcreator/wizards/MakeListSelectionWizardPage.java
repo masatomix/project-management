@@ -48,6 +48,7 @@ public class MakeListSelectionWizardPage extends WizardPage {
 
     private Combo extensionPointIdCombo;
 
+    
     private Text outputFile;
 
     /**
