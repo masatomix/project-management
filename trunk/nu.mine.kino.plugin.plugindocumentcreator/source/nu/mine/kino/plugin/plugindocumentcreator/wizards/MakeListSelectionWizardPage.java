@@ -1,7 +1,7 @@
 /*******************************************************************************
- * Copyright (c) 2006 Masatomi KINO.
+ * Copyright (c) 2007 Masatomi KINO.
  * All rights reserved. 
- * $Id: MakeListSelectionWizardPage.java,v 1.4 2006/11/01 15:56:26 cvsuser Exp $
+ * $Id$
  *******************************************************************************/
 //çÏê¨ì˙: 2006/10/22
 package nu.mine.kino.plugin.plugindocumentcreator.wizards;
