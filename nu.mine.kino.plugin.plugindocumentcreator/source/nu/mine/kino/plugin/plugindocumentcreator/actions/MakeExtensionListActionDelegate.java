@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2006 Masatomi KINO. All rights reserved. 
- * $Id: MakeExtensionListActionDelegate.java,v 1.1 2006/10/25 16:40:49 cvsuser Exp $
+ * $Id$
  ******************************************************************************/
 // çÏê¨ì˙: 2006/10/22
 package nu.mine.kino.plugin.plugindocumentcreator.actions;
