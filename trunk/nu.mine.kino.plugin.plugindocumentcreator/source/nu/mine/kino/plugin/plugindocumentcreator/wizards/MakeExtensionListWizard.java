@@ -1,8 +1,8 @@
 /*******************************************************************************
- * Copyright (c) 2006 Masatomi KINO. All rights reserved. 
+ * Copyright (c) 2007 Masatomi KINO. All rights reserved. 
  * $Id$
  ******************************************************************************/
-// ì¬“ú: 2006/10/22
+// ì¬“ú: 2006/10/22s
 package nu.mine.kino.plugin.plugindocumentcreator.wizards;
 
 import java.io.File;
