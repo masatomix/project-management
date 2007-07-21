@@ -2,7 +2,6 @@
  * Copyright (c) 2007 Masatomi KINO.
  * All rights reserved. 
  * $Id$
- *
  *******************************************************************************/
 //ì¬“ú: 2006/10/22
 package nu.mine.kino.plugin.plugindocumentcreator.wizards;
