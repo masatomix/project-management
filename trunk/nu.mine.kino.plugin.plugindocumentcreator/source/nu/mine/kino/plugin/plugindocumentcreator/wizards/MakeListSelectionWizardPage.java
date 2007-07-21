@@ -61,7 +61,6 @@ public class MakeListSelectionWizardPage extends WizardPage {
 
     /**
      * Create contents of the wizard
-     * 
      * @param parent
      */
     public void createControl(Composite parent) {
