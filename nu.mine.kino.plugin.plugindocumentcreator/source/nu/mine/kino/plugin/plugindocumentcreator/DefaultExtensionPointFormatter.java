@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2006 Masatomi KINO.
  * All rights reserved. 
- * $Id: DefaultExtensionPointFormatter.java,v 1.1 2006/10/29 04:43:19 cvsuser Exp $
+ * $Id$
  *******************************************************************************/
 //ì¬“ú: 2006/10/22
 package nu.mine.kino.plugin.plugindocumentcreator;

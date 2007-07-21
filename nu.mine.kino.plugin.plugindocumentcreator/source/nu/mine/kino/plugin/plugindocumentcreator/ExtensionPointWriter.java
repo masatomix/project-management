@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2006 Masatomi KINO.
  * All rights reserved. 
- * $Id: ExtensionPointWriter.java,v 1.6 2006/11/04 12:52:05 cvsuser Exp $
+ * $Id$
  *******************************************************************************/
 //ì¬“ú: 2006/10/22
 package nu.mine.kino.plugin.plugindocumentcreator;
