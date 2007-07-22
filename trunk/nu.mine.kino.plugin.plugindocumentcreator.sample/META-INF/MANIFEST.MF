@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Sample Plug-in
+Bundle-SymbolicName: nu.mine.kino.plugin.plugindocumentcreator.sample;singleton:=true
+Bundle-Version: 1.0.1
+Bundle-Activator: nu.mine.kino.plugin.plugindocumentcreator.sample.Activator
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ nu.mine.kino.plugin.plugindocumentcreator,
+ nu.mine.kino.plugin.log4j
+Eclipse-LazyStart: true
