@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="nu.mine.kino.plugin.plugindocumentcreator"
+      label="%featureName"
+      version="0.9.2"
+      provider-name="%providerName">
+
+   <description url="%descriptionURL">
+      %description
+   </description>
+
+   <copyright>
+      Copyright (C) 2005-2006 by Masatomi KINO
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <url>
+      <update label="%updateSiteName" url="http://www.masatom.in/update/"/>
+      <discovery label="%updateSiteName" url="http://www.masatom.in/update/"/>
+   </url>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+   </requires>
+
+   <plugin
+         id="nu.mine.kino.plugin.log4j"
+         download-size="0"
+         install-size="0"
+         version="0.0.1"/>
+
+   <plugin
+         id="nu.mine.kino.plugin.plugindocumentcreator"
+         download-size="0"
+         install-size="0"
+         version="0.9.2"
+         unpack="false"/>
+
+   <plugin
+         id="nu.mine.kino.plugin.dbbackpupplugin"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
