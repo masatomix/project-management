@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="nu.mine.kino.plugin.plugindocumentcreator.formatters">
+      <formatter
+            class="nu.mine.kino.plugin.plugindocumentcreator.impl.PerspectiveExtensionPointFormatter"
+            description="パースペクティブ用のフォーマッターです。"
+            extension-point-id="org.eclipse.ui.perspectives"
+            name="パースペクティブ用フォーマッター"/>
+   </extension>
+   <extension
+         point="nu.mine.kino.plugin.plugindocumentcreator.formatters">
+      <formatter
+            class="nu.mine.kino.plugin.plugindocumentcreator.impl.ViewExtensionPointFormatter"
+            description="ビュー用のフォーマッターです。"
+            extension-point-id="org.eclipse.ui.views"
+            name="ビュー用フォーマッター"/>
+   </extension>
+</plugin>
