@@ -10,7 +10,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 
 /**
  * @author Masatomi KINO
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class DefaultExtensionPointFormatter implements IExtensionPointFormatter {
 

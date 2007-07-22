@@ -10,7 +10,7 @@ package nu.mine.kino.plugin.plugindocumentcreator;
  * 拡張ポイントの情報を書き出すインタフェースです
  * 
  * @author Masatomi KINO
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public interface IExtensionPointWriter {
     /**

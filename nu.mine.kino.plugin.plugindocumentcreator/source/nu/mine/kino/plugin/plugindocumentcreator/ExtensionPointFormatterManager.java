@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.Platform;
  * 拡張ポイント情報を出力するフォーマッタクラスを管理するクラスです。
  * 
  * @author Masatomi KINO
- * @version $Revision: 1.4 $
+ * @version $Revision$
  */
 public class ExtensionPointFormatterManager {
     /**

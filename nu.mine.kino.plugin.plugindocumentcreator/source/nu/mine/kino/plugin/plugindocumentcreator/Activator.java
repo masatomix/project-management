@@ -1,7 +1,5 @@
 package nu.mine.kino.plugin.plugindocumentcreator;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.CoreException;
