@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.Platform;
  * 拡張ポイントの情報をCSV形式で書き出すクラスです。
  * 
  * @author Masatomi KINO
- * @version $Revision: 1.6 $
+ * @version $Revision$
  */
 public class ExtensionPointWriter implements IExtensionPointWriter {
     /**

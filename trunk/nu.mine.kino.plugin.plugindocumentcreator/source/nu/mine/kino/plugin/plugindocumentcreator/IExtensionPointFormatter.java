@@ -10,7 +10,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 
 /**
  * @author Masatomi KINO
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public interface IExtensionPointFormatter {
 

@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * @author Masatomi KINO
- * @version $Revision: 1.4 $
+ * @version $Revision$
  */
 public class MakeListSelectionWizardPage extends WizardPage {
     private Text pluginIdText;
