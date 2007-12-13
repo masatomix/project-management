@@ -11,6 +11,16 @@
 >
 
   <bean
+      id="Checker"
+      class="nu.mine.kino.utils.db.CheckerImpl"
+  >
+
+    <property name="dataSource">
+      <ref bean="dataSource"/>
+    </property>
+  </bean>
+
+  <bean
       id="nu.mine.kino.utils.db.FKChecker"
       class="nu.mine.kino.utils.db.OracleFKCheckerImpl"
   >
