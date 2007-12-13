@@ -86,4 +86,9 @@ public class OracleFKCheckerImpl implements FKChecker {
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
+
+    public List<Map<String, String>> findRecordByTableName(String tableName) {
+        return new JdbcTemplate(dataSource).queryForList(SELECT_SQL2,
+                new Object[] { tableName });
+    }
 }

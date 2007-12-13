@@ -16,6 +16,8 @@ import java.util.Map;
 public interface FKChecker {
     public List<String> findFKNameByTableName(String tableName);
 
+    public List<Map<String, String>> findRecordByTableName(String tableName);
+
     public List<Map<String, String>> findAll();
 
     public boolean exist(String tableName, String fkName);
