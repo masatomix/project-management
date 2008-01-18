@@ -57,10 +57,10 @@
                 name="password"
                 type="java.lang.String"/>
        </form-bean>
-    end sample -->
+    end sample 
         <form-bean
             name="hogeForm"
-            type="org.apache.struts.action.DynaActionForm" />
+            type="org.apache.struts.action.DynaActionForm" />-->
     </form-beans>
 
 
