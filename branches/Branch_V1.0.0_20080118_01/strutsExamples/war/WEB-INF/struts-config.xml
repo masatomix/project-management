@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
     Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
@@ -58,6 +58,9 @@
                 type="java.lang.String"/>
        </form-bean>
     end sample -->
+        <form-bean
+            name="hogeForm"
+            type="org.apache.struts.action.DynaActionForm" />
     </form-beans>
 
 
@@ -70,6 +73,10 @@
             type="app.ExpiredPasswordException"
             path="/changePassword.jsp"/>
         end sample -->
+		      <!--
+		<exception type="ajaxsampleweb.HogeException" handler="ajaxsampleweb.HogeExceptionrHandler" 
+			key="errors.ApplicationException" /> 
+  --> 
     </global-exceptions>
 
 
@@ -89,10 +96,29 @@
     <action-mappings>
             <!-- Default "Welcome" action -->
             <!-- Forwards to Welcome.jsp -->
+
+        <action
+            path="/message"
+            type="nu.mine.kino.strutsexamples.actions.MessageAction" >
+			<forward name="success" path="/WEB-INF/jsp/message.jsp" />
+		</action>
+		
+		<action
+            path="/error"
+            type="nu.mine.kino.strutsexamples.actions.ErrorAction" >
+			<forward name="success" path="/WEB-INF/jsp/errorMessage.jsp" />
+		</action>
+	
         <action
             path="/Welcome"
-            forward="/pages/Welcome.jsp"/>
-
+            forward="/WEB-INF/jsp/Welcome.jsp"/>
+		<!--
+	    <action
+            path="/index"
+            forward="/WEB-INF/jsp/index.jsp"/>
+		<action path="/exception" type="ajaxsampleweb.actions.ExceptionAction">
+			<forward name="failure" path="/error.jsp" />
+		</action> -->
     <!-- sample input and input submit actions
 
         <action
@@ -122,7 +148,7 @@
 
 <!-- ======================================== Message Resources Definitions -->
 
-    <message-resources parameter="MessageResources" />
+    <message-resources parameter="nu.mine.kino.strutsexamples.resources.MessageResources" />
 
 
 <!-- =============================================== Plug Ins Configuration -->
