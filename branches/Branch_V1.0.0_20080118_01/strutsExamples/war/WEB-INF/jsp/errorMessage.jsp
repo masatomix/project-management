@@ -44,5 +44,8 @@ errors.suffix=&lt;/li&gt;
 errors.footer=&lt;/ul&gt;
 </pre>
 で指定する。このキー値は特別らしい。
+
+
+<html:errors header="myErrors.header" footer="myErrors.footer" />
 </body>
 </html:html>
