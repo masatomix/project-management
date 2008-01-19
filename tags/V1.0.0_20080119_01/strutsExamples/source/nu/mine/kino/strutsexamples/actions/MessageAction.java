@@ -46,7 +46,7 @@ public class MessageAction extends Action {
                 "msg.message2", new String[] { "メッセージ２の１", "メッセージ２の２" }));
 
         // ActionMessages.GLOBAL_MESSAGEというのはグループのIDになっていて、独自のIDを渡すこともできる。
-        // Messageを表示するJSP側で、タグの指定にグループIDを指定すれば、そのチラのIDのメッセージを表示可能。
+        // Messageを表示するJSP側で、タグの指定にグループIDを指定すれば、そちらのIDのメッセージを表示可能。
         // 詳細はJSP側で。
         messages.add("HogeGroup", new ActionMessage("別グループのメッセージ", false));
 
