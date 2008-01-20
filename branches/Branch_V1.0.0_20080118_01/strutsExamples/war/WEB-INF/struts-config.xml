@@ -58,9 +58,6 @@
                 type="java.lang.String"/>
        </form-bean>
     end sample -->
-        <form-bean
-            name="hogeForm"
-            type="org.apache.struts.action.DynaActionForm" />
     </form-beans>
 
 
@@ -73,6 +70,14 @@
             type="app.ExpiredPasswordException"
             path="/changePassword.jsp"/>
         end sample -->
+        <exception
+            key="error.NormalException"
+            type="nu.mine.kino.strutsexamples.exceptions.NormalException"
+            path="/WEB-INF/jsp/error.jsp"/>
+			<!-- このkey値でActionMessageを生成してスコープにセットしている。
+					メッセージのvalueは、propertiesから取得している。
+			handler="nu.mine.kino.strutsexamples.exceptions.CustomizeExceptionHandler" 
+			-->
     </global-exceptions>
 
 
@@ -91,16 +96,12 @@
 
     <action-mappings>
             <!-- Default "Welcome" action -->
-            <!-- Forwards to Welcome.jsp -->
+            <!-- Forwards to Welcome.jsp -->	
         <action
             path="/Welcome"
             forward="/pages/Welcome.jsp"/>
-
-		<action path="/double" type="nu.mine.kino.strutsexamples.actions.DoubleAction" name="hogeForm">
-			<forward name="success" path="/WEB-INF/jsp/success.jsp" />
-		</action>
-		<action path="/index" type="nu.mine.kino.strutsexamples.actions.IndexAction">
-			<forward name="success" path="/WEB-INF/jsp/index.jsp" />
+		<action path="/normalEx" type="nu.mine.kino.strutsexamples.actions.NormalExceptionAction" >
+			<forward name="success" path="/WEB-INF/jsp/error.jsp" />
 		</action>
     <!-- sample input and input submit actions
 
