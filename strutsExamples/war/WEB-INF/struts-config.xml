@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
     Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
@@ -70,6 +70,14 @@
             type="app.ExpiredPasswordException"
             path="/changePassword.jsp"/>
         end sample -->
+        <exception
+            key="error.NormalException"
+            type="nu.mine.kino.strutsexamples.exceptions.NormalException"
+            path="/WEB-INF/jsp/error.jsp"/>
+			<!-- このkey値でActionMessageを生成してスコープにセットしている。
+					メッセージのvalueは、propertiesから取得している。
+			handler="nu.mine.kino.strutsexamples.exceptions.CustomizeExceptionHandler" 
+			-->
     </global-exceptions>
 
 
@@ -88,11 +96,13 @@
 
     <action-mappings>
             <!-- Default "Welcome" action -->
-            <!-- Forwards to Welcome.jsp -->
+            <!-- Forwards to Welcome.jsp -->	
         <action
             path="/Welcome"
             forward="/pages/Welcome.jsp"/>
-
+		<action path="/normalEx" type="nu.mine.kino.strutsexamples.actions.NormalExceptionAction" >
+			<forward name="success" path="/WEB-INF/jsp/error.jsp" />
+		</action>
     <!-- sample input and input submit actions
 
         <action
@@ -122,7 +132,7 @@
 
 <!-- ======================================== Message Resources Definitions -->
 
-    <message-resources parameter="MessageResources" />
+    <message-resources parameter="nu.mine.kino.strutsexamples.resources.MessageResources" />
 
 
 <!-- =============================================== Plug Ins Configuration -->
