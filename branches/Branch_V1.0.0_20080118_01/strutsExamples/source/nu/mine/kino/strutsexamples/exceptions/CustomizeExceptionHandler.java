@@ -20,6 +20,7 @@ public class CustomizeExceptionHandler extends ExceptionHandler {
             HttpServletResponse response) throws ServletException {
 
         NormalException normalException = (NormalException) exception;
+        System.out.println("hogehoggehoge");
         // エラーコード見るとか、なんか処理。
         ActionForward forward = super.execute(exception, config, mapping, form,
                 request, response);
@@ -41,6 +42,7 @@ public class CustomizeExceptionHandler extends ExceptionHandler {
         // this.storeException(request, property, error, forward, config
         // .getScope());
 
-        return forward;
+        return mapping.findForward("success");
+        //        return forward;
     }
 }
