@@ -58,6 +58,9 @@
                 type="java.lang.String"/>
        </form-bean>
     end sample -->
+        <form-bean
+            name="hogeForm"
+            type="org.apache.struts.action.DynaActionForm" />
     </form-beans>
 
 
@@ -70,13 +73,14 @@
             type="app.ExpiredPasswordException"
             path="/changePassword.jsp"/>
         end sample -->
+
         <exception
             key="error.NormalException"
             type="nu.mine.kino.strutsexamples.exceptions.NormalException"
-            path="/WEB-INF/jsp/error.jsp"/>
+			handler="nu.mine.kino.strutsexamples.exceptions.CustomizeExceptionHandler" 
+            />
 			<!-- このkey値でActionMessageを生成してスコープにセットしている。
 					メッセージのvalueは、propertiesから取得している。
-			handler="nu.mine.kino.strutsexamples.exceptions.CustomizeExceptionHandler" 
 			-->
     </global-exceptions>
 
@@ -96,7 +100,12 @@
 
     <action-mappings>
             <!-- Default "Welcome" action -->
-            <!-- Forwards to Welcome.jsp -->	
+            <!-- Forwards to Welcome.jsp -->
+		<action
+            path="/tag"
+            forward="/WEB-INF/jsp/taglib.jsp"/>
+
+	
         <action
             path="/Welcome"
             forward="/pages/Welcome.jsp"/>
