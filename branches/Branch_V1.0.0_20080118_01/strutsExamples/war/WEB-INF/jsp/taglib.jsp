@@ -4,39 +4,20 @@
 <%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean" %>
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
+<%@ taglib uri="/WEB-INF/eaurora-logic.tld" prefix="ea" %>
+
 <%@page import="org.apache.struts.Globals"%>
 <html:html xhtml="true" lang="true">
 <head>
-<title>エラーハンドラのサンプル</title>
+<title>index2</title>
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
-<html:base />
 </head>
 <body>
+<ea:empty name="hogee">empty
+</ea:empty>
 
-<ul>
-<html:messages id="message">
-  <li><bean:write name="message" /></li>
-</html:messages>
-</ul>
-
-<hr />
-
-<html:errors />
-
-<hr />
-<%--
-例外ハンドラで処理された、例外を取得する方法。
-<logic:present name="<%=Globals.EXCEPTION_KEY %>" >
-  <bean:write name="<%=Globals.EXCEPTION_KEY %>"/> 
-</logic:present>
-<br />
-
-
-<logic:present name="<%=Globals.ERROR_KEY %>" >
- <bean:define id="error" name="<%=Globals.ERROR_KEY %>" />
- <bean:write name="error"/> 
-</logic:present>
-<br />
---%>
+<ea:notEmpty name="hogee">
+notEmpty
+</ea:notEmpty>
 </body>
 </html:html>
