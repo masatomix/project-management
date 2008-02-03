@@ -115,7 +115,7 @@
 	
         <action
             path="/Welcome"
-            forward="/pages/Welcome.jsp"/>	
+            forward="/WEB-INF/jsp/Welcome.jsp"/>
 			
 		<action path="/double" type="nu.mine.kino.strutsexamples.actions.DoubleAction" name="hogeForm">
 			<forward name="success" path="/WEB-INF/jsp/success.jsp" />
