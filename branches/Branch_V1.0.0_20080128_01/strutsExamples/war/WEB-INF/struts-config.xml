@@ -125,7 +125,7 @@
 		</action>		
 		<action path="/index" type="nu.mine.kino.strutsexamples.actions.IndexAction">
 			<forward name="success" path="/WEB-INF/jsp/index.jsp" />
-		</actiwon>
+		</action>
     <!-- sample input and input submit actions
 
         <action
