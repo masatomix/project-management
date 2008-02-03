@@ -73,10 +73,14 @@
             type="app.ExpiredPasswordException"
             path="/changePassword.jsp"/>
         end sample -->
-		      <!--
-		<exception type="ajaxsampleweb.HogeException" handler="ajaxsampleweb.HogeExceptionrHandler" 
-			key="errors.ApplicationException" /> 
-  --> 
+        <exception
+            key="error.NormalException"
+            type="nu.mine.kino.strutsexamples.exceptions.NormalException"
+            path="/WEB-INF/jsp/error.jsp"/>
+			<!-- このkey値でActionMessageを生成してスコープにセットしている。
+					メッセージのvalueは、propertiesから取得している。
+			handler="nu.mine.kino.strutsexamples.exceptions.CustomizeExceptionHandler" 
+			-->
     </global-exceptions>
 
 
@@ -95,7 +99,7 @@
 
     <action-mappings>
             <!-- Default "Welcome" action -->
-            <!-- Forwards to Welcome.jsp -->
+            <!-- Forwards to Welcome.jsp -->	
 
         <action
             path="/message"
@@ -111,20 +115,17 @@
 	
         <action
             path="/Welcome"
-            forward="/WEB-INF/jsp/Welcome.jsp"/>
-		<!--
-	    <action
-            path="/index"
-            forward="/WEB-INF/jsp/index.jsp"/>
-		<action path="/exception" type="ajaxsampleweb.actions.ExceptionAction">
-			<forward name="failure" path="/error.jsp" />
-		</action> -->
+            forward="/pages/Welcome.jsp"/>	
+			
 		<action path="/double" type="nu.mine.kino.strutsexamples.actions.DoubleAction" name="hogeForm">
 			<forward name="success" path="/WEB-INF/jsp/success.jsp" />
 		</action>
+		<action path="/normalEx" type="nu.mine.kino.strutsexamples.actions.NormalExceptionAction" >
+			<forward name="success" path="/WEB-INF/jsp/error.jsp" />
+		</action>		
 		<action path="/index" type="nu.mine.kino.strutsexamples.actions.IndexAction">
 			<forward name="success" path="/WEB-INF/jsp/index.jsp" />
-		</action>
+		</actiwon>
     <!-- sample input and input submit actions
 
         <action
