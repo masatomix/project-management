@@ -73,6 +73,10 @@
             type="app.ExpiredPasswordException"
             path="/changePassword.jsp"/>
         end sample -->
+		      <!--
+		<exception type="ajaxsampleweb.HogeException" handler="ajaxsampleweb.HogeExceptionrHandler" 
+			key="errors.ApplicationException" /> 
+  --> 
     </global-exceptions>
 
 
@@ -92,10 +96,29 @@
     <action-mappings>
             <!-- Default "Welcome" action -->
             <!-- Forwards to Welcome.jsp -->
+
+        <action
+            path="/message"
+            type="nu.mine.kino.strutsexamples.actions.MessageAction" >
+			<forward name="success" path="/WEB-INF/jsp/message.jsp" />
+		</action>
+		
+		<action
+            path="/error"
+            type="nu.mine.kino.strutsexamples.actions.ErrorAction" >
+			<forward name="success" path="/WEB-INF/jsp/errorMessage.jsp" />
+		</action>
+	
         <action
             path="/Welcome"
-            forward="/pages/Welcome.jsp"/>
-
+            forward="/WEB-INF/jsp/Welcome.jsp"/>
+		<!--
+	    <action
+            path="/index"
+            forward="/WEB-INF/jsp/index.jsp"/>
+		<action path="/exception" type="ajaxsampleweb.actions.ExceptionAction">
+			<forward name="failure" path="/error.jsp" />
+		</action> -->
 		<action path="/double" type="nu.mine.kino.strutsexamples.actions.DoubleAction" name="hogeForm">
 			<forward name="success" path="/WEB-INF/jsp/success.jsp" />
 		</action>
