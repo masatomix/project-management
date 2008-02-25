@@ -85,8 +85,7 @@
         <hashTree>
           <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="アサーション" enabled="true">
             <collectionProp name="Asserion.test_strings">
-              <stringProp name="-1230599977">ログインできました！
-</stringProp>
+              <stringProp name="791587219">ログインできました！</stringProp>
             </collectionProp>
             <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
             <stringProp name="Assertion.assume_success">false</stringProp>
@@ -125,8 +124,7 @@
         <hashTree>
           <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="アサーション" enabled="true">
             <collectionProp name="Asserion.test_strings">
-              <stringProp name="-686899509">ログイン画面へ
-</stringProp>
+              <stringProp name="-22158049">ログイン画面へ</stringProp>
             </collectionProp>
             <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
             <stringProp name="Assertion.assume_success">false</stringProp>
@@ -243,6 +241,12 @@
         <stringProp name="HTTPSampler.contentEncoding"></stringProp>
         <stringProp name="HTTPSampler.path"></stringProp>
       </ConfigTestElement>
+      <hashTree/>
+      <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP クッキーマネージャ" enabled="true">
+        <collectionProp name="CookieManager.cookies"/>
+        <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+        <stringProp name="CookieManager.policy">rfc2109</stringProp>
+      </CookieManager>
       <hashTree/>
     </hashTree>
   </hashTree>
