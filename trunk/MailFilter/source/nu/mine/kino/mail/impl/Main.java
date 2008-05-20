@@ -36,7 +36,7 @@ public class Main {
             int size = in.available();
             byte[] bytes = new byte[size];
             in.read(bytes);
-            return new String(bytes, "ISO-2022-JP");
+            return new String(bytes);
         } catch (IOException e) {
             e.printStackTrace();
         }
