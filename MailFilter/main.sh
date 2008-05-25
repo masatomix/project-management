@@ -1,9 +1,10 @@
 #!/bin/bash
 
 export JAVA_HOME=/opt/jdk1.5.0_12
+export HOME_DIR=`echo $HOME`
 
 # MailFilterを置いたディレクトリに置き換える
-export LIBDIR=/home/hogehoge/MailFilter/lib
+export LIBDIR=${HOME_DIR}/MailFilter/lib
 
 # クラスパスの設定 ${LIBDIR} 内のjarすべて通す
 jarList=`ls ${LIBDIR} | grep .jar`
@@ -29,10 +30,15 @@ do
  tmp="${tmp}${line}\n";
 done
 
-echo -en "$tmp" | java  nu.mine.kino.mail.impl.Main
+if 
+  echo -en "$tmp" | java  nu.mine.kino.mail.impl.Main
+then
+#  echo -en "$tmp" | ${HOME_DIR}/post2blog.pl
+  echo -en "$tmp" | ${HOME_DIR}/MailFilter/stub.sh
+fi
 )
 
 #-----------------------
 #java  nu.mine.kino.mail.impl.Main
 
-#exit 0
+exit 0
