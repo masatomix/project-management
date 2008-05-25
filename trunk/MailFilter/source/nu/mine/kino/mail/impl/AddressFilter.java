@@ -37,11 +37,11 @@ public class AddressFilter implements IMailFilter {
 
     public String doFilter(String mailData) throws FilterException {
         if (mailData == null || "".equals(mailData)) {
-            throw new FilterException("メールデータが取得できませんでした。");
+            throw new IllegalArgumentException("メールデータが取得できませんでした。");
         }
         String path = Utils.getHeader(mailData, "Return-Path")[0];
         if (path == null || "".equals(path)) {
-            throw new FilterException("Return-Path が取得できませんでした。");
+            throw new FilterException("Return-Path が取得できませんでした。", mailData);
         }
 
         boolean flag = false;
@@ -52,7 +52,7 @@ public class AddressFilter implements IMailFilter {
         }
         if (!flag) {
             throw new FilterException("Return-Path から取得されたアドレス: " + path
-                    + " がアドレスリストにありません。");
+                    + " がアドレスリストにありません。", mailData);
         }
         return mailData;
 
