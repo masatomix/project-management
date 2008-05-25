@@ -11,24 +11,15 @@ public class FilterException extends Exception {
      */
     private static final long serialVersionUID = -4693696991817546876L;
 
-    public FilterException() {
-        super();
-        // TODO 自動生成されたコンストラクター・スタブ
-    }
+    private final String mailData;
 
-    public FilterException(String s, Throwable throwable) {
-        super(s, throwable);
-        // TODO 自動生成されたコンストラクター・スタブ
-    }
-
-    public FilterException(String s) {
+    public FilterException(String s, String mailData) {
         super(s);
-        // TODO 自動生成されたコンストラクター・スタブ
+        this.mailData = mailData;
     }
 
-    public FilterException(Throwable throwable) {
-        super(throwable);
-        // TODO 自動生成されたコンストラクター・スタブ
+    public String getMailData() {
+        return mailData;
     }
 
 }
