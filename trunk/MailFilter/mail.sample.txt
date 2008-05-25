@@ -18,6 +18,5 @@ Content-Type: text/plain; charset="ISO-2022-JP"
 Content-Transfer-Encoding: 7bit
 X-Mailer: Becky! ver. 2.31 [ja]
 
-ƒ[ƒ‹‚ÌƒeƒXƒg‚Å‚·B
-endB
-
+$B%a!<%k$N%F%9%H$G$9!#(B
+end$B!#(B
