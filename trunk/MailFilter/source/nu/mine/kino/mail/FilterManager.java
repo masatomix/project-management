@@ -1,6 +1,6 @@
 /*******************************************************************************
- * Copyright (c) 2008 Masatomi KINO. All rights reserved. 
- * $Id$
+ * Copyright (c) 2008 Masatomi KINO. All rights reserved. $Id:
+ * FilterManager.java 158 2008-06-08 14:59:24Z masatomix $
  ******************************************************************************/
 // 作成日: 2008/05/19
 package nu.mine.kino.mail;
@@ -28,7 +28,7 @@ import org.apache.log4j.Logger;
 public class FilterManager {
     private List<IMailFilter> filters = new LinkedList<IMailFilter>();
 
-    private static Logger logger = Logger.getLogger(FilterException.class);
+    private static Logger logger = Logger.getLogger(FilterManager.class);
 
     private ExtendedProperties props = new ExtendedProperties();
 
@@ -38,6 +38,8 @@ public class FilterManager {
     }
 
     private void init() {
+        logger.debug("init() - start");
+
         ExtendedProperties props = new ExtendedProperties();
         try {
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -66,9 +68,13 @@ public class FilterManager {
                 }
             }// 初期化でエラーになっても、とりあえず何も設定しなかったとうことで先に進む
         }
+
+        logger.debug("init() - end");
     }
 
     private void initMailInfo() {
+        logger.debug("initMailInfo() - start");
+
         try {
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
             InputStream resourceAsStream = loader
@@ -80,6 +86,8 @@ public class FilterManager {
             logger.warn(e);
             logger.info("mail.propertiesがパス上に見つからなかったため、メール送信は行わないことにします。");
         }
+
+        logger.debug("initMailInfo() - end");
     }
 
     public void addFilter(IMailFilter filter) {
@@ -94,12 +102,17 @@ public class FilterManager {
      * @throws FilterException
      */
     public String doFilters(String mailData) throws FilterException {
+        logger.debug("doFilters(String) - start");
+
         if (!filters.isEmpty()) {
             String tmp = mailData;
             for (IMailFilter filter : filters) {
-                logger.debug("実行するフィルタ名: " + filter.getClass().getName());
+                logger.debug("実行するFilter名: " + filter.getClass().getName());
                 try {
                     tmp = filter.doFilter(tmp);
+                    logger
+                            .debug("Normal end. : "
+                                    + filter.getClass().getName());
                 } catch (FilterException e) {
                     logger.error(e);
                     // mailして再スロー
@@ -107,13 +120,16 @@ public class FilterManager {
                     throw e;
                 }
             }
+
+            logger.debug("doFilters(String) - end");
             return tmp;
         }
         logger.warn("実行するフィルタが設定されていませんでした");
+        logger.debug("doFilters(String) - end");
         return mailData;
     }
 
-    public void send(FilterException e) {
+    private void send(FilterException e) {
         // 初期化済み(loadが成功している)なら
         if (props.isInitialized()) {
             String smtp = props.getString("smtp"); // SMTPサーバ

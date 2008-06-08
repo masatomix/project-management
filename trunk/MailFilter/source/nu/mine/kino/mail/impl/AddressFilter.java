@@ -1,6 +1,6 @@
 /*******************************************************************************
- * Copyright (c) 2008 Masatomi KINO. All rights reserved. 
- * $Id$
+ * Copyright (c) 2008 Masatomi KINO. All rights reserved. $Id:
+ * AddressFilter.java 158 2008-06-08 14:59:24Z masatomix $
  ******************************************************************************/
 // 作成日: 2008/05/19
 package nu.mine.kino.mail.impl;
@@ -29,6 +29,8 @@ public class AddressFilter implements IMailFilter {
     }
 
     private void init() {
+        logger.debug("init() - start");
+
         ExtendedProperties props = new ExtendedProperties();
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         InputStream resourceAsStream = loader
@@ -44,9 +46,13 @@ public class AddressFilter implements IMailFilter {
             String[] stringArray = props.getStringArray("address");
             whiteList = Arrays.asList(stringArray);
         }
+
+        logger.debug("init() - end");
     }
 
     public String doFilter(String mailData) throws FilterException {
+        logger.debug("doFilter(String) - start");
+
         if (mailData == null || "".equals(mailData)) {
             throw new IllegalArgumentException("メールデータが取得できませんでした。");
         }
@@ -69,6 +75,8 @@ public class AddressFilter implements IMailFilter {
             throw new FilterException("Return-Path から取得されたアドレス: " + path
                     + " がアドレスリストにありません。", mailData);
         }
+
+        logger.debug("doFilter(String) - end");
         return mailData;
 
     }
