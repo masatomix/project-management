@@ -7,24 +7,14 @@
 	<appender name="file" class="org.apache.log4j.FileAppender">
 		<param name="File" value="/tmp/file.log" />
 		<param name="Append" value="true" />
-		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%t %-5p %c{2} - %m%n"/>
-		</layout>
-	</appender>
-
-	<appender name="System.out" class="org.apache.log4j.ConsoleAppender">
+		<param name="Encoding" value="EUC-JP" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d [%t] %-5p %c - %m%n"/>
 		</layout>
 	</appender>
 
-<!--
-	<logger name="nu.mine.kino">
-		<level value="debug" />
-	</logger>
--->	
 	<root>
-		<level value="DEBUG" />
+		<level value="info" />
 		<appender-ref ref="file" />
 	</root>
 </log4j:configuration>
