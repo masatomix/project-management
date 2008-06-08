@@ -16,23 +16,33 @@ import nu.mine.kino.mail.IMailFilter;
 import nu.mine.kino.mail.utils.Utils;
 
 import org.apache.commons.collections.ExtendedProperties;
+import org.apache.log4j.Logger;
 
 public class AddressFilter implements IMailFilter {
+    private static Logger logger = Logger.getLogger(AddressFilter.class);
+
     private List<String> whiteList = null;
 
     public AddressFilter() throws IOException {
         init();
     }
 
-    private void init() throws IOException {
+    private void init() {
         ExtendedProperties props = new ExtendedProperties();
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         InputStream resourceAsStream = loader
                 .getResourceAsStream("whitelist.properties");
         InputStream in = new BufferedInputStream(resourceAsStream);
-        props.load(in);
-        String[] stringArray = props.getStringArray("address");
-        whiteList = Arrays.asList(stringArray);
+        try {
+            props.load(in);
+        } catch (IOException e) {
+            // ファイルがないとかですね。
+            logger.warn(e);
+        }
+        if (props.isInitialized()) {
+            String[] stringArray = props.getStringArray("address");
+            whiteList = Arrays.asList(stringArray);
+        }
     }
 
     public String doFilter(String mailData) throws FilterException {
@@ -44,6 +54,10 @@ public class AddressFilter implements IMailFilter {
             throw new FilterException("Return-Path が取得できませんでした。", mailData);
         }
 
+        if (whiteList == null || whiteList.isEmpty()) {
+            logger.warn("whitelist.propertiesからデータを取得できなかったため、メールの遮断を行いません。");
+            return mailData;
+        }
         boolean flag = false;
         for (String mailAddress : whiteList) {
             if (trim(path).equals(mailAddress)) {
