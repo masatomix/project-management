@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (c) 2008 Masatomi KINO. All rights reserved. $Id$
+ * Copyright (c) 2008 Masatomi KINO. All rights reserved. 
+ * $Id$
  ******************************************************************************/
 // ì¬“ú: 2008/05/19
 package nu.mine.kino.mail;
