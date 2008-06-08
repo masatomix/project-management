@@ -5,7 +5,7 @@
 
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 	<appender name="file" class="org.apache.log4j.FileAppender">
-		<param name="File" value="/tmp/file.log" />
+		<param name="File" value="file.log" />
 		<param name="Append" value="true" />
 		<param name="Encoding" value="EUC-JP" />
 		<layout class="org.apache.log4j.PatternLayout">
