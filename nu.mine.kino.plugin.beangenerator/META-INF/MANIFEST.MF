@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JavaBeans Generator Plug-in
+Bundle-SymbolicName: nu.mine.kino.plugin.beangenerator;singleton:=true
+Bundle-Version: 0.2.0
+Bundle-Activator: nu.mine.kino.plugin.beangenerator.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.ui,
+ org.eclipse.jface.text,
+ nu.mine.kino.plugin.log4j,
+ org.eclipse.core.resources
+Eclipse-LazyStart: true
+Bundle-ClassPath: lib/commons-collections.jar,
+ lib/oro.jar,
+ lib/velocity-1.4.jar,
+ lib/xjavadoc-1.1.jar,
+ .
