@@ -14,6 +14,9 @@ package nu.mine.kino.plugin.beangenerator.actions;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
@@ -70,7 +73,9 @@ public class JavaBeansGeneratorAction implements IObjectActionDelegate {
     }
 
     public void selectionChanged(IAction action, ISelection selection) {
+        logger.debug("selectionChanged(IAction, ISelection) - start");
         ss = (IStructuredSelection) selection;
+        logger.debug("selectionChanged(IAction, ISelection) - end");
     }
 
 }
