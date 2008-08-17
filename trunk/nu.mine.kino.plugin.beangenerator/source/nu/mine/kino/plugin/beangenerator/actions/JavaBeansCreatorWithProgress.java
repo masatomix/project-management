@@ -69,14 +69,14 @@ public class JavaBeansCreatorWithProgress implements IRunnableWithProgress {
         int totalWork = ss.size() * 2;
         monitor.beginTask("JavaBeans生成中・・・", totalWork);
 
-        Iterator<IFile> e = ss.iterator();
-        // 選択されたExcelファイル数分、繰り返し。
-        while (e.hasNext()) {
-            IFile file = e.next();
-            // IFile から、JavaProjectへ。Resource系から、JDTの世界へっ。
-            IProject project = file.getProject();
-            IJavaProject javaProject = JavaCore.create(project);
-            try {
+        try {
+            Iterator<IFile> e = ss.iterator();
+            // 選択されたExcelファイル数分、繰り返し。
+            while (e.hasNext()) {
+                IFile file = e.next();
+                // IFile から、JavaProjectへ。Resource系から、JDTの世界へっ。
+                IProject project = file.getProject();
+                IJavaProject javaProject = JavaCore.create(project);
                 monitor.subTask("処理中:" + file.getFullPath());
                 monitor.worked(1);
                 List<ClassInformation> classInformations = Activator
@@ -84,27 +84,21 @@ public class JavaBeansCreatorWithProgress implements IRunnableWithProgress {
                 // 一つのExcelファイルから、複数のクラス情報が取得できるので、取得した
                 // クラス数分、繰り返し。
                 for (ClassInformation classInformation : classInformations) {
-                    try {
-                        monitor.subTask("処理中:"
-                                + classInformation.getClassNameJ());
-                        ICompilationUnit cu = new JavaBeansCreator(javaProject)
-                                .create(classInformation);
+                    monitor.subTask("処理中:" + classInformation.getClassNameJ());
+                    ICompilationUnit cu = new JavaBeansCreator(javaProject)
+                            .create(classInformation);
 
-                        list.add(cu);
-                    } catch (CoreException ee) {
-                        // ちゃんとエラー処理せんと。
-                        ee.printStackTrace();
-                    }
+                    list.add(cu);
                     if (monitor.isCanceled()) {
                         throw new InterruptedException(
                                 "Cancel has been requested.");
                     }
                 }
-            } catch (CoreException e1) {
-                // ちゃんとエラー処理せんと。
-                e1.printStackTrace();
+                monitor.worked(1);
             }
-            monitor.worked(1);
+        } catch (CoreException e1) {
+//            Activator.logException(e1, false);
+            throw new InvocationTargetException(e1);
         }
 
         // 以下、整形処理。
@@ -113,17 +107,17 @@ public class JavaBeansCreatorWithProgress implements IRunnableWithProgress {
             public void run() {
                 ICompilationUnit[] units = (ICompilationUnit[]) list
                         .toArray(new ICompilationUnit[list.size()]);
-                // OrganizeImportsAction importsAction = new
-                // OrganizeImportsAction(
-                // site);
-                // FormatAllAction formatAllAction = new FormatAllAction(site);
-                IStructuredSelection selection = new StructuredSelection(units);
-                // importsAction.run(selection);
-                // formatAllAction.run(selection);
-
-                AddGetterSetterAction getterAction = new AddGetterSetterAction(
+                OrganizeImportsAction importsAction = new OrganizeImportsAction(
                         site);
-                getterAction.run(selection);
+                FormatAllAction formatAllAction = new FormatAllAction(site);
+                IStructuredSelection selection = new StructuredSelection(units);
+                importsAction.run(selection);
+                formatAllAction.run(selection);
+
+                // AddGetterSetterAction getterAction = new
+                // AddGetterSetterAction(
+                // site);
+                // getterAction.run(selection);
             }
         });
         monitor.worked(totalWork);
