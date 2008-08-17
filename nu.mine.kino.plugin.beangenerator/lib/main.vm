@@ -1,7 +1,7 @@
 
 
 /**
-* ${class.classNameJ}
+* ${class.description}
 */
 public class  ${class.className} {
 }
