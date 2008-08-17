@@ -15,35 +15,28 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
 import nu.mine.kino.utils.beangenerator.sheetdata.ClassInformation;
 import nu.mine.kino.utils.beangenerator.sheetdata.FieldInformation;
 
+import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
-import org.apache.velocity.exception.ParseErrorException;
-import org.apache.velocity.exception.ResourceNotFoundException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTParser;
-import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.FieldAccess;
-import org.eclipse.jdt.core.dom.FieldDeclaration;
-import org.eclipse.jdt.core.dom.ImportDeclaration;
 
 /**
  * @author Masatomi KINO
@@ -69,16 +62,19 @@ public class JavaBeansCreator {
             Properties p = new Properties();
             p.setProperty("file.resource.loader.path", file.getAbsolutePath());
             Velocity.init(p);
+            // どうも上のディレクトリとかがなくってもエラーにならないっぽいので、そのままつぶしちゃおう。
         } catch (IOException e) {
             logger.error("JavaBeansCreator()", e);
-            e.printStackTrace();
+            Activator.logException(e);
         } catch (Exception e) {
             logger.error("JavaBeansCreator()", e);
-            e.printStackTrace();
+            Activator.logException(e);
         }
     }
 
     public ICompilationUnit create(ClassInformation info) throws CoreException {
+        logger.debug("create(ClassInformation) - start");
+
         // フィールドのJavaProject情報インスタンスから、情報取得。
         IPackageFragmentRoot root = getSourceDir(javaProject);
         String pkg = info.getPackageName();
@@ -91,150 +87,121 @@ public class JavaBeansCreator {
         }
 
         // ソースコードの生成開始。
-        StringBuffer buf = new StringBuffer();
-        buf.append(createMain(info));
+        String mainStatement = createMain(info);
         ICompilationUnit cu = pack.createCompilationUnit(info.getClassName()
-                + ".java", buf.toString(), true, new NullProgressMonitor());
+                + ".java", mainStatement, true, new NullProgressMonitor());
+        // packageついか
         cu.createPackageDeclaration(pkg, new NullProgressMonitor());
 
         IType type = cu.getType(info.getClassName());
 
         // フィールド生成
         createField(type, info);
-
         // メソッドの生成
         createMethod(type, info);
-
+        // 書き出し。
         cu.save(new NullProgressMonitor(), true);
 
+        logger.debug("create(ClassInformation) - end");
         return cu;
     }
 
-    private String executeVelocity(String vm, String name, Object obj) {
-        StringBuffer buf = new StringBuffer();
+    private String executeVelocity(String vm, String[] names, Object[] objs)
+            throws CoreException {
+        logger.debug("executeVelocity(String, String[], Object[]) - start");
+
         try {
             VelocityContext context = new VelocityContext();
-            context.put(name, obj);
+            for (int i = 0; i < names.length; i++) {
+                context.put(names[i], objs[i]);
+            }
             StringWriter out = new StringWriter();
             Template template = Velocity.getTemplate(vm, "MS932");
-
             template.merge(context, out);
-            buf.append(out.toString());
+            String result = out.toString();
             out.flush();
-        } catch (ResourceNotFoundException e) {
-            // TODO 自動生成された catch ブロック
-            e.printStackTrace();
-        } catch (ParseErrorException e) {
-            // TODO 自動生成された catch ブロック
-            e.printStackTrace();
+            logger.debug("executeVelocity(String, String[], Object[]) - end");
+            return result;
         } catch (Exception e) {
-            // TODO 自動生成された catch ブロック
-            e.printStackTrace();
+            logger.error("executeVelocity(String, String[], Object[])", e);
+            IStatus status = new Status(IStatus.ERROR, Activator.getPluginId(),
+                    IStatus.OK, e.getMessage(), e);
+            throw new CoreException(status);
         }
-        return new String(buf);
-
     }
 
-    private String createMain(ClassInformation clazz) {
+    private String createMain(ClassInformation clazz) throws CoreException {
         // クラス情報から、Velocityでメイン部分を作成する。
-        return executeVelocity("main.vm", "class", clazz);
+        return executeVelocity("main.vm", new String[] { "class" },
+                new ClassInformation[] { clazz });
     }
 
     /**
      * @param type
      */
-    private void createField(IType type, ClassInformation info) {
+    private void createField(IType type, ClassInformation info)
+            throws CoreException {
         logger.debug("createField() start");
         StringBuffer buf = new StringBuffer();
-        try {
-            List<FieldInformation> fieldInformations = info
-                    .getFieldInformations();
-            for (FieldInformation field : fieldInformations) {
-                String result = executeVelocity("field.vm", "field", field);
-                buf.append(result);
-            }
-            type.createField(buf.toString(), null, true,
-                    new NullProgressMonitor());
-        } catch (JavaModelException e) {
-            e.printStackTrace();
+        List<FieldInformation> fieldInformations = info.getFieldInformations();
+        for (FieldInformation field : fieldInformations) {
+            String result = executeVelocity("field.vm",
+                    new String[] { "field" }, new FieldInformation[] { field });
+            buf.append(result);
         }
+        type.createField(buf.toString(), null, true, new NullProgressMonitor());
         logger.debug("createField() end");
     }
 
-    private void createMethod(IType type, ClassInformation info) {
+    private void createMethod(IType type, ClassInformation info)
+            throws CoreException {
         logger.debug("createMethod() start");
 
-        // 作成した、フィールドのみのJavaBeansを解析する。
-        analyzeSource(type.getCompilationUnit());
-        for (FieldDeclaration element : newFieldList) {
-            System.out.println("-----");
-            System.out.println(element.getType());
-            System.out.println(element.getProperty("aa"));
+        List<FieldInformation> fieldInformations = info.getFieldInformations();
+        for (FieldInformation field : fieldInformations) {
+            String prefix = null;
+            // フィールドの型が,booleanとかの場合はgetでなくて、isにする。
+            if (contains(field.getFieldType(), "boolean", "java.lang.Boolean")) {
+                prefix = "is";
+            } else {
+                prefix = "get";
+            }
+            String[] keys = new String[] { "field", "cname", "prefix" };
+            Object[] values = new Object[] { field,
+                    WordUtils.capitalize(field.getFieldName()), prefix };
+            // setterの作成
+            String setter = executeVelocity("setter.vm", keys, values);
+            type.createMethod(setter, null, true, new NullProgressMonitor());
+            // getterの作成
+            String getter = executeVelocity("getter.vm", keys, values);
+            type.createMethod(getter, null, true, new NullProgressMonitor());
         }
-
-        // StringBuffer buf = new StringBuffer();
-        // try {
-        // List<FieldInformation> fieldInformations = info
-        // .getFieldInformations();
-        // for (FieldInformation field : fieldInformations) {
-        // String result = executeVelocity("method.vm", "field", field);
-        // buf.append(result);
-        // }
-        // type.createField(buf.toString(), null, true,
-        // new NullProgressMonitor());
-        // } catch (JavaModelException e) {
-        // e.printStackTrace();
-        // }
         logger.debug("createMethod() end");
     }
 
-    private IPackageFragmentRoot getSourceDir(IJavaProject javaProject) {
-        IPackageFragmentRoot root = null;
-        try {
-            IPackageFragmentRoot[] roots = javaProject
-                    .getPackageFragmentRoots();
-            for (IPackageFragmentRoot rootTmp : roots) {
-                if (rootTmp.getKind() == IPackageFragmentRoot.K_SOURCE) {
-                    // 複数あるかもね。先に決まった方で返しちゃう。
-                    root = rootTmp;
-                    return root;
-                }
+    private boolean contains(String input, String... strs) {
+        for (String str : strs) {
+            // 配列に、inputと同じのがあれば、true
+            if (input.equals(str)) {
+                return true;
             }
-        } catch (JavaModelException e) {
-            e.printStackTrace();
         }
-        return root;
+        return false;
     }
 
-    private void analyzeSource(ICompilationUnit unit) {
-        logger.debug("analyzeSource() start");
-
-        // ASTParserの生成
-        ASTParser parser = ASTParser.newParser(AST.JLS3);
-        parser.setResolveBindings(true);
-        parser.setSource(unit);
-        // 元クラス解析用のAST(抽象構文木)の生成
-        CompilationUnit org = (CompilationUnit) parser
-                .createAST(new NullProgressMonitor());
-
-        // Visitor適用
-        org.accept(new FieldASTVisitor());
-        logger.debug("analyzeSource() end");
+    private IPackageFragmentRoot getSourceDir(IJavaProject javaProject)
+            throws CoreException {
+        IPackageFragmentRoot[] roots = javaProject.getPackageFragmentRoots();
+        for (IPackageFragmentRoot root : roots) {
+            if (root.getKind() == IPackageFragmentRoot.K_SOURCE) {
+                // 複数あるかもね。先に決まった方で返しちゃう。
+                return root;
+            }
+        }
+        // ソースディレクトリがとれないので、エラー。
+        IStatus status = new Status(IStatus.ERROR, Activator.getPluginId(),
+                IStatus.OK, "ソースディレクトリが存在しないようです。", null);
+        throw new CoreException(status);
     }
 
-    List<FieldDeclaration> newFieldList = new ArrayList<FieldDeclaration>();
-
-    private class FieldASTVisitor extends ASTVisitor {
-        @Override
-        public boolean visit(FieldDeclaration node) {
-            newFieldList.add(node);
-            return super.visit(node);
-        }
-        @Override
-        public boolean visit(ImportDeclaration node) {
-            node.getName();
-            return super.visit(node);
-        }
-
-    }
 }
