@@ -1,0 +1,6 @@
+  /**
+   * ${field.description}
+   */
+  private  ${field.fieldType} ${field.fieldName};
+
+ 
