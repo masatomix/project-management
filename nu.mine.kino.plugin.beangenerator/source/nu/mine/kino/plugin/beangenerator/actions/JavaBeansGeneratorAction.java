@@ -13,6 +13,8 @@ package nu.mine.kino.plugin.beangenerator.actions;
 
 import java.lang.reflect.InvocationTargetException;
 
+import nu.mine.kino.plugin.beangenerator.Activator;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -66,7 +68,7 @@ public class JavaBeansGeneratorAction implements IObjectActionDelegate {
                     ss, site);
             dialog.run(true, true, progress);
         } catch (InvocationTargetException e) {
-            logger.error("’†’f", e);
+            Activator.logException(e);
         } catch (InterruptedException e) {
             logger.error("’†’f", e);
         }
