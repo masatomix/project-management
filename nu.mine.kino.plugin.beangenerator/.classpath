@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="source"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-collections.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-lang-2.4.jar" sourcepath="/Users/masatomix/Documents/workspace/commons-lang-2.4-src/src"/>
 	<classpathentry exported="true" kind="lib" path="lib/jxl.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/ognl-2.6.9-patch-20070908.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xlsbeans.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/nu.mine.kino.exception.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/nu.mine.kino.logging.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/nu.mine.kino.services.impl.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/nu.mine.kino.services.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/nu.mine.kino.utils.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-collections.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/oro.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/velocity-1.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/xjavadoc-1.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="output" path="classes"/>
