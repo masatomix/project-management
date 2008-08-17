@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: JavaBeans Generator Plug-in
+Bundle-Name: %pluginName
 Bundle-SymbolicName: nu.mine.kino.plugin.beangenerator;singleton:=true
 Bundle-Version: 0.2.0
 Bundle-Activator: nu.mine.kino.plugin.beangenerator.Activator
@@ -20,3 +20,4 @@ Bundle-ClassPath: lib/oro.jar,
  lib/commons-lang-2.4.jar,
  nu.mine.kino.plugin.beangenerator.jar,
  lib/commons-collections.jar
+Bundle-Vendor: %providerName
