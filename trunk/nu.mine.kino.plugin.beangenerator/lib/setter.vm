@@ -1,7 +1,7 @@
 	/**
-	 * ${field.description}をセットする。
+	 * ${field.fieldNameJ}をセットする。
 	 *
-	 * @param ${field.fieldName} ${field.description}
+	 * @param ${field.fieldName} ${field.fieldNameJ}
 	 */
 	public void set${cname}(${field.FieldType} ${field.fieldName}) {
 		this.${field.fieldName} = ${field.fieldName};
