@@ -19,7 +19,7 @@ import java.util.List;
 import nu.mine.kino.plugin.beangenerator.Activator;
 import nu.mine.kino.plugin.beangenerator.JavaBeansCreator;
 import nu.mine.kino.plugin.beangenerator.Messages;
-import nu.mine.kino.utils.beangenerator.sheetdata.ClassInformation;
+import nu.mine.kino.plugin.beangenerator.sheetdata.ClassInformation;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;

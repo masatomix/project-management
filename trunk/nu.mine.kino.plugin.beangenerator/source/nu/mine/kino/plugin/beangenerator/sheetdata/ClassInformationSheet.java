@@ -9,13 +9,12 @@
  * $Id$
  ******************************************************************************/
 //ì¬“ú: 2008/08/15
-package nu.mine.kino.utils.beangenerator.sheetdata;
+package nu.mine.kino.plugin.beangenerator.sheetdata;
 
 import java.util.List;
 
 import net.java.amateras.xlsbeans.annotation.IterateTables;
 import net.java.amateras.xlsbeans.annotation.Sheet;
-import nu.mine.kino.plugin.beangenerator.Messages;
 
 /**
  * @author Masatomi KINO

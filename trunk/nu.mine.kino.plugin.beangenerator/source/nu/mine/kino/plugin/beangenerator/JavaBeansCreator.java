@@ -18,8 +18,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 
-import nu.mine.kino.utils.beangenerator.sheetdata.ClassInformation;
-import nu.mine.kino.utils.beangenerator.sheetdata.FieldInformation;
+import nu.mine.kino.plugin.beangenerator.sheetdata.ClassInformation;
+import nu.mine.kino.plugin.beangenerator.sheetdata.FieldInformation;
 
 import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
