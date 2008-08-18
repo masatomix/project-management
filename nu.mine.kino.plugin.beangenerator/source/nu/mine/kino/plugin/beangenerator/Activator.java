@@ -1,7 +1,5 @@
 package nu.mine.kino.plugin.beangenerator;
 
-import org.apache.log4j.Logger;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -11,9 +9,10 @@ import java.util.List;
 
 import net.java.amateras.xlsbeans.XLSBeans;
 import net.java.amateras.xlsbeans.XLSBeansException;
-import nu.mine.kino.utils.beangenerator.sheetdata.ClassInformation;
-import nu.mine.kino.utils.beangenerator.sheetdata.ClassInformationSheet;
+import nu.mine.kino.plugin.beangenerator.sheetdata.ClassInformation;
+import nu.mine.kino.plugin.beangenerator.sheetdata.ClassInformationSheet;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;

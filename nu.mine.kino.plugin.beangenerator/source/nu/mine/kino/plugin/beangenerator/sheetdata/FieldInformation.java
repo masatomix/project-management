@@ -9,7 +9,7 @@
  * $Id$
  ******************************************************************************/
 // ì¬“ú: 2008/08/15
-package nu.mine.kino.utils.beangenerator.sheetdata;
+package nu.mine.kino.plugin.beangenerator.sheetdata;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
