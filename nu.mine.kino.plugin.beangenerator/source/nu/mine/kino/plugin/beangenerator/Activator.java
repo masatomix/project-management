@@ -39,7 +39,7 @@ public class Activator extends AbstractUIPlugin {
     private static final Logger logger = Logger.getLogger(Activator.class);
 
     // The plug-in ID
-    public static final String PLUGIN_ID = "nu.mine.kino.plugin.beangenerator";
+    public static final String PLUGIN_ID = "nu.mine.kino.plugin.beangenerator"; //$NON-NLS-1$
 
     // The shared instance
     private static Activator plugin;
@@ -81,7 +81,7 @@ public class Activator extends AbstractUIPlugin {
 
     public List<ClassInformation> getClassInformations(IFile file)
             throws CoreException {
-        logger.debug("getClassInformations(IFile) - start");
+        logger.debug("getClassInformations(IFile) - start"); //$NON-NLS-1$
 
         File instance = file.getLocation().toFile();
         try {
@@ -89,15 +89,15 @@ public class Activator extends AbstractUIPlugin {
             // ここでアノテーションからJavaBeansのマッピングがされ、インスタンスまで生成される
             ClassInformationSheet sheet = new XLSBeans().load(in,
                     ClassInformationSheet.class);
-            logger.debug("getClassInformations(IFile) - end");
+            logger.debug("getClassInformations(IFile) - end"); //$NON-NLS-1$
             return sheet.getClassInformation();
         } catch (FileNotFoundException e) {
-            logger.error("getClassInformations(IFile)", e);
+            logger.error("getClassInformations(IFile)", e); //$NON-NLS-1$
             IStatus status = new Status(IStatus.ERROR, Activator.getPluginId(),
                     IStatus.OK, e.getMessage(), e);
             throw new CoreException(status);
         } catch (XLSBeansException e) {
-            logger.error("getClassInformations(IFile)", e);
+            logger.error("getClassInformations(IFile)", e); //$NON-NLS-1$
             IStatus status = new Status(IStatus.ERROR, Activator.getPluginId(),
                     IStatus.OK, e.getMessage(), e);
             throw new CoreException(status);

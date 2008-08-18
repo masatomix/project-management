@@ -29,22 +29,22 @@ public class FieldInformation {
 
     private String description;
 
-    @Column(columnName = "フィールド名日本語")
+    @Column(columnName = "フィールド名日本語") //$NON-NLS-1$
     public void setFieldNameJ(String fieldNameJ) {
         this.fieldNameJ = fieldNameJ;
     }
 
-    @Column(columnName = "フィールド名")
+    @Column(columnName = "フィールド名") //$NON-NLS-1$
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
     }
 
-    @Column(columnName = "型")
+    @Column(columnName = "型") //$NON-NLS-1$
     public void setFieldType(String fieldType) {
         this.fieldType = fieldType;
     }
 
-    @Column(columnName = "説明")
+    @Column(columnName = "説明") //$NON-NLS-1$
     public void setDescription(String description) {
         this.description = description;
     }
@@ -67,8 +67,8 @@ public class FieldInformation {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("フィールド名日本語", fieldNameJ)
-                .append("説明", description).append("フィールド名", fieldName).append(
-                        "型", fieldType).toString();
+        return new ToStringBuilder(this).append("フィールド名日本語", fieldNameJ) //$NON-NLS-1$
+                .append("説明", description).append("フィールド名", fieldName).append( //$NON-NLS-1$ //$NON-NLS-2$
+                        "型", fieldType).toString(); //$NON-NLS-1$
     }
 }

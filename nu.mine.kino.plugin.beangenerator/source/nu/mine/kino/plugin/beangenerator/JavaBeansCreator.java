@@ -36,7 +36,6 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaModelException;
 
 /**
  * @author Masatomi KINO
@@ -55,25 +54,25 @@ public class JavaBeansCreator {
     public JavaBeansCreator(IJavaProject javaProject) {
         this.javaProject = javaProject;
         // Velocity初期化
-        URL entry = Activator.getDefault().getBundle().getEntry("/");
+        URL entry = Activator.getDefault().getBundle().getEntry("/"); //$NON-NLS-1$
         try {
             String pluginDirectory = FileLocator.resolve(entry).getPath();
-            File file = new File(pluginDirectory, "lib");
+            File file = new File(pluginDirectory, "lib"); //$NON-NLS-1$
             Properties p = new Properties();
-            p.setProperty("file.resource.loader.path", file.getAbsolutePath());
+            p.setProperty("file.resource.loader.path", file.getAbsolutePath()); //$NON-NLS-1$
             Velocity.init(p);
             // どうも上のディレクトリとかがなくってもエラーにならないっぽいので、そのままつぶしちゃおう。
         } catch (IOException e) {
-            logger.error("JavaBeansCreator()", e);
+            logger.error("JavaBeansCreator()", e); //$NON-NLS-1$
             Activator.logException(e);
         } catch (Exception e) {
-            logger.error("JavaBeansCreator()", e);
+            logger.error("JavaBeansCreator()", e); //$NON-NLS-1$
             Activator.logException(e);
         }
     }
 
     public ICompilationUnit create(ClassInformation info) throws CoreException {
-        logger.debug("create(ClassInformation) - start");
+        logger.debug("create(ClassInformation) - start"); //$NON-NLS-1$
 
         // フィールドのJavaProject情報インスタンスから、情報取得。
         IPackageFragmentRoot root = getSourceDir(javaProject);
@@ -89,7 +88,7 @@ public class JavaBeansCreator {
         // ソースコードの生成開始。
         String mainStatement = createMain(info);
         ICompilationUnit cu = pack.createCompilationUnit(info.getClassName()
-                + ".java", mainStatement, true, new NullProgressMonitor());
+                + ".java", mainStatement, true, new NullProgressMonitor()); //$NON-NLS-1$
         // packageついか
         cu.createPackageDeclaration(pkg, new NullProgressMonitor());
 
@@ -102,13 +101,13 @@ public class JavaBeansCreator {
         // 書き出し。
         cu.save(new NullProgressMonitor(), true);
 
-        logger.debug("create(ClassInformation) - end");
+        logger.debug("create(ClassInformation) - end"); //$NON-NLS-1$
         return cu;
     }
 
     private String executeVelocity(String vm, String[] names, Object[] objs)
             throws CoreException {
-        logger.debug("executeVelocity(String, String[], Object[]) - start");
+        logger.debug("executeVelocity(String, String[], Object[]) - start"); //$NON-NLS-1$
 
         try {
             VelocityContext context = new VelocityContext();
@@ -116,14 +115,14 @@ public class JavaBeansCreator {
                 context.put(names[i], objs[i]);
             }
             StringWriter out = new StringWriter();
-            Template template = Velocity.getTemplate(vm, "MS932");
+            Template template = Velocity.getTemplate(vm, "MS932"); //$NON-NLS-1$
             template.merge(context, out);
             String result = out.toString();
             out.flush();
-            logger.debug("executeVelocity(String, String[], Object[]) - end");
+            logger.debug("executeVelocity(String, String[], Object[]) - end"); //$NON-NLS-1$
             return result;
         } catch (Exception e) {
-            logger.error("executeVelocity(String, String[], Object[])", e);
+            logger.error("executeVelocity(String, String[], Object[])", e); //$NON-NLS-1$
             IStatus status = new Status(IStatus.ERROR, Activator.getPluginId(),
                     IStatus.OK, e.getMessage(), e);
             throw new CoreException(status);
@@ -132,7 +131,7 @@ public class JavaBeansCreator {
 
     private String createMain(ClassInformation clazz) throws CoreException {
         // クラス情報から、Velocityでメイン部分を作成する。
-        return executeVelocity("main.vm", new String[] { "class" },
+        return executeVelocity("main.vm", new String[] { "class" }, //$NON-NLS-1$ //$NON-NLS-2$
                 new ClassInformation[] { clazz });
     }
 
@@ -141,42 +140,42 @@ public class JavaBeansCreator {
      */
     private void createField(IType type, ClassInformation info)
             throws CoreException {
-        logger.debug("createField() start");
+        logger.debug("createField() start"); //$NON-NLS-1$
         StringBuffer buf = new StringBuffer();
         List<FieldInformation> fieldInformations = info.getFieldInformations();
         for (FieldInformation field : fieldInformations) {
-            String result = executeVelocity("field.vm",
-                    new String[] { "field" }, new FieldInformation[] { field });
+            String result = executeVelocity("field.vm", //$NON-NLS-1$
+                    new String[] { "field" }, new FieldInformation[] { field }); //$NON-NLS-1$
             buf.append(result);
         }
         type.createField(buf.toString(), null, true, new NullProgressMonitor());
-        logger.debug("createField() end");
+        logger.debug("createField() end"); //$NON-NLS-1$
     }
 
     private void createMethod(IType type, ClassInformation info)
             throws CoreException {
-        logger.debug("createMethod() start");
+        logger.debug("createMethod() start"); //$NON-NLS-1$
 
         List<FieldInformation> fieldInformations = info.getFieldInformations();
         for (FieldInformation field : fieldInformations) {
             String prefix = null;
             // フィールドの型が,booleanとかの場合はgetでなくて、isにする。
-            if (contains(field.getFieldType(), "boolean", "java.lang.Boolean")) {
-                prefix = "is";
+            if (contains(field.getFieldType(), "boolean", "java.lang.Boolean")) { //$NON-NLS-1$ //$NON-NLS-2$
+                prefix = "is"; //$NON-NLS-1$
             } else {
-                prefix = "get";
+                prefix = "get"; //$NON-NLS-1$
             }
-            String[] keys = new String[] { "field", "cname", "prefix" };
+            String[] keys = new String[] { "field", "cname", "prefix" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             Object[] values = new Object[] { field,
                     WordUtils.capitalize(field.getFieldName()), prefix };
             // setterの作成
-            String setter = executeVelocity("setter.vm", keys, values);
+            String setter = executeVelocity("setter.vm", keys, values); //$NON-NLS-1$
             type.createMethod(setter, null, true, new NullProgressMonitor());
             // getterの作成
-            String getter = executeVelocity("getter.vm", keys, values);
+            String getter = executeVelocity("getter.vm", keys, values); //$NON-NLS-1$
             type.createMethod(getter, null, true, new NullProgressMonitor());
         }
-        logger.debug("createMethod() end");
+        logger.debug("createMethod() end"); //$NON-NLS-1$
     }
 
     private boolean contains(String input, String... strs) {
@@ -200,7 +199,7 @@ public class JavaBeansCreator {
         }
         // ソースディレクトリがとれないので、エラー。
         IStatus status = new Status(IStatus.ERROR, Activator.getPluginId(),
-                IStatus.OK, "ソースディレクトリが存在しないようです。", null);
+                IStatus.OK, Messages.JavaBeansCreator_MSG_SRCDIR_NOT_FOUND, null);
         throw new CoreException(status);
     }
 

@@ -15,16 +15,17 @@ import java.util.List;
 
 import net.java.amateras.xlsbeans.annotation.IterateTables;
 import net.java.amateras.xlsbeans.annotation.Sheet;
+import nu.mine.kino.plugin.beangenerator.Messages;
 
 /**
  * @author Masatomi KINO
  * @version $Revision$
  */
-@Sheet(name = "クラス")
+@Sheet(name = "クラス") //$NON-NLS-1$
 public class ClassInformationSheet {
     private List<ClassInformation> classInformation;
 
-    @IterateTables(tableLabel = "クラス情報", tableClass = ClassInformation.class, bottom = 5)
+    @IterateTables(tableLabel = "クラス情報", tableClass = ClassInformation.class, bottom = 5) //$NON-NLS-1$
     public void setClassInformation(List<ClassInformation> classInformation) {
         this.classInformation = classInformation;
     }
