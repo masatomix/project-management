@@ -14,11 +14,9 @@ package nu.mine.kino.plugin.beangenerator.actions;
 import java.lang.reflect.InvocationTargetException;
 
 import nu.mine.kino.plugin.beangenerator.Activator;
+import nu.mine.kino.plugin.beangenerator.Messages;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
@@ -42,7 +40,7 @@ public class JavaBeansGeneratorAction implements IObjectActionDelegate {
 
     private IWorkbenchSite site;
 
-    private static final String MESSAGE_CONFIRM = "JavaBeansの自動生成を実行します。よろしいですか？\r\nすでにファイルが存在する場合、上書きされます。";
+    private static final String MESSAGE_CONFIRM = Messages.JavaBeansGeneratorAction_MSG_ALERT_DIALOG;
 
     public void setActivePart(IAction action, IWorkbenchPart targetPart) {
         this.site = targetPart.getSite();
@@ -52,32 +50,32 @@ public class JavaBeansGeneratorAction implements IObjectActionDelegate {
         Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                 .getShell();
 
-        if (!MessageDialog
-                .openConfirm(shell, "JavaBeansの自動生成", MESSAGE_CONFIRM)) {
+        if (!MessageDialog.openConfirm(shell,
+                Messages.JavaBeansGeneratorAction_MSG_DIALOG_MESSAGE,
+                MESSAGE_CONFIRM)) {
             return;
         }
-        logger.debug("ダイアログ表示");
 
         /* 実行中のダイアログ表示 */
         ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
         dialog.setCancelable(true);
 
         try {
-            logger.debug("実行");
+            logger.debug("execute"); //$NON-NLS-1$
             JavaBeansCreatorWithProgress progress = new JavaBeansCreatorWithProgress(
                     ss, site);
             dialog.run(true, true, progress);
         } catch (InvocationTargetException e) {
             Activator.logException(e);
         } catch (InterruptedException e) {
-            logger.error("中断", e);
+            logger.error("interrupted", e); //$NON-NLS-1$
         }
     }
 
     public void selectionChanged(IAction action, ISelection selection) {
-        logger.debug("selectionChanged(IAction, ISelection) - start");
+        logger.debug("selectionChanged(IAction, ISelection) - start"); //$NON-NLS-1$
         ss = (IStructuredSelection) selection;
-        logger.debug("selectionChanged(IAction, ISelection) - end");
+        logger.debug("selectionChanged(IAction, ISelection) - end"); //$NON-NLS-1$
     }
 
 }

@@ -18,10 +18,9 @@ import java.util.List;
 
 import nu.mine.kino.plugin.beangenerator.Activator;
 import nu.mine.kino.plugin.beangenerator.JavaBeansCreator;
+import nu.mine.kino.plugin.beangenerator.Messages;
 import nu.mine.kino.utils.beangenerator.sheetdata.ClassInformation;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -30,7 +29,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.ui.actions.AddGetterSetterAction;
 import org.eclipse.jdt.ui.actions.FormatAllAction;
 import org.eclipse.jdt.ui.actions.OrganizeImportsAction;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -64,10 +62,10 @@ public class JavaBeansCreatorWithProgress implements IRunnableWithProgress {
 
     public void run(IProgressMonitor monitor) throws InvocationTargetException,
             InterruptedException {
-        logger.debug("run(IProgressMonitor) - start");
+        logger.debug("run(IProgressMonitor) - start"); //$NON-NLS-1$
 
         int totalWork = ss.size() * 2;
-        monitor.beginTask("JavaBeans生成中・・・", totalWork);
+        monitor.beginTask(Messages.JavaBeansCreatorWithProgress_MSG_BEGIN_TASK, totalWork);
 
         try {
             Iterator<IFile> e = ss.iterator();
@@ -77,21 +75,21 @@ public class JavaBeansCreatorWithProgress implements IRunnableWithProgress {
                 // IFile から、JavaProjectへ。Resource系から、JDTの世界へっ。
                 IProject project = file.getProject();
                 IJavaProject javaProject = JavaCore.create(project);
-                monitor.subTask("処理中:" + file.getFullPath());
+                monitor.subTask(Messages.JavaBeansCreatorWithProgress_MSG_EXECUTE + file.getFullPath());
                 monitor.worked(1);
                 List<ClassInformation> classInformations = Activator
                         .getDefault().getClassInformations(file);
                 // 一つのExcelファイルから、複数のクラス情報が取得できるので、取得した
                 // クラス数分、繰り返し。
                 for (ClassInformation classInformation : classInformations) {
-                    monitor.subTask("処理中:" + classInformation.getClassNameJ());
+                    monitor.subTask(Messages.JavaBeansCreatorWithProgress_MSG_EXECUTE + classInformation.getClassNameJ());
                     ICompilationUnit cu = new JavaBeansCreator(javaProject)
                             .create(classInformation);
 
                     list.add(cu);
                     if (monitor.isCanceled()) {
                         throw new InterruptedException(
-                                "Cancel has been requested.");
+                                "Cancel has been requested."); //$NON-NLS-1$
                     }
                 }
                 monitor.worked(1);
@@ -122,6 +120,6 @@ public class JavaBeansCreatorWithProgress implements IRunnableWithProgress {
         });
         monitor.worked(totalWork);
         monitor.done();
-        logger.debug("run(IProgressMonitor) - end");
+        logger.debug("run(IProgressMonitor) - end"); //$NON-NLS-1$
     }
 }

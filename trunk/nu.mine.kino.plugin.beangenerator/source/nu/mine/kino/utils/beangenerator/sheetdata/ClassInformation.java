@@ -37,32 +37,32 @@ public class ClassInformation {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("クラス名日本語", classNameJ).append(
-                "説明", description).append("パッケージ名", packageName).append("クラス名",
+        return new ToStringBuilder(this).append("クラス名日本語", classNameJ).append( //$NON-NLS-1$
+                "説明", description).append("パッケージ名", packageName).append("クラス名", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 className).append(fieldInformations.toArray()).toString();
     }
 
-    @HorizontalRecords(tableLabel = "クラス情報", recordClass = FieldInformation.class)
+    @HorizontalRecords(tableLabel = "クラス情報", recordClass = FieldInformation.class) //$NON-NLS-1$
     public void setFieldInformations(List<FieldInformation> fieldInformations) {
         this.fieldInformations = fieldInformations;
     }
 
-    @LabelledCell(label = "クラス名日本語", type = LabelledCellType.Right)
+    @LabelledCell(label = "クラス名日本語", type = LabelledCellType.Right) //$NON-NLS-1$
     public void setClassNameJ(String classNameJ) {
         this.classNameJ = classNameJ;
     }
 
-    @LabelledCell(label = "説明", type = LabelledCellType.Right)
+    @LabelledCell(label = "説明", type = LabelledCellType.Right) //$NON-NLS-1$
     public void setDescription(String description) {
         this.description = description;
     }
 
-    @LabelledCell(label = "パッケージ名", type = LabelledCellType.Right)
+    @LabelledCell(label = "パッケージ名", type = LabelledCellType.Right) //$NON-NLS-1$
     public void setPackageName(String packageName) {
         this.packageName = packageName;
     }
 
-    @LabelledCell(label = "クラス名", type = LabelledCellType.Right)
+    @LabelledCell(label = "クラス名", type = LabelledCellType.Right) //$NON-NLS-1$
     public void setClassName(String className) {
         this.className = className;
     }
