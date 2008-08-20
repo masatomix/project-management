@@ -2,14 +2,14 @@
 <feature
       id="nu.mine.kino.plugin.beangenerator"
       label="%featureName"
-      version="0.2.0"
+      version="0.2.1"
       provider-name="%providerName">
 
-   <description url="http://www.example.com/description">
+   <description>
       %description
    </description>
 
-   <copyright url="http://www.example.com/copyright">
+   <copyright>
       Copyright (C) 2008 by Masatomi KINO
    </copyright>
 
@@ -35,7 +35,7 @@
          id="nu.mine.kino.plugin.beangenerator"
          download-size="0"
          install-size="0"
-         version="0.2.0"/>
+         version="0.2.1"/>
 
    <plugin
          id="nu.mine.kino.plugin.log4j"
