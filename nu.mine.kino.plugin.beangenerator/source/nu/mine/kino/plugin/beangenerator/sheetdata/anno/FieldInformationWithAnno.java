@@ -9,9 +9,10 @@
  * $Id$
  ******************************************************************************/
 // 作成日: 2008/08/15
-package nu.mine.kino.plugin.beangenerator.sheetdata;
+package nu.mine.kino.plugin.beangenerator.sheetdata.anno;
 
 import net.java.amateras.xlsbeans.annotation.Column;
+import nu.mine.kino.plugin.beangenerator.sheetdata.IFieldInformation;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
@@ -19,7 +20,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  * @author Masatomi KINO
  * @version $Revision$
  */
-public class FieldInformation implements IFieldInformation {
+public class FieldInformationWithAnno implements IFieldInformation {
 
     private String fieldNameJ;
 
@@ -28,6 +29,12 @@ public class FieldInformation implements IFieldInformation {
     private String fieldType;
 
     private String description;
+
+    private String annotation;
+
+    private String annotationName;
+
+    private String merge;
 
     @Column(columnName = "フィールド名日本語")//$NON-NLS-1$
     public void setFieldNameJ(String fieldNameJ) {
@@ -47,6 +54,21 @@ public class FieldInformation implements IFieldInformation {
     @Column(columnName = "説明")//$NON-NLS-1$
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Column(columnName = "Annotation")//$NON-NLS-1$
+    public void setAnnotation(String annotation) {
+        this.annotation = annotation;
+    }
+
+    @Column(columnName = "Annotation名")//$NON-NLS-1$
+    public void setAnnotationName(String annotationName) {
+        this.annotationName = annotationName;
+    }
+
+    @Column(columnName = "マージ")//$NON-NLS-1$
+    public void setMerge(String merge) {
+        this.merge = merge;
     }
 
     public String getFieldNameJ() {
@@ -70,6 +92,18 @@ public class FieldInformation implements IFieldInformation {
         return new ToStringBuilder(this).append("フィールド名日本語", fieldNameJ) //$NON-NLS-1$
                 .append("説明", description).append("フィールド名", fieldName).append( //$NON-NLS-1$ //$NON-NLS-2$
                         "型", fieldType).toString(); //$NON-NLS-1$
+    }
+
+    public String getAnnotation() {
+        return annotation;
+    }
+
+    public String getAnnotationName() {
+        return annotationName;
+    }
+
+    public String getMerge() {
+        return merge;
     }
 
 }

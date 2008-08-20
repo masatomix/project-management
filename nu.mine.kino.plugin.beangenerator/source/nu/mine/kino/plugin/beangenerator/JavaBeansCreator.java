@@ -16,16 +16,20 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
-import nu.mine.kino.plugin.beangenerator.sheetdata.ClassInformation;
-import nu.mine.kino.plugin.beangenerator.sheetdata.FieldInformation;
+import nu.mine.kino.plugin.beangenerator.sheetdata.IClassInformation;
+import nu.mine.kino.plugin.beangenerator.sheetdata.IFieldInformation;
 
 import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IStatus;
@@ -36,6 +40,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaCore;
 
 /**
  * @author Masatomi KINO
@@ -71,7 +76,20 @@ public class JavaBeansCreator {
         }
     }
 
-    public ICompilationUnit create(ClassInformation info) throws CoreException {
+    private String getProjectEncoding() {
+        try {
+            IWorkspace workspace = ResourcesPlugin.getWorkspace();
+            IProject project = workspace.getRoot().getProject(
+                    javaProject.getElementName());
+            return project.getDefaultCharset();
+        } catch (CoreException e1) {
+            logger.error(e1);
+            Activator.logException(e1, false);
+        }
+        return JavaCore.getEncoding();
+    }
+
+    public ICompilationUnit create(IClassInformation info) throws CoreException {
         logger.debug("create(ClassInformation) - start"); //$NON-NLS-1$
 
         // フィールドのJavaProject情報インスタンスから、情報取得。
@@ -115,7 +133,7 @@ public class JavaBeansCreator {
                 context.put(names[i], objs[i]);
             }
             StringWriter out = new StringWriter();
-            Template template = Velocity.getTemplate(vm, "MS932"); //$NON-NLS-1$
+            Template template = Velocity.getTemplate(vm, getProjectEncoding()); //$NON-NLS-1$
             template.merge(context, out);
             String result = out.toString();
             out.flush();
@@ -129,35 +147,35 @@ public class JavaBeansCreator {
         }
     }
 
-    private String createMain(ClassInformation clazz) throws CoreException {
+    private String createMain(IClassInformation clazz) throws CoreException {
         // クラス情報から、Velocityでメイン部分を作成する。
         return executeVelocity("main.vm", new String[] { "class" }, //$NON-NLS-1$ //$NON-NLS-2$
-                new ClassInformation[] { clazz });
+                new IClassInformation[] { clazz });
     }
 
     /**
      * @param type
      */
-    private void createField(IType type, ClassInformation info)
+    private void createField(IType type, IClassInformation info)
             throws CoreException {
         logger.debug("createField() start"); //$NON-NLS-1$
         StringBuffer buf = new StringBuffer();
-        List<FieldInformation> fieldInformations = info.getFieldInformations();
-        for (FieldInformation field : fieldInformations) {
+        List<IFieldInformation> fieldInformations = info.getFieldInformations();
+        for (IFieldInformation field : fieldInformations) {
             String result = executeVelocity("field.vm", //$NON-NLS-1$
-                    new String[] { "field" }, new FieldInformation[] { field }); //$NON-NLS-1$
+                    new String[] { "field" }, new IFieldInformation[] { field }); //$NON-NLS-1$
             buf.append(result);
         }
         type.createField(buf.toString(), null, true, new NullProgressMonitor());
         logger.debug("createField() end"); //$NON-NLS-1$
     }
 
-    private void createMethod(IType type, ClassInformation info)
+    private void createMethod(IType type, IClassInformation info)
             throws CoreException {
         logger.debug("createMethod() start"); //$NON-NLS-1$
 
-        List<FieldInformation> fieldInformations = info.getFieldInformations();
-        for (FieldInformation field : fieldInformations) {
+        List<IFieldInformation> fieldInformations = info.getFieldInformations();
+        for (IFieldInformation field : fieldInformations) {
             String prefix = null;
             // フィールドの型が,booleanとかの場合はgetでなくて、isにする。
             if (contains(field.getFieldType(), "boolean", "java.lang.Boolean")) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -199,7 +217,8 @@ public class JavaBeansCreator {
         }
         // ソースディレクトリがとれないので、エラー。
         IStatus status = new Status(IStatus.ERROR, Activator.getPluginId(),
-                IStatus.OK, Messages.JavaBeansCreator_MSG_SRCDIR_NOT_FOUND, null);
+                IStatus.OK, Messages.JavaBeansCreator_MSG_SRCDIR_NOT_FOUND,
+                null);
         throw new CoreException(status);
     }
 

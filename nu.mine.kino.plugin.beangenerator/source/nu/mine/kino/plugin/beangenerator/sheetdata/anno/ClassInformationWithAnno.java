@@ -9,13 +9,15 @@
  * $Id$
  ******************************************************************************/
 // 作成日: 2008/08/15
-package nu.mine.kino.plugin.beangenerator.sheetdata;
+package nu.mine.kino.plugin.beangenerator.sheetdata.anno;
 
 import java.util.List;
 
 import net.java.amateras.xlsbeans.annotation.HorizontalRecords;
 import net.java.amateras.xlsbeans.annotation.LabelledCell;
 import net.java.amateras.xlsbeans.annotation.LabelledCellType;
+import nu.mine.kino.plugin.beangenerator.sheetdata.IClassInformation;
+import nu.mine.kino.plugin.beangenerator.sheetdata.IFieldInformation;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
@@ -23,8 +25,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  * @author Masatomi KINO
  * @version $Revision$
  */
-public class ClassInformation implements IClassInformation {
-
+public class ClassInformationWithAnno implements IClassInformation {
     private List<IFieldInformation> fieldInformations;
 
     private String classNameJ;
@@ -42,17 +43,10 @@ public class ClassInformation implements IClassInformation {
                 className).append(fieldInformations.toArray()).toString();
     }
 
-    @HorizontalRecords(tableLabel = "クラス情報", recordClass = FieldInformation.class)//$NON-NLS-1$
+    @HorizontalRecords(tableLabel = "クラス情報", recordClass = FieldInformationWithAnno.class)//$NON-NLS-1$
     public void setFieldInformations(List<IFieldInformation> fieldInformations) {
         this.fieldInformations = fieldInformations;
     }
-
-    // @HorizontalRecords(tableLabel = "クラス情報(Annotation付)", recordClass =
-    // FieldInformationWithAnno.class) //$NON-NLS-1$
-    // public void setFieldInformations2(List<FieldInformation>
-    // fieldInformations) {
-    // this.fieldInformations = fieldInformations;
-    // }
 
     @LabelledCell(label = "クラス名日本語", type = LabelledCellType.Right)//$NON-NLS-1$
     public void setClassNameJ(String classNameJ) {
@@ -93,5 +87,4 @@ public class ClassInformation implements IClassInformation {
     public String getClassName() {
         return className;
     }
-
 }

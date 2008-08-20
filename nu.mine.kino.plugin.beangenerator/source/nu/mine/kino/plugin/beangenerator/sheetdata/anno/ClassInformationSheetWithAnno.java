@@ -9,22 +9,23 @@
  * $Id$
  ******************************************************************************/
 //作成日: 2008/08/15
-package nu.mine.kino.plugin.beangenerator.sheetdata;
+package nu.mine.kino.plugin.beangenerator.sheetdata.anno;
 
 import java.util.List;
 
 import net.java.amateras.xlsbeans.annotation.IterateTables;
 import net.java.amateras.xlsbeans.annotation.Sheet;
+import nu.mine.kino.plugin.beangenerator.sheetdata.IClassInformation;
 
 /**
  * @author Masatomi KINO
  * @version $Revision$
  */
 @Sheet(name = "クラス")//$NON-NLS-1$
-public class ClassInformationSheet {
+public class ClassInformationSheetWithAnno {
     private List<IClassInformation> classInformation;
 
-    @IterateTables(tableLabel = "クラス情報", tableClass = ClassInformation.class, bottom = 5)//$NON-NLS-1$
+    @IterateTables(tableLabel = "クラス情報", tableClass = ClassInformationWithAnno.class, bottom = 5)//$NON-NLS-1$
     public void setClassInformation(List<IClassInformation> classInformation) {
         this.classInformation = classInformation;
     }
