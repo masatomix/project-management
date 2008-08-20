@@ -9,8 +9,9 @@ import java.util.List;
 
 import net.java.amateras.xlsbeans.XLSBeans;
 import net.java.amateras.xlsbeans.XLSBeansException;
-import nu.mine.kino.plugin.beangenerator.sheetdata.ClassInformation;
 import nu.mine.kino.plugin.beangenerator.sheetdata.ClassInformationSheet;
+import nu.mine.kino.plugin.beangenerator.sheetdata.IClassInformation;
+import nu.mine.kino.plugin.beangenerator.sheetdata.anno.ClassInformationSheetWithAnno;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -78,7 +79,7 @@ public class Activator extends AbstractUIPlugin {
         return plugin;
     }
 
-    public List<ClassInformation> getClassInformations(IFile file)
+    public List<IClassInformation> getClassInformations(IFile file)
             throws CoreException {
         logger.debug("getClassInformations(IFile) - start"); //$NON-NLS-1$
 
@@ -86,8 +87,8 @@ public class Activator extends AbstractUIPlugin {
         try {
             InputStream in = new FileInputStream(instance);
             // ここでアノテーションからJavaBeansのマッピングがされ、インスタンスまで生成される
-            ClassInformationSheet sheet = new XLSBeans().load(in,
-                    ClassInformationSheet.class);
+            ClassInformationSheetWithAnno sheet = new XLSBeans().load(in,
+                    ClassInformationSheetWithAnno.class);
             logger.debug("getClassInformations(IFile) - end"); //$NON-NLS-1$
             return sheet.getClassInformation();
         } catch (FileNotFoundException e) {
@@ -96,7 +97,32 @@ public class Activator extends AbstractUIPlugin {
                     IStatus.OK, e.getMessage(), e);
             throw new CoreException(status);
         } catch (XLSBeansException e) {
-            logger.error("getClassInformations(IFile)", e); //$NON-NLS-1$
+            logger.warn(e);
+            logger.warn("Annotationナシでもとおるロジックを実行してみる。");
+        }
+        return getClassInformationsWithoutAnno(instance);
+    }
+
+    private List<IClassInformation> getClassInformationsWithoutAnno(
+            File instance) throws CoreException {
+        logger.debug("getClassInformationsWithoutAnno(File) - start");
+
+        try {
+            InputStream in = new FileInputStream(instance);
+            // ここでアノテーションからJavaBeansのマッピングがされ、インスタンスまで生成される
+            ClassInformationSheet sheet = new XLSBeans().load(in,
+                    ClassInformationSheet.class);
+            logger.debug("getClassInformationsWithoutAnno(File) - end");
+            return sheet.getClassInformation();
+        } catch (FileNotFoundException e) {
+            logger.error("getClassInformationsWithoutAnno(File)", e);
+
+            IStatus status = new Status(IStatus.ERROR, Activator.getPluginId(),
+                    IStatus.OK, e.getMessage(), e);
+            throw new CoreException(status);
+        } catch (XLSBeansException e) {
+            logger.error("getClassInformationsWithoutAnno(File)", e);
+
             IStatus status = new Status(IStatus.ERROR, Activator.getPluginId(),
                     IStatus.OK, e.getMessage(), e);
             throw new CoreException(status);

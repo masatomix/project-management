@@ -19,7 +19,7 @@ import java.util.List;
 import nu.mine.kino.plugin.beangenerator.Activator;
 import nu.mine.kino.plugin.beangenerator.JavaBeansCreator;
 import nu.mine.kino.plugin.beangenerator.Messages;
-import nu.mine.kino.plugin.beangenerator.sheetdata.ClassInformation;
+import nu.mine.kino.plugin.beangenerator.sheetdata.IClassInformation;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -65,7 +65,8 @@ public class JavaBeansCreatorWithProgress implements IRunnableWithProgress {
         logger.debug("run(IProgressMonitor) - start"); //$NON-NLS-1$
 
         int totalWork = ss.size() * 2;
-        monitor.beginTask(Messages.JavaBeansCreatorWithProgress_MSG_BEGIN_TASK, totalWork);
+        monitor.beginTask(Messages.JavaBeansCreatorWithProgress_MSG_BEGIN_TASK,
+                totalWork);
 
         try {
             Iterator<IFile> e = ss.iterator();
@@ -75,14 +76,19 @@ public class JavaBeansCreatorWithProgress implements IRunnableWithProgress {
                 // IFile から、JavaProjectへ。Resource系から、JDTの世界へっ。
                 IProject project = file.getProject();
                 IJavaProject javaProject = JavaCore.create(project);
-                monitor.subTask(Messages.JavaBeansCreatorWithProgress_MSG_EXECUTE + file.getFullPath());
+                monitor
+                        .subTask(Messages.JavaBeansCreatorWithProgress_MSG_EXECUTE
+                                + file.getFullPath());
                 monitor.worked(1);
-                List<ClassInformation> classInformations = Activator
+                List<IClassInformation> classInformations = Activator
                         .getDefault().getClassInformations(file);
                 // 一つのExcelファイルから、複数のクラス情報が取得できるので、取得した
                 // クラス数分、繰り返し。
-                for (ClassInformation classInformation : classInformations) {
-                    monitor.subTask(Messages.JavaBeansCreatorWithProgress_MSG_EXECUTE + classInformation.getClassNameJ());
+                for (IClassInformation classInformation : classInformations) {
+                    logger.debug(classInformation);
+                    monitor
+                            .subTask(Messages.JavaBeansCreatorWithProgress_MSG_EXECUTE
+                                    + classInformation.getClassNameJ());
                     ICompilationUnit cu = new JavaBeansCreator(javaProject)
                             .create(classInformation);
 
@@ -95,7 +101,7 @@ public class JavaBeansCreatorWithProgress implements IRunnableWithProgress {
                 monitor.worked(1);
             }
         } catch (CoreException e1) {
-//            Activator.logException(e1, false);
+            // Activator.logException(e1, false);
             throw new InvocationTargetException(e1);
         }
 
