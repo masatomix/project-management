@@ -14,7 +14,7 @@
 		#if(${field.merge}=="Åõ")
 		@Column(columnName = "${field.fieldNameJ}", merged = true)
 		#else
-		@Column(columnName = "${field.annotationName}" )
+		@Column(columnName = "${field.fieldNameJ}" )
 		#end
 	#end
 #end
