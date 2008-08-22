@@ -24,7 +24,7 @@ import net.java.amateras.xlsbeans.annotation.Sheet;
 public class ClassInformationSheet {
     private List<IClassInformation> classInformation;
 
-    @IterateTables(tableLabel = "クラス情報", tableClass = ClassInformation.class, bottom = 5)//$NON-NLS-1$
+    @IterateTables(tableLabel = "クラス情報", tableClass = ClassInformation.class, bottom = 6)//$NON-NLS-1$
     public void setClassInformation(List<IClassInformation> classInformation) {
         this.classInformation = classInformation;
     }

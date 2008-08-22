@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import nu.mine.kino.plugin.beangenerator.sheetdata.IClassInformation;
@@ -27,9 +26,6 @@ import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IStatus;
@@ -40,7 +36,6 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaCore;
 
 /**
  * @author Masatomi KINO
@@ -76,18 +71,18 @@ public class JavaBeansCreator {
         }
     }
 
-    private String getProjectEncoding() {
-        try {
-            IWorkspace workspace = ResourcesPlugin.getWorkspace();
-            IProject project = workspace.getRoot().getProject(
-                    javaProject.getElementName());
-            return project.getDefaultCharset();
-        } catch (CoreException e1) {
-            logger.error(e1);
-            Activator.logException(e1, false);
-        }
-        return JavaCore.getEncoding();
-    }
+    // private String getProjectEncoding() {
+    // try {
+    // IWorkspace workspace = ResourcesPlugin.getWorkspace();
+    // IProject project = workspace.getRoot().getProject(
+    // javaProject.getElementName());
+    // return project.getDefaultCharset();
+    // } catch (CoreException e1) {
+    // logger.error(e1);
+    // Activator.logException(e1, false);
+    // }
+    // return JavaCore.getEncoding();
+    // }
 
     public ICompilationUnit create(IClassInformation info) throws CoreException {
         logger.debug("create(ClassInformation) - start"); //$NON-NLS-1$
@@ -116,6 +111,11 @@ public class JavaBeansCreator {
         createField(type, info);
         // メソッドの生成
         createMethod(type, info);
+
+        // toStringの生成
+        if (contains(info.getToString(), "○")) {
+            createToString(type, info);
+        }
         // 書き出し。
         cu.save(new NullProgressMonitor(), true);
 
@@ -133,7 +133,7 @@ public class JavaBeansCreator {
                 context.put(names[i], objs[i]);
             }
             StringWriter out = new StringWriter();
-            Template template = Velocity.getTemplate(vm, getProjectEncoding()); //$NON-NLS-1$
+            Template template = Velocity.getTemplate(vm, "MS932"); //$NON-NLS-1$
             template.merge(context, out);
             String result = out.toString();
             out.flush();
@@ -168,6 +168,27 @@ public class JavaBeansCreator {
         }
         type.createField(buf.toString(), null, true, new NullProgressMonitor());
         logger.debug("createField() end"); //$NON-NLS-1$
+    }
+
+    private void createToString(IType type, IClassInformation info)
+            throws CoreException {
+        StringBuffer buf = new StringBuffer();
+
+        List<IFieldInformation> fieldInformations = info.getFieldInformations();
+        for (IFieldInformation field : fieldInformations) {
+            String key = field.getFieldNameJ();
+            String value = field.getFieldName();
+            buf.append(".append(\"");
+            buf.append(key);
+            buf.append("\",");
+            buf.append(value);
+            buf.append(")");
+        }
+        buf.append(".toString();");
+        // toStringの作成
+        String toString = executeVelocity(
+                "toString.vm", new String[] { "toString" }, new String[] { new String(buf) }); //$NON-NLS-1$
+        type.createMethod(toString, null, true, new NullProgressMonitor());
     }
 
     private void createMethod(IType type, IClassInformation info)
