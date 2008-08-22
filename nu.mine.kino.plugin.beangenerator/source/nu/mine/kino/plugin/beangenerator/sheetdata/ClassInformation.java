@@ -35,6 +35,8 @@ public class ClassInformation implements IClassInformation {
 
     private String className;
 
+    private String toString;
+
     @Override
     public String toString() {
         return new ToStringBuilder(this).append("クラス名日本語", classNameJ).append( //$NON-NLS-1$
@@ -46,13 +48,6 @@ public class ClassInformation implements IClassInformation {
     public void setFieldInformations(List<IFieldInformation> fieldInformations) {
         this.fieldInformations = fieldInformations;
     }
-
-    // @HorizontalRecords(tableLabel = "クラス情報(Annotation付)", recordClass =
-    // FieldInformationWithAnno.class) //$NON-NLS-1$
-    // public void setFieldInformations2(List<FieldInformation>
-    // fieldInformations) {
-    // this.fieldInformations = fieldInformations;
-    // }
 
     @LabelledCell(label = "クラス名日本語", type = LabelledCellType.Right)//$NON-NLS-1$
     public void setClassNameJ(String classNameJ) {
@@ -74,6 +69,11 @@ public class ClassInformation implements IClassInformation {
         this.className = className;
     }
 
+    @LabelledCell(label = "toString", type = LabelledCellType.Right)//$NON-NLS-1$
+    public void setToString(String toString) {
+        this.toString = toString;
+    }
+
     public List<IFieldInformation> getFieldInformations() {
         return fieldInformations;
     }
@@ -92,6 +92,10 @@ public class ClassInformation implements IClassInformation {
 
     public String getClassName() {
         return className;
+    }
+
+    public String getToString() {
+        return toString;
     }
 
 }
