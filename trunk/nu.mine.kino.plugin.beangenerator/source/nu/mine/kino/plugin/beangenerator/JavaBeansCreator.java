@@ -113,7 +113,7 @@ public class JavaBeansCreator {
         createMethod(type, info);
 
         // toStringÇÃê∂ê¨
-        if (contains(info.getToString(), "Åõ")) {
+        if (contains(info.getToString(), "Åõ")) { //$NON-NLS-1$
             createToString(type, info);
         }
         // èëÇ´èoÇµÅB
@@ -178,16 +178,16 @@ public class JavaBeansCreator {
         for (IFieldInformation field : fieldInformations) {
             String key = field.getFieldNameJ();
             String value = field.getFieldName();
-            buf.append(".append(\"");
+            buf.append(".append(\""); //$NON-NLS-1$
             buf.append(key);
-            buf.append("\",");
+            buf.append("\","); //$NON-NLS-1$
             buf.append(value);
-            buf.append(")");
+            buf.append(")"); //$NON-NLS-1$
         }
-        buf.append(".toString();");
+        buf.append(".toString();"); //$NON-NLS-1$
         // toStringÇÃçÏê¨
         String toString = executeVelocity(
-                "toString.vm", new String[] { "toString" }, new String[] { new String(buf) }); //$NON-NLS-1$
+                "toString.vm", new String[] { "toString" }, new String[] { new String(buf) }); //$NON-NLS-1$ //$NON-NLS-2$
         type.createMethod(toString, null, true, new NullProgressMonitor());
     }
 
