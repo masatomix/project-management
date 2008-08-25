@@ -27,8 +27,9 @@
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.jface.text"/>
-      <import plugin="nu.mine.kino.plugin.log4j"/>
       <import plugin="org.eclipse.core.resources"/>
+      <import plugin="nu.mine.kino.plugin.log4j"/>
+      <import plugin="nu.mine.kino.plugin.libs"/>
    </requires>
 
    <plugin
@@ -42,5 +43,12 @@
          download-size="0"
          install-size="0"
          version="0.0.2"/>
+
+   <plugin
+         id="nu.mine.kino.plugin.libs"
+         download-size="0"
+         install-size="0"
+         version="1.0.0"
+         unpack="false"/>
 
 </feature>
