@@ -9,15 +9,10 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.core,
  org.eclipse.jdt.ui,
  org.eclipse.jface.text,
+ org.eclipse.core.resources,
  nu.mine.kino.plugin.log4j,
- org.eclipse.core.resources
+ nu.mine.kino.plugin.libs
 Eclipse-LazyStart: true
-Bundle-ClassPath: lib/oro.jar,
- lib/velocity-1.4.jar,
- lib/jxl.jar,
- lib/ognl-2.6.9-patch-20070908.jar,
- lib/xlsbeans.jar,
- lib/commons-lang-2.4.jar,
- nu.mine.kino.plugin.beangenerator.jar,
- lib/commons-collections.jar
+Bundle-ClassPath: nu.mine.kino.plugin.beangenerator.jar,
+ lib/velocity-1.4.jar
 Bundle-Vendor: %providerName
