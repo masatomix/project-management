@@ -1,0 +1,10 @@
+	/**
+	 * ${field.fieldNameJ}‚ğæ“¾‚·‚éB
+	 *
+	 * @return ${field.fieldNameJ}
+	 */
+	public ${field.FieldType} ${prefix}${cname}() {
+		return ${field.fieldName};
+	}
+
+
