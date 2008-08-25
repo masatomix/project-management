@@ -98,30 +98,30 @@ public class Activator extends AbstractUIPlugin {
             throw new CoreException(status);
         } catch (XLSBeansException e) {
             logger.warn(e);
-            logger.warn("Annotationナシでもとおるロジックを実行してみる。");
+            logger.warn("Annotationナシでもとおるロジックを実行してみる。"); //$NON-NLS-1$
         }
         return getClassInformationsWithoutAnno(instance);
     }
 
     private List<IClassInformation> getClassInformationsWithoutAnno(
             File instance) throws CoreException {
-        logger.debug("getClassInformationsWithoutAnno(File) - start");
+        logger.debug("getClassInformationsWithoutAnno(File) - start"); //$NON-NLS-1$
 
         try {
             InputStream in = new FileInputStream(instance);
             // ここでアノテーションからJavaBeansのマッピングがされ、インスタンスまで生成される
             ClassInformationSheet sheet = new XLSBeans().load(in,
                     ClassInformationSheet.class);
-            logger.debug("getClassInformationsWithoutAnno(File) - end");
+            logger.debug("getClassInformationsWithoutAnno(File) - end"); //$NON-NLS-1$
             return sheet.getClassInformation();
         } catch (FileNotFoundException e) {
-            logger.error("getClassInformationsWithoutAnno(File)", e);
+            logger.error("getClassInformationsWithoutAnno(File)", e); //$NON-NLS-1$
 
             IStatus status = new Status(IStatus.ERROR, Activator.getPluginId(),
                     IStatus.OK, e.getMessage(), e);
             throw new CoreException(status);
         } catch (XLSBeansException e) {
-            logger.error("getClassInformationsWithoutAnno(File)", e);
+            logger.error("getClassInformationsWithoutAnno(File)", e); //$NON-NLS-1$
 
             IStatus status = new Status(IStatus.ERROR, Activator.getPluginId(),
                     IStatus.OK, e.getMessage(), e);
