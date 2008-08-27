@@ -3,8 +3,11 @@
 	 *
 	 * @param ${field.fieldName} ${field.fieldNameJ}
 	 */
-#if(${field.annotation}=="Åõ")
-	#if(${field.annotationName}!="")
+#if(${field.customAnnotation}!="")
+	${field.customAnnotation}	
+#else
+ #if(${field.annotation}=="Åõ")
+ 	#if(${field.annotationName}!="")
 		#if(${field.merge}=="Åõ")
 		@Column(columnName = "${field.annotationName}", merged = true)
 		#else
@@ -17,6 +20,7 @@
 		@Column(columnName = "${field.fieldNameJ}" )
 		#end
 	#end
+ #end
 #end
 	public void set${cname}(${field.FieldType} ${field.fieldName}) {
 		this.${field.fieldName} = ${field.fieldName};
