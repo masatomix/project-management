@@ -1,0 +1,28 @@
+	/**
+	 * ${field.fieldNameJ}をセットする。
+	 *
+	 * @param ${field.fieldName} ${field.fieldNameJ}
+	 */
+#if(${field.customAnnotation}!="")
+	${field.customAnnotation}	
+#else
+ #if(${field.annotation}=="○")
+ 	#if(${field.annotationName}!="")
+		#if(${field.merge}=="○")
+		@Column(columnName = "${field.annotationName}", merged = true)
+		#else
+		@Column(columnName = "${field.annotationName}" )
+		#end
+	#else
+		#if(${field.merge}=="○")
+		@Column(columnName = "${field.fieldNameJ}", merged = true)
+		#else
+		@Column(columnName = "${field.fieldNameJ}" )
+		#end
+	#end
+ #end
+#end
+	public void set${cname}(${field.FieldType} ${field.fieldName}) {
+		this.${field.fieldName} = ${field.fieldName};
+	}
+
