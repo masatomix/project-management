@@ -36,7 +36,7 @@ public class FieldInformationWithAnno implements IFieldInformation {
 
     private String merge;
 
-    private String converter;
+    private String customAnnotation;
 
     @Column(columnName = "フィールド名日本語")//$NON-NLS-1$
     public void setFieldNameJ(String fieldNameJ) {
@@ -73,9 +73,9 @@ public class FieldInformationWithAnno implements IFieldInformation {
         this.merge = merge;
     }
 
-//    @Column(columnName = "Converter")//$NON-NLS-1$
-    public void setConverter(String converter) {
-        this.converter = converter;
+    @Column(columnName = "独自のアノテーション")//$NON-NLS-1$
+    public void setCustomAnnotation(String customAnnotation) {
+        this.customAnnotation = customAnnotation;
     }
 
     public String getFieldNameJ() {
@@ -113,8 +113,8 @@ public class FieldInformationWithAnno implements IFieldInformation {
         return merge;
     }
 
-    public String getConverter() {
-        return converter;
+    public String getCustomAnnotation() {
+        return customAnnotation;
     }
 
 }
