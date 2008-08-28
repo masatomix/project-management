@@ -3,5 +3,5 @@
 /**
 * ${class.description}
 */
-public class  ${class.className} {
+public class  ${class.className} ${class.addedInfo} {
 }
