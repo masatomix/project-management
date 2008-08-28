@@ -31,6 +31,8 @@ public interface IClassInformation {
 
     public void setToString(String toString);
 
+    public void setAddedInfo(String addedInfo);
+
     public List<IFieldInformation> getFieldInformations();
 
     public String getClassNameJ();
@@ -42,5 +44,7 @@ public interface IClassInformation {
     public String getClassName();
 
     public String getToString();
+
+    public String getAddedInfo();
 
 }

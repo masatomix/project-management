@@ -25,7 +25,7 @@ import nu.mine.kino.plugin.beangenerator.sheetdata.IClassInformation;
 public class ClassInformationSheetWithAnno {
     private List<IClassInformation> classInformation;
 
-    @IterateTables(tableLabel = "クラス情報", tableClass = ClassInformationWithAnno.class, bottom = 6)//$NON-NLS-1$
+    @IterateTables(tableLabel = "クラス情報", tableClass = ClassInformationWithAnno.class, bottom = 7)//$NON-NLS-1$
     public void setClassInformation(List<IClassInformation> classInformation) {
         this.classInformation = classInformation;
     }

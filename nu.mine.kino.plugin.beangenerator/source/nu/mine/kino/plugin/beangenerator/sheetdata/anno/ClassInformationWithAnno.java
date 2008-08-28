@@ -38,6 +38,8 @@ public class ClassInformationWithAnno implements IClassInformation {
 
     private String toString;
 
+    private String addedInfo;
+
     @Override
     public String toString() {
         return new ToStringBuilder(this).append("クラス名日本語", classNameJ).append( //$NON-NLS-1$
@@ -75,6 +77,11 @@ public class ClassInformationWithAnno implements IClassInformation {
         this.toString = toString;
     }
 
+    @LabelledCell(label = "付加情報", type = LabelledCellType.Right)//$NON-NLS-1$
+    public void setAddedInfo(String addedInfo) {
+        this.addedInfo = addedInfo;
+    }
+
     public List<IFieldInformation> getFieldInformations() {
         return fieldInformations;
     }
@@ -97,6 +104,10 @@ public class ClassInformationWithAnno implements IClassInformation {
 
     public String getToString() {
         return toString;
+    }
+
+    public String getAddedInfo() {
+        return addedInfo;
     }
 
 }
