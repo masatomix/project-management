@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Library Plug-in
-Bundle-SymbolicName: nu.mine.kino.plugin.libs
-Bundle-Version: 1.0.0
+Bundle-SymbolicName: nu.mine.kino.plugin.libs; singleton:=true
+Bundle-Version: 1.0.1
 Bundle-Activator: nu.mine.kino.plugin.libs.LibraryPlugin
 Require-Bundle: org.eclipse.core.runtime
 Eclipse-LazyStart: true
@@ -11,7 +11,6 @@ Bundle-ClassPath: lib/commons-collections.jar,
  lib/jxl.jar,
  lib/ognl-2.6.9-patch-20070908.jar,
  lib/oro.jar,
- lib/velocity-1.4.jar,
  lib/xlsbeans.jar,
  lib/commons-logging-1.1.jar,
  .
