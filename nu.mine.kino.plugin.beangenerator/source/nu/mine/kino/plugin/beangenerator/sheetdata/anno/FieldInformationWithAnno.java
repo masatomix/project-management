@@ -70,7 +70,7 @@ public class FieldInformationWithAnno implements IFieldInformation {
      * @param fieldNameJ
      *            フィールド名日本語
      */
-    @Column(columnName = "フィールド名日本語")
+    @Column(columnName = "フィールド名日本語")//$NON-NLS-1$
     public void setFieldNameJ(String fieldNameJ) {
         this.fieldNameJ = fieldNameJ;
     }
@@ -81,7 +81,7 @@ public class FieldInformationWithAnno implements IFieldInformation {
      * @param fieldName
      *            フィールド名
      */
-    @Column(columnName = "フィールド名")
+    @Column(columnName = "フィールド名")//$NON-NLS-1$
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
     }
@@ -92,7 +92,7 @@ public class FieldInformationWithAnno implements IFieldInformation {
      * @param fieldType
      *            型
      */
-    @Column(columnName = "型")
+    @Column(columnName = "型")//$NON-NLS-1$
     public void setFieldType(String fieldType) {
         this.fieldType = fieldType;
     }
@@ -103,7 +103,7 @@ public class FieldInformationWithAnno implements IFieldInformation {
      * @param description
      *            説明
      */
-    @Column(columnName = "説明")
+    @Column(columnName = "説明")//$NON-NLS-1$
     public void setDescription(String description) {
         this.description = description;
     }
@@ -114,7 +114,7 @@ public class FieldInformationWithAnno implements IFieldInformation {
      * @param annotation
      *            Annotation
      */
-    @Column(columnName = "Annotation")
+    @Column(columnName = "Annotation")//$NON-NLS-1$
     public void setAnnotation(String annotation) {
         this.annotation = annotation;
     }
@@ -125,7 +125,7 @@ public class FieldInformationWithAnno implements IFieldInformation {
      * @param annotationName
      *            Annotation名
      */
-    @Column(columnName = "Annotation名")
+    @Column(columnName = "Annotation名")//$NON-NLS-1$
     public void setAnnotationName(String annotationName) {
         this.annotationName = annotationName;
     }
@@ -136,7 +136,7 @@ public class FieldInformationWithAnno implements IFieldInformation {
      * @param merge
      *            マージ
      */
-    @Column(columnName = "マージ")
+    @Column(columnName = "マージ")//$NON-NLS-1$
     public void setMerge(String merge) {
         this.merge = merge;
     }
@@ -147,7 +147,7 @@ public class FieldInformationWithAnno implements IFieldInformation {
      * @param customAnnotation
      *            独自のアノテーション
      */
-    @Column(columnName = "独自のアノテーション")
+    @Column(columnName = "独自のアノテーション")//$NON-NLS-1$
     public void setCustomAnnotation(String customAnnotation) {
         this.customAnnotation = customAnnotation;
     }
