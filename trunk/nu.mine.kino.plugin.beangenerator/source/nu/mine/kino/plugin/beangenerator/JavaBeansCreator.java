@@ -103,14 +103,15 @@ public class JavaBeansCreator {
         ICompilationUnit cu = pack.createCompilationUnit(info.getClassName()
                 + ".java", mainStatement, true, new NullProgressMonitor()); //$NON-NLS-1$
         // packageついか
-        cu.createPackageDeclaration(pkg, new NullProgressMonitor());
+        // cu.createPackageDeclaration(pkg, new NullProgressMonitor());
 
         IType type = cu.getType(info.getClassName());
 
         // フィールド生成
         createField(type, info);
         // メソッドの生成
-        createMethod(type, info);
+        createSetter(type, info);
+        createGetter(type, info);
 
         // toStringの生成
         if (contains(info.getToString(), "○")) { //$NON-NLS-1$
@@ -191,9 +192,9 @@ public class JavaBeansCreator {
         type.createMethod(toString, null, true, new NullProgressMonitor());
     }
 
-    private void createMethod(IType type, IClassInformation info)
+    private void createGetter(IType type, IClassInformation info)
             throws CoreException {
-        logger.debug("createMethod() start"); //$NON-NLS-1$
+        logger.debug("createGetter() start"); //$NON-NLS-1$
 
         List<IFieldInformation> fieldInformations = info.getFieldInformations();
         for (IFieldInformation field : fieldInformations) {
@@ -208,13 +209,30 @@ public class JavaBeansCreator {
             Object[] values = new Object[] { field,
                     WordUtils.capitalize(field.getFieldName()), prefix };
             // setterの作成
-            String setter = executeVelocity("setter.vm", keys, values); //$NON-NLS-1$
-            type.createMethod(setter, null, true, new NullProgressMonitor());
+            // String setter = executeVelocity("setter.vm", keys, values);
+            // //$NON-NLS-1$
+            // type.createMethod(setter, null, true, new NullProgressMonitor());
             // getterの作成
             String getter = executeVelocity("getter.vm", keys, values); //$NON-NLS-1$
             type.createMethod(getter, null, true, new NullProgressMonitor());
         }
-        logger.debug("createMethod() end"); //$NON-NLS-1$
+        logger.debug("createGetter() end"); //$NON-NLS-1$
+    }
+
+    private void createSetter(IType type, IClassInformation info)
+            throws CoreException {
+        logger.debug("createSetter() start"); //$NON-NLS-1$
+
+        List<IFieldInformation> fieldInformations = info.getFieldInformations();
+        for (IFieldInformation field : fieldInformations) {
+            String[] keys = new String[] { "field", "cname" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            Object[] values = new Object[] { field,
+                    WordUtils.capitalize(field.getFieldName()) };
+            // setterの作成
+            String setter = executeVelocity("setter.vm", keys, values); //$NON-NLS-1$
+            type.createMethod(setter, null, true, new NullProgressMonitor());
+        }
+        logger.debug("createSetter() end"); //$NON-NLS-1$
     }
 
     private boolean contains(String input, String... strs) {

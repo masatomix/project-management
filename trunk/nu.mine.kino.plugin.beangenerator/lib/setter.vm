@@ -1,5 +1,7 @@
 	/**
+#if(${field.fieldNameJ}!="")
 	 * ${field.fieldNameJ}をセットする。
+#end
 	 *
 	 * @param ${field.fieldName} ${field.fieldNameJ}
 	 */
