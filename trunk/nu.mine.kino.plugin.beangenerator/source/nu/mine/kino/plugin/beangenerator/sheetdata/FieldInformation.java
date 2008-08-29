@@ -49,7 +49,7 @@ public class FieldInformation implements IFieldInformation {
      * @param fieldNameJ
      *            フィールド名日本語
      */
-    @Column(columnName = "フィールド名日本語")
+    @Column(columnName = "フィールド名日本語")//$NON-NLS-1$
     public void setFieldNameJ(String fieldNameJ) {
         this.fieldNameJ = fieldNameJ;
     }
@@ -60,7 +60,7 @@ public class FieldInformation implements IFieldInformation {
      * @param fieldName
      *            フィールド名
      */
-    @Column(columnName = "フィールド名")
+    @Column(columnName = "フィールド名")//$NON-NLS-1$
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
     }
@@ -71,7 +71,7 @@ public class FieldInformation implements IFieldInformation {
      * @param fieldType
      *            型
      */
-    @Column(columnName = "型")
+    @Column(columnName = "型")//$NON-NLS-1$
     public void setFieldType(String fieldType) {
         this.fieldType = fieldType;
     }
@@ -82,7 +82,7 @@ public class FieldInformation implements IFieldInformation {
      * @param description
      *            説明
      */
-    @Column(columnName = "説明")
+    @Column(columnName = "説明")//$NON-NLS-1$
     public void setDescription(String description) {
         this.description = description;
     }
