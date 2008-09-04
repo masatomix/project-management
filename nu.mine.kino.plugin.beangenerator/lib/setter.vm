@@ -11,15 +11,15 @@
  #if(${field.annotation}=="Åõ")
  	#if(${field.annotationName}!="")
 		#if(${field.merge}=="Åõ")
-		@Column(columnName = "${field.annotationName}", merged = true)
+		@Column(columnName = "${field.annotationName}", merged = true) //$NON-NLS-1$
 		#else
-		@Column(columnName = "${field.annotationName}" )
+		@Column(columnName = "${field.annotationName}" ) //$NON-NLS-1$
 		#end
 	#else
 		#if(${field.merge}=="Åõ")
-		@Column(columnName = "${field.fieldNameJ}", merged = true)
+		@Column(columnName = "${field.fieldNameJ}", merged = true) //$NON-NLS-1$
 		#else
-		@Column(columnName = "${field.fieldNameJ}" )
+		@Column(columnName = "${field.fieldNameJ}" ) //$NON-NLS-1$
 		#end
 	#end
  #end
