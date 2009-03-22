@@ -5,7 +5,7 @@
 <xsl:for-each select="site">
 	<html>
 	<head>
-	<title>aaaa</title>
+	<title>plugin update site</title>
 	<style>@import url("web/site.css");</style>
 	</head>
 	<body>
