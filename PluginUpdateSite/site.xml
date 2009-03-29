@@ -30,6 +30,12 @@
    <feature url="features/nu.mine.kino.plugin.google_1.1.4.jar" id="nu.mine.kino.plugin.google" version="1.1.4">
       <category name="google"/>
    </feature>
+   <feature url="features/nu.mine.kino.plugin.google_1.1.5.jar" id="nu.mine.kino.plugin.google" version="1.1.5">
+      <category name="google"/>
+   </feature>
+   <feature url="features/nu.mine.kino.plugin.google_1.2.1.jar" id="nu.mine.kino.plugin.google" version="1.2.1">
+      <category name="google"/>
+   </feature>
    <category-def name="google" label="Google Plugin"/>
    <category-def name="beancreator" label="JavaBeans Creator Plugin"/>
 </site>
