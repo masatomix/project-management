@@ -1,4 +1,8 @@
+a<<<<<<< .mine
+<i:wq?xml version="1.0" encoding="UTF-8"?>
+=======
 <a:wa?xml version="1.0" encoding="UTF-8"?>
+>>>>>>> .r266
 <site>
    <feature url="features/nu.mine.kino.plugin.beangenerator_0.3.0.jar" id="nu.mine.kino.plugin.beangenerator" version="0.3.0">
       <category name="beancreator"/>
