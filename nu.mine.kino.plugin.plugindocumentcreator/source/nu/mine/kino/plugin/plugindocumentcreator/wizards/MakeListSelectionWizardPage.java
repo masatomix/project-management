@@ -22,6 +22,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -48,7 +49,6 @@ public class MakeListSelectionWizardPage extends WizardPage {
 
     private Combo extensionPointIdCombo;
 
-    
     private Text outputFile;
 
     /**
@@ -62,6 +62,7 @@ public class MakeListSelectionWizardPage extends WizardPage {
 
     /**
      * Create contents of the wizard
+     * 
      * @param parent
      */
     public void createControl(Composite parent) {
@@ -75,6 +76,7 @@ public class MakeListSelectionWizardPage extends WizardPage {
         setControl(container);
 
         final Group group = new Group(container, SWT.NONE);
+        group.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
         group.setText("拡張ポイントの選択");
         group
                 .setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false,
@@ -126,6 +128,7 @@ public class MakeListSelectionWizardPage extends WizardPage {
         label.setText("実装クラス");
 
         implementationClassText = new Text(group, SWT.READ_ONLY);
+        implementationClassText.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
         implementationClassText.setLayoutData(new GridData(SWT.FILL,
                 SWT.CENTER, false, false));
 
@@ -133,11 +136,14 @@ public class MakeListSelectionWizardPage extends WizardPage {
         label_2.setText("説明");
 
         descriptionText = new Text(group, SWT.READ_ONLY);
+        descriptionText.setBackground(Display.getCurrent()
+                .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
         descriptionText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
                 false));
         new Label(group, SWT.NONE);
 
         alert = new Text(group, SWT.READ_ONLY);
+        alert.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
         alert.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         initCombo();
 
@@ -165,7 +171,7 @@ public class MakeListSelectionWizardPage extends WizardPage {
             public void widgetSelected(final SelectionEvent e) {
                 logger.debug("widgetSelected(SelectionEvent) - start");
 
-                FileDialog dialog = new FileDialog(getShell(), SWT.OPEN
+                FileDialog dialog = new FileDialog(getShell(), SWT.SAVE
                         | SWT.PRIMARY_MODAL);
                 if (outputFile != null) {
                     dialog.setFileName(outputFile.getText());
@@ -197,6 +203,7 @@ public class MakeListSelectionWizardPage extends WizardPage {
         label_3.setText("上の設定を記述したプラグイン：");
 
         pluginIdText = new Text(composite, SWT.READ_ONLY);
+        pluginIdText.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
         pluginIdText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
                 false));
 
