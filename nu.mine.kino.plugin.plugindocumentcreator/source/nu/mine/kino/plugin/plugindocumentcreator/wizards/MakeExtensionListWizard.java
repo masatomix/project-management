@@ -11,6 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import nu.mine.kino.plugin.plugindocumentcreator.Activator;
 import nu.mine.kino.plugin.plugindocumentcreator.ExtensionPointWriter;
+import nu.mine.kino.plugin.plugindocumentcreator.IExtensionPointWriter;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -71,7 +72,7 @@ public class MakeExtensionListWizard extends Wizard implements INewWizard {
         monitor.beginTask("Creating " + fileName, 10);
         try {
             // ここは拡張ポイントからCSVやWiki、XMLなどのレイアウタを指定しよう。
-            ExtensionPointWriter writer = new ExtensionPointWriter(new File(
+            IExtensionPointWriter writer = new ExtensionPointWriter(new File(
                     fileName));
             writer.write(extensionPointName);
             monitor.worked(10);
