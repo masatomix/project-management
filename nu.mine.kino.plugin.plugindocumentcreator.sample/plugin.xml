@@ -8,13 +8,41 @@
             description="パースペクティブ用のフォーマッターです。"
             extension-point-id="org.eclipse.ui.perspectives"
             name="パースペクティブ用フォーマッター"/>
-   </extension>
-   <extension
-         point="nu.mine.kino.plugin.plugindocumentcreator.formatters">
-      <formatter
+               <formatter
             class="nu.mine.kino.plugin.plugindocumentcreator.impl.ViewExtensionPointFormatter"
             description="ビュー用のフォーマッターです。"
             extension-point-id="org.eclipse.ui.views"
-            name="ビュー用フォーマッター"/>
+            name="ビュー用フォーマッター"/>   
+                  <formatter
+            class="nu.mine.kino.plugin.plugindocumentcreator.impl.MenuExtensionPointFormatter"
+            description="org.eclipse.ui.menus 用のフォーマッタです"
+            extension-point-id="org.eclipse.ui.menus"
+            name="org.eclipse.ui.menus 用のフォーマッタ。">
+      </formatter>
+                  <formatter
+                        class="nu.mine.kino.plugin.plugindocumentcreator.impl.PreferencePagesExtensionPointFormatter"
+                        description="設定画面用フォーマッタです"
+                        extension-point-id="org.eclipse.ui.preferencePages"
+                        name="設定画面用フォーマッタ">
+                  </formatter>
+                  <formatter
+                        class="nu.mine.kino.plugin.plugindocumentcreator.impl.KeywordExtensionPointFormatter"
+                        description="org.eclipse.ui.keywords 用フォーマッタです"
+                        extension-point-id="org.eclipse.ui.keywords"
+                        name="org.eclipse.ui.keywords 用フォーマッタ">
+                  </formatter>
+                  <formatter
+                        class="nu.mine.kino.plugin.plugindocumentcreator.impl.HandlerExtensionPointFormatter"
+                        description="org.eclipse.ui.handlers 用フォーマッタです"
+                        extension-point-id="org.eclipse.ui.handlers"
+                        name="org.eclipse.ui.handlers">
+                  </formatter>
+                  <formatter
+                        class="nu.mine.kino.plugin.plugindocumentcreator.impl.PropertyPageExtensionPointFormatter"
+                        description="org.eclipse.ui.propertyPages"
+                        extension-point-id="org.eclipse.ui.propertyPages"
+                        name="org.eclipse.ui.propertyPages">
+                  </formatter>
    </extension>
+
 </plugin>

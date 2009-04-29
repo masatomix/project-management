@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: nu.mine.kino.plugin.plugindocumentcreator.sample;singleton:=true
-Bundle-Version: 1.0.2
+Bundle-Version: 1.0.4
 Bundle-Activator: nu.mine.kino.plugin.plugindocumentcreator.sample.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
