@@ -1,5 +1,11 @@
-/*******************************************************************************
- * Copyright (c) 2007 Masatomi KINO. All rights reserved. 
+/******************************************************************************
+ * Copyright (c) 2009 Masatomi KINO and others. 
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * Contributors:
+ *      Masatomi KINO - initial API and implementation
  * $Id$
  ******************************************************************************/
 // çÏê¨ì˙: 2006/10/22s
@@ -31,7 +37,7 @@ public class MakeExtensionListWizard extends Wizard implements INewWizard {
 
     public boolean performFinish() {
         final String fileName = page.getPath();
-        final String extensionPointName = page.getExtensionPointId();
+        final String extensionPointName = page.getExtensionPointConfigKey();
 
         try {
             getContainer().run(true, false, new IRunnableWithProgress() {
