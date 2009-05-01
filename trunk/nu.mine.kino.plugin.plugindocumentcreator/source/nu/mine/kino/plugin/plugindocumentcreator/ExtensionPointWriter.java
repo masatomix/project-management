@@ -1,8 +1,13 @@
-/*******************************************************************************
- * Copyright (c) 2006 Masatomi KINO.
- * All rights reserved. 
+/******************************************************************************
+ * Copyright (c) 2009 Masatomi KINO and others. 
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * Contributors:
+ *      Masatomi KINO - initial API and implementation
  * $Id$
- *******************************************************************************/
+ ******************************************************************************/
 //作成日: 2006/10/22
 package nu.mine.kino.plugin.plugindocumentcreator;
 
@@ -12,13 +17,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.Platform;
 
 /**
  * 拡張ポイントの情報をCSV形式で書き出すクラスです。
@@ -53,14 +55,14 @@ public class ExtensionPointWriter implements IExtensionPointWriter {
     /**
      * 指定された拡張ポイントの情報を書き出すメソッドです。
      * 
-     * @param extensionPointName
-     *            拡張ポイントID
+     * @param id
+     *            拡張ポイントIDでなく、ID
      */
-    public void write(String extensionPointName) {
+    public void write(String id) {// 現状ID。拡張ポイントIDじゃない
         logger.debug("write(String) - start");
-        // 引数(extensionPointName)の拡張ポイント用のフォーマッタークラスを取得し、
+        // 引数(id)の設定から、フォーマッタークラスを取得し、
         IExtensionPointFormatter formatter = new ExtensionPointFormatterManager()
-                .getExtensionFormatter(extensionPointName);
+                .getExtensionFormatter(id);
         // StringBufferに情報を書き出していく。
         // formatterから、ヘッダ文字列の配列を取得し、
         String[] headers = formatter.getHeaders();
@@ -71,19 +73,18 @@ public class ExtensionPointWriter implements IExtensionPointWriter {
         csvData.append(headerString);
         csvData.append(LINE_SEPARATOR);
 
-        // extensionPointName を使用しているプラグイン一覧を取得。
-        IExtension[] plugins = getPlugin(extensionPointName);
-        for (int i = 0; i < plugins.length; i++) {
-            // プラグイン名
-            IConfigurationElement[] elements = plugins[i]
-                    .getConfigurationElements();
-            for (int j = 0; j < elements.length; j++) {
-                IConfigurationElement element = elements[j];
-                String[] informations = formatter.getInformations(element);
-                String rowData = convertArray2CSV(informations);
-                csvData.append(rowData);
-                csvData.append(LINE_SEPARATOR);
-            }
+        // ここでいったんID->拡張ポイントIDに変換が必要。
+        String extensionPointId = id2ExtensionPointId(id);
+
+        // extensionPointId を使用しているプラグイン一覧を取得。
+        List<IConfigurationElement> configurationElements = Utils
+                .getConfigurationElements(extensionPointId);
+
+        for (IConfigurationElement element : configurationElements) {
+            String[] informations = formatter.getInformations(element);
+            String rowData = convertArray2CSV(informations);
+            csvData.append(rowData);
+            csvData.append(LINE_SEPARATOR);
         }
         try {
             // bufferをファイルに書き出しー
@@ -102,6 +103,23 @@ public class ExtensionPointWriter implements IExtensionPointWriter {
         logger.debug("write(String) - end");
     }
 
+    private String id2ExtensionPointId(String id) {
+        List<IConfigurationElement> list = Utils.getConfigurationElements(
+                "nu.mine.kino.plugin.plugindocumentcreator.formatters",
+                "formatter");
+        for (IConfigurationElement element : list) {
+            String idInXml = element.getAttribute("id");
+            if (idInXml.equals(id)) {
+                logger.debug(id + " の設定が見つかりました。");
+                String extension_point_id = element
+                        .getAttribute("extension-point-id");
+                logger.debug("拡張ポイントIDは " + extension_point_id + " ですね。");
+                return extension_point_id;
+            }
+        }
+        return null;
+    }
+
     private String convertArray2CSV(String[] strArray) {
         StringBuffer retData = new StringBuffer();
         retData.append('"');
@@ -116,24 +134,24 @@ public class ExtensionPointWriter implements IExtensionPointWriter {
         return new String(retData);
     }
 
-    /**
-     * 引数の拡張ポイントを使っているプラグインを返す。但し取得されるIExtensionインタフェース (プラグイン)には、
-     * その拡張ポイントの情報しか入ってない。
-     * 
-     * @param extensionPointName
-     * @return
-     */
-    private IExtension[] getPlugin(String extensionPointName) {
-        // プラグインのレジストリ取得
-        IExtensionRegistry registry = Platform.getExtensionRegistry();
-        // レジストリから、拡張ポイント名で拡張ポイントを取得
-        IExtensionPoint point = registry.getExtensionPoint(extensionPointName);
-        // この拡張ポイントを使っているプラグイン一覧を取得。
-        if (point != null) {
-            IExtension[] extensions = point.getExtensions();
-            return extensions;
-        }
-        return new IExtension[0];
-    }
+    // /**
+    // * 引数の拡張ポイントを使っているプラグインを返す。但し取得されるIExtensionインタフェース (プラグイン)には、
+    // * その拡張ポイントの情報しか入ってない。
+    // *
+    // * @param extensionPointName
+    // * @return
+    // */
+    // private IExtension[] getPlugin(String extensionPointName) {
+    // // プラグインのレジストリ取得
+    // IExtensionRegistry registry = Platform.getExtensionRegistry();
+    // // レジストリから、拡張ポイント名で拡張ポイントを取得
+    // IExtensionPoint point = registry.getExtensionPoint(extensionPointName);
+    // // この拡張ポイントを使っているプラグイン一覧を取得。
+    // if (point != null) {
+    // IExtension[] extensions = point.getExtensions();
+    // return extensions;
+    // }
+    // return new IExtension[0];
+    // }
 
 }
