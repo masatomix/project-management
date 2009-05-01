@@ -1,17 +1,21 @@
-/*******************************************************************************
- * Copyright (c) 2006 Masatomi KINO.
- * All rights reserved. 
+/******************************************************************************
+ * Copyright (c) 2009 Masatomi KINO and others. 
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * Contributors:
+ *      Masatomi KINO - initial API and implementation
  * $Id$
- *******************************************************************************/
+ ******************************************************************************/
 //作成日: 2006/10/22
 package nu.mine.kino.plugin.plugindocumentcreator;
+
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.Platform;
 
 /**
  * 拡張ポイント情報を出力するフォーマッタクラスを管理するクラスです。
@@ -27,31 +31,25 @@ public class ExtensionPointFormatterManager {
             .getLogger(ExtensionPointFormatterManager.class);
 
     /**
-     * 引数の拡張ポイントIDから、拡張ポイントフォーマッターを取得するメソッドです。
+     * 引数のIDから、拡張ポイントフォーマッターを取得するメソッドです。
+     * このIDは設定上のキーとなっているIDであり、拡張ポイントIDではないことに注意。
      * 
-     * @param extensionPointName
+     * @param id
+     *            拡張ポイントのIDではない。
      * @return
      */
-    public IExtensionPointFormatter getExtensionFormatter(
-            String extensionPointName) {
+    public IExtensionPointFormatter getExtensionFormatter(String id) {
         logger.debug("getExtensionFormatter(String) - start");
-
-        // プラグインのレジストリ取得
-        IExtensionRegistry registry = Platform.getExtensionRegistry();
-        // レジストリから、拡張ポイント名で拡張ポイントを取得
-        IExtensionPoint point = registry
-                .getExtensionPoint("nu.mine.kino.plugin.plugindocumentcreator.formatters");
-        // nu.mine.kino.plugin.plugindocumentcreator.formatters 拡張ポイント
-        // を使っているプラグイン一覧を取得。
-        IConfigurationElement[] configurationElements = point
-                .getConfigurationElements();
-        // ぐるぐる回って、引数の拡張ポイントIDと同じ記述をさがし、フォーマッタを作成して返す。
-        // マッチする記述は、2006/10/29現在、一つしかない想定。
-        for (int i = 0; i < configurationElements.length; i++) {
-            IConfigurationElement element = configurationElements[i];
-            String id = element.getAttribute("extension-point-id");
-            if (id.equals(extensionPointName)) {
-                logger.debug(extensionPointName + "用のフォーマッタを生成します");
+        // 拡張ポイントIDと、サブ要素の名称を使って、サブ要素のリストを取得するUtilsメソッド。
+        List<IConfigurationElement> list = Utils.getConfigurationElements(
+                "nu.mine.kino.plugin.plugindocumentcreator.formatters",
+                "formatter");
+        // ぐるぐる回って、引数のIDの設定をさがし、フォーマッタを作成して返す。
+        for (IConfigurationElement element : list) {
+            String keyId = element.getAttribute("id");
+            // 一つのキーと、引数のキーが一致した場合、
+            if (keyId.equals(id)) {
+                logger.debug(id + "用のフォーマッタを生成します");
                 try {
                     // 拡張ポイント独特のインスタンス生成方法。
                     IExtensionPointFormatter formatter = (IExtensionPointFormatter) element
@@ -65,7 +63,7 @@ public class ExtensionPointFormatterManager {
                 }
             }
         }
-        logger.debug(extensionPointName + "にはデフォルトのフォーマッタを使用します");
+        logger.debug(id + "にはデフォルトのフォーマッタを使用します");
         logger.debug("getExtensionFormatter(String) - end");
         return new DefaultExtensionPointFormatter();
     }
