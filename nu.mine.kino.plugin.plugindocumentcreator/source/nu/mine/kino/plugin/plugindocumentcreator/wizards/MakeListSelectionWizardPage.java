@@ -234,7 +234,7 @@ public class MakeListSelectionWizardPage extends WizardPage {
                 String plugin_key = PLUGIN + Integer.toString(count);
 
                 // 表示する文字列をセット。
-                idCombo.add(id + ": " + name);
+                idCombo.add(name);
 
                 // 最後に、Comboに値をセット。
                 idCombo.setData(id_key, id);
