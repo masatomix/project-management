@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="Shift_JIS"?>
-<project name="samples" default="jar">
-	<property file="build.win.properties" />
-	<target name="jar">
-		<jar destfile="${jar.dir}/${exporter.jar}" basedir="${class.dir}"  includes="nu/mine/kino/dbunit/*.class" />
-	</target>
-</project>
