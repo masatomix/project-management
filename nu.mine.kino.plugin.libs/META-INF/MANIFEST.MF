@@ -1,17 +1,18 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Library Plug-in
+Bundle-Name: %pluginName
 Bundle-SymbolicName: nu.mine.kino.plugin.libs; singleton:=true
-Bundle-Version: 1.0.2
+Bundle-Version: 1.0.6
 Bundle-Activator: nu.mine.kino.plugin.libs.LibraryPlugin
 Require-Bundle: org.eclipse.core.runtime
-Eclipse-LazyStart: true
-Bundle-ClassPath: lib/commons-collections.jar,
- lib/commons-lang-2.4.jar,
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: lib/commons-lang-2.4.jar,
  lib/jxl.jar,
  lib/oro.jar,
  lib/xlsbeans.jar,
- lib/commons-logging-1.1.jar,
+ lib/commons-beanutils-1.8.0.jar,
+ lib/commons-collections-3.2.1.jar,
+ lib/commons-logging-1.1.1.jar,
  .
 Export-Package: jxl;
   uses:="jxl.biff,
@@ -70,7 +71,40 @@ Export-Package: jxl;
  net.java.amateras.xlsbeans.sandbox,
  net.java.amateras.xlsbeans.xml;uses:="net.java.amateras.xlsbeans,junit.framework",
  nu.mine.kino.plugin.libs;uses:="org.osgi.framework,org.eclipse.core.runtime",
- org.apache.commons.collections,
+ org.apache.commons.beanutils;uses:="org.apache.commons.beanutils.expression,org.apache.commons.collections.keyvalue,org.apache.commons.collections",
+ org.apache.commons.beanutils.converters;uses:="org.apache.commons.beanutils,org.apache.commons.logging",
+ org.apache.commons.beanutils.expression,
+ org.apache.commons.beanutils.locale;uses:="org.apache.commons.beanutils,org.apache.commons.collections",
+ org.apache.commons.beanutils.locale.converters;uses:="org.apache.commons.beanutils.locale",
+ org.apache.commons.collections;uses:="new org.apache.commons.collections,org.apache.commons.collections.keyvalue",
+ org.apache.commons.collections.bag;uses:="org.apache.commons.collections.collection,org.apache.commons.collections.set,org.apache.commons.collections",
+ org.apache.commons.collections.bidimap;
+  uses:="org.apache.commons.collections.map,
+   org.apache.commons.collections.collection,
+   org.apache.commons.collections.iterators,
+   org.apache.commons.collections.keyvalue,
+   org.apache.commons.collections",
+ org.apache.commons.collections.buffer;uses:="org.apache.commons.collections.collection,org.apache.commons.collections",
+ org.apache.commons.collections.collection;uses:="org.apache.commons.collections",
+ org.apache.commons.collections.comparators;uses:="org.apache.commons.collections",
+ org.apache.commons.collections.functors;uses:="new org.apache.commons.collections.functors,org.apache.commons.collections",
+ org.apache.commons.collections.iterators;uses:="org.apache.commons.collections",
+ org.apache.commons.collections.keyvalue;uses:="org.apache.commons.collections",
+ org.apache.commons.collections.list;
+  uses:="new org.apache.commons.collections.list,
+   org.apache.commons.collections.collection,
+   org.apache.commons.collections.iterators,
+   org.apache.commons.collections",
+ org.apache.commons.collections.map;
+  uses:="org.apache.commons.collections.iterators,
+   org.apache.commons.collections.set,
+   org.apache.commons.collections.keyvalue,
+   org.apache.commons.collections",
+ org.apache.commons.collections.set;
+  uses:="org.apache.commons.collections.collection,
+   org.apache.commons.collections.iterators,
+   new org.apache.commons.collections.set,
+   org.apache.commons.collections",
  org.apache.commons.lang;uses:="org.apache.commons.lang.exception",
  org.apache.commons.lang.builder,
  org.apache.commons.lang.enums,
@@ -81,14 +115,17 @@ Export-Package: jxl;
  org.apache.commons.lang.time,
  org.apache.commons.logging,
  org.apache.commons.logging.impl;
-  uses:="org.apache.log4j,
-   javax.servlet,
-   org.apache.avalon.framework.logger,
+  uses:="org.apache.avalon.framework.logger,
    org.apache.commons.logging,
-   org.apache.log",
+   org.apache.log,
+   org.apache.log4j,
+   javax.servlet",
  org.apache.oro.io;uses:="org.apache.oro.text.regex,org.apache.oro.text",
  org.apache.oro.text;uses:="org.apache.oro.text.regex,org.apache.oro.util",
  org.apache.oro.text.awk;uses:="org.apache.oro.text.regex",
  org.apache.oro.text.perl;uses:="org.apache.oro.text.regex,org.apache.oro.text",
  org.apache.oro.text.regex,
  org.apache.oro.util
+Bundle-Localization: plugin
+Bundle-Vendor: %providerName
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
