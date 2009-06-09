@@ -32,12 +32,12 @@ public class CSVWriterSample04 {
 
     public static void main(String[] args) throws IOException {
         HeaderColumnNameAutoTranslateMappingStrategy strat = new HeaderColumnNameAutoTranslateMappingStrategy();
-        FileInputStream in = new FileInputStream(new File("hogehoge.txt"));
-        strat.setInputStream(in);
+        // FileInputStream in = new FileInputStream(new File("hogehoge.txt"));
+        // strat.setInputStream(in);
         strat.setType(CSVSampleBean.class);
         BeanToCsv csv = new BeanToCsv();
         List<CSVSampleBean> list = getList();
-        // カンマ区切りで、""で囲まない。
+        // カンマ区切りで、""で囲まない、ばあい。
         csv.writeAll(strat, new CSVWriter(new FileWriter(CSV_FILE), ',',
                 '\u0000'), list);
     }
