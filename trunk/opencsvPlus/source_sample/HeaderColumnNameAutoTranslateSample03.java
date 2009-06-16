@@ -5,6 +5,7 @@ import java.util.List;
 import nu.mine.kino.csv.CSVSampleBean;
 import au.com.bytecode.opencsv.bean.CsvToBean;
 import au.com.bytecode.opencsv.bean.HeaderColumnNameAutoTranslateMappingStrategy;
+import au.com.bytecode.opencsv.bean.HeaderColumnNameMappingStrategy;
 
 /******************************************************************************
  * Copyright (c) 2008 Masatomi KINO and others. 
@@ -25,7 +26,7 @@ public class HeaderColumnNameAutoTranslateSample03 {
     private static final String CSV_FILE = "sample.csv";
 
     public static void main(String[] args) throws IOException {
-        HeaderColumnNameAutoTranslateMappingStrategy strat = new HeaderColumnNameAutoTranslateMappingStrategy();
+        HeaderColumnNameMappingStrategy strat = new HeaderColumnNameAutoTranslateMappingStrategy();
         // FileInputStream in = new FileInputStream(new File("hogehoge.txt"));
         // strat.setInputStream(in);
         strat.setType(CSVSampleBean.class);
