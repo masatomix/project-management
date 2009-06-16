@@ -1,5 +1,3 @@
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -9,9 +7,9 @@ import java.util.List;
 import nu.mine.kino.csv.CSVSampleBean;
 import au.com.bytecode.opencsv.CSVWriter;
 import au.com.bytecode.opencsv.bean.BeanToCsv;
+import au.com.bytecode.opencsv.bean.ColumnPositionMappingStrategy;
 import au.com.bytecode.opencsv.bean.CsvToBean;
 import au.com.bytecode.opencsv.bean.HeaderColumnNameAutoTranslateMappingStrategy;
-import au.com.bytecode.opencsv.bean.HeaderColumnNameMappingStrategy;
 
 /******************************************************************************
  * Copyright (c) 2009 Masatomi KINO and others. 
@@ -28,15 +26,15 @@ import au.com.bytecode.opencsv.bean.HeaderColumnNameMappingStrategy;
  * @author Masatomi KINO
  * @version $Revision$
  */
-public class CSVWriterSample04 {
+public class CSVWriterSample05 {
     private static final String CSV_FILE = "sampleOut.csv";
 
     public static void main(String[] args) throws IOException {
-        // HeaderColumnNameMappingStrategy を使うと、設定ファイルから値を設定することができる。
-        HeaderColumnNameMappingStrategy strat = new HeaderColumnNameMappingStrategy();
-        // FileInputStream in = new FileInputStream(new File("hogehoge.txt"));
-        // strat.setInputStream(in);
+        // ColumnPositionMappingStrategyを使うと、指定したフィールド名をCSV出力できる。
+        ColumnPositionMappingStrategy strat = new ColumnPositionMappingStrategy();
         strat.setType(CSVSampleBean.class);
+        String[] columns = new String[] { "age", "last_name", "first_name", };
+        strat.setColumnMapping(columns);
         BeanToCsv csv = new BeanToCsv();
         List<CSVSampleBean> list = getList();
         // カンマ区切りで、""で囲まない、ばあい。

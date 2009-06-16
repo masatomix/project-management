@@ -13,6 +13,7 @@ package au.com.bytecode.opencsv.bean;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -30,9 +31,26 @@ public class BeanToCsv {
     public BeanToCsv() {
     }
 
-    public void writeAll(HeaderColumnNameTranslateMappingStrategy strategy,
+    public void writeAll(HeaderColumnNameMappingStrategy strategy,
             CSVWriter out, List<?> beanList) {
-        Map<String, String> map = strategy.getColumnMapping();
+
+        Map<String, String> map = null;
+        if (strategy instanceof HeaderColumnNameTranslateMappingStrategy) {
+            map = ((HeaderColumnNameTranslateMappingStrategy) strategy)
+                    .getColumnMapping();
+        } else if (strategy instanceof ColumnPositionMappingStrategy) {
+            // カラム指定のStrategyなら、key=column,value=columnってマッピングを自作する
+            String[] columnMapping = ((ColumnPositionMappingStrategy) strategy)
+                    .getColumnMapping();
+            map = new LinkedHashMap<String, String>();
+            for (String key : columnMapping) {
+                map.put(key, key);
+            }
+        } else {
+            // それ以外だったら、strategyのクラスファイルのそばから取ってみる。
+            Class type = strategy.getType();
+            map = MapUtils.createMapping(null, type);
+        }
 
         Set<String> keySet = map.keySet();
         String[] header = keySet.toArray(new String[keySet.size()]);
