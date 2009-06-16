@@ -48,53 +48,53 @@ public class HeaderColumnNameAutoTranslateMappingStrategy extends
     @Override
     public void setType(Class clazz) {
         super.setType(clazz);
-        setColumnMapping(createMapping());
+        setColumnMapping(MapUtils.createMapping(in, clazz));
     }
 
-    private Map<String, String> createMapping() {
-        Map<String, String> map = new LinkedHashMap<String, String>();
-        Class clazz = getType();
-        String name = clazz.getSimpleName();
-        URL url = clazz.getResource(name + ".txt");
-
-        BufferedReader reader = null;
-        try {
-            String charsetName = "JISAutoDetect";
-            if (in != null) {
-                reader = new BufferedReader(new InputStreamReader(in,
-                        charsetName));
-            } else {
-                reader = new BufferedReader(new InputStreamReader(url
-                        .openStream(), charsetName));
-            }
-            String line;
-            while ((line = reader.readLine()) != null) {
-                // String[] split = StringUtils.split(line, '=');
-                String[] split = line.split("=");
-                map.put(split[0], split[1]);
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                reader = null;
-            }
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                in = null;
-            }
-        }
-        return map;
-    }
+    // private Map<String, String> createMapping() {
+    // Map<String, String> map = new LinkedHashMap<String, String>();
+    // Class clazz = getType();
+    // String name = clazz.getSimpleName();
+    // URL url = clazz.getResource(name + ".txt");
+    //
+    // BufferedReader reader = null;
+    // try {
+    // String charsetName = "JISAutoDetect";
+    // if (in != null) {
+    // reader = new BufferedReader(new InputStreamReader(in,
+    // charsetName));
+    // } else {
+    // reader = new BufferedReader(new InputStreamReader(url
+    // .openStream(), charsetName));
+    // }
+    // String line;
+    // while ((line = reader.readLine()) != null) {
+    // // String[] split = StringUtils.split(line, '=');
+    // String[] split = line.split("=");
+    // map.put(split[0], split[1]);
+    // }
+    // } catch (FileNotFoundException e) {
+    // e.printStackTrace();
+    // } catch (IOException e) {
+    // e.printStackTrace();
+    // } finally {
+    // if (reader != null) {
+    // try {
+    // reader.close();
+    // } catch (IOException e) {
+    // e.printStackTrace();
+    // }
+    // reader = null;
+    // }
+    // if (in != null) {
+    // try {
+    // in.close();
+    // } catch (IOException e) {
+    // e.printStackTrace();
+    // }
+    // in = null;
+    // }
+    // }
+    // return map;
+    // }
 }
