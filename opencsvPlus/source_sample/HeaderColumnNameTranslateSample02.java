@@ -1,3 +1,14 @@
+/******************************************************************************
+ * Copyright (c) 2009 Masatomi KINO and others. 
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * Contributors:
+ *      Masatomi KINO - initial API and implementation
+ * $Id$
+ ******************************************************************************/
+//作成日: 2009/06/05
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -8,18 +19,11 @@ import nu.mine.kino.csv.CSVSampleBean;
 import au.com.bytecode.opencsv.bean.CsvToBean;
 import au.com.bytecode.opencsv.bean.HeaderColumnNameTranslateMappingStrategy;
 
-/******************************************************************************
- * Copyright (c) 2008 Masatomi KINO and others. 
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- * Contributors:
- *      Masatomi KINO - initial API and implementation
- * $Id$
- ******************************************************************************/
-//作成日: 2009/06/05
 /**
+ * sample.csvを読み込んで、値を標準出力に出力するだけのサンプルです。
+ * このサンプルは、CSVの一行目をヘッダ行と見なし、ヘッダの名称とJavaBeansのフィールドをMapを使って関連づけることにより、
+ * CSVをJavaBeansにマッピングします。
+ * 
  * @author Masatomi KINO
  * @version $Revision$
  */

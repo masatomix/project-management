@@ -14,8 +14,9 @@ import java.io.IOException;
 
 import au.com.bytecode.opencsv.CSVReader;
 
-
 /**
+ * sample.csvを読み込んで、値を標準出力に出力するだけのサンプルです。
+ * 
  * @author Masatomi KINO
  * @version $Revision$
  */
