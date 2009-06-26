@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JDT Utils Plugin
-Bundle-SymbolicName: nu.mine.kino.plugin.jdt.utils
+Bundle-SymbolicName: nu.mine.kino.plugin.jdt.utils;singleton:=true
 Bundle-Version: 0.1.0
 Bundle-Activator: nu.mine.kino.plugin.jdt.utils.JDTUtilsPlugin
 Require-Bundle: org.eclipse.ui,
