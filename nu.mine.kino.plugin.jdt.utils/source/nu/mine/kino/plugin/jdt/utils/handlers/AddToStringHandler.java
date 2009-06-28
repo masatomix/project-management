@@ -14,6 +14,7 @@ package nu.mine.kino.plugin.jdt.utils.handlers;
 import java.lang.reflect.InvocationTargetException;
 
 import nu.mine.kino.plugin.jdt.utils.JDTUtils;
+import nu.mine.kino.plugin.jdt.utils.JDTUtilsPlugin;
 import nu.mine.kino.plugin.jdt.utils.WorkbenchRunnableAdapter;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -39,8 +40,14 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.text.edits.InsertEdit;
 import org.eclipse.text.edits.MultiTextEdit;
+import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.handlers.HandlerUtil;
 
+/**
+ * @author Masatomi KINO
+ * @version $Revision$
+ */
 /**
  * @author Masatomi KINO
  * @version $Revision$
@@ -48,37 +55,49 @@ import org.eclipse.ui.PlatformUI;
 public class AddToStringHandler extends AbstractHandler implements IHandler {
 
     public Object execute(ExecutionEvent event) throws ExecutionException {
-        // eventからCompilationUnitを取得。
-        final ICompilationUnit unit = JDTUtils.getCompilationUnit(event);
-        // unitから、子要素たちをIJavaElementの配列として取得。
-        final IJavaElement[] elements = JDTUtils.unit2IJavaElements(unit);
+        final IJavaElement element = JDTUtils.getJavaElement(event);
+        IJavaElement[] targets = null;
+
+        // ソース自体を選択した場合。
+        if (element instanceof ICompilationUnit) {
+            // eventからCompilationUnitを取得。
+            final ICompilationUnit unit = (ICompilationUnit) element;
+            // unitから、子要素たちをIJavaElementの配列として取得。
+            targets = JDTUtils.unit2IJavaElements(unit);
+        }
+        // ソース下のクラス名を選択した場合。
+        else if (element.getElementType() == IJavaElement.TYPE) {
+            IType type = (IType) element;
+            IJavaElement[] tmpTargets = new IJavaElement[] { type };
+            targets = tmpTargets;
+        }
 
         try {
-            AddToStringThread op = new AddToStringThread(unit, elements);
+            IWorkbenchSite site = HandlerUtil.getActiveSite(event);
+            AddToStringThread op = new AddToStringThread(targets, site);
             PlatformUI.getWorkbench().getProgressService().runInUI(
                     PlatformUI.getWorkbench().getProgressService(),
                     new WorkbenchRunnableAdapter(op, op.getScheduleRule()),
                     op.getScheduleRule());
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            JDTUtilsPlugin.logException(e);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            JDTUtilsPlugin.logException(e);
         }
-
         // ////////////////////////////////////////////////////////////////////////////
         return null;
     }
 
     class AddToStringThread implements IWorkspaceRunnable {
 
-        private final ICompilationUnit unit;
-
         private final IJavaElement[] javaElements;
 
-        public AddToStringThread(ICompilationUnit unit,
-                IJavaElement[] javaElements) {
-            this.unit = unit;
+        private final IWorkbenchSite site;
+
+        public AddToStringThread(IJavaElement[] javaElements,
+                IWorkbenchSite site) {
             this.javaElements = javaElements;
+            this.site = site;
         }
 
         public ISchedulingRule getScheduleRule() {
@@ -86,24 +105,37 @@ public class AddToStringHandler extends AbstractHandler implements IHandler {
         }
 
         public void run(IProgressMonitor monitor) throws CoreException {
-            addToString(unit, javaElements, monitor);
+            addToString(javaElements, monitor);
+
+            // IClasspathEntry[] rawClasspath = javaElements[0].getJavaProject()
+            // .getRawClasspath();
+            // for (IClasspathEntry classpathEntry : rawClasspath) {
+            // System.out.println(classpathEntry);
+            // }
+
+            // FormatAllAction formatAllAction = new FormatAllAction(site);
+            // IStructuredSelection selection = new StructuredSelection(unit);
+            // formatAllAction.run(selection);
         }
     }
 
     /**
-     * @param unit
      * @param elements
      * @param monitor
      * @throws CoreException
      */
-    private void addToString(ICompilationUnit unit, IJavaElement[] elements,
-            IProgressMonitor monitor) throws CoreException {
+    private void addToString(IJavaElement[] elements, IProgressMonitor monitor)
+            throws CoreException {
+        if (elements == null || elements.length == 0) {
+            return;
+        }
         try {
             monitor.beginTask("toStringを追加します", 5);
             // ITextFileBufferManagerの取得。
             ITextFileBufferManager manager = FileBuffers
                     .getTextFileBufferManager();
-            IPath path = unit.getPath();
+            // IPath path = unit.getPath();
+            IPath path = elements[0].getPath();
             // ファイルにconnect
             SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 4);
             subMonitor.beginTask("", elements.length);
@@ -112,7 +144,8 @@ public class AddToStringHandler extends AbstractHandler implements IHandler {
                 // document取得。
                 IDocument document = manager.getTextFileBuffer(path,
                         LocationKind.IFILE).getDocument();
-                IJavaProject project = unit.getJavaProject();
+                // IJavaProject project = unit.getJavaProject();
+                IJavaProject project = elements[0].getJavaProject();
 
                 // エディット用クラスを生成。
                 MultiTextEdit edit = new MultiTextEdit();
@@ -124,13 +157,12 @@ public class AddToStringHandler extends AbstractHandler implements IHandler {
                         // ホントはココで、選択されたType側だけ実行って判断が必要。
                         // ハンドラからcuをもらった時点で、どっちのJavaElementかって情報を保持しておかないと難しいな。
                         IType type = (IType) javaElement;
-                        // メソッド一覧を取得。
-                        IMethod[] methods = type.getMethods();
-
-                        IMethod lastMethod = methods[methods.length - 1];
-                        String code = JDTUtils.createIndentedCode(JDTUtils
-                                .createToString(type), lastMethod, document,
-                                project);
+                        IMethod lastMethod = JDTUtils
+                                .getLastMethodFromType(type);
+                        String code = JDTUtils
+                                .createIndentedCode(JDTUtils.createToString(
+                                        type, lastMethod, document, project),
+                                        lastMethod, document, project);
 
                         // オフセット位置を計算する。
                         int endOffSet = JDTUtils.getMemberEndOffset(lastMethod,
@@ -147,10 +179,10 @@ public class AddToStringHandler extends AbstractHandler implements IHandler {
                 manager.disconnect(path, LocationKind.IFILE, subMonitor);
                 subMonitor.done();
             }
+
         } finally {
             monitor.worked(1);
             monitor.done();
         }
     }
-
 }
