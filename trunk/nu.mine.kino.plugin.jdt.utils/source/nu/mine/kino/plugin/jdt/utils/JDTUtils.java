@@ -182,4 +182,21 @@ public class JDTUtils {
         return null;
 
     }
+
+    public static IJavaElement getJavaElement(ExecutionEvent event)
+            throws ExecutionException {
+        ISelection selection = HandlerUtil.getActiveMenuSelectionChecked(event);
+        if (selection instanceof IStructuredSelection) {
+            IStructuredSelection sselection = (IStructuredSelection) selection;
+            Object firstElement = sselection.getFirstElement();
+            if (firstElement instanceof IJavaElement) {
+                IJavaElement element = (IJavaElement) firstElement;
+                return element;
+            } // ココは、ソースコードの要素を選択して遷移したら、Unit じゃなくてIJavaElementがわたってくるゾ。
+            else {
+                System.out.println(firstElement.getClass().getName());
+            }
+        }
+        return null;
+    }
 }
