@@ -6,13 +6,11 @@ Bundle-Version: 0.1.0
 Bundle-Activator: nu.mine.kino.plugin.jdt.utils.JDTUtilsPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.jdt,
  org.eclipse.jdt.core,
  org.eclipse.jdt.ui,
- org.eclipse.ui.workbench.texteditor,
- org.eclipse.ui.ide,
  org.eclipse.core.resources,
  org.eclipse.jface.text,
- org.eclipse.core.filebuffers
+ org.eclipse.core.filebuffers,
+ nu.mine.kino.plugin.log4j
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
