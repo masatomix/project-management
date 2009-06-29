@@ -36,6 +36,14 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.search.IJavaSearchConstants;
+import org.eclipse.jdt.core.search.IJavaSearchScope;
+import org.eclipse.jdt.core.search.SearchEngine;
+import org.eclipse.jdt.core.search.SearchMatch;
+import org.eclipse.jdt.core.search.SearchParticipant;
+import org.eclipse.jdt.core.search.SearchPattern;
+import org.eclipse.jdt.core.search.SearchRequestor;
+import org.eclipse.jdt.core.search.TypeNameRequestor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.text.edits.InsertEdit;
@@ -107,15 +115,68 @@ public class AddToStringHandler extends AbstractHandler implements IHandler {
         public void run(IProgressMonitor monitor) throws CoreException {
             addToString(javaElements, monitor);
 
-            // IClasspathEntry[] rawClasspath = javaElements[0].getJavaProject()
-            // .getRawClasspath();
-            // for (IClasspathEntry classpathEntry : rawClasspath) {
-            // System.out.println(classpathEntry);
-            // }
+            IJavaProject javaProject = javaElements[0].getJavaProject();
+            String prefix = "org.apache.commons.lang.builder.ToStringBuilder";
+            // 検索対象は、IJavaProjectのルートにあるモノ全部。(jarとかsrcディレクトリとか、外部のパスが通ってるjarとか)
+            // IPackageFragmentRoot[] roots = javaProject
+            // .getAllPackageFragmentRoots();
+            IJavaSearchScope scope = SearchEngine
+                    .createJavaSearchScope(new IJavaElement[] { javaProject }); // プロジェクト内のソースや、jar(外部のも)が検索対象。
 
-            // FormatAllAction formatAllAction = new FormatAllAction(site);
-            // IStructuredSelection selection = new StructuredSelection(unit);
-            // formatAllAction.run(selection);
+            // クラス検索やり方１。
+            // new SearchEngine().searchを使う場合はフックするクラスはSearchRequestor。
+            SearchRequestor requestor = new SearchRequestor() {
+                public void acceptSearchMatch(SearchMatch match)
+                        throws CoreException {
+                    Object javaElement = match.getElement();
+                    System.out.println(javaElement);
+                    if (javaElement instanceof IType) {
+                        IType type = (IType) javaElement;
+                        String typeName = type.getFullyQualifiedName();
+                    }
+                }
+            };
+            // http://help.eclipse.org/ganymede/index.jsp?topic=/org.eclipse.jdt.doc.isv/reference/api/org/eclipse/jdt/core/search/class-use/SearchPattern.html
+            // 例として、prefixはクラス名の場合は、java.lang.Objectとか、Runnableとか、List<String>
+            // とか、らしい。
+            SearchPattern pattern = SearchPattern.createPattern(prefix,
+                    IJavaSearchConstants.CLASS, // クラスだけ。
+                    IJavaSearchConstants.DECLARATIONS, // 宣言を探す。
+                    SearchPattern.R_EXACT_MATCH); // 正確にマッチ。
+            SearchParticipant participant = SearchEngine
+                    .getDefaultSearchParticipant();
+            new SearchEngine().search(pattern,
+                    new SearchParticipant[] { participant }, scope, requestor,
+                    monitor);
+            System.out.println("end.");
+
+            // //////////
+            // クラス検索やり方２。
+            // new
+            // SearchEngine().searchAllTypeNamesを使う場合はフックするクラスはTypeNameRequestor。
+            TypeNameRequestor nameRequestor = new TypeNameRequestor() {
+                public void acceptType(int modifiers, char[] packageName,
+                        char[] simpleTypeName, char[][] enclosingTypeNames,
+                        String path) {
+                    System.out.println("------");
+                    System.out.println(new String(packageName));
+                    System.out.println(new String(simpleTypeName));
+                    for (int j = 0; j < enclosingTypeNames.length; j++) {
+                        System.out.println(new String(enclosingTypeNames[j]));
+                    }
+                    System.out.println(path);
+                    System.out.println("------");
+                }
+            };
+
+            String pkg = "org.apache.commons.lang.builder";
+            String clazzName = "ToStringBuilder";
+            new SearchEngine().searchAllTypeNames(pkg.toCharArray(),
+                    SearchPattern.R_EXACT_MATCH, clazzName.toCharArray(),
+                    SearchPattern.R_EXACT_MATCH, IJavaSearchConstants.CLASS,
+                    scope, nameRequestor,
+                    IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, monitor);
+            System.out.println("end.");
         }
     }
 
