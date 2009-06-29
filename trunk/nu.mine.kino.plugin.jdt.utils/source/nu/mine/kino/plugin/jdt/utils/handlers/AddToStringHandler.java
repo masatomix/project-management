@@ -36,26 +36,21 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.search.IJavaSearchConstants;
-import org.eclipse.jdt.core.search.IJavaSearchScope;
-import org.eclipse.jdt.core.search.SearchEngine;
-import org.eclipse.jdt.core.search.SearchMatch;
-import org.eclipse.jdt.core.search.SearchParticipant;
-import org.eclipse.jdt.core.search.SearchPattern;
-import org.eclipse.jdt.core.search.SearchRequestor;
-import org.eclipse.jdt.core.search.TypeNameRequestor;
+import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.ui.JavaUI;
+import org.eclipse.jdt.ui.actions.OrganizeImportsAction;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.text.edits.InsertEdit;
 import org.eclipse.text.edits.MultiTextEdit;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchSite;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-/**
- * @author Masatomi KINO
- * @version $Revision$
- */
 /**
  * @author Masatomi KINO
  * @version $Revision$
@@ -81,6 +76,10 @@ public class AddToStringHandler extends AbstractHandler implements IHandler {
         }
 
         try {
+            // open the editor, forces the creation of a working copy
+            IEditorPart editor = JavaUI.openInEditor(targets[0]
+                    .getAncestor(IJavaElement.COMPILATION_UNIT));
+
             IWorkbenchSite site = HandlerUtil.getActiveSite(event);
             AddToStringThread op = new AddToStringThread(targets, site);
             PlatformUI.getWorkbench().getProgressService().runInUI(
@@ -91,13 +90,16 @@ public class AddToStringHandler extends AbstractHandler implements IHandler {
             JDTUtilsPlugin.logException(e);
         } catch (InterruptedException e) {
             JDTUtilsPlugin.logException(e);
+        } catch (PartInitException e) {
+            JDTUtilsPlugin.logException(e);
+        } catch (JavaModelException e) {
+            JDTUtilsPlugin.logException(e);
         }
         // ////////////////////////////////////////////////////////////////////////////
         return null;
     }
 
     class AddToStringThread implements IWorkspaceRunnable {
-
         private final IJavaElement[] javaElements;
 
         private final IWorkbenchSite site;
@@ -115,68 +117,12 @@ public class AddToStringHandler extends AbstractHandler implements IHandler {
         public void run(IProgressMonitor monitor) throws CoreException {
             addToString(javaElements, monitor);
 
-            IJavaProject javaProject = javaElements[0].getJavaProject();
-            String prefix = "org.apache.commons.lang.builder.ToStringBuilder";
-            // 検索対象は、IJavaProjectのルートにあるモノ全部。(jarとかsrcディレクトリとか、外部のパスが通ってるjarとか)
-            // IPackageFragmentRoot[] roots = javaProject
-            // .getAllPackageFragmentRoots();
-            IJavaSearchScope scope = SearchEngine
-                    .createJavaSearchScope(new IJavaElement[] { javaProject }); // プロジェクト内のソースや、jar(外部のも)が検索対象。
-
-            // クラス検索やり方１。
-            // new SearchEngine().searchを使う場合はフックするクラスはSearchRequestor。
-            SearchRequestor requestor = new SearchRequestor() {
-                public void acceptSearchMatch(SearchMatch match)
-                        throws CoreException {
-                    Object javaElement = match.getElement();
-                    System.out.println(javaElement);
-                    if (javaElement instanceof IType) {
-                        IType type = (IType) javaElement;
-                        String typeName = type.getFullyQualifiedName();
-                    }
-                }
-            };
-            // http://help.eclipse.org/ganymede/index.jsp?topic=/org.eclipse.jdt.doc.isv/reference/api/org/eclipse/jdt/core/search/class-use/SearchPattern.html
-            // 例として、prefixはクラス名の場合は、java.lang.Objectとか、Runnableとか、List<String>
-            // とか、らしい。
-            SearchPattern pattern = SearchPattern.createPattern(prefix,
-                    IJavaSearchConstants.CLASS, // クラスだけ。
-                    IJavaSearchConstants.DECLARATIONS, // 宣言を探す。
-                    SearchPattern.R_EXACT_MATCH); // 正確にマッチ。
-            SearchParticipant participant = SearchEngine
-                    .getDefaultSearchParticipant();
-            new SearchEngine().search(pattern,
-                    new SearchParticipant[] { participant }, scope, requestor,
-                    monitor);
-            System.out.println("end.");
-
-            // //////////
-            // クラス検索やり方２。
-            // new
-            // SearchEngine().searchAllTypeNamesを使う場合はフックするクラスはTypeNameRequestor。
-            TypeNameRequestor nameRequestor = new TypeNameRequestor() {
-                public void acceptType(int modifiers, char[] packageName,
-                        char[] simpleTypeName, char[][] enclosingTypeNames,
-                        String path) {
-                    System.out.println("------");
-                    System.out.println(new String(packageName));
-                    System.out.println(new String(simpleTypeName));
-                    for (int j = 0; j < enclosingTypeNames.length; j++) {
-                        System.out.println(new String(enclosingTypeNames[j]));
-                    }
-                    System.out.println(path);
-                    System.out.println("------");
-                }
-            };
-
-            String pkg = "org.apache.commons.lang.builder";
-            String clazzName = "ToStringBuilder";
-            new SearchEngine().searchAllTypeNames(pkg.toCharArray(),
-                    SearchPattern.R_EXACT_MATCH, clazzName.toCharArray(),
-                    SearchPattern.R_EXACT_MATCH, IJavaSearchConstants.CLASS,
-                    scope, nameRequestor,
-                    IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, monitor);
-            System.out.println("end.");
+            ICompilationUnit unit = (ICompilationUnit) javaElements[0]
+                    .getAncestor(IJavaElement.COMPILATION_UNIT);
+            OrganizeImportsAction importsAction = new OrganizeImportsAction(
+                    site);
+            IStructuredSelection selection = new StructuredSelection(unit);
+            importsAction.run(selection);
         }
     }
 
@@ -208,6 +154,9 @@ public class AddToStringHandler extends AbstractHandler implements IHandler {
                 // IJavaProject project = unit.getJavaProject();
                 IJavaProject project = elements[0].getJavaProject();
 
+                boolean canUseToStringBuilder = JDTUtils.canUseToStringBuilder(
+                        project, monitor);
+
                 // エディット用クラスを生成。
                 MultiTextEdit edit = new MultiTextEdit();
 
@@ -220,10 +169,11 @@ public class AddToStringHandler extends AbstractHandler implements IHandler {
                         IType type = (IType) javaElement;
                         IMethod lastMethod = JDTUtils
                                 .getLastMethodFromType(type);
-                        String code = JDTUtils
-                                .createIndentedCode(JDTUtils.createToString(
-                                        type, lastMethod, document, project),
-                                        lastMethod, document, project);
+                        String createToString = JDTUtils.createToString(type,
+                                lastMethod, document, project,
+                                canUseToStringBuilder);
+                        String code = JDTUtils.createIndentedCode(
+                                createToString, lastMethod, document, project);
 
                         // オフセット位置を計算する。
                         int endOffSet = JDTUtils.getMemberEndOffset(lastMethod,
