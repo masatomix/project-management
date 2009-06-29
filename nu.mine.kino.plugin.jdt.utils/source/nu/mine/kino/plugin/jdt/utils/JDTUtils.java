@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
@@ -23,6 +24,11 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.ISourceRange;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.search.IJavaSearchConstants;
+import org.eclipse.jdt.core.search.IJavaSearchScope;
+import org.eclipse.jdt.core.search.SearchEngine;
+import org.eclipse.jdt.core.search.SearchPattern;
+import org.eclipse.jdt.core.search.TypeNameRequestor;
 import org.eclipse.jdt.internal.corext.dom.TokenScanner;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -42,19 +48,47 @@ public class JDTUtils {
      */
     private static final Logger logger = Logger.getLogger(JDTUtils.class);
 
+    public static boolean canUseToStringBuilder(IJavaProject javaProject,
+            IProgressMonitor monitor) throws JavaModelException {
+        final boolean[] flag = new boolean[1];
+        flag[0] = false;
+        // 検索対象は、IJavaProjectのルートにあるモノ全部。(jarとかsrcディレクトリとか、外部のパスが通ってるjarとか)
+        IJavaSearchScope scope = SearchEngine
+                .createJavaSearchScope(new IJavaElement[] { javaProject }); // プロジェクト内のソースや、jar(外部のも)が検索対象。
+        // SearchEngine().searchAllTypeNamesを使う場合はフックするクラスはTypeNameRequestor。
+        TypeNameRequestor nameRequestor = new TypeNameRequestor() {
+            public void acceptType(int modifiers, char[] packageName,
+                    char[] simpleTypeName, char[][] enclosingTypeNames,
+                    String path) {
+                flag[0] = true;
+            }
+        };
+
+        String pkg = "org.apache.commons.lang.builder";
+        String clazzName = "ToStringBuilder";
+        new SearchEngine().searchAllTypeNames(pkg.toCharArray(),
+                SearchPattern.R_EXACT_MATCH, clazzName.toCharArray(),
+                SearchPattern.R_EXACT_MATCH, IJavaSearchConstants.CLASS, scope,
+                nameRequestor, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+                monitor);
+        return flag[0];
+    }
+
     /**
      * 型情報から、toStringを作成する
      * 
      * @param type
      * @param
      * @param lastMethod
+     * @param canUseToStringBuilder
      * @return
      * @throws JavaModelException
      * @throws BadLocationException
      */
     public static String createToString(IType type, IMethod lastMethod,
-            IDocument document, IJavaProject project)
-            throws JavaModelException, BadLocationException {
+            IDocument document, IJavaProject project,
+            boolean canUseToStringBuilder) throws JavaModelException,
+            BadLocationException {
         String lineDelim = TextUtilities.getDefaultLineDelimiter(document);
         StringBuffer buf = new StringBuffer();
         int memberStartOffset = getMemberStartOffset(lastMethod, document);
@@ -72,8 +106,8 @@ public class JDTUtils {
         if (fields == null || fields.length == 0) {
             buf.append("return super.toString()");
         }
-        // ある場合は、フィールドを並べる。
-        else {
+        // ToStringBuilderが使える場合は、フィールドを並べる。
+        else if (canUseToStringBuilder) {
             buf.append("return new ToStringBuilder(this)");
             for (IField method : fields) {
                 String elementName = method.getElementName();
@@ -86,43 +120,30 @@ public class JDTUtils {
             buf.append(".toString()");
         }
         // ある場合は、フィールドを並べる。
-        // else {
-        // buf.append("StringBuffer buf = new StringBuffer();");
-        // buf.append(lineDelim);
-        // buf.append(indentString);
-        // buf.append("buf");
-        // for (IField method : fields) {
-        // String elementName = method.getElementName();
-        // buf.append(".append(\" ");
-        // buf.append(elementName);
-        // buf.append(": \"+");
-        // buf.append(elementName);
-        // buf.append(")");
-        // // System.out.println(method.getElementName());
-        // }
-        // buf.append(";");
-        // buf.append(lineDelim);
-        // buf.append(indentString);
-        // buf.append("return buf");
-        // buf.append(".toString()");
-        // }
+        else {
+            buf.append("StringBuffer buf = new StringBuffer();");
+            buf.append(lineDelim);
+            buf.append(indentString);
+            buf.append("buf");
+            for (IField method : fields) {
+                String elementName = method.getElementName();
+                buf.append(".append(\" ");
+                buf.append(elementName);
+                buf.append(": \"+");
+                buf.append(elementName);
+                buf.append(")");
+                // System.out.println(method.getElementName());
+            }
+            buf.append(";");
+            buf.append(lineDelim);
+            buf.append(indentString);
+            buf.append("return buf");
+            buf.append(".toString()");
+        }
         buf.append(";");
         buf.append(lineDelim);
         buf.append("}");
         return new String(buf);
-
-        // @Override
-        // public String toString() {
-        // return new ToStringBuilder(this).append("議事録id", minutes_id).append(
-        // "プロジェクトid", project_id).append("会議名", meeting_name).append(
-        // "会議目的", purpose).append("会議実施日", meeting_date).append("開始時刻",
-        // start_time).append("終了時刻", end_time).append("議事録ステータス",
-        // minutes_status).append("備考", minutes_comment).append("会議場所",
-        // meeting_place).append("削除区分", delete_div).append("version",
-        // version).append("作成日時", create_date).append("作成ユーザID",
-        // create_user_id).append("更新日時", update_date).append("更新ユーザID",
-        // update_user_id).append("議事録明細", minutes_detail).toString();
-        // }
     }
 
     public static String createIndentedCode(String code, IMethod member,
