@@ -179,12 +179,14 @@ public class AddToStringHandler extends AbstractHandler implements IHandler {
                         IMethod lastMethod = JDTUtils
                                 .getLastMethodFromType(type);
                         if (lastMethod != null) {
+                            int memberStartOffset = JDTUtils
+                                    .getMemberStartOffset(lastMethod, document);
                             String createToString = JDTUtils.createToString(
-                                    type, lastMethod, document, project,
+                                    type, memberStartOffset, document, project,
                                     canUseToStringBuilder);
                             String code = JDTUtils.createIndentedCode(
-                                    createToString, lastMethod, document,
-                                    project);
+                                    createToString, memberStartOffset,
+                                    document, project);
 
                             // オフセット位置を計算する。
                             int endOffSet = JDTUtils.getMemberEndOffset(
@@ -193,8 +195,14 @@ public class AddToStringHandler extends AbstractHandler implements IHandler {
                             edit.addChild(new InsertEdit(endOffSet, code)); // オフセット位置に、挿入する。
                         } else {
                             // メソッドがない場合は？
-                            // IMethod createMethod = type.createMethod(
-                            // "public void hoge(){}", null, true, null);
+                            int memberStartOffset = 0;
+                            String createToString = JDTUtils.createToString(
+                                    type, memberStartOffset, document, project,
+                                    canUseToStringBuilder);
+                            String code = JDTUtils.createIndentedCode(
+                                    createToString, memberStartOffset,
+                                    document, project);
+                            type.createMethod(code, null, true, null);
                         }
                     }
                     subMonitor.worked(1);
