@@ -89,16 +89,18 @@ public class JDTUtils {
      * @throws JavaModelException
      * @throws BadLocationException
      */
-    public static String createToString(IType type, IMethod lastMethod,
+    public static String createToString(IType type, int memberStartOffset,
             IDocument document, IJavaProject project,
             boolean canUseToStringBuilder) throws JavaModelException,
             BadLocationException {
         String lineDelim = TextUtilities.getDefaultLineDelimiter(document);
         StringBuffer buf = new StringBuffer();
-        int memberStartOffset = getMemberStartOffset(lastMethod, document);
+        // int memberStartOffset = getMemberStartOffset(lastMethod, document);
         // そのオフセットの位置のインデント文字列を検索している
-        String indentString = getIndentString(project, document,
-                memberStartOffset);
+        String indentString = "";
+        if (memberStartOffset != 0) {
+            indentString = getIndentString(project, document, memberStartOffset);
+        }
         IField[] fields = type.getFields();
         buf.append(lineDelim);
         buf.append("@Override");
@@ -150,13 +152,13 @@ public class JDTUtils {
         return new String(buf);
     }
 
-    public static String createIndentedCode(String code, IMethod member,
+    public static String createIndentedCode(String code, int memberStartOffset,
             IDocument document, IJavaProject project)
             throws JavaModelException, BadLocationException {
         String lineDelim = TextUtilities.getDefaultLineDelimiter(document); // デリミタを取得。
         String tmp = addLineDelim(code, lineDelim);
 
-        int memberStartOffset = getMemberStartOffset(member, document);
+        // int memberStartOffset = getMemberStartOffset(member, document);
         // そのオフセットの位置のインデント文字列を検索している
         String indentString = getIndentString(project, document,
                 memberStartOffset);
