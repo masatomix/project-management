@@ -34,15 +34,12 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.ui.actions.OrganizeImportsAction;
-import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.text.edits.InsertEdit;
-import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -155,66 +152,39 @@ public class AddToStringHandler extends AbstractHandler implements IHandler {
             // IPath path = unit.getPath();
             IPath path = targets[0].getPath();
             // ファイルにconnect
-            SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 4);
+            SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 4);// monitorの5のうち、4を受け持つ。
             subMonitor.beginTask("", targets.length);
             manager.connect(path, LocationKind.IFILE, subMonitor);
             try {
                 // document取得。
                 IDocument document = manager.getTextFileBuffer(path,
                         LocationKind.IFILE).getDocument();
-                // IJavaProject project = unit.getJavaProject();
+                String lineDelim = TextUtilities
+                        .getDefaultLineDelimiter(document);
                 IJavaProject project = targets[0].getJavaProject();
 
-                boolean canUseToStringBuilder = JDTUtils.canUseToStringBuilder(
-                        project, monitor);
-
-                // エディット用クラスを生成。
-                MultiTextEdit edit = new MultiTextEdit();
+                // このクラスが引数のプロジェクトで利用可能かをチェックする。
+                boolean canUseToStringBuilder = JDTUtils.canUseThisClass(
+                        project,
+                        "org.apache.commons.lang.builder.ToStringBuilder",
+                        subMonitor);
 
                 // 子要素は、パッケージ宣言だったり、クラスだったりする。一つのソースに複数クラスが書いてある場合もあるし。
                 for (final IJavaElement javaElement : targets) {
                     // ↓型(クラス)だったらば、ITypeにキャストしていい。
                     if (javaElement.getElementType() == IJavaElement.TYPE) { // IPackageDeclarationは除外したいので。
                         IType type = (IType) javaElement;
-                        IMethod lastMethod = JDTUtils
-                                .getLastMethodFromType(type);
-                        if (lastMethod != null) {
-                            int memberStartOffset = JDTUtils
-                                    .getMemberStartOffset(lastMethod, document);
-                            String createToString = JDTUtils.createToString(
-                                    type, memberStartOffset, document, project,
-                                    canUseToStringBuilder);
-                            String code = JDTUtils.createIndentedCode(
-                                    createToString, memberStartOffset,
-                                    document, project);
-
-                            // オフセット位置を計算する。
-                            int endOffSet = JDTUtils.getMemberEndOffset(
-                                    lastMethod, document);
-
-                            edit.addChild(new InsertEdit(endOffSet, code)); // オフセット位置に、挿入する。
-                        } else {
-                            // メソッドがない場合は？
-                            int memberStartOffset = 0;
-                            String createToString = JDTUtils.createToString(
-                                    type, memberStartOffset, document, project,
-                                    canUseToStringBuilder);
-                            String code = JDTUtils.createIndentedCode(
-                                    createToString, memberStartOffset,
-                                    document, project);
-                            type.createMethod(code, null, true, null);
-                        }
+                        String createToString = JDTUtils.createToString(type,
+                                lineDelim, project, canUseToStringBuilder);
+                        type.createMethod(createToString, null, true,
+                                subMonitor);
                     }
                     subMonitor.worked(1);
                 }
-                edit.apply(document); // apply all edits
-            } catch (BadLocationException e) {
-                e.printStackTrace();
             } finally {
                 manager.disconnect(path, LocationKind.IFILE, subMonitor);
                 subMonitor.done();
             }
-
         } finally {
             monitor.worked(1);
             monitor.done();
