@@ -21,6 +21,7 @@ import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IPackageDeclaration;
 import org.eclipse.jdt.core.ISourceRange;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
@@ -30,12 +31,15 @@ import org.eclipse.jdt.core.search.SearchEngine;
 import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.TypeNameRequestor;
 import org.eclipse.jdt.internal.corext.dom.TokenScanner;
+import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
@@ -233,24 +237,37 @@ public class JDTUtils {
     }
 
     /**
-     * ITypeから、最後のメソッドを取得するメソッド。
+     * ITypeから、最後のメソッドを取得するメソッド。ない場合はNULLが返るが、その場合の処理が課題。
+     * 
+     * @param unit
+     * @return 最後のメソッド。
+     */
+    public static IMethod getLastMethodFromType(IType type) {
+        logger.debug("getLastMethodFromType(IType) - start");
+        try {
+            // メソッド一覧を取得。
+            IMethod[] methods = type.getMethods();
+            if (methods != null && methods.length > 0) {
+                IMethod lastMethod = methods[methods.length - 1];
+                return lastMethod;
+            }
+        } catch (JavaModelException e) {
+            logger.error("getLastMethodFromType(IType)", e);
+            JDTUtilsPlugin.logException(e);
+        }
+        logger.debug("getLastMethodFromType(IType) - end");
+        logger.warn("getLastMethodFromType(IType) - メソッドがなかった(´д`;)");
+        return null;
+    }
+
+    /**
+     * {@link ICompilationUnit}を引数にして、子要素を返すメソッド。 子要素は、パッケージや、クラスなどがある。具体的には
+     * {@link IPackageDeclaration}とか、{@link IType}など。
      * 
      * @param unit
      * @return
      */
-    public static IMethod getLastMethodFromType(IType type) {
-        try {
-            // メソッド一覧を取得。
-            IMethod[] methods = type.getMethods();
-            IMethod lastMethod = methods[methods.length - 1];
-            return lastMethod;
-        } catch (JavaModelException e) {
-            JDTUtilsPlugin.logException(e);
-        }
-        return null;
-    }
-
-    public static IJavaElement[] unit2IJavaElements(ICompilationUnit unit) {
+    public static IJavaElement[] getChildren(ICompilationUnit unit) {
         try {
             if (!unit.isStructureKnown()) {
                 return null;
@@ -299,6 +316,17 @@ public class JDTUtils {
             }
         }
         return null;
+    }
+
+    public static void openEditor(ICompilationUnit unit) {
+        try {
+            // open the editor, forces the creation of a working copy
+            IEditorPart editor = JavaUI.openInEditor(unit);
+        } catch (PartInitException e) {
+            JDTUtilsPlugin.logException(e);
+        } catch (JavaModelException e) {
+            JDTUtilsPlugin.logException(e);
+        }
     }
 
 }
