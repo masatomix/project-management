@@ -36,8 +36,6 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jdt.ui.actions.OrganizeImportsAction;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -45,13 +43,15 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.text.edits.InsertEdit;
 import org.eclipse.text.edits.MultiTextEdit;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchSite;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
+ * GUIから呼び出されて、選択したソースに対して、toStringを追加するアクションハンドラです。 選択したオブジェクトが
+ * {@link ICompilationUnit}の時は含まれるクラス全てに対してtoStringメソッドを追加します。 選択したオブジェクトが
+ * {@link IType}の時は、選択しているクラスに対してのみ、toStringメソッドを追加します。
+ * 
  * @author Masatomi KINO
  * @version $Revision$
  */
@@ -59,27 +59,31 @@ public class AddToStringHandler extends AbstractHandler implements IHandler {
 
     public Object execute(ExecutionEvent event) throws ExecutionException {
         final IJavaElement element = JDTUtils.getJavaElement(event);
+        // targets:処理対象のクラス群。
         IJavaElement[] targets = null;
 
-        // ソース自体を選択した場合。
+        // ソース自体を選択した場合、その配下のクラス達を処理対象にする。
         if (element instanceof ICompilationUnit) {
             // eventからCompilationUnitを取得。
             final ICompilationUnit unit = (ICompilationUnit) element;
             // unitから、子要素たちをIJavaElementの配列として取得。
-            targets = JDTUtils.unit2IJavaElements(unit);
+            // このIJavaElement達は、パッケージだったり、ITypeだったりする。
+            targets = JDTUtils.getChildren(unit);
         }
-        // ソース下のクラス名を選択した場合。
+        // ソース下のクラス名を選択した場合、そいつだけを処理対象にする。
         else if (element.getElementType() == IJavaElement.TYPE) {
             IType type = (IType) element;
             IJavaElement[] tmpTargets = new IJavaElement[] { type };
             targets = tmpTargets;
         }
 
-        try {
-            // open the editor, forces the creation of a working copy
-            IEditorPart editor = JavaUI.openInEditor(targets[0]
-                    .getAncestor(IJavaElement.COMPILATION_UNIT));
+        // 該当ファイルを開いておく。
+        ICompilationUnit unit = (ICompilationUnit) element
+                .getAncestor(IJavaElement.COMPILATION_UNIT);
+        JDTUtils.openEditor(unit);
 
+        try {
+            // 別スレを起動して、実行して終わり。
             IWorkbenchSite site = HandlerUtil.getActiveSite(event);
             AddToStringThread op = new AddToStringThread(targets, site);
             PlatformUI.getWorkbench().getProgressService().runInUI(
@@ -87,26 +91,29 @@ public class AddToStringHandler extends AbstractHandler implements IHandler {
                     new WorkbenchRunnableAdapter(op, op.getScheduleRule()),
                     op.getScheduleRule());
         } catch (InvocationTargetException e) {
-            JDTUtilsPlugin.logException(e);
+            Throwable targetException = e.getTargetException();
+            JDTUtilsPlugin.logException(targetException);
         } catch (InterruptedException e) {
-            JDTUtilsPlugin.logException(e);
-        } catch (PartInitException e) {
-            JDTUtilsPlugin.logException(e);
-        } catch (JavaModelException e) {
-            JDTUtilsPlugin.logException(e);
+            JDTUtilsPlugin.logException(e, false);
         }
         // ////////////////////////////////////////////////////////////////////////////
         return null;
     }
 
+    /**
+     * Eclipse ワークベンチ内のダイアログ上で、実際に処理を実行するスレッド。
+     * 
+     * @author Masatomi KINO
+     * @version $Revision$
+     */
     class AddToStringThread implements IWorkspaceRunnable {
-        private final IJavaElement[] javaElements;
+        // 基本的にはITypeの配列。たまにパッケージ宣言(IPackageDeclaration)が混じってる。
+        private final IJavaElement[] targets;
 
         private final IWorkbenchSite site;
 
-        public AddToStringThread(IJavaElement[] javaElements,
-                IWorkbenchSite site) {
-            this.javaElements = javaElements;
+        public AddToStringThread(IJavaElement[] targets, IWorkbenchSite site) {
+            this.targets = targets;
             this.site = site;
         }
 
@@ -115,9 +122,13 @@ public class AddToStringHandler extends AbstractHandler implements IHandler {
         }
 
         public void run(IProgressMonitor monitor) throws CoreException {
-            addToString(javaElements, monitor);
+            addToString(targets, monitor);
+            importActionRun();
+        }
 
-            ICompilationUnit unit = (ICompilationUnit) javaElements[0]
+        private void importActionRun() {
+            // 以下は、ICompilationUnitを取得して、import文を綺麗にするアクションを実行する。
+            ICompilationUnit unit = (ICompilationUnit) targets[0]
                     .getAncestor(IJavaElement.COMPILATION_UNIT);
             OrganizeImportsAction importsAction = new OrganizeImportsAction(
                     site);
@@ -127,13 +138,13 @@ public class AddToStringHandler extends AbstractHandler implements IHandler {
     }
 
     /**
-     * @param elements
+     * @param targets
      * @param monitor
      * @throws CoreException
      */
-    private void addToString(IJavaElement[] elements, IProgressMonitor monitor)
+    private void addToString(IJavaElement[] targets, IProgressMonitor monitor)
             throws CoreException {
-        if (elements == null || elements.length == 0) {
+        if (targets == null || targets.length == 0) {
             return;
         }
         try {
@@ -142,17 +153,17 @@ public class AddToStringHandler extends AbstractHandler implements IHandler {
             ITextFileBufferManager manager = FileBuffers
                     .getTextFileBufferManager();
             // IPath path = unit.getPath();
-            IPath path = elements[0].getPath();
+            IPath path = targets[0].getPath();
             // ファイルにconnect
             SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 4);
-            subMonitor.beginTask("", elements.length);
+            subMonitor.beginTask("", targets.length);
             manager.connect(path, LocationKind.IFILE, subMonitor);
             try {
                 // document取得。
                 IDocument document = manager.getTextFileBuffer(path,
                         LocationKind.IFILE).getDocument();
                 // IJavaProject project = unit.getJavaProject();
-                IJavaProject project = elements[0].getJavaProject();
+                IJavaProject project = targets[0].getJavaProject();
 
                 boolean canUseToStringBuilder = JDTUtils.canUseToStringBuilder(
                         project, monitor);
@@ -161,25 +172,30 @@ public class AddToStringHandler extends AbstractHandler implements IHandler {
                 MultiTextEdit edit = new MultiTextEdit();
 
                 // 子要素は、パッケージ宣言だったり、クラスだったりする。一つのソースに複数クラスが書いてある場合もあるし。
-                for (final IJavaElement javaElement : elements) {
+                for (final IJavaElement javaElement : targets) {
                     // ↓型(クラス)だったらば、ITypeにキャストしていい。
-                    if (javaElement.getElementType() == IJavaElement.TYPE) {
-                        // ホントはココで、選択されたType側だけ実行って判断が必要。
-                        // ハンドラからcuをもらった時点で、どっちのJavaElementかって情報を保持しておかないと難しいな。
+                    if (javaElement.getElementType() == IJavaElement.TYPE) { // IPackageDeclarationは除外したいので。
                         IType type = (IType) javaElement;
                         IMethod lastMethod = JDTUtils
                                 .getLastMethodFromType(type);
-                        String createToString = JDTUtils.createToString(type,
-                                lastMethod, document, project,
-                                canUseToStringBuilder);
-                        String code = JDTUtils.createIndentedCode(
-                                createToString, lastMethod, document, project);
+                        if (lastMethod != null) {
+                            String createToString = JDTUtils.createToString(
+                                    type, lastMethod, document, project,
+                                    canUseToStringBuilder);
+                            String code = JDTUtils.createIndentedCode(
+                                    createToString, lastMethod, document,
+                                    project);
 
-                        // オフセット位置を計算する。
-                        int endOffSet = JDTUtils.getMemberEndOffset(lastMethod,
-                                document);
+                            // オフセット位置を計算する。
+                            int endOffSet = JDTUtils.getMemberEndOffset(
+                                    lastMethod, document);
 
-                        edit.addChild(new InsertEdit(endOffSet, code)); // オフセット位置に、挿入する。
+                            edit.addChild(new InsertEdit(endOffSet, code)); // オフセット位置に、挿入する。
+                        } else {
+                            // メソッドがない場合は？
+                            // IMethod createMethod = type.createMethod(
+                            // "public void hoge(){}", null, true, null);
+                        }
                     }
                     subMonitor.worked(1);
                 }
