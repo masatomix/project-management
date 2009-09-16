@@ -24,6 +24,9 @@
    <feature url="features/nu.mine.kino.plugin.beangenerator_0.5.1.jar" id="nu.mine.kino.plugin.beangenerator" version="0.5.1">
       <category name="beancreator"/>
    </feature>
+   <feature url="features/nu.mine.kino.plugin.beangenerator_0.5.2.jar" id="nu.mine.kino.plugin.beangenerator" version="0.5.2">
+      <category name="plugindocumentcreator"/>
+   </feature>
    <category-def name="google" label="Google Plugin"/>
    <category-def name="beancreator" label="JavaBeans Creator Plugin"/>
    <category-def name="plugindocumentcreator" label="Plugin Document Creator Plugin"/>
