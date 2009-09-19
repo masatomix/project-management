@@ -27,8 +27,12 @@
    <feature url="features/nu.mine.kino.plugin.beangenerator_0.5.2.jar" id="nu.mine.kino.plugin.beangenerator" version="0.5.2">
       <category name="beancreator"/>
    </feature>
+   <feature url="features/nu.mine.kino.plugin.jdt.utils_0.2.0.jar" id="nu.mine.kino.plugin.jdt.utils" version="0.2.0">
+      <category name="jdtutilsplugin"/>
+   </feature>
    <category-def name="google" label="Google Plugin"/>
    <category-def name="beancreator" label="JavaBeans Creator Plugin"/>
    <category-def name="plugindocumentcreator" label="Plugin Document Creator Plugin"/>
    <category-def name="utils" label="Utils Plugin"/>
+   <category-def name="jdtutilsplugin" label="JDT Utils Plugin"/>
 </site>
