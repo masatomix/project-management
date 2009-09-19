@@ -1,26 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="nu.mine.kino.plugin.jdt.utils"
-      label="JDT Utils Feature"
-      version="0.1.0">
+      label="%featureName"
+      version="0.2.0"
+      provider-name="%providerName">
 
-   <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+   <description url="%descriptionURL">
+      %description
    </description>
 
-   <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
+   <copyright>
+      Copyright (C) 2008-2009 by Masatomi KINO
    </copyright>
 
-   <license url="http://www.example.com/license">
-      [Enter License Description here.]
+   <license url="%licenseURL">
+      %license
    </license>
+
+   <url>
+      <update label="%updateSiteName" url="http://www.masatom.in/update/"/>
+      <discovery label="%updateSiteName" url="http://www.masatom.in/update/"/>
+   </url>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.core.filebuffers"/>
+      <import plugin="org.eclipse.jdt"/>
+   </requires>
 
    <plugin
          id="nu.mine.kino.plugin.jdt.utils"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="0.2.0"
          unpack="false"/>
+
+   <plugin
+         id="nu.mine.kino.plugin.log4j"
+         download-size="0"
+         install-size="0"
+         version="0.0.4"/>
 
 </feature>
