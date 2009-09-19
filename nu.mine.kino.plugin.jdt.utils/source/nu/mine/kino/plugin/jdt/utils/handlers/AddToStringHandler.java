@@ -103,7 +103,7 @@ public class AddToStringHandler extends AbstractHandler implements IHandler {
      * @author Masatomi KINO
      * @version $Revision$
      */
-    class AddToStringThread implements IWorkspaceRunnable {
+    private class AddToStringThread implements IWorkspaceRunnable {
         // 基本的にはITypeの配列。たまにパッケージ宣言(IPackageDeclaration)が混じってる。
         private final IJavaElement[] targets;
 
@@ -132,62 +132,65 @@ public class AddToStringHandler extends AbstractHandler implements IHandler {
             IStructuredSelection selection = new StructuredSelection(unit);
             importsAction.run(selection);
         }
-    }
 
-    /**
-     * @param targets
-     * @param monitor
-     * @throws CoreException
-     */
-    private void addToString(IJavaElement[] targets, IProgressMonitor monitor)
-            throws CoreException {
-        if (targets == null || targets.length == 0) {
-            return;
-        }
-        try {
-            monitor.beginTask("toStringを追加します", 5);
-            // ITextFileBufferManagerの取得。
-            ITextFileBufferManager manager = FileBuffers
-                    .getTextFileBufferManager();
-            // IPath path = unit.getPath();
-            IPath path = targets[0].getPath();
-            // ファイルにconnect
-            SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 4);// monitorの5のうち、4を受け持つ。
-            subMonitor.beginTask("", targets.length);
-            manager.connect(path, LocationKind.IFILE, subMonitor);
+        /**
+         * @param targets
+         * @param monitor
+         * @throws CoreException
+         */
+        private void addToString(IJavaElement[] targets,
+                IProgressMonitor monitor) throws CoreException {
+            if (targets == null || targets.length == 0) {
+                return;
+            }
             try {
-                // document取得。
-                IDocument document = manager.getTextFileBuffer(path,
-                        LocationKind.IFILE).getDocument();
-                String lineDelim = TextUtilities
-                        .getDefaultLineDelimiter(document);
-                IJavaProject project = targets[0].getJavaProject();
+                monitor.beginTask("toStringを追加します", 5);
+                // ITextFileBufferManagerの取得。
+                ITextFileBufferManager manager = FileBuffers
+                        .getTextFileBufferManager();
+                // IPath path = unit.getPath();
+                IPath path = targets[0].getPath();
+                // ファイルにconnect
+                SubProgressMonitor subMonitor = new SubProgressMonitor(monitor,
+                        4);// monitorの5のうち、4を受け持つ。
+                subMonitor.beginTask("", targets.length);
+                manager.connect(path, LocationKind.IFILE, subMonitor);
+                try {
+                    // document取得。
+                    IDocument document = manager.getTextFileBuffer(path,
+                            LocationKind.IFILE).getDocument();
+                    String lineDelim = TextUtilities
+                            .getDefaultLineDelimiter(document);
+                    IJavaProject project = targets[0].getJavaProject();
 
-                // このクラスが引数のプロジェクトで利用可能かをチェックする。
-                boolean canUseToStringBuilder = JDTUtils.canUseThisClass(
-                        project,
-                        "org.apache.commons.lang.builder.ToStringBuilder",
-                        subMonitor);
+                    // このクラスが引数のプロジェクトで利用可能かをチェックする。
+                    boolean canUseToStringBuilder = JDTUtils.canUseThisClass(
+                            project,
+                            "org.apache.commons.lang.builder.ToStringBuilder",
+                            subMonitor);
 
-                // 子要素は、パッケージ宣言だったり、クラスだったりする。一つのソースに複数クラスが書いてある場合もあるし。
-                for (final IJavaElement javaElement : targets) {
-                    // ↓型(クラス)だったらば、ITypeにキャストしていい。
-                    if (javaElement.getElementType() == IJavaElement.TYPE) { // IPackageDeclarationは除外したいので。
-                        IType type = (IType) javaElement;
-                        String createToString = JDTUtils.createToString(type,
-                                lineDelim, project, canUseToStringBuilder);
-                        type.createMethod(createToString, null, true,
-                                subMonitor);
+                    // 子要素は、パッケージ宣言だったり、クラスだったりする。一つのソースに複数クラスが書いてある場合もあるし。
+                    for (final IJavaElement javaElement : targets) {
+                        // ↓型(クラス)だったらば、ITypeにキャストしていい。
+                        if (javaElement.getElementType() == IJavaElement.TYPE) { // IPackageDeclarationは除外したいので。
+                            IType type = (IType) javaElement;
+                            String createToString = JDTUtils.createToString(
+                                    type, lineDelim, project,
+                                    canUseToStringBuilder);
+                            type.createMethod(createToString, null, true,
+                                    subMonitor);
+                        }
+                        subMonitor.worked(1);
                     }
-                    subMonitor.worked(1);
+                } finally {
+                    manager.disconnect(path, LocationKind.IFILE, subMonitor);
+                    subMonitor.done();
                 }
             } finally {
-                manager.disconnect(path, LocationKind.IFILE, subMonitor);
-                subMonitor.done();
+                monitor.worked(1);
+                monitor.done();
             }
-        } finally {
-            monitor.worked(1);
-            monitor.done();
         }
     }
+
 }
