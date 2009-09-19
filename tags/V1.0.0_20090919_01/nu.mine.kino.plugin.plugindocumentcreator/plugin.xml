@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="formatters" name="Formatter" schema="schema/formatters.exsd"/>
+<!--   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="nu.mine.kino.plugin.plugindocumentcreator.actionSet1"
+            label="管理系アクションセット"
+            visible="true">
+         <action
+               class="nu.mine.kino.plugin.plugindocumentcreator.actions.MakeExtensionListActionDelegate"
+               icon="icons/page_excel.png"
+               id="nu.mine.kino.plugin.plugindocumentcreator.action1"
+               label="ドキュメントを作成する..."
+               menubarPath="documentMenu1/marker"
+               style="push"/>
+         <menu
+               id="documentMenu"
+               label="管理(&amp;M)"
+               >
+            <groupMarker name="marker"/>
+            <groupMarker name="marker2"/>
+         </menu>
+      </actionSet>
+   </extension>
+-->
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            category="nu.mine.kino.plugin.plugindocumentcreator.category"
+            class="nu.mine.kino.plugin.plugindocumentcreator.wizards.MakeExtensionListWizard"
+            icon="icons/page_excel.png"
+            id="nu.mine.kino.plugin.plugindocumentcreator.wizard1"
+            name="ドキュメント作成"
+            project="false"/>
+      <category
+            id="nu.mine.kino.plugin.plugindocumentcreator.category"
+            name="管理系"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               id="documentMenu"
+               label="管理">
+            <separator
+                  name="marker"
+                  visible="true">
+            </separator>
+            <separator
+                  name="marker2"
+                  visible="true">
+            </separator>
+         </menu>
+      </menuContribution>
+  <menuContribution locationURI="menu:documentMenu?after=marker">
+    <command
+          commandId="nu.mine.kino.plugin.plugindocumentcreator.handlers.MakeExtensionListCommand"
+          icon="icons/page_excel.png"
+          style="push">
+    </command>
+  </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="nu.mine.kino.plugin.plugindocumentcreator.handlers.MakeExtensionListCommand"
+            name="ドキュメントを作成する...">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="nu.mine.kino.plugin.plugindocumentcreator.handlers.MakeExtensionListHandler"
+            commandId="nu.mine.kino.plugin.plugindocumentcreator.handlers.MakeExtensionListCommand">
+      </handler>
+   </extension>
+
+
+</plugin>

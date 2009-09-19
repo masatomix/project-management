@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE beans PUBLIC
+    "-//SPRING//DTD BEAN//EN"
+    "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans
+  default-autowire="no"
+  default-lazy-init="false"
+  default-dependency-check="none"
+>
+
+  <bean
+      id="Checker"
+      class="nu.mine.kino.utils.db.CheckerImpl"
+  >
+
+    <property name="dataSource">
+      <ref bean="dataSource"/>
+    </property>
+  </bean>
+
+  <bean
+      id="nu.mine.kino.utils.db.FKChecker"
+      class="nu.mine.kino.utils.db.OracleFKCheckerImpl"
+  >
+
+    <property name="dataSource">
+
+      <ref bean="dataSource"/>
+    </property>
+
+  </bean>
+
+  <bean
+      id="nu.mine.kino.utils.db.FKEnablerTarget"
+      class="nu.mine.kino.utils.db.OracleFKEnablerImpl"
+  >
+
+    <property name="dataSource">
+
+      <ref bean="dataSource"/>
+    </property>
+    <property name="fkChecker">
+
+      <ref bean="nu.mine.kino.utils.db.FKChecker"/>
+    </property>
+
+  </bean>
+
+  <!--
+     To include additional bean definitions for Spring in the generated
+     application context file, add a file to your XDoclet merge directory
+     called spring-beans.xml that contains the <bean></bean> markup.
+  -->
+
+</beans>
