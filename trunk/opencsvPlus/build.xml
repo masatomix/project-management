@@ -25,5 +25,70 @@
 	<target name="jar">
 		<jar destfile="${jar.dir}/${jar.name}" basedir="${class.dir}"  includes="au/com/bytecode/**/**.class" />
 	</target>
+	
+	<!-- 以下、UnitTest用タスク -->
+	<!-- JUnitタスクでは，ユニットテストを自動実行して，その結果をファイルに記録します.
+		haltonfailure属性をnoに指定しておかないと，ユニットテストに失敗したときに，
+		ビルド作業も中断してしまいます．
+		JUnitReportタスクで，レポートの集計を行いたいので，失敗しても，
+		そのままテストを続けるように，指定します．
+	-->
+	<target name="junit" depends="javac" description="JUnitを実行します。">
+		<mkdir dir="${reports.dir}" />
+		<mkdir dir="${correctreports.dir}" />
+		<junit printsummary="yes" haltonfailure="no">
+			<classpath>
+				<pathelement location="${class.dir}" />
+				<pathelement path="${java.class.path}" />
+				<pathelement path="${my.class.path}" />
+			</classpath>
+			<classpath refid="my.class.path" />
+
+			<!--
+				テスト結果は，XML形式で出力します．
+				プレーンテキストでも出力できますが，集計にJUnitReportが使えなくなっ
+				てしまいます．
+				xml or plain で指定します。
+			-->
+			<formatter type="xml" />
+
+			<!--
+				reports.dirについては，Propertyタスクで定義済みと考えて置いてください．
+				ビルドファイル全体は，後述します．
+				reports.dirディレクトリに，テスト結果が出力されます．
+				テスト結果のファイル名は，何も指定しないデフォルトで，"TEST-*.xml"と
+				いった名前になります.
+			-->
+			<batchtest fork="yes" todir="${reports.dir}">
+
+				<!--
+					ここでは，拡張子を除いたファイル名の末尾が"Test"となっている
+					テストファイルを対象としています．
+				-->
+				<fileset dir="${test.src.dir}">
+					<include name="**/*Test*.java" />
+					<!--					<include name="bean/AllTests.java"/> -->
+				</fileset>
+			</batchtest>
+		</junit>
+
+
+		<!--
+			JUnitReportタスクでは，JUnitタスクで出力された,テスト結果（XML形式のもの）を集計します.
+		-->
+		<junitreport todir="${reports.dir}">
+			<!--
+				集計対象とする，テスト結果のfilesetを指定します．
+			-->
+			<fileset dir="${reports.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<!--
+				集計結果のHTMLファイル群を格納するディレクトリを指定します．
+			-->
+			<report format="frames" todir="${correctreports.dir}" />
+		</junitreport>
+	</target>
+	<!-- 以上、UnitTest用タスク -->
 </project>
 
