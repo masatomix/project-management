@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="project" default="java">
+	<property file="build.win.properties" />
+
+	<!-- クラスパス名の定義 -->
+	<path id="my.class.path">
+		<pathelement path="${java.class.path}" />
+		<pathelement path="${class.dir}" />
+		<pathelement path="${jar.dir}" />
+		<fileset dir="${jar.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+	<!-- クラスパス名の定義 以上 -->
+
+
+
+	<target name="javac">
+		<mkdir dir="${class.dir}" />
+		<javac srcdir="${src.dir}" destdir="${class.dir}" encoding="${compile.encoding}" includeantruntime="no" memoryInitialSize="256M" fork="yes" memoryMaximumSize="256M" includes="**">
+			<classpath refid="my.class.path" />
+		</javac>
+	</target>
+	
+	<target name="jar">
+		<jar destfile="${jar.dir}/${jar.name}" basedir="${class.dir}"  includes="au/com/bytecode/**/**.class" />
+	</target>
+</project>
+

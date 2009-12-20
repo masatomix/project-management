@@ -2,6 +2,6 @@
 <project name="samples" default="jar">
 	<property file="build.win.properties" />
 	<target name="jar">
-		<jar destfile="${jar.dir}/${exporter.jar}" basedir="${class.dir}"  includes="au/com/bytecode/**/**.class" />
+		<jar destfile="${jar.dir}/${jar.name}" basedir="${class.dir}"  includes="au/com/bytecode/**/**.class" />
 	</target>
 </project>
