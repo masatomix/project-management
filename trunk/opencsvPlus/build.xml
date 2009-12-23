@@ -13,8 +13,6 @@
 	</path>
 	<!-- クラスパス名の定義 以上 -->
 
-
-
 	<target name="javac">
 		<mkdir dir="${class.dir}" />
 		<javac srcdir="${src.dir}" destdir="${class.dir}" encoding="${compile.encoding}" includeantruntime="no" memoryInitialSize="256M" fork="yes" memoryMaximumSize="256M" includes="**">
@@ -26,6 +24,33 @@
 		<jar destfile="${jar.dir}/${jar.name}" basedir="${class.dir}"  includes="au/com/bytecode/**/**.class" />
 	</target>
 	
+	<!-- ドキュメント作成関連 -->
+	<!-- JavaDocの作成 -->
+	<target name="javadoc" depends="javac" description="Javadocドキュメントを作成する">
+		<delete dir="${javadoc.dir}" />
+		<mkdir dir="${javadoc.dir}" />
+		<javadoc locale="ja" destdir="${javadoc.dir}" sourcepath="${src.dir}" packagenames="*" encoding="${compile.encoding}" Package="true" author="true" version="true" use="true" windowtitle="${ant.project.name} Document" maxmemory="256M">
+			<!--<link href="${j2se.javadoc}" packagelistLoc="package-list/j2se" offline="true" />
+			<link href="${j2ee.javadoc}" packagelistLoc="package-list/j2ee" offline="true" />
+			-->
+			<classpath refid="my.class.path" />
+		</javadoc>
+	</target>
+<!--
+	<target name="j2h" depends="init" description="Java2htmlドキュメントを作成する">
+		<delete dir="${j2h.dir}" />
+		<mkdir dir="${j2h.dir}" />
+		<java2html destination="${j2h.dir}" tabsize="2" marginsize="4" header="true" footer="true" title="${ant.project.name} Source Document">
+			<fileset dir="${src.dir}">
+				<include name="eaurora/**/*.java" />
+			</fileset>-->
+			<!-- あるディレクトリにhttpのリンクをはる -->
+			<!-- 
+			<javadoc localRef="${j2se.local.javadoc}" httpRef="${j2se.javadoc}" />
+			<javadoc localRef="${j2ee.local.javadoc}" httpRef="${j2ee.javadoc}" />
+		</java2html>
+	</target>
+-->	
 	
 	<target name="test.javac" depends="javac">
 		<mkdir dir="${class.dir}" />
