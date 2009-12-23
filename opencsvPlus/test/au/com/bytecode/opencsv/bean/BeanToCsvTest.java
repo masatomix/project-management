@@ -12,10 +12,15 @@
 
 package au.com.bytecode.opencsv.bean;
 
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
 
-import au.com.bytecode.opencsv.CSVReader;
 import junit.framework.TestCase;
+import nu.mine.kino.csv.CSVSampleBean;
+import au.com.bytecode.opencsv.CSVWriter;
 
 /**
  * @author Masatomi KINO
@@ -23,12 +28,45 @@ import junit.framework.TestCase;
  */
 public class BeanToCsvTest extends TestCase {
 
-    public void testMethod() throws Exception {
-        CSVReader reader = new CSVReader(new FileReader("sample.csv"));
-        String[] nextLine;
-        while ((nextLine = reader.readNext()) != null) {
-            // nextLine[] is an array of values from the line
-            System.out.println(nextLine[0] + " " + nextLine[1] + " etc...");
+    public void testWriteAll01() throws Exception {
+        // HeaderColumnNameMappingStrategy を使うと、設定ファイルから値を設定することができる。
+        HeaderColumnNameMappingStrategy strat = new HeaderColumnNameMappingStrategy();
+        // FileInputStream in = new FileInputStream(new File("hogehoge.txt"));
+        // strat.setInputStream(in);
+        strat.setType(CSVSampleBean.class);
+        BeanToCsv csv = new BeanToCsv();
+        List<CSVSampleBean> list = getList();
+        // カンマ区切りで、""で囲まない、ばあい。
+        csv.writeAll(strat, new CSVWriter(new FileWriter("SampleOut01.csv"),
+                ',', CSVWriter.NO_ESCAPE_CHARACTER), list);
+
+    }
+
+    public void testWriteAll02() throws Exception {
+        // ColumnPositionMappingStrategyを使うと、指定したフィールド名をCSV出力できる。
+        ColumnPositionMappingStrategy strat = new ColumnPositionMappingStrategy();
+        strat.setType(CSVSampleBean.class);
+        String[] columns = new String[] { "age", "last_name", "first_name", };
+        strat.setColumnMapping(columns);
+        BeanToCsv csv = new BeanToCsv();
+        List<CSVSampleBean> list = getList();
+        // カンマ区切りで、""で囲まない、ばあい。
+        csv.writeAll(strat, new CSVWriter(new FileWriter("SampleOut02.csv"),
+                ',', '\u0000'), list);
+    }
+
+    private List<CSVSampleBean> getList() {
+        try {
+            HeaderColumnNameMappingStrategy strat = new HeaderColumnNameAutoTranslateMappingStrategy();
+            strat.setType(CSVSampleBean.class);
+            CsvToBean csv = new CsvToBean();
+            List<CSVSampleBean> list = csv.parse(strat, new FileReader(
+                    "sample.csv"));
+            return list;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            fail(e.getMessage());
         }
+        return null;
     }
 }
