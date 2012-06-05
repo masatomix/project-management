@@ -29,7 +29,11 @@ public class OpenDirHandler extends AbstractHandler {
     public Object execute(ExecutionEvent event) throws ExecutionException {
         String cacheBasepath = WebRecorderPlugin.getDefault()
                 .getCacheBasepath();
-        String target = "explorer.exe {0}";// OS‚ðŒ©‚Ä‘Ö‚¦‚é
+
+        String target = "open {0}";//
+        if (isWindows()) {
+            target = "explorer.exe {0}";// OS‚ðŒ©‚Ä‘Ö‚¦‚é
+        }
         target = MessageFormat.format(target, new Object[] { cacheBasepath });
         try {
             Runtime.getRuntime().exec(target);
@@ -40,8 +44,9 @@ public class OpenDirHandler extends AbstractHandler {
         return null;
     }
 
-    // private boolean isSupported() {
-    // String osName = System.getProperty("os.name").toLowerCase();
-    // return ((osName.indexOf("windows") != -1));
-    // }
+    private boolean isWindows() {
+        String osName = System.getProperty("os.name").toLowerCase();
+        System.out.println(osName);
+        return ((osName.indexOf("windows") != -1));
+    }
 }
