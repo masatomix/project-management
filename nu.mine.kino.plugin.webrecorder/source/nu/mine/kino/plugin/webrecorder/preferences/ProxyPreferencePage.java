@@ -1,5 +1,9 @@
 package nu.mine.kino.plugin.webrecorder.preferences;
 
+import org.apache.log4j.Logger;
+
+import java.io.File;
+
 import nu.mine.kino.plugin.webrecorder.ProxyConstant;
 import nu.mine.kino.plugin.webrecorder.WebRecorderPlugin;
 
@@ -22,6 +26,11 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 public class ProxyPreferencePage extends FieldEditorPreferencePage implements
         IWorkbenchPreferencePage {
+    /**
+     * Logger for this class
+     */
+    private static final Logger logger = Logger
+            .getLogger(ProxyPreferencePage.class);
 
     public ProxyPreferencePage() {
         super(GRID);
@@ -61,6 +70,10 @@ public class ProxyPreferencePage extends FieldEditorPreferencePage implements
      * org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */
     public void init(IWorkbench workbench) {
+        String cacheBasepath = WebRecorderPlugin.getDefault()
+                .getCacheBasepath();
+        logger.debug("キャッシュディレクトリ: " + cacheBasepath);
+        new File(cacheBasepath).mkdirs();
     }
 
 }

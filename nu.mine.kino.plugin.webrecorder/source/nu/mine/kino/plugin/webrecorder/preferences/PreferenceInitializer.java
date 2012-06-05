@@ -32,8 +32,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         IWorkspaceRoot root = workspace.getRoot();
         File rootDir = root.getLocation().toFile();
-        store.setDefault(ProxyConstant.CACHE_BASE_PATH, new File(rootDir,
-                "cache").getAbsolutePath());
+        File file = new File(rootDir, "_WebRecorderCache");
+        store.setDefault(ProxyConstant.CACHE_BASE_PATH, file.getAbsolutePath());
         store.setDefault(ProxyConstant.PORT, 8008);
 
     }
