@@ -24,8 +24,14 @@
       </command>
       <category
             id="nu.mine.kino.plugin.webrecorder.commands.category"
-            name="プロキシサーバ">
+            name="Web Recorder">
       </category>
+      <command
+            categoryId="nu.mine.kino.plugin.webrecorder.commands.category"
+            defaultHandler="nu.mine.kino.plugin.webrecorder.handlers.OpenDirHandler"
+            id="nu.mine.kino.plugin.webrecorder.commands.OpenDirCommand"
+            name="キャッシュフォルダを開く">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -44,6 +50,7 @@
                   commandId="nu.mine.kino.plugin.webrecorder.commands.StartCommand"
                   icon="icons/server_go.png"
                   id="nu.mine.kino.plugin.webrecorder.toolbars.StartCommand"
+                  style="push"
                   tooltip="サーバ起動">
             </command>
             <command
@@ -53,13 +60,29 @@
                   style="push"
                   tooltip="サーバ停止">
             </command>
+            <command
+                  commandId="nu.mine.kino.plugin.webrecorder.commands.OpenDirCommand"
+                  icon="icons/folder_wrench.png"
+                  id="nu.mine.kino.plugin.webrecorder.toolbars.OpenDirCommand"
+                  style="push"
+                  tooltip="キャッシュフォルダを開く">
+            </command>
          </toolbar>
+      </menuContribution>
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
       </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
       <key
             commandId="nu.mine.kino.plugin.webrecorder.commands.StartCommand1"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+6">
+      </key>
+      <key
+            commandId="nu.mine.kino.plugin.webrecorder.commands.sampleCommand"
             contextId="org.eclipse.ui.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+6">
