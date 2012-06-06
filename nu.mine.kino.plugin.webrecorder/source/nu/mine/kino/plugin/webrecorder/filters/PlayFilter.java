@@ -24,6 +24,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
 import nu.mine.kino.plugin.webrecorder.WebRecorderPlugin;
 
@@ -45,7 +46,6 @@ public class PlayFilter implements Filter {
     @Override
     public void destroy() {
         // TODO 自動生成されたメソッド・スタブ
-
     }
 
     @Override
@@ -53,8 +53,15 @@ public class PlayFilter implements Filter {
             FilterChain chain) throws IOException, ServletException {
         logger.debug("doFilter(ServletRequest, ServletResponse, FilterChain) - start");
 
-        File file = WebRecorderPlugin.getDefault().getCachePathFromRequest(
-                request);
+        File file = null;
+        if (((HttpServletRequest) request).getMethod().equals("POST")) {
+            
+            file = WebRecorderPlugin.getDefault()
+                    .getCachePathFromRequestForPost(request);
+        } else {
+            file = WebRecorderPlugin.getDefault().getCachePathFromRequest(
+                    request);
+        }
 
         if (file.exists()) {
             logger.info(file.getPath() + " があったのでキャッシュから返します");

@@ -1,6 +1,8 @@
 package nu.mine.kino.plugin.webrecorder;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.servlet.ServletRequest;
@@ -8,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -17,7 +18,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -102,15 +102,14 @@ public class WebRecorderPlugin extends AbstractUIPlugin {
     }
 
     public static void log(IStatus status, boolean showErrorDialog) {
+        //        Bundle bundle = Platform.getBundle("org.eclipse.update.ui"); //$NON-NLS-1$
+        getDefault().getLog().log(status);
+        // Platform.getLog(bundle).log(status);
+        if (Display.getCurrent() == null || !showErrorDialog)
+            return;
         if (status.getSeverity() != IStatus.INFO) {
-            if (showErrorDialog)
-                ErrorDialog.openError(getActiveWorkbenchShell(), null, null,
-                        status);
-            // ResourcesPlugin.getPlugin().getLog().log(status);
-            // Should log on the update plugin's log
-            // Platform.getPlugin("org.eclipse.core.runtime").getLog().log(status);
-            Bundle bundle = Platform.getBundle("org.eclipse.update.ui"); //$NON-NLS-1$
-            Platform.getLog(bundle).log(status);
+            ErrorDialog
+                    .openError(getActiveWorkbenchShell(), null, null, status);
         } else {
             MessageDialog.openInformation(getActiveWorkbenchShell(), null,
                     status.getMessage());
@@ -184,6 +183,30 @@ public class WebRecorderPlugin extends AbstractUIPlugin {
     }
 
     public File getCachePathFromRequest(ServletRequest request) {
+        String requestURI = ((HttpServletRequest) request).getRequestURI();
+        String host = ((HttpServletRequest) request).getHeader("Host");
+        host = host.replace(':', '/');
+        File hostDir = new File(getCacheBasepath(), host);
+        File file = new File(hostDir, requestURI + ".txt");
+        return file;
+    }
+
+    public String getBody(HttpServletRequest hRequest) throws IOException {
+        BufferedReader reader = hRequest.getReader();
+        StringBuffer bodyBuf = new StringBuffer();
+        try {
+            String str = null;
+            while ((str = reader.readLine()) != null) {
+                bodyBuf.append(str);
+            }
+        } finally {
+            reader.close();
+        }
+        String body = new String(bodyBuf);
+        return body;
+    }
+
+    public File getCachePathFromRequestForPost(ServletRequest request) {
         String requestURI = ((HttpServletRequest) request).getRequestURI();
         String host = ((HttpServletRequest) request).getHeader("Host");
         host = host.replace(':', '/');

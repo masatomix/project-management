@@ -48,6 +48,7 @@ public class StartHandler extends AbstractHandler {
             logger.error("execute(ExecutionEvent)", e);
             e.printStackTrace();
             WebRecorderPlugin.logException(e, false);
+
         }
 
         // try {
