@@ -13,7 +13,6 @@
 package nu.mine.kino.plugin.webrecorder.servlets;
 
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,6 +39,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.log4j.Logger;
 import org.eclipse.jetty.servlets.ProxyServlet;
 import org.eclipse.jetty.util.IO;
 
@@ -48,6 +48,10 @@ import org.eclipse.jetty.util.IO;
  * @version $Revision$
  */
 public class MyProxyServlet extends ProxyServlet {
+    /**
+     * Logger for this class
+     */
+    private static final Logger logger = Logger.getLogger(MyProxyServlet.class);
 
     private static final String METHOD_GET = "GET";
 
@@ -72,10 +76,13 @@ public class MyProxyServlet extends ProxyServlet {
             super.service(request, response);
             executeGet(hRequest);
         } else if (method.equals(METHOD_POST)) {
+            // ProxyServletの処理を呼んで、もう一度Postしたかったが、
+            // ProxyServlet実行後はBodyのコンテンツを再度とれないので
+            // 自分の処理を優先して、保存したコンテンツからResponseを返すようにした
             executePost(hRequest);
             // キャッシュから返す
-            File file = WebRecorderPlugin.getDefault().getCachePathFromRequest(
-                    request);
+            File file = WebRecorderPlugin.getDefault()
+                    .getCachePathFromRequestForPost(request);
             if (file.exists()) {
                 returnFromCache(file.getAbsolutePath(), response);
             }
@@ -86,36 +93,34 @@ public class MyProxyServlet extends ProxyServlet {
             ClientProtocolException {
         String requestURI = hRequest.getRequestURI();
 
-        BufferedReader reader = hRequest.getReader();
-        StringBuffer bodyBuf = new StringBuffer();
-        try {
-            String str = null;
-            while ((str = reader.readLine()) != null) {
-                bodyBuf.append(str);
-            }
-        } finally {
-            reader.close();
-        }
-        String body = new String(bodyBuf);
+        String body = WebRecorderPlugin.getDefault().getBody(hRequest);
 
         StringBuffer buf = new StringBuffer();
         buf.append(hRequest.getHeader("Host"));
         if (requestURI != null) {
             buf.append(requestURI);
         }
-
-        HttpPost httppost = new HttpPost("http://" + new String(buf));
+        HttpPost httppost = new HttpPost(hRequest.getScheme() + "://"
+                + new String(buf));
         HttpClient httpclient = new DefaultHttpClient();
+
         String contentType = hRequest.getContentType();
-        StringEntity postEntity = new StringEntity(body,
-                ContentType.parse(contentType));
+        ContentType contentTypeObj = ContentType.parse(contentType);
+        StringEntity postEntity = null;
+        try {
+            postEntity = new StringEntity(body, contentTypeObj);
+        } catch (Exception e) {
+            logger.warn("ContentTypeを指定してPostしようとするとエラーになったので、指定しないでPostすることにする");
+            postEntity = new StringEntity(body);
+        }
+
         httppost.setEntity(postEntity);
         HttpResponse httpResponse = httpclient.execute(httppost);
 
         HttpEntity entity = httpResponse.getEntity();
         if (entity != null) {
-            File file = WebRecorderPlugin.getDefault().getCachePathFromRequest(
-                    hRequest);
+            File file = WebRecorderPlugin.getDefault()
+                    .getCachePathFromRequestForPost(hRequest);
             file.getParentFile().mkdirs();
             streamToFile(entity.getContent(), file);
         }
@@ -135,9 +140,10 @@ public class MyProxyServlet extends ProxyServlet {
             buf.append("?");
             buf.append(queryString);
         }
-        System.out.println("URL: " + buf.toString());
+        logger.debug("URL: " + buf.toString());
 
-        HttpGet httpget = new HttpGet("http://" + new String(buf));
+        HttpGet httpget = new HttpGet(hRequest.getScheme() + "://"
+                + new String(buf));
         HttpClient httpclient = new DefaultHttpClient();
         HttpResponse httpResponse = httpclient.execute(httpget);
         HttpEntity entity = httpResponse.getEntity();
