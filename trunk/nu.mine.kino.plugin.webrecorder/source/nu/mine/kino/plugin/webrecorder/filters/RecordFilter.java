@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2008 Masatomi KINO and others. 
+ * Copyright (c) 2012 Masatomi KINO and others. 
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  *      Masatomi KINO - initial API and implementation
  * $Id$
  ******************************************************************************/
-//作成日: 2012/06/03
+//作成日: 2012/06/07
 
 package nu.mine.kino.plugin.webrecorder.filters;
 
@@ -23,8 +23,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
-
 /**
  * 何度もBodyの読み出しができるようにする為だけのFilter。 Recordモードだけに使用してるけど、全体でつかってもいい
  * 
@@ -32,30 +30,22 @@ import org.apache.log4j.Logger;
  * @version $Revision$
  */
 public class RecordFilter implements Filter {
-    /**
-     * Logger for this class
-     */
-    private static final Logger logger = Logger.getLogger(RecordFilter.class);
-
     private ServletContext servletContext;
 
     @Override
     public void destroy() {
-        // TODO 自動生成されたメソッド・スタブ
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain) throws IOException, ServletException {
-        logger.debug("doFilter(ServletRequest, ServletResponse, FilterChain) - start");
         chain.doFilter(new MultiReadHttpServletRequest(
                 (HttpServletRequest) request), response);
-        logger.debug("doFilter(ServletRequest, ServletResponse, FilterChain) - end");
     }
 
     @Override
-    public void init(FilterConfig arg0) throws ServletException {
-        servletContext = arg0.getServletContext();
+    public void init(FilterConfig config) throws ServletException {
+        servletContext = config.getServletContext();
     }
 
 }
