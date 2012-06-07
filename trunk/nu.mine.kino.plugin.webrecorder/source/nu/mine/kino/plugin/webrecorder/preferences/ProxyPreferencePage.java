@@ -1,12 +1,17 @@
 package nu.mine.kino.plugin.webrecorder.preferences;
 
-import org.apache.log4j.Logger;
+import static nu.mine.kino.plugin.webrecorder.ProxyConstant.CACHE_BASE_PATH;
+import static nu.mine.kino.plugin.webrecorder.ProxyConstant.PORT;
+import static nu.mine.kino.plugin.webrecorder.ProxyConstant.TRIM_FLAG;
+import static nu.mine.kino.plugin.webrecorder.ProxyConstant.TRIM_LENGTH;
+import static nu.mine.kino.plugin.webrecorder.ProxyConstant.TRIM_START_INDEX;
 
 import java.io.File;
 
-import nu.mine.kino.plugin.webrecorder.ProxyConstant;
 import nu.mine.kino.plugin.webrecorder.WebRecorderPlugin;
 
+import org.apache.log4j.Logger;
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IntegerFieldEditor;
@@ -44,21 +49,26 @@ public class ProxyPreferencePage extends FieldEditorPreferencePage implements
      * editor knows how to save and restore itself.
      */
     public void createFieldEditors() {
-        // addField(new DirectoryFieldEditor(PreferenceConstants.P_PATH,
-        // "&Directory preference:", getFieldEditorParent()));
-        // addField(new BooleanFieldEditor(PreferenceConstants.P_BOOLEAN,
+        // addField(new DirectoryFieldEditor(PORT, "&Directory preference:",
+        // getFieldEditorParent()));
+        // addField(new BooleanFieldEditor(PORT,
         // "&An example of a boolean preference", getFieldEditorParent()));
         //
-        // addField(new RadioGroupFieldEditor(PreferenceConstants.P_CHOICE,
+        // addField(new RadioGroupFieldEditor(PORT,
         // "An example of a multiple-choice preference", 1,
         // new String[][] { { "&Choice 1", "choice1" },
         // { "C&hoice 2", "choice2" } }, getFieldEditorParent()));
-        // addField(new StringFieldEditor(PreferenceConstants.P_STRING,
-        // "A &text preference:", getFieldEditorParent()));
+        // addField(new StringFieldEditor(PORT, "A &text preference:",
+        // getFieldEditorParent()));
 
-        addField(new DirectoryFieldEditor(ProxyConstant.CACHE_BASE_PATH,
-                "&Cache Base Dir:", getFieldEditorParent()));
-        addField(new IntegerFieldEditor(ProxyConstant.PORT, "&Port:",
+        addField(new DirectoryFieldEditor(CACHE_BASE_PATH, "&Cache Base Dir:",
+                getFieldEditorParent()));
+        addField(new IntegerFieldEditor(PORT, "&Port:", getFieldEditorParent()));
+        addField(new BooleanFieldEditor(TRIM_FLAG, "P&OSTはトリムして比較する",
+                getFieldEditorParent()));
+        addField(new IntegerFieldEditor(TRIM_START_INDEX, "トリム開始位置",
+                getFieldEditorParent()));
+        addField(new IntegerFieldEditor(TRIM_LENGTH, "開始から何文字",
                 getFieldEditorParent()));
 
     }

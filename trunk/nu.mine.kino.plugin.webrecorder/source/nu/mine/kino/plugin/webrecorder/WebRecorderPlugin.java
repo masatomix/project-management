@@ -205,7 +205,7 @@ public class WebRecorderPlugin extends AbstractUIPlugin {
             buf.append("_");
             buf.append(shaHex);
         }
-        buf.append(".txt");
+        // buf.append(".txt");
 
         File file = new File(hostDir, new String(buf));
         return file;
@@ -237,6 +237,17 @@ public class WebRecorderPlugin extends AbstractUIPlugin {
         // Bodyがあれば付けるただしSha1ハッシュして
         try {
             String body = getBody((HttpServletRequest) request);
+            if (getPreferenceStore().getBoolean(ProxyConstant.TRIM_FLAG)) {
+                int startIndex = getPreferenceStore().getInt(
+                        ProxyConstant.TRIM_START_INDEX);
+                int length = getPreferenceStore().getInt(
+                        ProxyConstant.TRIM_LENGTH);
+                if (length <= 0) {
+                    body = body.substring(startIndex);
+                } else {
+                    body = body.substring(startIndex, startIndex + length);
+                }
+            }
             if (body != null && !"".equals(body)) {
                 String shaHex = DigestUtils.shaHex(body.getBytes());
                 logger.debug("bodyをSHA1ハッシュ: " + shaHex);
@@ -246,7 +257,7 @@ public class WebRecorderPlugin extends AbstractUIPlugin {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        buf.append(".txt");
+        // buf.append(".txt");
 
         File file = new File(hostDir, new String(buf));
         return file;
