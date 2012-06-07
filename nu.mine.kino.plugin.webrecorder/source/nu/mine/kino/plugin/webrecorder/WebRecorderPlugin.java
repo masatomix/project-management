@@ -205,6 +205,7 @@ public class WebRecorderPlugin extends AbstractUIPlugin {
         String queryString = ((HttpServletRequest) request).getQueryString();
         if (queryString != null && !"".equals(queryString)) {
             String shaHex = DigestUtils.shaHex(queryString.getBytes());
+            logger.debug("query: " + queryString);
             logger.debug("queryをSHA1ハッシュ: " + shaHex);
             buf.append("_");
             buf.append(shaHex);
@@ -241,15 +242,21 @@ public class WebRecorderPlugin extends AbstractUIPlugin {
         // Bodyがあれば付けるただしSha1ハッシュして
         try {
             String body = getBody((HttpServletRequest) request);
+
+            logger.debug("body : " + body);
             boolean trimFlag = getPreferenceStore().getBoolean(TRIM_FLAG);
+            logger.debug("trim?: " + trimFlag);
             if (trimFlag) {
                 int startIndex = getPreferenceStore().getInt(TRIM_START_INDEX);
                 int length = getPreferenceStore().getInt(TRIM_LENGTH);
+                logger.debug("startIndex: " + startIndex);
+                logger.debug("length: " + length);
                 if (length <= 0) {
                     body = body.substring(startIndex);
                 } else {
                     body = body.substring(startIndex, startIndex + length);
                 }
+                logger.debug("body : " + body);
             }
             if (body != null && !"".equals(body)) {
                 String shaHex = DigestUtils.shaHex(body.getBytes());
