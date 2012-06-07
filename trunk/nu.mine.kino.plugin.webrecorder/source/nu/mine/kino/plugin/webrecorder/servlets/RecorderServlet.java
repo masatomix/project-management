@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2010 Masatomi KINO and others. 
+ * Copyright (c) 2012 Masatomi KINO and others. 
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -75,7 +75,7 @@ public class RecorderServlet extends ProxyServlet {
 
         // Getなら親Servletを実行し、再度Getを自ら行ってデータを保存する
         super.service(request, response);
-        
+
         if (method.equals(METHOD_GET)) {
             executeGet(hRequest);
         } else if (method.equals(METHOD_POST)) {
