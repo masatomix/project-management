@@ -8,6 +8,8 @@ import java.lang.reflect.InvocationTargetException;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -24,6 +26,11 @@ import org.osgi.framework.BundleContext;
  * The activator class controls the plug-in life cycle
  */
 public class WebRecorderPlugin extends AbstractUIPlugin {
+    /**
+     * Logger for this class
+     */
+    private static final Logger logger = Logger
+            .getLogger(WebRecorderPlugin.class);
 
     private Server server;
 
@@ -187,7 +194,20 @@ public class WebRecorderPlugin extends AbstractUIPlugin {
         String host = ((HttpServletRequest) request).getHeader("Host");
         host = host.replace(':', '/');
         File hostDir = new File(getCacheBasepath(), host);
-        File file = new File(hostDir, requestURI + ".txt");
+
+        StringBuffer buf = new StringBuffer();
+        buf.append(requestURI);
+        // queryがあれば付けるただしSha1ハッシュして
+        String queryString = ((HttpServletRequest) request).getQueryString();
+        if (queryString != null && !"".equals(queryString)) {
+            String shaHex = DigestUtils.shaHex(queryString.getBytes());
+            logger.debug("queryをSHA1ハッシュ: " + shaHex);
+            buf.append("_");
+            buf.append(shaHex);
+        }
+        buf.append(".txt");
+
+        File file = new File(hostDir, new String(buf));
         return file;
     }
 
@@ -211,7 +231,24 @@ public class WebRecorderPlugin extends AbstractUIPlugin {
         String host = ((HttpServletRequest) request).getHeader("Host");
         host = host.replace(':', '/');
         File hostDir = new File(getCacheBasepath(), host);
-        File file = new File(hostDir, requestURI + ".txt");
+
+        StringBuffer buf = new StringBuffer();
+        buf.append(requestURI);
+        // Bodyがあれば付けるただしSha1ハッシュして
+        try {
+            String body = getBody((HttpServletRequest) request);
+            if (body != null && !"".equals(body)) {
+                String shaHex = DigestUtils.shaHex(body.getBytes());
+                logger.debug("bodyをSHA1ハッシュ: " + shaHex);
+                buf.append("_");
+                buf.append(shaHex);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        buf.append(".txt");
+
+        File file = new File(hostDir, new String(buf));
         return file;
     }
 }

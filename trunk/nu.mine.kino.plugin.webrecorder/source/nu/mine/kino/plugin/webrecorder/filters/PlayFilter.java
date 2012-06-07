@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nu.mine.kino.plugin.webrecorder.WebRecorderPlugin;
 
+import org.apache.http.entity.ContentType;
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.util.IO;
 
@@ -63,13 +64,14 @@ public class PlayFilter implements Filter {
         } else {
             // ファイル名がかぶっちゃうので、何らかの値を付けたい
             // パラメタ値をハッシュするとかね
+            // 2012/06/07: 付けた
             file = WebRecorderPlugin.getDefault().getCachePathFromRequest(
                     request);
         }
 
         if (file.exists()) {
             logger.info(file.getPath() + " があったのでキャッシュから返します");
-            returnFromCache(file.getAbsolutePath(), response);
+            returnFromCache(file.getAbsolutePath(), request, response);
         } else {
             logger.info(file.getPath() + " がなかったので、サーバから取得して返します");
             chain.doFilter(request, response);
@@ -83,12 +85,14 @@ public class PlayFilter implements Filter {
         servletContext = arg0.getServletContext();
     }
 
-    private void returnFromCache(String filePath, ServletResponse response)
-            throws FileNotFoundException, IOException {
+    private void returnFromCache(String filePath, ServletRequest request,
+            ServletResponse response) throws FileNotFoundException, IOException {
         String mime = servletContext.getMimeType(filePath);
         if (mime != null) {
             response.setContentType(mime);
         }
+        // request.getContentType();
+        // response.setContentType(contentType);
 
         IO.copy(new FileInputStream(filePath), response.getOutputStream());
     }

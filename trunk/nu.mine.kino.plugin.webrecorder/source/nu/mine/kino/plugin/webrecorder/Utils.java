@@ -54,37 +54,6 @@ public class Utils {
 
     public static void startJettyServer(Server server, int port, RecordMode mode)
             throws InterruptedException, Exception {
-        // SelectChannelConnector connector = new SelectChannelConnector();
-        // connector.setPort(port);
-        // server.setConnectors(new Connector[] { connector });
-        //
-        // ContextHandler contextHandler = new ContextHandler("/");
-        //
-        // ServletHandler servletHandler = new ServletHandler();
-        // servletHandler.addServletWithMapping(ProxyServlet.class, "/*");
-        //
-        // // filter
-        // FilterHolder filterHolder = new FilterHolder();
-        // Filter filter = null;
-        // switch (mode) {
-        // case RECORD:
-        // filter = new RecordFilter();
-        // break;
-        // case PLAY:
-        // filter = new PlayFilter();
-        // break;
-        // default:
-        // break;
-        // }
-        // filterHolder.setFilter(filter);
-        // servletHandler
-        // .addFilterWithMapping(filterHolder, "/*", Handler.DEFAULT);
-        //
-        // contextHandler.addHandler(servletHandler);
-        // server.addHandler(contextHandler);
-        //
-        // server.start();
-        // server.join();
 
         SelectChannelConnector connector = new SelectChannelConnector();
         connector.setPort(port);
@@ -94,22 +63,20 @@ public class Utils {
                 ServletContextHandler.SESSIONS);
         server.setHandler(context);
 
-        // filter
-        FilterHolder filterHolder = new FilterHolder();
-        Filter filter = null;
+        FilterHolder multiReadFilterHolder = new FilterHolder();
+        multiReadFilterHolder.setFilter(new MultiReadFilter());
+        context.addFilter(multiReadFilterHolder, "/*",
+                EnumSet.of(DispatcherType.REQUEST));
+
         switch (mode) {
         case RECORD:
             context.addServlet(RecorderServlet.class, "/*");
-            filter = new MultiReadFilter();
-            filterHolder.setFilter(filter);
-            context.addFilter(filterHolder, "/*",
-                    EnumSet.of(DispatcherType.REQUEST));
             break;
         case PLAY:
             context.addServlet(ProxyServlet.class, "/*");
-            filter = new PlayFilter();
-            filterHolder.setFilter(filter);
-            context.addFilter(filterHolder, "/*",
+            FilterHolder playFilterHolder = new FilterHolder();
+            playFilterHolder.setFilter(new PlayFilter());
+            context.addFilter(playFilterHolder, "/*",
                     EnumSet.of(DispatcherType.REQUEST));
             break;
         default:
