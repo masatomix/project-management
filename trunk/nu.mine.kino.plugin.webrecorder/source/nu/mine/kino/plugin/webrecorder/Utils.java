@@ -18,7 +18,8 @@ import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 
 import nu.mine.kino.plugin.webrecorder.filters.PlayFilter;
-import nu.mine.kino.plugin.webrecorder.servlets.MyProxyServlet;
+import nu.mine.kino.plugin.webrecorder.filters.MultiReadFilter;
+import nu.mine.kino.plugin.webrecorder.servlets.RecorderServlet;
 
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -98,11 +99,11 @@ public class Utils {
         Filter filter = null;
         switch (mode) {
         case RECORD:
-            context.addServlet(MyProxyServlet.class, "/*");
-            // filter = new RecordFilter();
-            // filterHolder.setFilter(filter);
-            // context.addFilter(filterHolder, "/*",
-            // EnumSet.of(DispatcherType.REQUEST));
+            context.addServlet(RecorderServlet.class, "/*");
+            filter = new MultiReadFilter();
+            filterHolder.setFilter(filter);
+            context.addFilter(filterHolder, "/*",
+                    EnumSet.of(DispatcherType.REQUEST));
             break;
         case PLAY:
             context.addServlet(ProxyServlet.class, "/*");
