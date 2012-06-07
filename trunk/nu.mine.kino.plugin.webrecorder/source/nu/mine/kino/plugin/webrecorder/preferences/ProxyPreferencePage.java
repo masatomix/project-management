@@ -40,7 +40,7 @@ public class ProxyPreferencePage extends FieldEditorPreferencePage implements
     public ProxyPreferencePage() {
         super(GRID);
         setPreferenceStore(WebRecorderPlugin.getDefault().getPreferenceStore());
-        setDescription("Proxy Serverの設定情報を変更できます。");
+        setDescription("Web Recorderの設定が変更できます。");
     }
 
     /**
@@ -68,7 +68,7 @@ public class ProxyPreferencePage extends FieldEditorPreferencePage implements
                 getFieldEditorParent()));
         addField(new IntegerFieldEditor(TRIM_START_INDEX, "トリム開始位置",
                 getFieldEditorParent()));
-        addField(new IntegerFieldEditor(TRIM_LENGTH, "開始から何文字",
+        addField(new IntegerFieldEditor(TRIM_LENGTH, "開始から何文字\n(0は末尾まで)",
                 getFieldEditorParent()));
 
     }

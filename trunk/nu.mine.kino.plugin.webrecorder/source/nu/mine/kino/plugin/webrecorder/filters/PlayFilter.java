@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import nu.mine.kino.plugin.webrecorder.WebRecorderPlugin;
 
-import org.apache.http.entity.ContentType;
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.util.IO;
 
