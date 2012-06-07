@@ -21,4 +21,10 @@ public interface ProxyConstant {
     public static final String PORT = "port";
 
     public static final String CACHE_BASE_PATH = "cacheBasePath";
+
+    public static final String TRIM_FLAG = "trimflag";
+
+    public static final String TRIM_START_INDEX = "trimStartIndex";
+
+    public static final String TRIM_LENGTH = "trimLength";
 }
