@@ -24,12 +24,12 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * 何度もBodyの読み出しができるようにする為だけのFilter。 Recordモードだけに使用してるけど、全体でつかってもいい
+ * 何度もBodyの読み出しができるようにする為だけのFilter。
  * 
  * @author Masatomi KINO
  * @version $Revision$
  */
-public class RecordFilter implements Filter {
+public class MultiReadFilter implements Filter {
     private ServletContext servletContext;
 
     @Override
