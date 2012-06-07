@@ -1,5 +1,9 @@
 package nu.mine.kino.plugin.webrecorder;
 
+import static nu.mine.kino.plugin.webrecorder.ProxyConstant.TRIM_FLAG;
+import static nu.mine.kino.plugin.webrecorder.ProxyConstant.TRIM_LENGTH;
+import static nu.mine.kino.plugin.webrecorder.ProxyConstant.TRIM_START_INDEX;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -237,11 +241,10 @@ public class WebRecorderPlugin extends AbstractUIPlugin {
         // Bodyがあれば付けるただしSha1ハッシュして
         try {
             String body = getBody((HttpServletRequest) request);
-            if (getPreferenceStore().getBoolean(ProxyConstant.TRIM_FLAG)) {
-                int startIndex = getPreferenceStore().getInt(
-                        ProxyConstant.TRIM_START_INDEX);
-                int length = getPreferenceStore().getInt(
-                        ProxyConstant.TRIM_LENGTH);
+            boolean trimFlag = getPreferenceStore().getBoolean(TRIM_FLAG);
+            if (trimFlag) {
+                int startIndex = getPreferenceStore().getInt(TRIM_START_INDEX);
+                int length = getPreferenceStore().getInt(TRIM_LENGTH);
                 if (length <= 0) {
                     body = body.substring(startIndex);
                 } else {
