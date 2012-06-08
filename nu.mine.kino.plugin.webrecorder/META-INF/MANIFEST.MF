@@ -6,9 +6,9 @@ Bundle-Version: 0.1.0.qualifier
 Bundle-Activator: nu.mine.kino.plugin.webrecorder.WebRecorderPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- nu.mine.kino.plugin.log4j,
  org.eclipse.core.resources,
- nu.mine.kino.plugin.httpclient;bundle-version="1.0.0"
+ nu.mine.kino.plugin.log4j;bundle-version="0.0.1",
+ nu.mine.kino.plugin.httpclient
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: lib/jetty-ajp-8.1.3.v20120416.jar,
