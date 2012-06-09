@@ -2,6 +2,7 @@ package nu.mine.kino.plugin.webrecorder.preferences;
 
 import static nu.mine.kino.plugin.webrecorder.ProxyConstant.CACHE_BASE_PATH;
 import static nu.mine.kino.plugin.webrecorder.ProxyConstant.PORT;
+import static nu.mine.kino.plugin.webrecorder.ProxyConstant.POST_BODY_FLAG;
 import static nu.mine.kino.plugin.webrecorder.ProxyConstant.TRIM_FLAG;
 import static nu.mine.kino.plugin.webrecorder.ProxyConstant.TRIM_LENGTH;
 import static nu.mine.kino.plugin.webrecorder.ProxyConstant.TRIM_START_INDEX;
@@ -30,9 +31,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     public void initializeDefaultPreferences() {
         IPreferenceStore store = WebRecorderPlugin.getDefault()
                 .getPreferenceStore();
-        // store.setDefault(PreferenceConstants.P_BOOLEAN, true);
-        // store.setDefault(PreferenceConstants.P_CHOICE, "choice2");
-        // store.setDefault(PreferenceConstants.P_STRING, "Default value");
 
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         IWorkspaceRoot root = workspace.getRoot();
@@ -40,6 +38,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         File file = new File(rootDir, "_WebRecorderCache");
         store.setDefault(CACHE_BASE_PATH, file.getAbsolutePath());
         store.setDefault(PORT, 8008);
+        store.setDefault(POST_BODY_FLAG, true);
         store.setDefault(TRIM_FLAG, false);
         store.setDefault(TRIM_START_INDEX, 0);
         store.setDefault(TRIM_LENGTH, 0);

@@ -1,5 +1,6 @@
 package nu.mine.kino.plugin.webrecorder;
 
+import static nu.mine.kino.plugin.webrecorder.ProxyConstant.POST_BODY_FLAG;
 import static nu.mine.kino.plugin.webrecorder.ProxyConstant.TRIM_FLAG;
 import static nu.mine.kino.plugin.webrecorder.ProxyConstant.TRIM_LENGTH;
 import static nu.mine.kino.plugin.webrecorder.ProxyConstant.TRIM_START_INDEX;
@@ -201,12 +202,13 @@ public class WebRecorderPlugin extends AbstractUIPlugin {
 
         StringBuffer buf = new StringBuffer();
         buf.append(requestURI);
+        logger.info("URL : " + requestURI);
         // queryがあれば付けるただしSha1ハッシュして
         String queryString = ((HttpServletRequest) request).getQueryString();
         if (queryString != null && !"".equals(queryString)) {
             String shaHex = DigestUtils.shaHex(queryString.getBytes());
-            logger.debug("query: " + queryString);
-            logger.debug("queryをSHA1ハッシュ: " + shaHex);
+            logger.info("query: " + queryString);
+            logger.info("queryをSHA1ハッシュ: " + shaHex);
             buf.append("_");
             buf.append(shaHex);
         }
@@ -239,11 +241,25 @@ public class WebRecorderPlugin extends AbstractUIPlugin {
 
         StringBuffer buf = new StringBuffer();
         buf.append(requestURI);
+        // PostをリクエストBodyまで考慮してファイル名を決めるかフラグ。
+        boolean postBodyFlag = getPreferenceStore().getBoolean(POST_BODY_FLAG);
+        if (postBodyFlag) {
+            createSuffixWithBody(request, buf);
+        }
+        // buf.append(".txt");
+
+        File file = new File(hostDir, new String(buf));
+        return file;
+    }
+
+    private void createSuffixWithBody(ServletRequest request, StringBuffer buf) {
         // Bodyがあれば付けるただしSha1ハッシュして
         try {
             String body = getBody((HttpServletRequest) request);
 
-            logger.debug("body : " + body);
+            logger.info("URL : "
+                    + ((HttpServletRequest) request).getRequestURI());
+            logger.info("body : " + body);
             boolean trimFlag = getPreferenceStore().getBoolean(TRIM_FLAG);
             logger.debug("trim?: " + trimFlag);
             if (trimFlag) {
@@ -260,16 +276,12 @@ public class WebRecorderPlugin extends AbstractUIPlugin {
             }
             if (body != null && !"".equals(body)) {
                 String shaHex = DigestUtils.shaHex(body.getBytes());
-                logger.debug("bodyをSHA1ハッシュ: " + shaHex);
+                logger.info("bodyをSHA1ハッシュ: " + shaHex);
                 buf.append("_");
                 buf.append(shaHex);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // buf.append(".txt");
-
-        File file = new File(hostDir, new String(buf));
-        return file;
     }
 }

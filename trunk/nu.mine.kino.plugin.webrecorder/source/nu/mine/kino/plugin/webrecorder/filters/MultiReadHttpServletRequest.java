@@ -32,11 +32,11 @@ import org.apache.log4j.Logger;
  * @version $Revision$
  */
 public class MultiReadHttpServletRequest extends HttpServletRequestWrapper {
-    /**
-     * Logger for this class
-     */
-    private static final Logger logger = Logger
-            .getLogger(MultiReadHttpServletRequest.class);
+    // /**
+    // * Logger for this class
+    // */
+    // private static final Logger logger = Logger
+    // .getLogger(MultiReadHttpServletRequest.class);
 
     private byte[] body;
 

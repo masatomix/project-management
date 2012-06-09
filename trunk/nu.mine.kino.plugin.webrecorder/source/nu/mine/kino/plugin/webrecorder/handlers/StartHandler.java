@@ -1,5 +1,9 @@
 package nu.mine.kino.plugin.webrecorder.handlers;
 
+import static nu.mine.kino.plugin.webrecorder.ProxyConstant.POST_BODY_FLAG;
+import static nu.mine.kino.plugin.webrecorder.ProxyConstant.TRIM_FLAG;
+import static nu.mine.kino.plugin.webrecorder.ProxyConstant.TRIM_LENGTH;
+import static nu.mine.kino.plugin.webrecorder.ProxyConstant.TRIM_START_INDEX;
 import nu.mine.kino.plugin.webrecorder.RecordMode;
 import nu.mine.kino.plugin.webrecorder.WebRecorderPlugin;
 
@@ -7,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
  * Our sample handler extends AbstractHandler, an IHandler base class.

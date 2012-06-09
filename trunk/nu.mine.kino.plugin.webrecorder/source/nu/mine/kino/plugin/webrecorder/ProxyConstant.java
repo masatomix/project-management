@@ -27,4 +27,5 @@ public interface ProxyConstant {
     public static final String TRIM_START_INDEX = "trimStartIndex";
 
     public static final String TRIM_LENGTH = "trimLength";
+    public static final String POST_BODY_FLAG = "postBodyFlag";
 }
