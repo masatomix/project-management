@@ -98,8 +98,14 @@
          point="org.eclipse.ui.preferencePages">
       <page
             class="nu.mine.kino.plugin.webrecorder.preferences.ProxyPreferencePage"
-            id="nu.mine.kino.plugin.webrecorder.preferences.ProxyPreferencePage"
+            id="nu.mine.kino.plugin.webrecorder.preferences.MainPreferencePage"
             name="Web Recorder">
+      </page>
+      <page
+            category="nu.mine.kino.plugin.webrecorder.preferences.MainPreferencePage"
+            class="nu.mine.kino.plugin.webrecorder.preferences.PostPreferencePage"
+            id="nu.mine.kino.plugin.webrecorder.preferences.PostPreferencePage"
+            name="Postの設定">
       </page>
    </extension>
 

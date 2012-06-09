@@ -15,6 +15,7 @@ import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IntegerFieldEditor;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -64,12 +65,6 @@ public class ProxyPreferencePage extends FieldEditorPreferencePage implements
         addField(new DirectoryFieldEditor(CACHE_BASE_PATH, "&Cache Base Dir:",
                 getFieldEditorParent()));
         addField(new IntegerFieldEditor(PORT, "&Port:", getFieldEditorParent()));
-        addField(new BooleanFieldEditor(TRIM_FLAG, "P&OSTはトリムして比較する",
-                getFieldEditorParent()));
-        addField(new IntegerFieldEditor(TRIM_START_INDEX, "トリム開始位置",
-                getFieldEditorParent()));
-        addField(new IntegerFieldEditor(TRIM_LENGTH, "開始から何文字\n(0は末尾まで)",
-                getFieldEditorParent()));
 
     }
 
@@ -84,6 +79,15 @@ public class ProxyPreferencePage extends FieldEditorPreferencePage implements
                 .getCacheBasepath();
         logger.debug("キャッシュディレクトリ: " + cacheBasepath);
         new File(cacheBasepath).mkdirs();
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent event) {
+        System.out.println(event.getProperty());
+        System.out.println(event.getOldValue());
+        System.out.println(event.getNewValue());
+        System.out.println(event.getSource());
+
     }
 
 }

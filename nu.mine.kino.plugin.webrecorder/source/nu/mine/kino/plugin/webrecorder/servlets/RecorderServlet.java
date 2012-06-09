@@ -26,13 +26,13 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import nu.mine.kino.plugin.commons.utils.HttpClientUtils;
 import nu.mine.kino.plugin.webrecorder.WebRecorderPlugin;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -151,37 +151,19 @@ public class RecorderServlet extends ProxyServlet {
             ClientProtocolException {
         String url = getURLWithQuery(hRequest);
 
-        HttpGet httpget = new HttpGet(url);
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpResponse httpResponse = httpclient.execute(httpget);
-        HttpEntity entity = httpResponse.getEntity();
+        // HttpGet httpget = new HttpGet(url);
+        // HttpClient httpclient = new DefaultHttpClient();
+        // HttpResponse httpResponse = httpclient.execute(httpget);
+        // HttpEntity entity = httpResponse.getEntity();
+
+        HttpEntity entity = HttpClientUtils.getHttpEntity(url);
         if (entity != null) {
             File file = WebRecorderPlugin.getDefault().getCachePathFromRequest(
                     hRequest);
             file.getParentFile().mkdirs();
             streamToFile(entity.getContent(), file);
         }
-        // Enumeration<String> headerNames = hRequest.getHeaderNames();
-        // System.out.println("-----");
-        // while (headerNames.hasMoreElements()) {
-        // String string = (String) headerNames.nextElement();
-        // System.out.println(string + ": " + hRequest.getHeader(string));
-        // }
 
-        //
-        // HttpClient provides URIBuilder utility class to simplify creation and
-        // modification of request URIs.
-        //
-        // URIBuilder builder = new URIBuilder();
-        // builder.setHost(hRequest.getHeader("Host")).setPath(path);
-        // builder.setScheme("http").setHost("www.google.com").setPath("/search")
-        // .setParameter("q", "httpclient")
-        // .setParameter("btnG", "Google Search")
-        // .setParameter("aq", "f")
-        // .setParameter("oq", "");
-        // URI uri = builder.build();
-        // HttpGet httpget = new HttpGet(uri);
-        // System.out.println(httpget.getURI());
     }
 
     private void streamToFile(InputStream in, File file) throws IOException {

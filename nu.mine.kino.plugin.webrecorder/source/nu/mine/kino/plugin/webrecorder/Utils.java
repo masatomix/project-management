@@ -15,10 +15,9 @@ package nu.mine.kino.plugin.webrecorder;
 import java.util.EnumSet;
 
 import javax.servlet.DispatcherType;
-import javax.servlet.Filter;
 
-import nu.mine.kino.plugin.webrecorder.filters.PlayFilter;
 import nu.mine.kino.plugin.webrecorder.filters.MultiReadFilter;
+import nu.mine.kino.plugin.webrecorder.filters.PlayFilter;
 import nu.mine.kino.plugin.webrecorder.servlets.RecorderServlet;
 
 import org.eclipse.jetty.server.Connector;
