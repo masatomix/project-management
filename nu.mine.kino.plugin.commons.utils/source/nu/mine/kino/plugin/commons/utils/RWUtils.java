@@ -12,7 +12,10 @@
 
 package nu.mine.kino.plugin.commons.utils;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -22,7 +25,7 @@ import java.io.InputStream;
  */
 public class RWUtils {
 
-    private String stream2String(InputStream stream, String charset)
+    public static byte[] stream2ByteArray(InputStream stream)
             throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] b = new byte[1024];
@@ -31,8 +34,37 @@ public class RWUtils {
             baos.write(b, 0, j);
         }
         byte[] pix = baos.toByteArray();
+        return pix;
+    }
+
+    public static String stream2String(InputStream stream, String charset)
+            throws IOException {
+        byte[] pix = stream2ByteArray(stream);
         String body = new String(pix, charset);
         return body;
+    }
+
+    public static void streamToFile(InputStream stream, File file)
+            throws IOException {
+        byte[] pix = stream2ByteArray(stream);
+        write(pix, file);
+    }
+
+    public static void write(byte[] b, File file) throws IOException {
+        BufferedOutputStream stream = null;
+        try {
+            stream = new BufferedOutputStream(new FileOutputStream(file));
+            stream.write(b);
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+
+        }
     }
 
 }
