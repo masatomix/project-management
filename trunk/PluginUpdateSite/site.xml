@@ -27,10 +27,14 @@
    <feature url="features/nu.mine.kino.plugin.utils_0.9.0.jar" id="nu.mine.kino.plugin.utils" version="0.9.0">
       <category name="utils"/>
    </feature>
+   <feature url="features/nu.mine.kino.plugin.commons.feature_1.0.0.jar" id="nu.mine.kino.plugin.commons.feature" version="1.0.0">
+      <category name="commons"/>
+   </feature>
    <category-def name="google" label="Google Plugin"/>
    <category-def name="beancreator" label="JavaBeans Creator Plugin"/>
    <category-def name="plugindocumentcreator" label="Plugin Document Creator Plugin"/>
    <category-def name="utils" label="Utils Plugin"/>
    <category-def name="jdtutilsplugin" label="JDT Utils Plugin"/>
    <category-def name="webrecorder" label="Web Recorder"/>
+   <category-def name="commons" label="Commons"/>
 </site>
