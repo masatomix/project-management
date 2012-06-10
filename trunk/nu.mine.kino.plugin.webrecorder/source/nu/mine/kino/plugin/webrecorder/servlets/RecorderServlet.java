@@ -31,7 +31,13 @@ import nu.mine.kino.plugin.commons.utils.RWUtils;
 import nu.mine.kino.plugin.webrecorder.WebRecorderPlugin;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.servlets.ProxyServlet;
 
@@ -95,9 +101,39 @@ public class RecorderServlet extends ProxyServlet {
             File file = WebRecorderPlugin.getDefault()
                     .getCachePathFromRequestForPost(hRequest);
             file.getParentFile().mkdirs();
-            RWUtils.streamToFile(entity.getContent(), file);
+            streamToFile(entity.getContent(), file);
         }
     }
+
+    // private void executePost(HttpServletRequest hRequest) throws IOException,
+    // ClientProtocolException {
+    // String body = WebRecorderPlugin.getDefault().getBody(hRequest);
+    // String url = getURLBase(hRequest);
+    //
+    // HttpPost httppost = new HttpPost(url);
+    // HttpClient httpclient = new DefaultHttpClient();
+    //
+    // String contentType = hRequest.getContentType();
+    // ContentType contentTypeObj = ContentType.parse(contentType);
+    // StringEntity postEntity = null;
+    // try {
+    // postEntity = new StringEntity(body, contentTypeObj);
+    // } catch (Exception e) {
+    // logger.warn("ContentTypeを指定してPostしようとするとエラーになったので、指定しないでPostすることにする");
+    // postEntity = new StringEntity(body);
+    // }
+    //
+    // httppost.setEntity(postEntity);
+    // HttpResponse httpResponse = httpclient.execute(httppost);
+    //
+    // HttpEntity entity = httpResponse.getEntity();
+    // if (entity != null) {
+    // File file = WebRecorderPlugin.getDefault()
+    // .getCachePathFromRequestForPost(hRequest);
+    // file.getParentFile().mkdirs();
+    // streamToFile(entity.getContent(), file);
+    // }
+    // }
 
     private String getURLBase(HttpServletRequest hRequest) {
         String requestURI = hRequest.getRequestURI();
@@ -131,9 +167,38 @@ public class RecorderServlet extends ProxyServlet {
             File file = WebRecorderPlugin.getDefault().getCachePathFromRequest(
                     hRequest);
             file.getParentFile().mkdirs();
-            RWUtils.streamToFile(entity.getContent(), file);
+            streamToFile(entity.getContent(), file);
         }
 
+    }
+
+    private void streamToFile(InputStream in, File file) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] b = new byte[1024];
+        int j;
+        while ((j = in.read(b)) != -1)
+            baos.write(b, 0, j);
+        byte[] pix = baos.toByteArray();
+        write(pix, file);
+    }
+
+    private void write(byte[] b, File file) {
+        BufferedOutputStream stream = null;
+        try {
+            stream = new BufferedOutputStream(new FileOutputStream(file));
+            stream.write(b);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+
+        }
     }
 
 }
