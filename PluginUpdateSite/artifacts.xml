@@ -3,14 +3,14 @@
 <repository name='Update Site' type='org.eclipse.equinox.p2.artifact.repository.simpleRepository' version='1.0.0'>
   <properties size='2'>
     <property name='p2.compressed' value='false'/>
-    <property name='p2.timestamp' value='1339288725393'/>
+    <property name='p2.timestamp' value='1339294705438'/>
   </properties>
   <mappings size='3'>
     <rule filter='(&amp; (classifier=osgi.bundle))' output='${repoUrl}/plugins/${id}_${version}.jar'/>
     <rule filter='(&amp; (classifier=binary))' output='${repoUrl}/binary/${id}_${version}'/>
     <rule filter='(&amp; (classifier=org.eclipse.update.feature))' output='${repoUrl}/features/${id}_${version}.jar'/>
   </mappings>
-  <artifacts size='129'>
+  <artifacts size='138'>
     <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.google.ui' version='1.4.3.201206010148'>
       <properties size='2'>
         <property name='artifact.size' value='680'/>
@@ -47,6 +47,12 @@
       <properties size='2'>
         <property name='artifact.size' value='30339'/>
         <property name='download.size' value='30339'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.dbbackpupplugin' version='0.0.1'>
+      <properties size='2'>
+        <property name='artifact.size' value='4096'/>
+        <property name='download.size' value='3121790'/>
       </properties>
     </artifact>
     <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.webrecorder' version='0.1.2.201206100928'>
@@ -185,11 +191,23 @@
         <property name='download.contentType' value='application/zip'/>
       </properties>
     </artifact>
+    <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.webrecorder' version='0.1.2.201206101118'>
+      <properties size='2'>
+        <property name='artifact.size' value='4096'/>
+        <property name='download.size' value='1926150'/>
+      </properties>
+    </artifact>
     <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.google.core' version='0.4.0'>
       <properties size='3'>
         <property name='artifact.size' value='12356'/>
         <property name='download.size' value='12356'/>
         <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='org.eclipse.update.feature' id='nu.mine.kino.plugin.webrecorder' version='0.1.1.201206101118'>
+      <properties size='2'>
+        <property name='download.contentType' value='application/zip'/>
+        <property name='download.size' value='5574'/>
       </properties>
     </artifact>
     <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.google.core' version='0.5.2'>
@@ -226,6 +244,12 @@
         <property name='download.contentType' value='application/zip'/>
       </properties>
     </artifact>
+    <artifact classifier='org.eclipse.update.feature' id='nu.mine.kino.plugin.jdt.utils' version='0.2.1.201206101118'>
+      <properties size='2'>
+        <property name='download.contentType' value='application/zip'/>
+        <property name='download.size' value='11070'/>
+      </properties>
+    </artifact>
     <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.beangenerator' version='0.4.2'>
       <properties size='3'>
         <property name='artifact.size' value='396428'/>
@@ -239,10 +263,10 @@
         <property name='download.size' value='30384'/>
       </properties>
     </artifact>
-    <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.jsonlib' version='0.2.3'>
+    <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.google.ui.siteinfo' version='1.1.1'>
       <properties size='3'>
-        <property name='artifact.size' value='1175138'/>
-        <property name='download.size' value='1175138'/>
+        <property name='artifact.size' value='18465'/>
+        <property name='download.size' value='18465'/>
         <property name='download.contentType' value='application/zip'/>
       </properties>
     </artifact>
@@ -253,10 +277,10 @@
         <property name='download.contentType' value='application/zip'/>
       </properties>
     </artifact>
-    <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.google.ui.siteinfo' version='1.1.1'>
+    <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.jsonlib' version='0.2.3'>
       <properties size='3'>
-        <property name='artifact.size' value='18465'/>
-        <property name='download.size' value='18465'/>
+        <property name='artifact.size' value='1175138'/>
+        <property name='download.size' value='1175138'/>
         <property name='download.contentType' value='application/zip'/>
       </properties>
     </artifact>
@@ -279,17 +303,17 @@
         <property name='download.size' value='19003'/>
       </properties>
     </artifact>
-    <artifact classifier='org.eclipse.update.feature' id='nu.mine.kino.plugin.beangenerator' version='0.3.3'>
-      <properties size='2'>
-        <property name='artifact.size' value='3359'/>
-        <property name='download.size' value='3359'/>
-      </properties>
-    </artifact>
     <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.google.ui.siteinfo' version='1.0.1'>
       <properties size='3'>
         <property name='artifact.size' value='6490'/>
         <property name='download.size' value='6490'/>
         <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='org.eclipse.update.feature' id='nu.mine.kino.plugin.beangenerator' version='0.3.3'>
+      <properties size='2'>
+        <property name='artifact.size' value='3359'/>
+        <property name='download.size' value='3359'/>
       </properties>
     </artifact>
     <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.plugindocumentcreator' version='0.9.7'>
@@ -313,17 +337,17 @@
         <property name='download.contentType' value='application/zip'/>
       </properties>
     </artifact>
+    <artifact classifier='org.eclipse.update.feature' id='nu.mine.kino.plugin.jdt.utils' version='0.2.1.201206100938'>
+      <properties size='2'>
+        <property name='download.contentType' value='application/zip'/>
+        <property name='download.size' value='11070'/>
+      </properties>
+    </artifact>
     <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.google.core' version='0.5.0'>
       <properties size='3'>
         <property name='artifact.size' value='16493'/>
         <property name='download.size' value='16493'/>
         <property name='download.contentType' value='application/zip'/>
-      </properties>
-    </artifact>
-    <artifact classifier='org.eclipse.update.feature' id='nu.mine.kino.plugin.jdt.utils' version='0.2.1.201206100938'>
-      <properties size='2'>
-        <property name='download.contentType' value='application/zip'/>
-        <property name='download.size' value='11070'/>
       </properties>
     </artifact>
     <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.google.core' version='1.4.3.201206100932'>
@@ -420,6 +444,12 @@
         <property name='download.size' value='30325'/>
       </properties>
     </artifact>
+    <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.jdt.utils' version='0.2.1.201206101118'>
+      <properties size='2'>
+        <property name='artifact.size' value='4096'/>
+        <property name='download.size' value='16102'/>
+      </properties>
+    </artifact>
     <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.webrecorder' version='0.1.1.201206081545'>
       <properties size='2'>
         <property name='artifact.size' value='578'/>
@@ -459,6 +489,12 @@
         <property name='download.contentType' value='application/zip'/>
       </properties>
     </artifact>
+    <artifact classifier='org.eclipse.update.feature' id='nu.mine.kino.plugin.plugindocumentcreator.samples' version='1.0.0.201206101118'>
+      <properties size='2'>
+        <property name='download.contentType' value='application/zip'/>
+        <property name='download.size' value='3420'/>
+      </properties>
+    </artifact>
     <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.webrecorder' version='0.1.1.201206091152'>
       <properties size='2'>
         <property name='artifact.size' value='4096'/>
@@ -469,6 +505,12 @@
       <properties size='2'>
         <property name='download.contentType' value='application/zip'/>
         <property name='download.size' value='5565'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.plugindocumentcreator' version='0.9.3.201206101118'>
+      <properties size='2'>
+        <property name='artifact.size' value='4096'/>
+        <property name='download.size' value='23131'/>
       </properties>
     </artifact>
     <artifact classifier='org.eclipse.update.feature' id='nu.mine.kino.plugin.plugindocumentcreator' version='0.9.5'>
@@ -488,6 +530,12 @@
       <properties size='2'>
         <property name='artifact.size' value='4096'/>
         <property name='download.size' value='64138'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.plugindocumentcreator.sample' version='1.0.1.201206101118'>
+      <properties size='2'>
+        <property name='artifact.size' value='4096'/>
+        <property name='download.size' value='5031'/>
       </properties>
     </artifact>
     <artifact classifier='org.eclipse.update.feature' id='nu.mine.kino.plugin.webrecorder' version='0.1.1.201206091152'>
@@ -637,17 +685,17 @@
         <property name='download.contentType' value='application/zip'/>
       </properties>
     </artifact>
-    <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.jsonlib' version='0.2.2'>
-      <properties size='3'>
-        <property name='artifact.size' value='1175138'/>
-        <property name='download.size' value='1175138'/>
-        <property name='download.contentType' value='application/zip'/>
-      </properties>
-    </artifact>
     <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.utils' version='0.9.0'>
       <properties size='3'>
         <property name='artifact.size' value='7471'/>
         <property name='download.size' value='7471'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.jsonlib' version='0.2.2'>
+      <properties size='3'>
+        <property name='artifact.size' value='1175138'/>
+        <property name='download.size' value='1175138'/>
         <property name='download.contentType' value='application/zip'/>
       </properties>
     </artifact>
@@ -658,17 +706,17 @@
         <property name='download.contentType' value='application/zip'/>
       </properties>
     </artifact>
-    <artifact classifier='org.eclipse.update.feature' id='nu.mine.kino.plugin.plugindocumentcreator.samples' version='1.0.5'>
-      <properties size='2'>
-        <property name='artifact.size' value='10572'/>
-        <property name='download.size' value='10572'/>
-      </properties>
-    </artifact>
     <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.jsonlib' version='0.2.0'>
       <properties size='3'>
         <property name='artifact.size' value='2189821'/>
         <property name='download.size' value='2189821'/>
         <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='org.eclipse.update.feature' id='nu.mine.kino.plugin.plugindocumentcreator.samples' version='1.0.5'>
+      <properties size='2'>
+        <property name='artifact.size' value='10572'/>
+        <property name='download.size' value='10572'/>
       </properties>
     </artifact>
     <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.libs' version='1.0.5'>
@@ -697,10 +745,11 @@
         <property name='download.size' value='1878922'/>
       </properties>
     </artifact>
-    <artifact classifier='org.eclipse.update.feature' id='nu.mine.kino.plugin.beangenerator' version='0.5.1'>
-      <properties size='2'>
-        <property name='artifact.size' value='11324'/>
-        <property name='download.size' value='11324'/>
+    <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.libs' version='1.0.4'>
+      <properties size='3'>
+        <property name='artifact.size' value='1878465'/>
+        <property name='download.size' value='1878465'/>
+        <property name='download.contentType' value='application/zip'/>
       </properties>
     </artifact>
     <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.google.core' version='1.4.3.201206010148'>
@@ -709,11 +758,10 @@
         <property name='download.size' value='12820'/>
       </properties>
     </artifact>
-    <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.libs' version='1.0.4'>
-      <properties size='3'>
-        <property name='artifact.size' value='1878465'/>
-        <property name='download.size' value='1878465'/>
-        <property name='download.contentType' value='application/zip'/>
+    <artifact classifier='org.eclipse.update.feature' id='nu.mine.kino.plugin.beangenerator' version='0.5.1'>
+      <properties size='2'>
+        <property name='artifact.size' value='11324'/>
+        <property name='download.size' value='11324'/>
       </properties>
     </artifact>
     <artifact classifier='org.eclipse.update.feature' id='nu.mine.kino.plugin.plugindocumentcreator' version='0.9.8'>
@@ -735,10 +783,10 @@
         <property name='download.size' value='10539'/>
       </properties>
     </artifact>
-    <artifact classifier='org.eclipse.update.feature' id='nu.mine.kino.plugin.beangenerator' version='0.3.4'>
+    <artifact classifier='org.eclipse.update.feature' id='nu.mine.kino.plugin.beangenerator' version='0.3.0'>
       <properties size='2'>
-        <property name='artifact.size' value='3358'/>
-        <property name='download.size' value='3358'/>
+        <property name='artifact.size' value='3327'/>
+        <property name='download.size' value='3327'/>
       </properties>
     </artifact>
     <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.google.ui' version='0.4.2'>
@@ -748,10 +796,10 @@
         <property name='download.contentType' value='application/zip'/>
       </properties>
     </artifact>
-    <artifact classifier='org.eclipse.update.feature' id='nu.mine.kino.plugin.beangenerator' version='0.3.0'>
+    <artifact classifier='org.eclipse.update.feature' id='nu.mine.kino.plugin.beangenerator' version='0.3.4'>
       <properties size='2'>
-        <property name='artifact.size' value='3327'/>
-        <property name='download.size' value='3327'/>
+        <property name='artifact.size' value='3358'/>
+        <property name='download.size' value='3358'/>
       </properties>
     </artifact>
     <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.beangenerator' version='0.4.3'>
@@ -779,17 +827,17 @@
         <property name='download.size' value='1926150'/>
       </properties>
     </artifact>
+    <artifact classifier='org.eclipse.update.feature' id='nu.mine.kino.plugin.plugindocumentcreator' version='0.9.3.201206101118'>
+      <properties size='2'>
+        <property name='download.contentType' value='application/zip'/>
+        <property name='download.size' value='5595'/>
+      </properties>
+    </artifact>
     <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.log4j' version='0.0.2'>
       <properties size='3'>
         <property name='artifact.size' value='347670'/>
         <property name='download.size' value='347670'/>
         <property name='download.contentType' value='application/zip'/>
-      </properties>
-    </artifact>
-    <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.google.ui' version='1.4.3.201206100929'>
-      <properties size='2'>
-        <property name='artifact.size' value='4096'/>
-        <property name='download.size' value='64138'/>
       </properties>
     </artifact>
     <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.google.ui.siteinfo' version='1.4.3.201206100929'>
@@ -798,16 +846,10 @@
         <property name='download.size' value='19002'/>
       </properties>
     </artifact>
-    <artifact classifier='org.eclipse.update.feature' id='nu.mine.kino.plugin.google' version='1.4.3.201206100929'>
+    <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.google.ui' version='1.4.3.201206100929'>
       <properties size='2'>
-        <property name='download.contentType' value='application/zip'/>
-        <property name='download.size' value='24728'/>
-      </properties>
-    </artifact>
-    <artifact classifier='org.eclipse.update.feature' id='nu.mine.kino.plugin.google' version='1.4.1'>
-      <properties size='2'>
-        <property name='artifact.size' value='24887'/>
-        <property name='download.size' value='24887'/>
+        <property name='artifact.size' value='4096'/>
+        <property name='download.size' value='64138'/>
       </properties>
     </artifact>
     <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.google.ui.siteinfo' version='1.4.3.201206010148'>
@@ -816,11 +858,22 @@
         <property name='download.size' value='19011'/>
       </properties>
     </artifact>
-    <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.plugindocumentcreator.sample' version='1.0.4'>
-      <properties size='3'>
-        <property name='artifact.size' value='10483'/>
-        <property name='download.size' value='10483'/>
+    <artifact classifier='org.eclipse.update.feature' id='nu.mine.kino.plugin.google' version='1.4.1'>
+      <properties size='2'>
+        <property name='artifact.size' value='24887'/>
+        <property name='download.size' value='24887'/>
+      </properties>
+    </artifact>
+    <artifact classifier='org.eclipse.update.feature' id='nu.mine.kino.plugin.google' version='1.4.3.201206100929'>
+      <properties size='2'>
         <property name='download.contentType' value='application/zip'/>
+        <property name='download.size' value='24728'/>
+      </properties>
+    </artifact>
+    <artifact classifier='org.eclipse.update.feature' id='nu.mine.kino.plugin.webrecorder' version='0.1.1.201206081919'>
+      <properties size='2'>
+        <property name='download.contentType' value='application/zip'/>
+        <property name='download.size' value='5557'/>
       </properties>
     </artifact>
     <artifact classifier='org.eclipse.update.feature' id='nu.mine.kino.plugin.plugindocumentcreator' version='0.9.7'>
@@ -829,10 +882,11 @@
         <property name='download.size' value='10534'/>
       </properties>
     </artifact>
-    <artifact classifier='org.eclipse.update.feature' id='nu.mine.kino.plugin.webrecorder' version='0.1.1.201206081919'>
-      <properties size='2'>
+    <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.plugindocumentcreator.sample' version='1.0.4'>
+      <properties size='3'>
+        <property name='artifact.size' value='10483'/>
+        <property name='download.size' value='10483'/>
         <property name='download.contentType' value='application/zip'/>
-        <property name='download.size' value='5557'/>
       </properties>
     </artifact>
     <artifact classifier='osgi.bundle' id='nu.mine.kino.plugin.libs' version='1.0.6'>
