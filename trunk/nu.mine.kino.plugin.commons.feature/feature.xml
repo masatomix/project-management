@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="nu.mine.kino.plugin.commons.feature"
+      label="Commons Feature"
+      version="1.0.0"
+      provider-name="Masatomi KINO">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="nu.mine.kino.plugin.log4j" version="0.0.5" match="greaterOrEqual"/>
+      <import plugin="nu.mine.kino.plugin.commons.lib" version="0.9.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui"/>
+   </requires>
+
+   <plugin
+         id="nu.mine.kino.plugin.commons.lib"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="nu.mine.kino.plugin.commons.utils"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="nu.mine.kino.plugin.log4j"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+</feature>
