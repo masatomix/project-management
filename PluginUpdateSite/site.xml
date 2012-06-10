@@ -27,7 +27,7 @@
    <feature url="features/nu.mine.kino.plugin.commons.feature_1.0.1.jar" id="nu.mine.kino.plugin.commons.feature" version="1.0.1">
       <category name="commons"/>
    </feature>
-   <feature url="features/nu.mine.kino.plugin.webrecorder_0.1.3.201206110041.jar" id="nu.mine.kino.plugin.webrecorder" version="0.1.3.201206110041">
+   <feature url="features/nu.mine.kino.plugin.webrecorder_0.1.3.201206110101.jar" id="nu.mine.kino.plugin.webrecorder" version="0.1.3.201206110101">
       <category name="webrecorder"/>
    </feature>
    <category-def name="google" label="Google Plugin"/>
