@@ -27,16 +27,11 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import nu.mine.kino.plugin.commons.utils.HttpClientUtils;
+import nu.mine.kino.plugin.commons.utils.RWUtils;
 import nu.mine.kino.plugin.webrecorder.WebRecorderPlugin;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.servlets.ProxyServlet;
 
@@ -85,12 +80,6 @@ public class RecorderServlet extends ProxyServlet {
             // 2012/06/07追記:
             // 再取得できるようFilterを調整したので、super.service()に戻しました!
             executePost(hRequest);
-            // キャッシュから返す
-            // File file = WebRecorderPlugin.getDefault()
-            // .getCachePathFromRequestForPost(request);
-            // if (file.exists()) {
-            // returnFromCache(file.getAbsolutePath(), response);
-            // }
         }
     }
 
@@ -99,28 +88,14 @@ public class RecorderServlet extends ProxyServlet {
         String body = WebRecorderPlugin.getDefault().getBody(hRequest);
         String url = getURLBase(hRequest);
 
-        HttpPost httppost = new HttpPost(url);
-        HttpClient httpclient = new DefaultHttpClient();
-
         String contentType = hRequest.getContentType();
-        ContentType contentTypeObj = ContentType.parse(contentType);
-        StringEntity postEntity = null;
-        try {
-            postEntity = new StringEntity(body, contentTypeObj);
-        } catch (Exception e) {
-            logger.warn("ContentTypeを指定してPostしようとするとエラーになったので、指定しないでPostすることにする");
-            postEntity = new StringEntity(body);
-        }
-
-        httppost.setEntity(postEntity);
-        HttpResponse httpResponse = httpclient.execute(httppost);
-
-        HttpEntity entity = httpResponse.getEntity();
+        HttpEntity entity = HttpClientUtils.getHttpEntity(url, body,
+                contentType, null);
         if (entity != null) {
             File file = WebRecorderPlugin.getDefault()
                     .getCachePathFromRequestForPost(hRequest);
             file.getParentFile().mkdirs();
-            streamToFile(entity.getContent(), file);
+            RWUtils.streamToFile(entity.getContent(), file);
         }
     }
 
@@ -151,48 +126,14 @@ public class RecorderServlet extends ProxyServlet {
             ClientProtocolException {
         String url = getURLWithQuery(hRequest);
 
-        // HttpGet httpget = new HttpGet(url);
-        // HttpClient httpclient = new DefaultHttpClient();
-        // HttpResponse httpResponse = httpclient.execute(httpget);
-        // HttpEntity entity = httpResponse.getEntity();
-
         HttpEntity entity = HttpClientUtils.getHttpEntity(url);
         if (entity != null) {
             File file = WebRecorderPlugin.getDefault().getCachePathFromRequest(
                     hRequest);
             file.getParentFile().mkdirs();
-            streamToFile(entity.getContent(), file);
+            RWUtils.streamToFile(entity.getContent(), file);
         }
 
-    }
-
-    private void streamToFile(InputStream in, File file) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte[] b = new byte[1024];
-        int j;
-        while ((j = in.read(b)) != -1)
-            baos.write(b, 0, j);
-        byte[] pix = baos.toByteArray();
-        write(pix, file);
-    }
-
-    private void write(byte[] b, File file) {
-        BufferedOutputStream stream = null;
-        try {
-            stream = new BufferedOutputStream(new FileOutputStream(file));
-            stream.write(b);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (stream != null) {
-                try {
-                    stream.close();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-            }
-
-        }
     }
 
 }
