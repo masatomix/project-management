@@ -3,47 +3,29 @@
    <feature url="features/nu.mine.kino.plugin.plugindocumentcreator.samples_1.0.5.jar" id="nu.mine.kino.plugin.plugindocumentcreator.samples" version="1.0.5">
       <category name="plugindocumentcreator"/>
    </feature>
-   <feature url="features/nu.mine.kino.plugin.beangenerator_0.4.3.jar" id="nu.mine.kino.plugin.beangenerator" version="0.4.3">
-      <category name="beancreator"/>
-   </feature>
-   <feature url="features/nu.mine.kino.plugin.google_1.4.1.jar" id="nu.mine.kino.plugin.google" version="1.4.1">
-      <category name="google"/>
-   </feature>
    <feature url="features/nu.mine.kino.plugin.plugindocumentcreator_0.9.9.jar" id="nu.mine.kino.plugin.plugindocumentcreator" version="0.9.9">
       <category name="plugindocumentcreator"/>
-   </feature>
-   <feature url="features/nu.mine.kino.plugin.beangenerator_0.4.4.jar" id="nu.mine.kino.plugin.beangenerator" version="0.4.4">
-      <category name="beancreator"/>
-   </feature>
-   <feature url="features/nu.mine.kino.plugin.utils_0.9.0.jar" id="nu.mine.kino.plugin.utils" version="0.9.0">
-      <category name="utils"/>
-   </feature>
-   <feature url="features/nu.mine.kino.plugin.beangenerator_0.5.0.jar" id="nu.mine.kino.plugin.beangenerator" version="0.5.0">
-      <category name="beancreator"/>
-   </feature>
-   <feature url="features/nu.mine.kino.plugin.beangenerator_0.5.1.jar" id="nu.mine.kino.plugin.beangenerator" version="0.5.1">
-      <category name="beancreator"/>
    </feature>
    <feature url="features/nu.mine.kino.plugin.beangenerator_0.5.2.jar" id="nu.mine.kino.plugin.beangenerator" version="0.5.2">
       <category name="beancreator"/>
    </feature>
-   <feature url="features/nu.mine.kino.plugin.jdt.utils_0.2.0.jar" id="nu.mine.kino.plugin.jdt.utils" version="0.2.0">
+   <feature url="features/nu.mine.kino.plugin.google_1.4.3.201206100938.jar" id="nu.mine.kino.plugin.google" version="1.4.3.201206100938">
+      <category name="google"/>
+   </feature>
+   <feature url="features/nu.mine.kino.plugin.jdt.utils_0.2.1.201206100938.jar" id="nu.mine.kino.plugin.jdt.utils" version="0.2.1.201206100938">
       <category name="jdtutilsplugin"/>
    </feature>
-   <feature url="features/nu.mine.kino.plugin.google_1.4.2.201205290816.jar" id="nu.mine.kino.plugin.google" version="1.4.2.201205290816">
-      <category name="google"/>
+   <feature url="features/nu.mine.kino.plugin.plugindocumentcreator_0.9.3.qualifier.jar" id="nu.mine.kino.plugin.plugindocumentcreator" version="0.9.3.qualifier">
+      <category name="plugindocumentcreator"/>
    </feature>
-   <feature url="features/nu.mine.kino.plugin.google_1.4.3.201206010148.jar" id="nu.mine.kino.plugin.google" version="1.4.3.201206010148">
-      <category name="google"/>
+   <feature url="features/nu.mine.kino.plugin.plugindocumentcreator.samples_1.0.0.qualifier.jar" id="nu.mine.kino.plugin.plugindocumentcreator.samples" version="1.0.0.qualifier">
+      <category name="plugindocumentcreator"/>
    </feature>
-   <feature url="features/nu.mine.kino.plugin.webrecorder_0.1.0.201206081053.jar" id="nu.mine.kino.plugin.webrecorder" version="0.1.0.201206081053">
+   <feature url="features/nu.mine.kino.plugin.webrecorder_0.1.1.201206100938.jar" id="nu.mine.kino.plugin.webrecorder" version="0.1.1.201206100938">
       <category name="webrecorder"/>
    </feature>
-   <feature url="features/nu.mine.kino.plugin.webrecorder_0.1.1.201206081546.jar" id="nu.mine.kino.plugin.webrecorder" version="0.1.1.201206081546">
-      <category name="webrecorder"/>
-   </feature>
-   <feature url="features/nu.mine.kino.plugin.webrecorder_0.1.1.201206081919.jar" id="nu.mine.kino.plugin.webrecorder" version="0.1.1.201206081919">
-      <category name="webrecorder"/>
+   <feature url="features/nu.mine.kino.plugin.utils_0.9.0.jar" id="nu.mine.kino.plugin.utils" version="0.9.0">
+      <category name="utils"/>
    </feature>
    <category-def name="google" label="Google Plugin"/>
    <category-def name="beancreator" label="JavaBeans Creator Plugin"/>
