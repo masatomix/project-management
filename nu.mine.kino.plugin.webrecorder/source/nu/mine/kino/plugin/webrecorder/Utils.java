@@ -32,24 +32,6 @@ import org.eclipse.jetty.servlets.ProxyServlet;
  * @version $Revision$
  */
 public class Utils {
-    // public static void main(String[] args) throws Exception {
-    //
-    // Server server = new Server();
-    // SelectChannelConnector connector = new SelectChannelConnector();
-    // connector.setPort(8008);
-    // server.setConnectors(new Connector[] { connector });
-    //
-    // ServletContextHandler context = new ServletContextHandler(
-    // ServletContextHandler.SESSIONS);
-    // server.setHandler(context);
-    // // context.addServlet(new ServletHolder(new HelloServlet()),
-    // // "/hello");
-    // context.addServlet(ProxyServlet.class, "/*");
-    //
-    // server.start();
-    // server.join();
-    //
-    // }
 
     public static void startJettyServer(Server server, int port, RecordMode mode)
             throws InterruptedException, Exception {
@@ -83,6 +65,8 @@ public class Utils {
         }
 
         server.start();
+        WebRecorderPlugin.getDefault().printConsole(mode + " ‚ª‹N“®‚µ‚Ü‚µ‚½");
         server.join();
+        WebRecorderPlugin.getDefault().printConsole(mode + " ‚ª’âŽ~‚µ‚Ü‚µ‚½");
     }
 }
