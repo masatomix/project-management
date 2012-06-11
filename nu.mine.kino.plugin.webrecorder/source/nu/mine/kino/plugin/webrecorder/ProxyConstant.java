@@ -28,4 +28,6 @@ public interface ProxyConstant {
 
     public static final String TRIM_LENGTH = "trimLength";
     public static final String POST_BODY_FLAG = "postBodyFlag";
+
+    public static final String CONSOLE_ID = "Web Recorder";
 }

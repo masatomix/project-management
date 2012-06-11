@@ -1,19 +1,9 @@
 package nu.mine.kino.plugin.webrecorder;
 
-import static nu.mine.kino.plugin.webrecorder.ProxyConstant.POST_BODY_FLAG;
-import static nu.mine.kino.plugin.webrecorder.ProxyConstant.TRIM_FLAG;
-import static nu.mine.kino.plugin.webrecorder.ProxyConstant.TRIM_LENGTH;
-import static nu.mine.kino.plugin.webrecorder.ProxyConstant.TRIM_START_INDEX;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
+import nu.mine.kino.plugin.commons.utils.StringUtils;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -40,8 +30,6 @@ import org.osgi.framework.BundleContext;
  * The activator class controls the plug-in life cycle
  */
 public class WebRecorderPlugin extends AbstractUIPlugin {
-    public static final String CONSOLE_ID = "Web Recorder";
-
     /**
      * Logger for this class
      */
@@ -205,100 +193,92 @@ public class WebRecorderPlugin extends AbstractUIPlugin {
         server = null;
     }
 
-    public File getCachePathFromRequest(ServletRequest request) {
-        String requestURI = ((HttpServletRequest) request).getRequestURI();
-        String host = ((HttpServletRequest) request).getHeader("Host");
-        host = host.replace(':', '/');
-        File hostDir = new File(getCacheBasepath(), host);
+    //
+    // public File getCachePathFromRequest(ServletRequest request) {
+    // String requestURI = ((HttpServletRequest) request).getRequestURI();
+    // String host = ((HttpServletRequest) request).getHeader("Host");
+    // host = host.replace(':', '/');
+    // File hostDir = new File(getCacheBasepath(), host);
+    //
+    // StringBuffer buf = new StringBuffer();
+    // buf.append(requestURI);
+    // logger.info("Req URL: " + requestURI);
+    // printURLConsole("Req URL: " + requestURI);
+    // // queryがあれば付けるただしSha1ハッシュして
+    // String queryString = ((HttpServletRequest) request).getQueryString();
+    // if (queryString != null && !"".equals(queryString)) {
+    // String shaHex = DigestUtils.shaHex(queryString.getBytes());
+    // logger.info("query: " + queryString);
+    // logger.info("queryをSHA1ハッシュ: " + shaHex);
+    // printConsole("query: " + queryString);
+    // printConsole("queryをSHA1ハッシュ: " + shaHex);
+    // buf.append("_");
+    // buf.append(shaHex);
+    // }
+    // // buf.append(".txt");
+    //
+    // File file = new File(hostDir, new String(buf));
+    // return file;
+    // }
 
-        StringBuffer buf = new StringBuffer();
-        buf.append(requestURI);
-        logger.info("Req URL: " + requestURI);
-        printConsole("Req URL: " + requestURI);
-        // queryがあれば付けるただしSha1ハッシュして
-        String queryString = ((HttpServletRequest) request).getQueryString();
-        if (queryString != null && !"".equals(queryString)) {
-            String shaHex = DigestUtils.shaHex(queryString.getBytes());
-            logger.info("query: " + queryString);
-            logger.info("queryをSHA1ハッシュ: " + shaHex);
-            printConsole("query: " + queryString);
-            printConsole("queryをSHA1ハッシュ: " + shaHex);
-            buf.append("_");
-            buf.append(shaHex);
-        }
-        // buf.append(".txt");
+    // public File getCachePathFromRequestForPost(ServletRequest request) {
+    // String requestURI = ((HttpServletRequest) request).getRequestURI();
+    // String host = ((HttpServletRequest) request).getHeader("Host");
+    // host = host.replace(':', '/');
+    // File hostDir = new File(getCacheBasepath(), host);
+    //
+    // StringBuffer buf = new StringBuffer();
+    // buf.append(requestURI);
+    // logger.info("Req URL: " + requestURI);
+    // printURLConsole("Req URL: " + requestURI);
+    //
+    // // PostをリクエストBodyまで考慮してファイル名を決めるかフラグ。
+    // boolean postBodyFlag = getPreferenceStore().getBoolean(POST_BODY_FLAG);
+    // if (postBodyFlag) {
+    // addBodyForSuffix(request, buf);
+    // }
+    // // buf.append(".txt");
+    //
+    // File file = new File(hostDir, new String(buf));
+    // return file;
+    // }
+    //
+    // private void addBodyForSuffix(ServletRequest request, StringBuffer buf) {
+    // // Bodyがあれば付けるただしSha1ハッシュして
+    // try {
+    // String body = Utils.getBody((HttpServletRequest) request);
+    // logger.info("Req body: " + body);
+    // printConsole("Req body: " + body);
+    //
+    // boolean trimFlag = getPreferenceStore().getBoolean(TRIM_FLAG);
+    // logger.debug("trim?: " + trimFlag);
+    // if (trimFlag) {
+    // int startIndex = getPreferenceStore().getInt(TRIM_START_INDEX);
+    // int length = getPreferenceStore().getInt(TRIM_LENGTH);
+    // logger.debug("startIndex: " + startIndex);
+    // logger.debug("length: " + length);
+    // if (length <= 0) {
+    // body = body.substring(startIndex);
+    // } else {
+    // body = body.substring(startIndex, startIndex + length);
+    // }
+    // logger.debug("body : " + body);
+    // }
+    // if (body != null && !"".equals(body)) {
+    // String shaHex = DigestUtils.shaHex(body.getBytes());
+    // logger.info("bodyをSHA1ハッシュ: " + shaHex);
+    // buf.append("_");
+    // buf.append(shaHex);
+    // }
+    // } catch (IOException e) {
+    // e.printStackTrace();
+    // }
+    // }
 
-        File file = new File(hostDir, new String(buf));
-        return file;
-    }
-
-    public String getBody(HttpServletRequest hRequest) throws IOException {
-        BufferedReader reader = hRequest.getReader();
-        StringBuffer bodyBuf = new StringBuffer();
-        try {
-            String str = null;
-            while ((str = reader.readLine()) != null) {
-                bodyBuf.append(str);
-            }
-        } finally {
-            reader.close();
-        }
-        String body = new String(bodyBuf);
-        return body;
-    }
-
-    public File getCachePathFromRequestForPost(ServletRequest request) {
-        String requestURI = ((HttpServletRequest) request).getRequestURI();
-        String host = ((HttpServletRequest) request).getHeader("Host");
-        host = host.replace(':', '/');
-        File hostDir = new File(getCacheBasepath(), host);
-
-        StringBuffer buf = new StringBuffer();
-        buf.append(requestURI);
-        logger.info("Req URL: " + requestURI);
-        printConsole("Req URL: " + requestURI);
-
-        // PostをリクエストBodyまで考慮してファイル名を決めるかフラグ。
-        boolean postBodyFlag = getPreferenceStore().getBoolean(POST_BODY_FLAG);
-        if (postBodyFlag) {
-            addBodyForSuffix(request, buf);
-        }
-        // buf.append(".txt");
-
-        File file = new File(hostDir, new String(buf));
-        return file;
-    }
-
-    private void addBodyForSuffix(ServletRequest request, StringBuffer buf) {
-        // Bodyがあれば付けるただしSha1ハッシュして
-        try {
-            String body = getBody((HttpServletRequest) request);
-            logger.info("Req body: " + body);
-            printConsole("Req body: " + body);
-
-            boolean trimFlag = getPreferenceStore().getBoolean(TRIM_FLAG);
-            logger.debug("trim?: " + trimFlag);
-            if (trimFlag) {
-                int startIndex = getPreferenceStore().getInt(TRIM_START_INDEX);
-                int length = getPreferenceStore().getInt(TRIM_LENGTH);
-                logger.debug("startIndex: " + startIndex);
-                logger.debug("length: " + length);
-                if (length <= 0) {
-                    body = body.substring(startIndex);
-                } else {
-                    body = body.substring(startIndex, startIndex + length);
-                }
-                logger.debug("body : " + body);
-            }
-            if (body != null && !"".equals(body)) {
-                String shaHex = DigestUtils.shaHex(body.getBytes());
-                logger.info("bodyをSHA1ハッシュ: " + shaHex);
-                buf.append("_");
-                buf.append(shaHex);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void printConsole(String message) {
+        MessageConsole myConsole = findConsole(ProxyConstant.CONSOLE_ID);
+        MessageConsoleStream out = myConsole.newMessageStream();
+        out.println(message);
     }
 
     public MessageConsole findConsole(String name) {
@@ -314,15 +294,9 @@ public class WebRecorderPlugin extends AbstractUIPlugin {
         return myConsole;
     }
 
-    public void printConsole(String message) {
-        MessageConsole myConsole = findConsole(CONSOLE_ID);
-        MessageConsoleStream out = myConsole.newMessageStream();
-        out.println(message);
-    }
-
     public void showConsole(IWorkbenchPage page) throws PartInitException {
         IConsoleView view = (IConsoleView) page
                 .showView(IConsoleConstants.ID_CONSOLE_VIEW);
-        view.display(findConsole(CONSOLE_ID));
+        view.display(findConsole(ProxyConstant.CONSOLE_ID));
     }
 }
