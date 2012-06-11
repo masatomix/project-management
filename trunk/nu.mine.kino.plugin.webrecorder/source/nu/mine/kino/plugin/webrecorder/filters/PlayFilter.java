@@ -26,7 +26,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import nu.mine.kino.plugin.webrecorder.WebRecorderPlugin;
+import nu.mine.kino.plugin.webrecorder.HttpRequestUtils;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.util.IO;
@@ -58,14 +58,12 @@ public class PlayFilter implements Filter {
             // ファイル名がかぶっちゃうので、何らかの値を付けたい
             // RequestBodyをハッシュするとかね
             // 例の実行後はBodyにアクセスできない問題が残るが
-            file = WebRecorderPlugin.getDefault()
-                    .getCachePathFromRequestForPost(request);
+            file = HttpRequestUtils.getCachePathFromRequestForPost(request);
         } else {
             // ファイル名がかぶっちゃうので、何らかの値を付けたい
             // パラメタ値をハッシュするとかね
             // 2012/06/07: 付けた
-            file = WebRecorderPlugin.getDefault().getCachePathFromRequest(
-                    request);
+            file = HttpRequestUtils.getCachePathFromRequest(request);
         }
 
         if (file.exists()) {

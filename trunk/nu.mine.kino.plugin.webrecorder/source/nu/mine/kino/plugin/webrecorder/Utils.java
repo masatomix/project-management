@@ -12,6 +12,7 @@
 
 package nu.mine.kino.plugin.webrecorder;
 
+
 import java.util.EnumSet;
 
 import javax.servlet.DispatcherType;
@@ -20,6 +21,7 @@ import nu.mine.kino.plugin.webrecorder.filters.MultiReadFilter;
 import nu.mine.kino.plugin.webrecorder.filters.PlayFilter;
 import nu.mine.kino.plugin.webrecorder.servlets.RecorderServlet;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
@@ -32,6 +34,8 @@ import org.eclipse.jetty.servlets.ProxyServlet;
  * @version $Revision$
  */
 public class Utils {
+
+    private static final Logger logger = Logger.getLogger(Utils.class);
 
     public static void startJettyServer(Server server, int port, RecordMode mode)
             throws InterruptedException, Exception {
@@ -69,4 +73,5 @@ public class Utils {
         server.join();
         WebRecorderPlugin.getDefault().printConsole(mode + " ‚ª’âŽ~‚µ‚Ü‚µ‚½");
     }
+
 }

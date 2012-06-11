@@ -27,17 +27,13 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import nu.mine.kino.plugin.commons.utils.HttpClientUtils;
-import nu.mine.kino.plugin.commons.utils.RWUtils;
+import nu.mine.kino.plugin.commons.utils.StringUtils;
+import nu.mine.kino.plugin.webrecorder.HttpRequestUtils;
+import nu.mine.kino.plugin.webrecorder.Utils;
 import nu.mine.kino.plugin.webrecorder.WebRecorderPlugin;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.servlets.ProxyServlet;
 
@@ -55,9 +51,9 @@ public class RecorderServlet extends ProxyServlet {
     private static final Logger logger = Logger
             .getLogger(RecorderServlet.class);
 
-    private static final String METHOD_GET = "GET";
+    public static final String METHOD_GET = "GET";
 
-    private static final String METHOD_POST = "POST";
+    public static final String METHOD_POST = "POST";
 
     private ServletContext servletContext;
 
@@ -77,8 +73,9 @@ public class RecorderServlet extends ProxyServlet {
         // Getなら親Servletを実行し、再度Getを自ら行ってデータを保存する
         super.service(request, response);
 
-        if (method.equals(METHOD_GET)) {
+        HttpRequestUtils.printInfo(hRequest);
 
+        if (method.equals(METHOD_GET)) {
             executeGet(hRequest);
         } else if (method.equals(METHOD_POST)) {
             // Postも同じく親ServletであるProxyServletの処理を呼んで、もう一度Postしたかったが、
@@ -92,14 +89,14 @@ public class RecorderServlet extends ProxyServlet {
 
     private void executePost(HttpServletRequest hRequest) throws IOException,
             ClientProtocolException {
-        String body = WebRecorderPlugin.getDefault().getBody(hRequest);
-        String url = getURLBase(hRequest);
+        String url = HttpRequestUtils.getURLBase(hRequest);
+        String body = HttpRequestUtils.getBody(hRequest);
 
         String contentType = hRequest.getContentType();
         HttpEntity entity = HttpClientUtils.getHttpEntity(url, body,
                 contentType, null);
         if (entity != null) {
-            File file = WebRecorderPlugin.getDefault()
+            File file = HttpRequestUtils
                     .getCachePathFromRequestForPost(hRequest);
             file.getParentFile().mkdirs();
             streamToFile(entity.getContent(), file);
@@ -136,41 +133,39 @@ public class RecorderServlet extends ProxyServlet {
     // }
     // }
 
-    private String getURLBase(HttpServletRequest hRequest) {
-        String requestURI = hRequest.getRequestURI();
-
-        StringBuffer buf = new StringBuffer();
-        buf.append(hRequest.getHeader("Host"));
-        if (requestURI != null) {
-            buf.append(requestURI);
-        }
-        String url = hRequest.getScheme() + "://" + new String(buf);
-        return url;
-    }
-
-    private String getURLWithQuery(HttpServletRequest hRequest) {
-        String baseURL = this.getURLBase(hRequest);
-        String queryString = hRequest.getQueryString();
-        if (queryString != null) {
-            logger.debug("URL: " + baseURL);
-            return baseURL + "?" + queryString;
-        }
-        logger.debug("URL: " + baseURL);
-        return baseURL;
-    }
+    // private String getURLBase(HttpServletRequest hRequest) {
+    // String requestURI = hRequest.getRequestURI();
+    //
+    // StringBuffer buf = new StringBuffer();
+    // buf.append(hRequest.getHeader("Host"));
+    // if (requestURI != null) {
+    // buf.append(requestURI);
+    // }
+    // String url = hRequest.getScheme() + "://" + new String(buf);
+    // return url;
+    // }
+    //
+    // private String getURLWithQuery(HttpServletRequest hRequest) {
+    // String baseURL = this.getURLBase(hRequest);
+    // String queryString = hRequest.getQueryString();
+    // if (queryString != null) {
+    // logger.debug("URL: " + baseURL);
+    // return baseURL + "?" + queryString;
+    // }
+    // logger.debug("URL: " + baseURL);
+    // return baseURL;
+    // }
 
     private void executeGet(HttpServletRequest hRequest) throws IOException,
             ClientProtocolException {
-        String url = getURLWithQuery(hRequest);
+        String url = HttpRequestUtils.getURLWithQuery(hRequest);
 
         HttpEntity entity = HttpClientUtils.getHttpEntity(url);
         if (entity != null) {
-            File file = WebRecorderPlugin.getDefault().getCachePathFromRequest(
-                    hRequest);
+            File file = HttpRequestUtils.getCachePathFromRequest(hRequest);
             file.getParentFile().mkdirs();
             streamToFile(entity.getContent(), file);
         }
-
     }
 
     private void streamToFile(InputStream in, File file) throws IOException {
