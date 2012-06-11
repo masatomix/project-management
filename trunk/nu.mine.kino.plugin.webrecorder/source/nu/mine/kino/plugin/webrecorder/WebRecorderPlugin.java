@@ -23,7 +23,16 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsole;
+import org.eclipse.ui.console.IConsoleConstants;
+import org.eclipse.ui.console.IConsoleManager;
+import org.eclipse.ui.console.IConsoleView;
+import org.eclipse.ui.console.MessageConsole;
+import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -31,6 +40,8 @@ import org.osgi.framework.BundleContext;
  * The activator class controls the plug-in life cycle
  */
 public class WebRecorderPlugin extends AbstractUIPlugin {
+    public static final String CONSOLE_ID = "Web Recorder";
+
     /**
      * Logger for this class
      */
@@ -202,13 +213,16 @@ public class WebRecorderPlugin extends AbstractUIPlugin {
 
         StringBuffer buf = new StringBuffer();
         buf.append(requestURI);
-        logger.info("URL : " + requestURI);
+        logger.info("Req URL: " + requestURI);
+        printConsole("Req URL: " + requestURI);
         // queryがあれば付けるただしSha1ハッシュして
         String queryString = ((HttpServletRequest) request).getQueryString();
         if (queryString != null && !"".equals(queryString)) {
             String shaHex = DigestUtils.shaHex(queryString.getBytes());
             logger.info("query: " + queryString);
             logger.info("queryをSHA1ハッシュ: " + shaHex);
+            printConsole("query: " + queryString);
+            printConsole("queryをSHA1ハッシュ: " + shaHex);
             buf.append("_");
             buf.append(shaHex);
         }
@@ -241,10 +255,13 @@ public class WebRecorderPlugin extends AbstractUIPlugin {
 
         StringBuffer buf = new StringBuffer();
         buf.append(requestURI);
+        logger.info("Req URL: " + requestURI);
+        printConsole("Req URL: " + requestURI);
+
         // PostをリクエストBodyまで考慮してファイル名を決めるかフラグ。
         boolean postBodyFlag = getPreferenceStore().getBoolean(POST_BODY_FLAG);
         if (postBodyFlag) {
-            createSuffixWithBody(request, buf);
+            addBodyForSuffix(request, buf);
         }
         // buf.append(".txt");
 
@@ -252,14 +269,13 @@ public class WebRecorderPlugin extends AbstractUIPlugin {
         return file;
     }
 
-    private void createSuffixWithBody(ServletRequest request, StringBuffer buf) {
+    private void addBodyForSuffix(ServletRequest request, StringBuffer buf) {
         // Bodyがあれば付けるただしSha1ハッシュして
         try {
             String body = getBody((HttpServletRequest) request);
+            logger.info("Req body: " + body);
+            printConsole("Req body: " + body);
 
-            logger.info("URL : "
-                    + ((HttpServletRequest) request).getRequestURI());
-            logger.info("body : " + body);
             boolean trimFlag = getPreferenceStore().getBoolean(TRIM_FLAG);
             logger.debug("trim?: " + trimFlag);
             if (trimFlag) {
@@ -283,5 +299,30 @@ public class WebRecorderPlugin extends AbstractUIPlugin {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public MessageConsole findConsole(String name) {
+        ConsolePlugin plugin = ConsolePlugin.getDefault();
+        IConsoleManager conMan = plugin.getConsoleManager();
+        IConsole[] existing = conMan.getConsoles();
+        for (int i = 0; i < existing.length; i++)
+            if (name.equals(existing[i].getName()))
+                return (MessageConsole) existing[i];
+        // no console found, so create a new one
+        MessageConsole myConsole = new MessageConsole(name, null);
+        conMan.addConsoles(new IConsole[] { myConsole });
+        return myConsole;
+    }
+
+    public void printConsole(String message) {
+        MessageConsole myConsole = findConsole(CONSOLE_ID);
+        MessageConsoleStream out = myConsole.newMessageStream();
+        out.println(message);
+    }
+
+    public void showConsole(IWorkbenchPage page) throws PartInitException {
+        IConsoleView view = (IConsoleView) page
+                .showView(IConsoleConstants.ID_CONSOLE_VIEW);
+        view.display(findConsole(CONSOLE_ID));
     }
 }

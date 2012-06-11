@@ -78,6 +78,7 @@ public class RecorderServlet extends ProxyServlet {
         super.service(request, response);
 
         if (method.equals(METHOD_GET)) {
+
             executeGet(hRequest);
         } else if (method.equals(METHOD_POST)) {
             // Postも同じく親ServletであるProxyServletの処理を呼んで、もう一度Postしたかったが、
