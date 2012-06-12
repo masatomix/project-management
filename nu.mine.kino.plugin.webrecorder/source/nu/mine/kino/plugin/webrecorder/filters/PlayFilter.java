@@ -12,6 +12,9 @@
 
 package nu.mine.kino.plugin.webrecorder.filters;
 
+import static nu.mine.kino.plugin.webrecorder.servlets.RecorderServlet.METHOD_GET;
+import static nu.mine.kino.plugin.webrecorder.servlets.RecorderServlet.METHOD_POST;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -27,6 +30,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import nu.mine.kino.plugin.webrecorder.HttpRequestUtils;
+import nu.mine.kino.plugin.webrecorder.WebRecorderPlugin;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.util.IO;
@@ -53,24 +57,35 @@ public class PlayFilter implements Filter {
             FilterChain chain) throws IOException, ServletException {
         logger.debug("doFilter(ServletRequest, ServletResponse, FilterChain) - start");
 
+        HttpServletRequest hRequest = (HttpServletRequest) request;
+        String method = hRequest.getMethod();
+
+        HttpRequestUtils.printInfo(hRequest);
+
         File file = null;
-        if (((HttpServletRequest) request).getMethod().equals("POST")) {
+        if (method.equals(METHOD_POST)) {
             // ファイル名がかぶっちゃうので、何らかの値を付けたい
             // RequestBodyをハッシュするとかね
             // 例の実行後はBodyにアクセスできない問題が残るが
             file = HttpRequestUtils.getCachePathFromRequestForPost(request);
-        } else {
+        } else if (method.equals(METHOD_GET)) {
             // ファイル名がかぶっちゃうので、何らかの値を付けたい
             // パラメタ値をハッシュするとかね
             // 2012/06/07: 付けた
             file = HttpRequestUtils.getCachePathFromRequest(request);
         }
 
+        String path = file.getPath();
         if (file.exists()) {
-            logger.info(file.getPath() + " があったのでキャッシュから返します");
+            logger.info(path + " があったのでキャッシュから返します");
+            WebRecorderPlugin.getDefault().printURLConsole(
+                    "{0} があったのでキャッシュから返します", path);
             returnFromCache(file.getAbsolutePath(), request, response);
         } else {
-            logger.info(file.getPath() + " がなかったので、サーバから取得して返します");
+            logger.info(path + " がなかったので、サーバから取得して返します");
+            WebRecorderPlugin.getDefault().printURLConsole(
+                    "{0} がなかったので、サーバから取得して返します",path);
+
             chain.doFilter(request, response);
         }
 
