@@ -27,10 +27,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import nu.mine.kino.plugin.commons.utils.HttpClientUtils;
-import nu.mine.kino.plugin.commons.utils.StringUtils;
 import nu.mine.kino.plugin.webrecorder.HttpRequestUtils;
-import nu.mine.kino.plugin.webrecorder.Utils;
-import nu.mine.kino.plugin.webrecorder.WebRecorderPlugin;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
@@ -102,59 +99,6 @@ public class RecorderServlet extends ProxyServlet {
             streamToFile(entity.getContent(), file);
         }
     }
-
-    // private void executePost(HttpServletRequest hRequest) throws IOException,
-    // ClientProtocolException {
-    // String body = WebRecorderPlugin.getDefault().getBody(hRequest);
-    // String url = getURLBase(hRequest);
-    //
-    // HttpPost httppost = new HttpPost(url);
-    // HttpClient httpclient = new DefaultHttpClient();
-    //
-    // String contentType = hRequest.getContentType();
-    // ContentType contentTypeObj = ContentType.parse(contentType);
-    // StringEntity postEntity = null;
-    // try {
-    // postEntity = new StringEntity(body, contentTypeObj);
-    // } catch (Exception e) {
-    // logger.warn("ContentTypeを指定してPostしようとするとエラーになったので、指定しないでPostすることにする");
-    // postEntity = new StringEntity(body);
-    // }
-    //
-    // httppost.setEntity(postEntity);
-    // HttpResponse httpResponse = httpclient.execute(httppost);
-    //
-    // HttpEntity entity = httpResponse.getEntity();
-    // if (entity != null) {
-    // File file = WebRecorderPlugin.getDefault()
-    // .getCachePathFromRequestForPost(hRequest);
-    // file.getParentFile().mkdirs();
-    // streamToFile(entity.getContent(), file);
-    // }
-    // }
-
-    // private String getURLBase(HttpServletRequest hRequest) {
-    // String requestURI = hRequest.getRequestURI();
-    //
-    // StringBuffer buf = new StringBuffer();
-    // buf.append(hRequest.getHeader("Host"));
-    // if (requestURI != null) {
-    // buf.append(requestURI);
-    // }
-    // String url = hRequest.getScheme() + "://" + new String(buf);
-    // return url;
-    // }
-    //
-    // private String getURLWithQuery(HttpServletRequest hRequest) {
-    // String baseURL = this.getURLBase(hRequest);
-    // String queryString = hRequest.getQueryString();
-    // if (queryString != null) {
-    // logger.debug("URL: " + baseURL);
-    // return baseURL + "?" + queryString;
-    // }
-    // logger.debug("URL: " + baseURL);
-    // return baseURL;
-    // }
 
     private void executeGet(HttpServletRequest hRequest) throws IOException,
             ClientProtocolException {

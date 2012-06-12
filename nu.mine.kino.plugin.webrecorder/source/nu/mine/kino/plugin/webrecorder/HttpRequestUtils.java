@@ -93,32 +93,28 @@ public class HttpRequestUtils {
     }
 
     public static File getCachePathFromRequest(ServletRequest request) {
-
         HttpServletRequest hRequest = (HttpServletRequest) request;
         String requestURI = hRequest.getRequestURI();
         String host = hRequest.getHeader("Host");
         host = host.replace(':', '/');
+
         File hostDir = new File(WebRecorderPlugin.getDefault()
                 .getCacheBasepath(), host);
-
         StringBuffer buf = new StringBuffer();
         buf.append(requestURI);
-        // logger.info("Req URL: " + requestURI);
         // queryがあれば付けるただしSha1ハッシュして
         String queryString = hRequest.getQueryString();
         if (queryString != null && !"".equals(queryString)) {
             String shaHex = DigestUtils.shaHex(queryString.getBytes());
-            // logger.info("query: " + queryString);
-            // logger.info("queryをSHA1ハッシュ: " + shaHex);
-            // WebRecorderPlugin.getDefault()
-            // .printConsole("query: " + queryString);
-            // WebRecorderPlugin.getDefault().printConsole(
-            // "queryをSHA1ハッシュ: " + shaHex);
             buf.append("_");
             buf.append(shaHex);
         }
 
-        File file = new File(hostDir, "get_" + new String(buf));
+        String fileName = Utils.appendPrefix(new String(buf), "get_");
+        File file = new File(hostDir, fileName);
+
+        WebRecorderPlugin.getDefault().printURLConsole(
+                "保存先:" + file.getAbsolutePath());
         return file;
     }
 
@@ -127,15 +123,12 @@ public class HttpRequestUtils {
         String requestURI = hRequest.getRequestURI();
         String host = hRequest.getHeader("Host");
         host = host.replace(':', '/');
+
         File hostDir = new File(WebRecorderPlugin.getDefault()
                 .getCacheBasepath(), host);
 
         StringBuffer buf = new StringBuffer();
         buf.append(requestURI);
-        logger.info("Req URL: " + requestURI);
-        // WebRecorderPlugin.getDefault().printConsole("Req URL: " +
-        // requestURI);
-
         // PostをリクエストBodyまで考慮してファイル名を決めるかフラグ。
         boolean postBodyFlag = WebRecorderPlugin.getDefault()
                 .getPreferenceStore().getBoolean(POST_BODY_FLAG);
@@ -143,7 +136,11 @@ public class HttpRequestUtils {
             addBodyForSuffix(hRequest, buf);
         }
 
-        File file = new File(hostDir, "post_"+new String(buf));
+        String fileName = Utils.appendPrefix(new String(buf), "post_");
+        File file = new File(hostDir, fileName);
+
+        WebRecorderPlugin.getDefault().printURLConsole(
+                "保存先:" + file.getAbsolutePath());
         return file;
     }
 
@@ -170,16 +167,18 @@ public class HttpRequestUtils {
         return baseURL;
     }
 
+    public static final String[] EXCEPT_EXTs = new String[] { ".png", ".jpg",
+            ".gif", ".css", ".js" }; // 情報の出力は不要なので除外
+
     public static void printInfo(HttpServletRequest hRequest) {
         String method = hRequest.getMethod();
         String url = getURLBase(hRequest);// URLを復元
-        String[] suffixs = new String[] { ".png", ".jpg", ".gif", ".css", ".js" }; // 情報の出力は不要なので除外
 
-        if (StringUtils.isEmpty(url) || StringUtils.endWith(url, suffixs)) {
+        if (StringUtils.isEmpty(url) || StringUtils.endWith(url, EXCEPT_EXTs)) {
             return;
         }
 
-        WebRecorderPlugin.getDefault().printConsole("");
+        WebRecorderPlugin.getDefault().printConsole("リクエスト情報");
         if (method.equals(METHOD_GET)) {
             WebRecorderPlugin.getDefault().printConsole("GET:   " + url);
             String queryString = hRequest.getQueryString();
@@ -203,10 +202,9 @@ public class HttpRequestUtils {
                             "BodyをSHA1ハッシュ: " + shaHex);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                WebRecorderPlugin.getDefault().printConsole(e.getMessage());
             }
         }
-        WebRecorderPlugin.getDefault().printConsole("");
 
     }
 }
