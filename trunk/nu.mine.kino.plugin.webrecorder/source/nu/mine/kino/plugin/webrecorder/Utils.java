@@ -12,11 +12,11 @@
 
 package nu.mine.kino.plugin.webrecorder;
 
-
 import java.util.EnumSet;
 
 import javax.servlet.DispatcherType;
 
+import nu.mine.kino.plugin.commons.utils.StringUtils;
 import nu.mine.kino.plugin.webrecorder.filters.MultiReadFilter;
 import nu.mine.kino.plugin.webrecorder.filters.PlayFilter;
 import nu.mine.kino.plugin.webrecorder.servlets.RecorderServlet;
@@ -72,6 +72,35 @@ public class Utils {
         WebRecorderPlugin.getDefault().printConsole(mode + " ‚ª‹N“®‚µ‚Ü‚µ‚½");
         server.join();
         WebRecorderPlugin.getDefault().printConsole(mode + " ‚ª’â~‚µ‚Ü‚µ‚½");
+    }
+
+    /**
+     * source‚ÌÅŒã‚Ì/‚Ì‚ ‚Æ‚ÉAprefix‚ğ’Ç‰Á‚µ‚Ä•Ô‚·
+     * 
+     * @param source
+     * @param prefix
+     * @return
+     */
+    public static String appendPrefix(String source, String prefix) {
+        if (StringUtils.isEmpty(source)) {
+            return prefix;
+        }
+        int lastIndexOf = source.lastIndexOf("/");
+        if (lastIndexOf < 0) {
+            return prefix + source;
+        }
+
+        String mae = source.substring(0, lastIndexOf);
+        String ushiro = source.substring(lastIndexOf + 1, source.length());
+        // System.out.println(mae);
+        // System.out.println(ushiro);
+        StringBuffer buf = new StringBuffer();
+        buf.append(mae);
+        buf.append("/");
+        buf.append(prefix);
+        buf.append(ushiro);
+        return new String(buf);
+
     }
 
 }
