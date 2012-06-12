@@ -11,6 +11,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
@@ -199,6 +200,15 @@ public class WebRecorderPlugin extends AbstractUIPlugin {
             return;
         }
         printConsole(url);
+    }
+
+    public void printURLConsole(String format, String url) {
+        if (StringUtils.isEmpty(url)
+                || StringUtils.endWith(url, HttpRequestUtils.EXCEPT_EXTs)) {
+            return;
+        }
+
+        printConsole(NLS.bind(format, url));
     }
 
     public void printConsole(String message) {
