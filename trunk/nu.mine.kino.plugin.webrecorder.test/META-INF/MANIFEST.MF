@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test
 Bundle-SymbolicName: nu.mine.kino.plugin.webrecorder.test
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.1.4.qualifier
 Bundle-Activator: nu.mine.kino.plugin.webrecorder.test.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
