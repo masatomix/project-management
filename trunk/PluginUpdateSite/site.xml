@@ -9,9 +9,6 @@
    <feature url="features/nu.mine.kino.plugin.beangenerator_0.5.2.jar" id="nu.mine.kino.plugin.beangenerator" version="0.5.2">
       <category name="beancreator"/>
    </feature>
-   <feature url="features/nu.mine.kino.plugin.google_1.4.3.201206100938.jar" id="nu.mine.kino.plugin.google" version="1.4.3.201206100938">
-      <category name="google"/>
-   </feature>
    <feature url="features/nu.mine.kino.plugin.jdt.utils_0.2.1.201206101118.jar" id="nu.mine.kino.plugin.jdt.utils" version="0.2.1.201206101118">
       <category name="jdtutilsplugin"/>
    </feature>
@@ -29,6 +26,9 @@
    </feature>
    <feature url="features/nu.mine.kino.plugin.webrecorder_0.1.4.201206121400.jar" id="nu.mine.kino.plugin.webrecorder" version="0.1.4.201206121400">
       <category name="webrecorder"/>
+   </feature>
+   <feature url="features/nu.mine.kino.plugin.google_1.4.3.201206140806.jar" id="nu.mine.kino.plugin.google" version="1.4.3.201206140806">
+      <category name="google"/>
    </feature>
    <category-def name="google" label="Google Plugin"/>
    <category-def name="beancreator" label="JavaBeans Creator Plugin"/>
