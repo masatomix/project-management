@@ -36,12 +36,18 @@ import org.eclipse.jetty.servlets.ProxyServlet;
 
 /**
  * 基本的にはJettyのプロキシ機能を呼び出すServletです。 ProxyServlet処理後、
- * 再度Get/Post処理を自らおこない、ローカルに結果を保存する機能があります。
+ * 再度Get/Post処理を自らおこない、ローカルに結果を保存する機能があります。 
+ * 本来ならProxyServletの結果をそのまま保存したいのだが。
  * 
  * @author Masatomi KINO
  * @version $Revision$
  */
 public class RecorderServlet extends ProxyServlet {
+    // 本来ならProxyServletの結果をそのまま横取りしてファイルに保存し、
+    // レスポンスをそのまま返せばいい。
+    // Jettyの制限?なのか、それができないので、一度自分たちでPost/Getしている
+    
+    
     /**
      * Logger for this class
      */
