@@ -168,7 +168,7 @@ public class HttpRequestUtils {
     }
 
     public static final String[] EXCEPT_EXTs = new String[] { ".png", ".jpg",
-            ".gif", ".css", ".js" }; // 情報の出力は不要なので除外
+            ".gif", ".css", ".js", ".svg" }; // 情報の出力は不要なので除外
 
     public static void printInfo(HttpServletRequest hRequest) {
         String method = hRequest.getMethod();

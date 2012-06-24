@@ -17,5 +17,5 @@ package nu.mine.kino.plugin.webrecorder;
  * @version $Revision$
  */
 public enum RecordMode {
-    RECORD, PLAY;
+    RECORD, PLAY, PROXY_ONLY;
 }
