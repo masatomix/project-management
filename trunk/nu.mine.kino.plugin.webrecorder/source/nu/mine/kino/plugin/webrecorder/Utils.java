@@ -17,6 +17,7 @@ import java.util.EnumSet;
 import javax.servlet.DispatcherType;
 
 import nu.mine.kino.plugin.commons.utils.StringUtils;
+import nu.mine.kino.plugin.webrecorder.filters.LogFilter;
 import nu.mine.kino.plugin.webrecorder.filters.MultiReadFilter;
 import nu.mine.kino.plugin.webrecorder.filters.PlayFilter;
 import nu.mine.kino.plugin.webrecorder.servlets.RecorderServlet;
@@ -60,10 +61,19 @@ public class Utils {
         case PLAY:
             context.addServlet(ProxyServlet.class, "/*");
             FilterHolder playFilterHolder = new FilterHolder();
+            playFilterHolder.setFilter(new LogFilter());
             playFilterHolder.setFilter(new PlayFilter());
             context.addFilter(playFilterHolder, "/*",
                     EnumSet.of(DispatcherType.REQUEST));
             break;
+        case PROXY_ONLY:
+            FilterHolder proxyOnlyFilterHolder = new FilterHolder();
+            proxyOnlyFilterHolder.setFilter(new LogFilter());
+            context.addFilter(proxyOnlyFilterHolder, "/*",
+                    EnumSet.of(DispatcherType.REQUEST));
+            context.addServlet(ProxyServlet.class, "/*");
+            break;
+
         default:
             break;
         }
