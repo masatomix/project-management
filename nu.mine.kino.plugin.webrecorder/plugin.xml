@@ -18,6 +18,12 @@
       </command>
       <command
             categoryId="nu.mine.kino.plugin.webrecorder.commands.category"
+            defaultHandler="nu.mine.kino.plugin.webrecorder.handlers.StartHandler"
+            id="nu.mine.kino.plugin.webrecorder.commands.ProxyOnlyCommand"
+            name="Proxy Only起動">
+      </command>
+      <command
+            categoryId="nu.mine.kino.plugin.webrecorder.commands.category"
             defaultHandler="nu.mine.kino.plugin.webrecorder.handlers.StopHandler"
             id="nu.mine.kino.plugin.webrecorder.commands.StopCommand"
             name="サーバ停止">
@@ -38,19 +44,19 @@
       <menuContribution
             locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
          <toolbar
-               id="nu.mine.kino.plugin.webrecorder.toolbars.sampleToolbar">
+               id="nu.mine.kino.plugin.webrecorder.toolbars.WebRecorderToolbar">
             <command
                   commandId="nu.mine.kino.plugin.webrecorder.commands.RecordCommand"
-                  icon="icons/film_go.png"
+                  icon="icons/film_save.png"
                   id="nu.mine.kino.plugin.webrecorder.toolbars.RecordCommand"
                   style="push"
                   tooltip="録画スタート">
             </command>
             <command
                   commandId="nu.mine.kino.plugin.webrecorder.commands.StartCommand"
-                  icon="icons/server_go.png"
+                  icon="icons/control_play_blue.png"
                   id="nu.mine.kino.plugin.webrecorder.toolbars.StartCommand"
-                  style="push"
+                  style="pulldown"
                   tooltip="サーバ起動">
             </command>
             <command
@@ -71,6 +77,23 @@
       </menuContribution>
       <menuContribution
             locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+      </menuContribution>
+      <menuContribution
+            locationURI="menu:nu.mine.kino.plugin.webrecorder.toolbars.StartCommand">
+         <command
+               commandId="nu.mine.kino.plugin.webrecorder.commands.StartCommand"
+               icon="icons/control_play_blue.png"
+               id="nu.mine.kino.plugin.webrecorder.toolbars.StartCommand1"
+               style="push"
+               tooltip="サーバ起動">
+         </command>
+         <command
+               commandId="nu.mine.kino.plugin.webrecorder.commands.ProxyOnlyCommand"
+               icon="icons/connect.png"
+               id="nu.mine.kino.plugin.webrecorder.toolbars.ProxyOnlyCommand"
+               style="push"
+               tooltip="Proxy Only起動">
+         </command>
       </menuContribution>
    </extension>
    <extension
@@ -108,5 +131,15 @@
             name="Postの設定">
       </page>
    </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="nu.mine.kino.plugin.webrecorder.views.DriverView"
+            id="nu.mine.kino.plugin.webrecorder.views.DriverView"
+            name="DriverView">
+      </view>
+   </extension>
 
+
+  
 </plugin>
