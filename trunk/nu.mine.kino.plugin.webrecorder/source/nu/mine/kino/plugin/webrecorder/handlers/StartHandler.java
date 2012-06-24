@@ -40,8 +40,12 @@ public class StartHandler extends AbstractHandler {
         String id = event.getCommand().getId();
         if (id.equals("nu.mine.kino.plugin.webrecorder.commands.RecordCommand")) {
             mode = RecordMode.RECORD;
-        } else {
+        } else if (id
+                .equals("nu.mine.kino.plugin.webrecorder.commands.StartCommand")) {
             mode = RecordMode.PLAY;
+        } else if (id
+                .equals("nu.mine.kino.plugin.webrecorder.commands.ProxyOnlyCommand")) {
+            mode = RecordMode.PROXY_ONLY;
         }
 
         try {
@@ -130,5 +134,4 @@ public class StartHandler extends AbstractHandler {
         logger.debug("execute(ExecutionEvent) - end");
         return null;
     }
-
 }
