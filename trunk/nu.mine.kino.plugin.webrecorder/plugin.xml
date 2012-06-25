@@ -134,10 +134,16 @@
    <extension
          point="org.eclipse.ui.views">
       <view
+            category="nu.mine.kino.plugin.webrecorder.category"
             class="nu.mine.kino.plugin.webrecorder.views.DriverView"
+            icon="icons/monitor_go.png"
             id="nu.mine.kino.plugin.webrecorder.views.DriverView"
-            name="DriverView">
+            name="ドライバー">
       </view>
+      <category
+            id="nu.mine.kino.plugin.webrecorder.category"
+            name="Web Recorder">
+      </category>
    </extension>
 
 

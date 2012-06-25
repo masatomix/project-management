@@ -12,18 +12,13 @@
 
 package nu.mine.kino.plugin.webrecorder.views;
 
-import java.io.IOException;
-import java.io.InputStream;
+import nu.mine.kino.plugin.webrecorder.jobs.DriverJob;
 
-import nu.mine.kino.plugin.commons.utils.HttpClientUtils;
-import nu.mine.kino.plugin.commons.utils.RWUtils;
-import nu.mine.kino.plugin.webrecorder.WebRecorderPlugin;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.client.ClientProtocolException;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -47,6 +42,8 @@ public class DriverView extends ViewPart {
 
     private Text textRequestBody;
 
+    private Text textResult;
+
     public DriverView() {
     }
 
@@ -58,10 +55,11 @@ public class DriverView extends ViewPart {
     @Override
     public void createPartControl(Composite parent) {
         Composite container = new Composite(parent, SWT.NONE);
-        container.setLayout(new GridLayout(4, false));
-        new Label(container, SWT.NONE);
+        container.setLayout(new GridLayout(3, false));
 
-        final Combo comboMethod = new Combo(container, SWT.NONE);
+        final Combo comboMethod = new Combo(container, SWT.READ_ONLY);
+        comboMethod.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
+                false, 1, 1));
         comboMethod.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -74,12 +72,12 @@ public class DriverView extends ViewPart {
             }
         });
         comboMethod.setItems(new String[] { "GET", "POST" });
-        comboMethod.select(0);
+        comboMethod.select(1);
 
-        txtURL = new Text(container, SWT.BORDER | SWT.MULTI);
-        txtURL.setText("http://");
-        txtURL.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false,
-                1, 1));
+        txtURL = new Text(container, SWT.BORDER);
+        txtURL.setText("http://www.masatom.in/pukiwiki/?cmd=search");
+        txtURL.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
+                1));
 
         Button requestButton = new Button(container, SWT.NONE);
         requestButton.addSelectionListener(new SelectionAdapter() {
@@ -88,50 +86,33 @@ public class DriverView extends ViewPart {
                 String method = comboMethod.getText();
                 String url = txtURL.getText();
                 String body = textRequestBody.getText();
-                try {
-                    if ("POST".equals(method)) {
-                        executePost(url, body);
-                    } else if ("GET".equals(method)) {
-                        executeGet(url);
-                    }
-                } catch (Exception e2) {
-                    // TODO: handle exception
-                }
 
-            }
+                Job job = new DriverJob("Driver", method, url, body, textResult);
+                // ダイアログを出す
+                job.setUser(true);
+                job.schedule();
 
-            private void executePost(String url, String body)
-                    throws IOException, ClientProtocolException {
-                // String contentType = hRequest.getContentType();
-                HttpEntity entity = HttpClientUtils.getHttpEntity(url, body,
-                        null, null);
-                if (entity != null) {
-                    InputStream stream = entity.getContent();
-                    String result = RWUtils.stream2String(stream, "UTF-8");
-                    WebRecorderPlugin.getDefault().printConsole(result);
-                }
-            }
-
-            private void executeGet(String url) throws IOException,
-                    ClientProtocolException {
-
-                HttpEntity entity = HttpClientUtils.getHttpEntity(url);
-                if (entity != null) {
-                    InputStream stream = entity.getContent();
-                    String result = RWUtils.stream2String(stream, "UTF-8");
-                    WebRecorderPlugin.getDefault().printConsole(result);
-                }
             }
 
         });
         requestButton.setText("\u9001\u4FE1");
+
+        Label lblNewLabel = new Label(container, SWT.NONE);
+        lblNewLabel.setText("Request Body:");
+        new Label(container, SWT.NONE);
         new Label(container, SWT.NONE);
 
-        textRequestBody = new Text(container, SWT.BORDER | SWT.READ_ONLY
-                | SWT.MULTI);
-        textRequestBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-                true, 2, 1));
-        new Label(container, SWT.NONE);
+        SashForm sashForm = new SashForm(container, SWT.VERTICAL);
+        sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 3,
+                1));
+
+        textRequestBody = new Text(sashForm, SWT.BORDER | SWT.READ_ONLY
+                | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL | SWT.MULTI);
+        textRequestBody.setText("encode_hint=%A4%D7&word=TESTTEST&type=AND");
+
+        textResult = new Text(sashForm, SWT.BORDER | SWT.H_SCROLL
+                | SWT.V_SCROLL | SWT.CANCEL | SWT.MULTI);
+        sashForm.setWeights(new int[] { 1, 1 });
 
         createActions();
         initializeToolBar();
