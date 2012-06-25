@@ -23,12 +23,24 @@ public class StringUtils {
 
     }
 
-    public static boolean endWith(String source, String[] suffixs) {
+    public static boolean endsWith(String source, String... suffixs) {
         if (isEmpty(source)) {
             return false;
         }
         for (int i = 0; i < suffixs.length; i++) {
             if (source.endsWith(suffixs[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean startsWith(String source, String... prefixs) {
+        if (isEmpty(source)) {
+            return false;
+        }
+        for (int i = 0; i < prefixs.length; i++) {
+            if (source.startsWith(prefixs[i])) {
                 return true;
             }
         }
