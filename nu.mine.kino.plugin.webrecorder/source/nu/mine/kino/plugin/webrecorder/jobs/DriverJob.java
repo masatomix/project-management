@@ -13,13 +13,10 @@
 package nu.mine.kino.plugin.webrecorder.jobs;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import nu.mine.kino.plugin.commons.utils.HttpClientUtils;
-import nu.mine.kino.plugin.commons.utils.RWUtils;
-import nu.mine.kino.plugin.webrecorder.WebRecorderPlugin;
+import nu.mine.kino.plugin.commons.utils.StringUtils;
 
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.util.EntityUtils;
@@ -44,13 +41,20 @@ public class DriverJob extends Job {
 
     private final Text textResult;
 
-    public DriverJob(String name, String method, String url, String body,
-            Text textResult) {
-        super(name);
+    private final String contentType;
+
+    public DriverJob(String method, String url, String contentType,
+            String body, Text textResult) {
+        super("Driver");
         this.method = method;
         this.url = url;
         this.body = body;
         this.textResult = textResult;
+        if (!StringUtils.isEmpty(contentType)) {
+            this.contentType = contentType;
+        } else {
+            this.contentType = null;
+        }
 
     }
 
@@ -59,9 +63,9 @@ public class DriverJob extends Job {
         monitor.beginTask(url + " を " + method + " でリクエスト中...", 10);
         try {
             if ("POST".equals(method)) {
-                executePost(url, body);
+                executePost();
             } else if ("GET".equals(method)) {
-                executeGet(url);
+                executeGet();
             }
         } catch (Exception e2) {
             e2.printStackTrace();
@@ -71,11 +75,10 @@ public class DriverJob extends Job {
 
     }
 
-    private void executePost(String url, String body) throws IOException,
-            ClientProtocolException {
+    private void executePost() throws IOException, ClientProtocolException {
         // String contentType = hRequest.getContentType();
-        HttpEntity entity = HttpClientUtils
-                .getHttpEntity(url, body, null, null);
+        HttpEntity entity = HttpClientUtils.getHttpEntity(url, body,
+                contentType, null);
         if (entity != null) {
             // InputStream stream = entity.getContent();
             final String result = EntityUtils.toString(entity);
@@ -91,8 +94,7 @@ public class DriverJob extends Job {
         }
     }
 
-    private void executeGet(String url) throws IOException,
-            ClientProtocolException {
+    private void executeGet() throws IOException, ClientProtocolException {
 
         HttpEntity entity = HttpClientUtils.getHttpEntity(url);
         if (entity != null) {
