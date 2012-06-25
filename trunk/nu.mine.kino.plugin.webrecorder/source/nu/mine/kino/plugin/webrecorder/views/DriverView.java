@@ -44,6 +44,8 @@ public class DriverView extends ViewPart {
 
     private Text textResult;
 
+    private Combo comboContentType;
+
     public DriverView() {
     }
 
@@ -67,7 +69,6 @@ public class DriverView extends ViewPart {
                     textRequestBody.setEditable(true);
                 } else {
                     textRequestBody.setEditable(false);
-                    // 色くらい変えるか
                 }
             }
         });
@@ -86,8 +87,10 @@ public class DriverView extends ViewPart {
                 String method = comboMethod.getText();
                 String url = txtURL.getText();
                 String body = textRequestBody.getText();
+                String contentType = comboContentType.getText();
 
-                Job job = new DriverJob("Driver", method, url, body, textResult);
+                Job job = new DriverJob(method, url, contentType, body,
+                        textResult);
                 // ダイアログを出す
                 job.setUser(true);
                 job.schedule();
@@ -96,6 +99,17 @@ public class DriverView extends ViewPart {
 
         });
         requestButton.setText("\u9001\u4FE1");
+
+        Label lblContentType = new Label(container, SWT.NONE);
+        lblContentType.setText("Content Type:");
+        
+                comboContentType = new Combo(container, SWT.NONE);
+                comboContentType.setItems(new String[] { "",
+                        "application/json; charset=UTF-8" });
+                comboContentType.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true,
+                        false, 1, 1));
+                comboContentType.select(0);
+        new Label(container, SWT.NONE);
 
         Label lblNewLabel = new Label(container, SWT.NONE);
         lblNewLabel.setText("Request Body:");
@@ -108,6 +122,7 @@ public class DriverView extends ViewPart {
 
         textRequestBody = new Text(sashForm, SWT.BORDER | SWT.READ_ONLY
                 | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL | SWT.MULTI);
+        textRequestBody.setEditable(true);
         textRequestBody.setText("encode_hint=%A4%D7&word=TESTTEST&type=AND");
 
         textResult = new Text(sashForm, SWT.BORDER | SWT.H_SCROLL
