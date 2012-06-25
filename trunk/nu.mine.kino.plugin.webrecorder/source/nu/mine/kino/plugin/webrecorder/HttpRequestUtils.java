@@ -174,7 +174,7 @@ public class HttpRequestUtils {
         String method = hRequest.getMethod();
         String url = getURLBase(hRequest);// URL‚ð•œŒ³
 
-        if (StringUtils.isEmpty(url) || StringUtils.endWith(url, EXCEPT_EXTs)) {
+        if (StringUtils.isEmpty(url) || StringUtils.endsWith(url, EXCEPT_EXTs)) {
             return;
         }
 

@@ -196,7 +196,7 @@ public class WebRecorderPlugin extends AbstractUIPlugin {
 
     public void printURLConsole(String url) {
         if (StringUtils.isEmpty(url)
-                || StringUtils.endWith(url, HttpRequestUtils.EXCEPT_EXTs)) {
+                || StringUtils.endsWith(url, HttpRequestUtils.EXCEPT_EXTs)) {
             return;
         }
         printConsole(url);
@@ -204,7 +204,7 @@ public class WebRecorderPlugin extends AbstractUIPlugin {
 
     public void printURLConsole(String format, String url) {
         if (StringUtils.isEmpty(url)
-                || StringUtils.endWith(url, HttpRequestUtils.EXCEPT_EXTs)) {
+                || StringUtils.endsWith(url, HttpRequestUtils.EXCEPT_EXTs)) {
             return;
         }
 

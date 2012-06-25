@@ -12,6 +12,8 @@
 
 package nu.mine.kino.plugin.webrecorder.views;
 
+import nu.mine.kino.plugin.commons.utils.StringUtils;
+import nu.mine.kino.plugin.webrecorder.WebRecorderPlugin;
 import nu.mine.kino.plugin.webrecorder.jobs.DriverJob;
 
 import org.eclipse.core.runtime.jobs.Job;
@@ -29,6 +31,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.ModifyEvent;
 
 /**
  * @author Masatomi KINO
@@ -45,6 +49,10 @@ public class DriverView extends ViewPart {
     private Text textResult;
 
     private Combo comboContentType;
+
+    private Button btnIsWithProxy;
+
+    private Button submitButton;
 
     public DriverView() {
     }
@@ -80,17 +88,18 @@ public class DriverView extends ViewPart {
         txtURL.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
                 1));
 
-        Button requestButton = new Button(container, SWT.NONE);
-        requestButton.addSelectionListener(new SelectionAdapter() {
+        submitButton = new Button(container, SWT.NONE);
+        submitButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 String method = comboMethod.getText();
                 String url = txtURL.getText();
                 String body = textRequestBody.getText();
                 String contentType = comboContentType.getText();
+                boolean isWithProxy = btnIsWithProxy.getSelection();
 
                 Job job = new DriverJob(method, url, contentType, body,
-                        textResult);
+                        isWithProxy, textResult);
                 // ダイアログを出す
                 job.setUser(true);
                 job.schedule();
@@ -98,18 +107,32 @@ public class DriverView extends ViewPart {
             }
 
         });
-        requestButton.setText("\u9001\u4FE1");
+        submitButton.setText("\u9001\u4FE1");
+
+        txtURL.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                String text = txtURL.getText();
+                if (!StringUtils.isEmpty(text)
+                        && StringUtils.startsWith(text, "http://", "https://")) {
+                    submitButton.setEnabled(true);
+                } else {
+                    submitButton.setEnabled(false);
+                }
+            }
+        });
 
         Label lblContentType = new Label(container, SWT.NONE);
         lblContentType.setText("Content Type:");
-        
-                comboContentType = new Combo(container, SWT.NONE);
-                comboContentType.setItems(new String[] { "",
-                        "application/json; charset=UTF-8" });
-                comboContentType.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true,
-                        false, 1, 1));
-                comboContentType.select(0);
-        new Label(container, SWT.NONE);
+
+        comboContentType = new Combo(container, SWT.NONE);
+        comboContentType.setItems(new String[] { "",
+                "application/json; charset=UTF-8" });
+        comboContentType.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true,
+                false, 1, 1));
+        comboContentType.select(0);
+
+        btnIsWithProxy = new Button(container, SWT.CHECK);
+        btnIsWithProxy.setText("Recoder\u7D4C\u7531");
 
         Label lblNewLabel = new Label(container, SWT.NONE);
         lblNewLabel.setText("Request Body:");

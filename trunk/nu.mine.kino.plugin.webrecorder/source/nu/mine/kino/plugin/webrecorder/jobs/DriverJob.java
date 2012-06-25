@@ -16,8 +16,10 @@ import java.io.IOException;
 
 import nu.mine.kino.plugin.commons.utils.HttpClientUtils;
 import nu.mine.kino.plugin.commons.utils.StringUtils;
+import nu.mine.kino.plugin.webrecorder.WebRecorderPlugin;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.util.EntityUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -43,12 +45,15 @@ public class DriverJob extends Job {
 
     private final String contentType;
 
+    private final boolean isWithProxy;
+
     public DriverJob(String method, String url, String contentType,
-            String body, Text textResult) {
+            String body, boolean isWithProxy, Text textResult) {
         super("Driver");
         this.method = method;
         this.url = url;
         this.body = body;
+        this.isWithProxy = isWithProxy;
         this.textResult = textResult;
         if (!StringUtils.isEmpty(contentType)) {
             this.contentType = contentType;
@@ -68,7 +73,9 @@ public class DriverJob extends Job {
                 executeGet();
             }
         } catch (Exception e2) {
+            // URLがおかしいと、ココ。
             e2.printStackTrace();
+            WebRecorderPlugin.logException(e2, false);
         }
         monitor.done();
         return Status.OK_STATUS;
@@ -77,8 +84,14 @@ public class DriverJob extends Job {
 
     private void executePost() throws IOException, ClientProtocolException {
         // String contentType = hRequest.getContentType();
+        HttpHost proxy = null;
+        if (isWithProxy) {
+            int port = WebRecorderPlugin.getDefault().getPort();
+            proxy = new HttpHost("localhost", port);
+        }
+
         HttpEntity entity = HttpClientUtils.getHttpEntity(url, body,
-                contentType, null);
+                contentType, proxy);
         if (entity != null) {
             // InputStream stream = entity.getContent();
             final String result = EntityUtils.toString(entity);
@@ -95,8 +108,12 @@ public class DriverJob extends Job {
     }
 
     private void executeGet() throws IOException, ClientProtocolException {
-
-        HttpEntity entity = HttpClientUtils.getHttpEntity(url);
+        HttpHost proxy = null;
+        if (isWithProxy) {
+            int port = WebRecorderPlugin.getDefault().getPort();
+            proxy = new HttpHost("localhost", port);
+        }
+        HttpEntity entity = HttpClientUtils.getHttpEntity(url, proxy);
         if (entity != null) {
             // InputStream stream = entity.getContent();
             final String result = EntityUtils.toString(entity);
