@@ -2,7 +2,7 @@
 <feature
       id="nu.mine.kino.plugin.webrecorder"
       label="%featureName"
-      version="0.1.4.qualifier"
+      version="0.1.6.qualifier"
       provider-name="%providerName">
 
    <description url="%descriptionURL">
@@ -23,7 +23,7 @@
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="nu.mine.kino.plugin.log4j" version="0.0.1" match="greaterOrEqual"/>
       <import plugin="nu.mine.kino.plugin.commons.lib" version="0.9.0" match="greaterOrEqual"/>
-      <import plugin="nu.mine.kino.plugin.commons.utils" version="0.9.0" match="greaterOrEqual"/>
+      <import plugin="nu.mine.kino.plugin.commons.utils" version="0.9.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.console"/>
    </requires>
 
