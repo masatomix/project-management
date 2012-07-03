@@ -36,8 +36,7 @@ import org.eclipse.jetty.servlets.ProxyServlet;
 
 /**
  * 基本的にはJettyのプロキシ機能を呼び出すServletです。 ProxyServlet処理後、
- * 再度Get/Post処理を自らおこない、ローカルに結果を保存する機能があります。 
- * 本来ならProxyServletの結果をそのまま保存したいのだが。
+ * 再度Get/Post処理を自らおこない、ローカルに結果を保存する機能があります。 本来ならProxyServletの結果をそのまま保存したいのだが。
  * 
  * @author Masatomi KINO
  * @version $Revision$
@@ -46,8 +45,7 @@ public class RecorderServlet extends ProxyServlet {
     // 本来ならProxyServletの結果をそのまま横取りしてファイルに保存し、
     // レスポンスをそのまま返せばいい。
     // Jettyの制限?なのか、それができないので、一度自分たちでPost/Getしている
-    
-    
+
     /**
      * Logger for this class
      */
@@ -76,18 +74,16 @@ public class RecorderServlet extends ProxyServlet {
         // Getなら親Servletを実行し、再度Getを自ら行ってデータを保存する
         super.service(request, response);
 
-        HttpRequestUtils.printInfo(hRequest);
-
-        if (method.equals(METHOD_GET)) {
-            executeGet(hRequest);
-        } else if (method.equals(METHOD_POST)) {
-            // Postも同じく親ServletであるProxyServletの処理を呼んで、もう一度Postしたかったが、
-            // ProxyServlet実行後はRequestBodyのコンテンツを再取得できなくて自分で取りに行く処理で困った。
-            // なので、自分の処理を優先して、保存したコンテンツからResponseを返すようにした
-            // 2012/06/07追記:
-            // 再取得できるようFilterを調整したので、super.service()に戻しました!
-            executePost(hRequest);
-        }
+        // if (method.equals(METHOD_GET)) {
+        // executeGet(hRequest);
+        // } else if (method.equals(METHOD_POST)) {
+        // // Postも同じく親ServletであるProxyServletの処理を呼んで、もう一度Postしたかったが、
+        // // ProxyServlet実行後はRequestBodyのコンテンツを再取得できなくて自分で取りに行く処理で困った。
+        // // なので、自分の処理を優先して、保存したコンテンツからResponseを返すようにした
+        // // 2012/06/07追記:
+        // // 再取得できるようFilterを調整したので、super.service()に戻しました!
+        // executePost(hRequest);
+        // }
     }
 
     private void executePost(HttpServletRequest hRequest) throws IOException,

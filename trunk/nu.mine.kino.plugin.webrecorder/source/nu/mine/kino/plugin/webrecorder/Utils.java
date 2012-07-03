@@ -17,6 +17,7 @@ import java.util.EnumSet;
 import javax.servlet.DispatcherType;
 
 import nu.mine.kino.plugin.commons.utils.StringUtils;
+import nu.mine.kino.plugin.webrecorder.filters.ResponseCaptureFilter;
 import nu.mine.kino.plugin.webrecorder.filters.LogFilter;
 import nu.mine.kino.plugin.webrecorder.filters.MultiReadFilter;
 import nu.mine.kino.plugin.webrecorder.filters.PlayFilter;
@@ -57,6 +58,11 @@ public class Utils {
         switch (mode) {
         case RECORD:
             context.addServlet(RecorderServlet.class, "/*");
+            FilterHolder recordFilterHolder = new FilterHolder();
+            recordFilterHolder.setFilter(new LogFilter());
+            recordFilterHolder.setFilter(new ResponseCaptureFilter());
+            context.addFilter(recordFilterHolder, "/*",
+                    EnumSet.of(DispatcherType.REQUEST));
             break;
         case PLAY:
             context.addServlet(ProxyServlet.class, "/*");
