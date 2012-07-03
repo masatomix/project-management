@@ -72,10 +72,14 @@ public class DriverJob extends Job {
             } else if ("GET".equals(method)) {
                 executeGet();
             }
-        } catch (Exception e2) {
+        } catch (final Exception e) {
             // URLがおかしいと、ココ。
-            e2.printStackTrace();
-            WebRecorderPlugin.logException(e2, false);
+            checkAsyncExec(new Runnable() {
+                @Override
+                public void run() {
+                    WebRecorderPlugin.logException(e, true);
+                }
+            });
         }
         monitor.done();
         return Status.OK_STATUS;
