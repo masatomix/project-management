@@ -21,6 +21,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import nu.mine.kino.plugin.webrecorder.HttpRequestUtils;
@@ -49,10 +50,11 @@ public class ResponseCaptureFilter implements Filter {
             FilterChain chain) throws IOException, ServletException {
         logger.debug("doFilter(ServletRequest, ServletResponse, FilterChain) - start");
         HttpServletResponse hResponse = (HttpServletResponse) response;
+        HttpServletRequest hRequest = (HttpServletRequest) request;
 
-        File cachePath = HttpRequestUtils.getCachePathFromRequest(request);
-        ServletResponse wrapResponse = new ResponseCaptureResponse(hResponse,
-                cachePath);
+        ServletResponse wrapResponse = new ResponseCaptureResponse(hRequest,
+                hResponse);
+
         chain.doFilter(request, wrapResponse);
 
         logger.debug("doFilter(ServletRequest, ServletResponse, FilterChain) - end");
