@@ -12,12 +12,17 @@
 
 package nu.mine.kino.plugin.webrecorder.filters;
 
+import static nu.mine.kino.plugin.webrecorder.servlets.RecorderServlet.METHOD_POST;
+
 import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
+
+import nu.mine.kino.plugin.webrecorder.HttpRequestUtils;
 
 /**
  * @author Masatomi KINO
@@ -27,9 +32,18 @@ public class ResponseCaptureResponse extends HttpServletResponseWrapper {
 
     private final File cachePath;
 
-    public ResponseCaptureResponse(HttpServletResponse response, File cachePath) {
+    public ResponseCaptureResponse(HttpServletRequest request,
+            HttpServletResponse response) {
         super(response);
-        this.cachePath = cachePath;
+
+        String method = request.getMethod();
+        if (method.equals(METHOD_POST)) {
+            cachePath = HttpRequestUtils
+                    .getCachePathFromRequestForPost(request);
+            // } else if (method.equals(METHOD_POST)) {
+        } else {
+            cachePath = HttpRequestUtils.getCachePathFromRequest(request);
+        }
     }
 
     @Override
