@@ -12,6 +12,8 @@
 
 package nu.mine.kino.plugin.webrecorder.filters;
 
+import org.apache.log4j.Logger;
+
 import java.io.IOException;
 
 import javax.servlet.Filter;
@@ -30,6 +32,12 @@ import javax.servlet.http.HttpServletRequest;
  * @version $Revision$
  */
 public class MultiReadFilter implements Filter {
+    /**
+     * Logger for this class
+     */
+    private static final Logger logger = Logger
+            .getLogger(MultiReadFilter.class);
+
     private ServletContext servletContext;
 
     @Override
@@ -39,8 +47,12 @@ public class MultiReadFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain) throws IOException, ServletException {
+        logger.debug("doFilter(ServletRequest, ServletResponse, FilterChain) - start");
+
         chain.doFilter(new MultiReadHttpServletRequest(
                 (HttpServletRequest) request), response);
+
+        logger.debug("doFilter(ServletRequest, ServletResponse, FilterChain) - end");
     }
 
     @Override
