@@ -5,6 +5,7 @@ import static nu.mine.kino.plugin.webrecorder.ProxyConstant.TRIM_FLAG;
 import static nu.mine.kino.plugin.webrecorder.ProxyConstant.TRIM_LENGTH;
 import static nu.mine.kino.plugin.webrecorder.ProxyConstant.TRIM_START_INDEX;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
 
@@ -49,6 +50,7 @@ public class OpenDirHandler extends AbstractHandler {
 
         String cacheBasepath = WebRecorderPlugin.getDefault()
                 .getCacheBasepath();
+        new File(cacheBasepath).mkdirs();
 
         String target = null;
 
