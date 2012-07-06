@@ -84,7 +84,7 @@ public class HttpRequestUtils {
             if (!StringUtils.isEmpty(body)) {
                 String shaHex = DigestUtils.shaHex(body.getBytes());
                 logger.info("body‚ðSHA1ƒnƒbƒVƒ…: " + shaHex);
-                buf.append("_");
+                // buf.append("_");
                 buf.append(shaHex);
             }
         } catch (IOException e) {
@@ -106,7 +106,7 @@ public class HttpRequestUtils {
         String queryString = hRequest.getQueryString();
         if (queryString != null && !"".equals(queryString)) {
             String shaHex = DigestUtils.shaHex(queryString.getBytes());
-            buf.append("_");
+            // buf.append("_");
             buf.append(shaHex);
         }
 

@@ -29,12 +29,12 @@ import org.apache.log4j.Logger;
  * @author Masatomi KINO
  * @version $Revision$
  */
-public class ResponseCaptureFilter implements Filter {
+public class RecordFilter implements Filter {
     /**
      * Logger for this class
      */
     private static final Logger logger = Logger
-            .getLogger(ResponseCaptureFilter.class);
+            .getLogger(RecordFilter.class);
 
     @Override
     public void destroy() {

@@ -12,23 +12,22 @@
 
 package nu.mine.kino.plugin.webrecorder;
 
+import static javax.servlet.DispatcherType.REQUEST;
+
 import java.io.File;
 import java.util.EnumSet;
-
-import javax.servlet.DispatcherType;
 
 import nu.mine.kino.plugin.commons.utils.StringUtils;
 import nu.mine.kino.plugin.webrecorder.filters.AcceptEncodingRemoveFilter;
 import nu.mine.kino.plugin.webrecorder.filters.LogFilter;
 import nu.mine.kino.plugin.webrecorder.filters.MultiReadFilter;
 import nu.mine.kino.plugin.webrecorder.filters.PlayFilter;
-import nu.mine.kino.plugin.webrecorder.filters.ResponseCaptureFilter;
+import nu.mine.kino.plugin.webrecorder.filters.RecordFilter;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
-import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlets.ProxyServlet;
 
@@ -56,40 +55,28 @@ public class Utils {
                 ServletContextHandler.SESSIONS);
         server.setHandler(context);
 
-        FilterHolder multiReadFilterHolder = new FilterHolder();
-        multiReadFilterHolder.setFilter(new MultiReadFilter());
-        context.addFilter(multiReadFilterHolder, "/*",
-                EnumSet.of(DispatcherType.REQUEST));
+        context.addFilter(MultiReadFilter.class, "/*", EnumSet.of(REQUEST));
+        context.addFilter(LogFilter.class, "/*", EnumSet.of(REQUEST));
 
         switch (mode) {
         case RECORD:
             context.addServlet(ProxyServlet.class, "/*");
-            FilterHolder recordFilterHolder = new FilterHolder();
-            recordFilterHolder.setFilter(new LogFilter());
-            recordFilterHolder.setFilter(new AcceptEncodingRemoveFilter());
-            recordFilterHolder.setFilter(new ResponseCaptureFilter());
-            context.addFilter(recordFilterHolder, "/*",
-                    EnumSet.of(DispatcherType.REQUEST));
+            context.addFilter(AcceptEncodingRemoveFilter.class, "/*",
+                    EnumSet.of(REQUEST));
+            context.addFilter(RecordFilter.class, "/*",
+                    EnumSet.of(REQUEST));
             break;
         case PLAY:
             context.addServlet(ProxyServlet.class, "/*");
-            FilterHolder playFilterHolder = new FilterHolder();
-            playFilterHolder.setFilter(new LogFilter());
-            playFilterHolder.setFilter(new PlayFilter());
-            context.addFilter(playFilterHolder, "/*",
-                    EnumSet.of(DispatcherType.REQUEST));
+            context.addFilter(PlayFilter.class, "/*", EnumSet.of(REQUEST));
             break;
         case PROXY_ONLY:
-            FilterHolder proxyOnlyFilterHolder = new FilterHolder();
-            proxyOnlyFilterHolder.setFilter(new LogFilter());
-            context.addFilter(proxyOnlyFilterHolder, "/*",
-                    EnumSet.of(DispatcherType.REQUEST));
             context.addServlet(ProxyServlet.class, "/*");
             break;
         default:
             break;
         }
-        
+
         server.start();
         WebRecorderPlugin.getDefault().printConsole(mode + " ‚ª‹N“®‚µ‚Ü‚µ‚½");
         server.join();

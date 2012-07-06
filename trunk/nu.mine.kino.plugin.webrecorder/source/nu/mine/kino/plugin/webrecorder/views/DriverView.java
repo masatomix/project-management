@@ -98,6 +98,8 @@ public class DriverView extends ViewPart {
         submitButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
+                
+                textResult.setText("");
                 String method = comboMethod.getText();
                 String url = txtURL.getText();
                 String body = textRequestBody.getText();
