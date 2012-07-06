@@ -60,6 +60,9 @@
    <feature url="features/nu.mine.kino.plugin.webrecorder_0.2.2.201207061714.jar" id="nu.mine.kino.plugin.webrecorder" version="0.2.2.201207061714">
       <category name="webrecorder"/>
    </feature>
+   <feature url="features/nu.mine.kino.plugin.webrecorder_0.2.3.201207062052.jar" id="nu.mine.kino.plugin.webrecorder" version="0.2.3.201207062052">
+      <category name="webrecorder"/>
+   </feature>
    <category-def name="google" label="Google Plugin"/>
    <category-def name="beancreator" label="JavaBeans Creator Plugin"/>
    <category-def name="plugindocumentcreator" label="Plugin Document Creator Plugin"/>
