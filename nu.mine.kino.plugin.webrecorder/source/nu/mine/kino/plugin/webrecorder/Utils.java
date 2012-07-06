@@ -12,16 +12,17 @@
 
 package nu.mine.kino.plugin.webrecorder;
 
+import java.io.File;
 import java.util.EnumSet;
 
 import javax.servlet.DispatcherType;
 
 import nu.mine.kino.plugin.commons.utils.StringUtils;
+import nu.mine.kino.plugin.webrecorder.filters.AcceptEncodingRemoveFilter;
 import nu.mine.kino.plugin.webrecorder.filters.LogFilter;
 import nu.mine.kino.plugin.webrecorder.filters.MultiReadFilter;
 import nu.mine.kino.plugin.webrecorder.filters.PlayFilter;
 import nu.mine.kino.plugin.webrecorder.filters.ResponseCaptureFilter;
-import nu.mine.kino.plugin.webrecorder.servlets.RecorderServlet;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.server.Connector;
@@ -29,7 +30,6 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlets.GzipFilter;
 import org.eclipse.jetty.servlets.ProxyServlet;
 
 /**
@@ -42,6 +42,11 @@ public class Utils {
 
     public static void startJettyServer(Server server, int port, RecordMode mode)
             throws InterruptedException, Exception {
+
+        String cacheBasepath = WebRecorderPlugin.getDefault()
+                .getCacheBasepath();
+        logger.debug("キャッシュディレクトリ: " + cacheBasepath);
+        new File(cacheBasepath).mkdirs();
 
         SelectChannelConnector connector = new SelectChannelConnector();
         connector.setPort(port);
@@ -58,9 +63,10 @@ public class Utils {
 
         switch (mode) {
         case RECORD:
-            context.addServlet(RecorderServlet.class, "/*");
+            context.addServlet(ProxyServlet.class, "/*");
             FilterHolder recordFilterHolder = new FilterHolder();
             recordFilterHolder.setFilter(new LogFilter());
+            recordFilterHolder.setFilter(new AcceptEncodingRemoveFilter());
             recordFilterHolder.setFilter(new ResponseCaptureFilter());
             context.addFilter(recordFilterHolder, "/*",
                     EnumSet.of(DispatcherType.REQUEST));
@@ -80,11 +86,10 @@ public class Utils {
                     EnumSet.of(DispatcherType.REQUEST));
             context.addServlet(ProxyServlet.class, "/*");
             break;
-
         default:
             break;
         }
-
+        
         server.start();
         WebRecorderPlugin.getDefault().printConsole(mode + " が起動しました");
         server.join();
