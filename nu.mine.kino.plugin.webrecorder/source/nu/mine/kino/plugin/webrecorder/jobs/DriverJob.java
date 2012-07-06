@@ -16,6 +16,7 @@ import java.io.IOException;
 
 import nu.mine.kino.plugin.commons.utils.HttpClientUtils;
 import nu.mine.kino.plugin.commons.utils.StringUtils;
+import nu.mine.kino.plugin.webrecorder.ProxyConstant;
 import nu.mine.kino.plugin.webrecorder.WebRecorderPlugin;
 
 import org.apache.http.HttpEntity;
@@ -67,9 +68,9 @@ public class DriverJob extends Job {
     protected IStatus run(IProgressMonitor monitor) {
         monitor.beginTask(url + " を " + method + " でリクエスト中...", 10);
         try {
-            if ("POST".equals(method)) {
+            if (ProxyConstant.METHOD_POST.equals(method)) {
                 executePost();
-            } else if ("GET".equals(method)) {
+            } else if (ProxyConstant.METHOD_GET.equals(method)) {
                 executeGet();
             }
         } catch (final Exception e) {

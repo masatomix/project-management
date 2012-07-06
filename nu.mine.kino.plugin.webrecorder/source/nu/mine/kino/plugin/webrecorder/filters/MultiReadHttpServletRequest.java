@@ -17,13 +17,18 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
+import nu.mine.kino.plugin.commons.utils.StringUtils;
+
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 
 /**
  * リクエストBodyを何度も読めるようにしたRequest Wrapper。
@@ -87,4 +92,32 @@ public class MultiReadHttpServletRequest extends HttpServletRequestWrapper {
         }
     }
 
+    @Override
+    public Enumeration<String> getHeaders(String name) {
+        if (!StringUtils.isEmpty(name) && name.equals("Accept-Encoding")) {
+            return Collections.enumeration(Collections.EMPTY_LIST);
+        }
+        return super.getHeaders(name);
+    }
+
+    @Override
+    public String getHeader(String name) {
+        if (!StringUtils.isEmpty(name) && name.equals("Accept-Encoding")) {
+            return null;
+        }
+        return super.getHeader(name);
+    }
+
+    @Override
+    public Enumeration<String> getHeaderNames() {
+        List<String> retList = new ArrayList<String>();
+        Enumeration<String> headerNames = super.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String header = (String) headerNames.nextElement();
+            if (!header.equals("Accept-Encoding")) {
+                retList.add(header);
+            }
+        }
+        return Collections.enumeration(retList);
+    }
 }

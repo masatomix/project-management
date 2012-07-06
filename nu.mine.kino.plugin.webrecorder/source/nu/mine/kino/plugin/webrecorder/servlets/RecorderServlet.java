@@ -52,9 +52,6 @@ public class RecorderServlet extends ProxyServlet {
     private static final Logger logger = Logger
             .getLogger(RecorderServlet.class);
 
-    public static final String METHOD_GET = "GET";
-
-    public static final String METHOD_POST = "POST";
 
     private ServletContext servletContext;
 

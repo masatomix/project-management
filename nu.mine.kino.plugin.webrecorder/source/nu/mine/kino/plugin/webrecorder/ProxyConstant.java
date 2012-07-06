@@ -27,7 +27,12 @@ public interface ProxyConstant {
     public static final String TRIM_START_INDEX = "trimStartIndex";
 
     public static final String TRIM_LENGTH = "trimLength";
+
     public static final String POST_BODY_FLAG = "postBodyFlag";
 
     public static final String CONSOLE_ID = "Web Recorder";
+
+    public static final String METHOD_GET = "GET";
+
+    public static final String METHOD_POST = "POST";
 }
