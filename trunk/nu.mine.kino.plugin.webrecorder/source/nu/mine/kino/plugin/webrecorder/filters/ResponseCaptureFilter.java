@@ -12,7 +12,6 @@
 
 package nu.mine.kino.plugin.webrecorder.filters;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.Filter;
@@ -23,8 +22,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import nu.mine.kino.plugin.webrecorder.HttpRequestUtils;
 
 import org.apache.log4j.Logger;
 

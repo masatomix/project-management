@@ -12,8 +12,8 @@
 
 package nu.mine.kino.plugin.webrecorder.filters;
 
-import static nu.mine.kino.plugin.webrecorder.servlets.RecorderServlet.METHOD_GET;
-import static nu.mine.kino.plugin.webrecorder.servlets.RecorderServlet.METHOD_POST;
+import static nu.mine.kino.plugin.webrecorder.ProxyConstant.METHOD_GET;
+import static nu.mine.kino.plugin.webrecorder.ProxyConstant.METHOD_POST;
 
 import java.io.File;
 import java.io.FileInputStream;

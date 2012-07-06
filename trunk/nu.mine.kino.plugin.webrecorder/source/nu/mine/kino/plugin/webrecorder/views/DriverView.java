@@ -13,7 +13,6 @@
 package nu.mine.kino.plugin.webrecorder.views;
 
 import nu.mine.kino.plugin.commons.utils.StringUtils;
-import nu.mine.kino.plugin.webrecorder.WebRecorderPlugin;
 import nu.mine.kino.plugin.webrecorder.jobs.DriverJob;
 
 import org.eclipse.core.runtime.jobs.Job;
@@ -21,6 +20,8 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -30,9 +31,10 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.ModifyEvent;
 
 /**
  * @author Masatomi KINO
@@ -54,6 +56,10 @@ public class DriverView extends ViewPart {
 
     private Button submitButton;
 
+    private IMemento memento;
+
+    private Combo comboMethod;
+
     public DriverView() {
     }
 
@@ -67,7 +73,7 @@ public class DriverView extends ViewPart {
         Composite container = new Composite(parent, SWT.NONE);
         container.setLayout(new GridLayout(3, false));
 
-        final Combo comboMethod = new Combo(container, SWT.READ_ONLY);
+        comboMethod = new Combo(container, SWT.READ_ONLY);
         comboMethod.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
                 false, 1, 1));
         comboMethod.addSelectionListener(new SelectionAdapter() {
@@ -155,6 +161,9 @@ public class DriverView extends ViewPart {
         createActions();
         initializeToolBar();
         initializeMenu();
+
+        restoreState();
+
     }
 
     /**
@@ -184,4 +193,44 @@ public class DriverView extends ViewPart {
     public void setFocus() {
         // Set the focus
     }
+
+    public void init(IViewSite site, IMemento memento) throws PartInitException {
+        super.init(site, memento);
+        this.memento = memento;
+
+    }
+
+    @Override
+    public void saveState(IMemento memento) {
+        super.saveState(memento);
+
+        String method = comboMethod.getText();
+        String url = txtURL.getText();
+        String body = textRequestBody.getText();
+        String contentType = comboContentType.getText();
+        boolean isWithProxy = btnIsWithProxy.getSelection();
+
+        memento.putString("method", method);
+        memento.putString("url", url);
+        memento.putString("body", body);
+        memento.putString("contentType", contentType);
+        memento.putBoolean("isWithProxy", isWithProxy);
+
+    }
+
+    private void restoreState() {
+        if (memento == null) {
+            return;
+        }
+        String method = memento.getString("method");
+        String url = memento.getString("url");
+        String body = memento.getString("body");
+        String contentType = memento.getString("contentType");
+        boolean isWithProxy = memento.getBoolean("isWithProxy");
+
+        txtURL.setText(url);
+        textRequestBody.setText(body);
+        btnIsWithProxy.setSelection(isWithProxy);
+    }
+
 }

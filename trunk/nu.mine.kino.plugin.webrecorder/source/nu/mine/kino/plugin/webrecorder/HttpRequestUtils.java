@@ -16,8 +16,8 @@ import static nu.mine.kino.plugin.webrecorder.ProxyConstant.POST_BODY_FLAG;
 import static nu.mine.kino.plugin.webrecorder.ProxyConstant.TRIM_FLAG;
 import static nu.mine.kino.plugin.webrecorder.ProxyConstant.TRIM_LENGTH;
 import static nu.mine.kino.plugin.webrecorder.ProxyConstant.TRIM_START_INDEX;
-import static nu.mine.kino.plugin.webrecorder.servlets.RecorderServlet.METHOD_GET;
-import static nu.mine.kino.plugin.webrecorder.servlets.RecorderServlet.METHOD_POST;
+import static nu.mine.kino.plugin.webrecorder.ProxyConstant.METHOD_GET;
+import static nu.mine.kino.plugin.webrecorder.ProxyConstant.METHOD_POST;
 
 import java.io.BufferedReader;
 import java.io.File;

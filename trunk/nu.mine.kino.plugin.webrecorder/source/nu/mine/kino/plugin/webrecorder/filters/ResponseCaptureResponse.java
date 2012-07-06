@@ -12,7 +12,8 @@
 
 package nu.mine.kino.plugin.webrecorder.filters;
 
-import static nu.mine.kino.plugin.webrecorder.servlets.RecorderServlet.METHOD_POST;
+
+import static nu.mine.kino.plugin.webrecorder.ProxyConstant.METHOD_POST;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,6 +50,11 @@ public class ResponseCaptureResponse extends HttpServletResponseWrapper {
     @Override
     public ServletOutputStream getOutputStream() throws IOException {
         return new ServletOutputStreamImpl(super.getOutputStream(), cachePath);
+    }
+    @Override
+    public void flushBuffer() throws IOException {
+        // TODO 自動生成されたメソッド・スタブ
+        super.flushBuffer();
     }
 
 }
