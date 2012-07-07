@@ -133,8 +133,7 @@ public class DriverView extends ViewPart {
         lblContentType.setText("Content Type:");
 
         comboContentType = new Combo(container, SWT.NONE);
-        comboContentType.setItems(new String[] { "",
-                "application/json; charset=UTF-8" });
+        comboContentType.setItems(new String[] {"", "application/json; charset=UTF-8", "text/plain; charset=ISO-8859-1", "application/x-www-form-urlencoded"});
         comboContentType.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true,
                 false, 1, 1));
         comboContentType.select(0);
@@ -233,6 +232,10 @@ public class DriverView extends ViewPart {
         txtURL.setText(url);
         textRequestBody.setText(body);
         btnIsWithProxy.setSelection(isWithProxy);
+        
+        comboMethod.setText(method);
+        comboContentType.setText(contentType);
+        
     }
 
 }
