@@ -8,19 +8,19 @@
             categoryId="nu.mine.kino.plugin.webrecorder.commands.category"
             defaultHandler="nu.mine.kino.plugin.webrecorder.handlers.StartHandler"
             id="nu.mine.kino.plugin.webrecorder.commands.RecordCommand"
-            name="録画スタート">
+            name="録画モードでサーバ起動">
       </command>
       <command
             categoryId="nu.mine.kino.plugin.webrecorder.commands.category"
             defaultHandler="nu.mine.kino.plugin.webrecorder.handlers.StartHandler"
             id="nu.mine.kino.plugin.webrecorder.commands.StartCommand"
-            name="サーバ起動">
+            name="再生モードでサーバ起動">
       </command>
       <command
             categoryId="nu.mine.kino.plugin.webrecorder.commands.category"
             defaultHandler="nu.mine.kino.plugin.webrecorder.handlers.StartHandler"
             id="nu.mine.kino.plugin.webrecorder.commands.ProxyOnlyCommand"
-            name="Proxy Only起動">
+            name="プロキシサーバ起動">
       </command>
       <command
             categoryId="nu.mine.kino.plugin.webrecorder.commands.category"
@@ -36,7 +36,7 @@
             categoryId="nu.mine.kino.plugin.webrecorder.commands.category"
             defaultHandler="nu.mine.kino.plugin.webrecorder.handlers.OpenDirHandler"
             id="nu.mine.kino.plugin.webrecorder.commands.OpenDirCommand"
-            name="キャッシュフォルダを開く">
+            name="ファイル保存フォルダを開く">
       </command>
    </extension>
    <extension
@@ -50,14 +50,14 @@
                   icon="icons/film_save.png"
                   id="nu.mine.kino.plugin.webrecorder.toolbars.RecordCommand"
                   style="push"
-                  tooltip="録画スタート">
+                  tooltip="録画モードでサーバ起動">
             </command>
             <command
                   commandId="nu.mine.kino.plugin.webrecorder.commands.StartCommand"
                   icon="icons/control_play_blue.png"
                   id="nu.mine.kino.plugin.webrecorder.toolbars.StartCommand"
                   style="pulldown"
-                  tooltip="サーバ起動">
+                  tooltip="再生モードでサーバ起動">
             </command>
             <command
                   commandId="nu.mine.kino.plugin.webrecorder.commands.StopCommand"
@@ -66,12 +66,16 @@
                   style="push"
                   tooltip="サーバ停止">
             </command>
+            <separator
+                  name="nu.mine.kino.plugin.webrecorder.separator"
+                  visible="true">
+            </separator>
             <command
                   commandId="nu.mine.kino.plugin.webrecorder.commands.OpenDirCommand"
                   icon="icons/folder_wrench.png"
                   id="nu.mine.kino.plugin.webrecorder.toolbars.OpenDirCommand"
                   style="push"
-                  tooltip="キャッシュフォルダを開く">
+                  tooltip="ファイル保存フォルダを開く">
             </command>
          </toolbar>
       </menuContribution>
@@ -85,14 +89,14 @@
                icon="icons/control_play_blue.png"
                id="nu.mine.kino.plugin.webrecorder.toolbars.StartCommand1"
                style="push"
-               tooltip="サーバ起動">
+               tooltip="再生モードでサーバ起動">
          </command>
          <command
                commandId="nu.mine.kino.plugin.webrecorder.commands.ProxyOnlyCommand"
                icon="icons/connect.png"
                id="nu.mine.kino.plugin.webrecorder.toolbars.ProxyOnlyCommand"
                style="push"
-               tooltip="Proxy Only起動">
+               tooltip="プロキシサーバ起動">
          </command>
       </menuContribution>
    </extension>

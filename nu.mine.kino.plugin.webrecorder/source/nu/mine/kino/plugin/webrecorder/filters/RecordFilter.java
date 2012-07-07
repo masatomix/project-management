@@ -26,20 +26,20 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 /**
+ * Response Body をキャプチャしてファイル保存する{@link ResponseCaptureResponse}へ切り替えるためのフィルタ
+ * 
  * @author Masatomi KINO
  * @version $Revision$
+ * @see ResponseCaptureResponse
  */
 public class RecordFilter implements Filter {
     /**
      * Logger for this class
      */
-    private static final Logger logger = Logger
-            .getLogger(RecordFilter.class);
+    private static final Logger logger = Logger.getLogger(RecordFilter.class);
 
     @Override
     public void destroy() {
-        // TODO 自動生成されたメソッド・スタブ
-
     }
 
     @Override
@@ -59,8 +59,6 @@ public class RecordFilter implements Filter {
 
     @Override
     public void init(FilterConfig arg0) throws ServletException {
-        // TODO 自動生成されたメソッド・スタブ
-
     }
 
 }

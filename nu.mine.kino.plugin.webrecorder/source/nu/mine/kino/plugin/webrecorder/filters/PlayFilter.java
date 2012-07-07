@@ -36,6 +36,8 @@ import org.apache.log4j.Logger;
 import org.eclipse.jetty.util.IO;
 
 /**
+ * リクエストされたURLに従って、保存ファイルが存在するならそちらからレスポンスを返し、存在しない場合は
+ * 通常通りサーバからレスポンスを返すフィルタ
  * @author Masatomi KINO
  * @version $Revision$
  */
@@ -49,7 +51,6 @@ public class PlayFilter implements Filter {
 
     @Override
     public void destroy() {
-        // TODO 自動生成されたメソッド・スタブ
     }
 
     @Override
@@ -62,14 +63,8 @@ public class PlayFilter implements Filter {
 
         File file = null;
         if (method.equals(METHOD_POST)) {
-            // ファイル名がかぶっちゃうので、何らかの値を付けたい
-            // RequestBodyをハッシュするとかね
-            // 例の実行後はBodyにアクセスできない問題が残るが
             file = HttpRequestUtils.getCachePathFromRequestForPost(request);
         } else if (method.equals(METHOD_GET)) {
-            // ファイル名がかぶっちゃうので、何らかの値を付けたい
-            // パラメタ値をハッシュするとかね
-            // 2012/06/07: 付けた
             file = HttpRequestUtils.getCachePathFromRequest(request);
         }
 
@@ -82,7 +77,7 @@ public class PlayFilter implements Filter {
         } else {
             logger.info(path + " がなかったので、サーバから取得して返します");
             WebRecorderPlugin.getDefault().printURLConsole(
-                    "{0} がなかったので、サーバから取得して返します",path);
+                    "{0} がなかったので、サーバから取得して返します", path);
 
             chain.doFilter(request, response);
         }
@@ -91,8 +86,8 @@ public class PlayFilter implements Filter {
     }
 
     @Override
-    public void init(FilterConfig arg0) throws ServletException {
-        servletContext = arg0.getServletContext();
+    public void init(FilterConfig config) throws ServletException {
+        servletContext = config.getServletContext();
     }
 
     private void returnFromCache(String filePath, ServletRequest request,
@@ -101,9 +96,6 @@ public class PlayFilter implements Filter {
         if (mime != null) {
             response.setContentType(mime);
         }
-        // request.getContentType();
-        // response.setContentType(contentType);
-
         IO.copy(new FileInputStream(filePath), response.getOutputStream());
     }
 }

@@ -1,5 +1,7 @@
 package nu.mine.kino.plugin.webrecorder;
 
+import static nu.mine.kino.plugin.webrecorder.ProxyConstant.EXCEPT_EXTs;
+
 import java.lang.reflect.InvocationTargetException;
 
 import nu.mine.kino.plugin.commons.utils.StringUtils;
@@ -195,16 +197,14 @@ public class WebRecorderPlugin extends AbstractUIPlugin {
     }
 
     public void printURLConsole(String url) {
-        if (StringUtils.isEmpty(url)
-                || StringUtils.endsWith(url, HttpRequestUtils.EXCEPT_EXTs)) {
+        if (StringUtils.isEmpty(url) || StringUtils.endsWith(url, EXCEPT_EXTs)) {
             return;
         }
         printConsole(url);
     }
 
     public void printURLConsole(String format, String url) {
-        if (StringUtils.isEmpty(url)
-                || StringUtils.endsWith(url, HttpRequestUtils.EXCEPT_EXTs)) {
+        if (StringUtils.isEmpty(url) || StringUtils.endsWith(url, EXCEPT_EXTs)) {
             return;
         }
 

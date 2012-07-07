@@ -24,7 +24,9 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import nu.mine.kino.plugin.commons.utils.StringUtils;
 
 /**
- * Accept Encodingを除去するRequest Wrapper。
+ * Accept Encodingを除去するRequest Wrapper。 クライアントがAccept-Encoding: gzip,deflate
+ * を指定していると、Gzip圧縮されたコンテンツがおりてきて、ファイル保存のプログラム{@link ServletOutputStreamImpl}
+ * が対応できていない。なので、暫定でAccept-Encoding ヘッダを除去する処理を入れている。
  * 
  * @author Masatomi KINO
  * @version $Revision$

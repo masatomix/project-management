@@ -35,4 +35,8 @@ public interface ProxyConstant {
     public static final String METHOD_GET = "GET";
 
     public static final String METHOD_POST = "POST";
+    
+
+    public static final String[] EXCEPT_EXTs = new String[] { ".png", ".jpg",
+            ".gif", ".css", ".js", ".svg" }; // 情報の出力は不要なので除外
 }
