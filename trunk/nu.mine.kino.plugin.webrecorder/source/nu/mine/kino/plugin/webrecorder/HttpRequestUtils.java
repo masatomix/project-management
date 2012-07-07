@@ -18,10 +18,12 @@ import static nu.mine.kino.plugin.webrecorder.ProxyConstant.TRIM_LENGTH;
 import static nu.mine.kino.plugin.webrecorder.ProxyConstant.TRIM_START_INDEX;
 import static nu.mine.kino.plugin.webrecorder.ProxyConstant.METHOD_GET;
 import static nu.mine.kino.plugin.webrecorder.ProxyConstant.METHOD_POST;
+import static nu.mine.kino.plugin.webrecorder.ProxyConstant.EXCEPT_EXTs;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.util.Enumeration;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -167,9 +169,6 @@ public class HttpRequestUtils {
         return baseURL;
     }
 
-    public static final String[] EXCEPT_EXTs = new String[] { ".png", ".jpg",
-            ".gif", ".css", ".js", ".svg" }; // 情報の出力は不要なので除外
-
     public static void printInfo(HttpServletRequest hRequest) {
         String method = hRequest.getMethod();
         String url = getURLBase(hRequest);// URLを復元
@@ -179,6 +178,16 @@ public class HttpRequestUtils {
         }
 
         WebRecorderPlugin.getDefault().printConsole("リクエスト情報");
+        
+        Enumeration<String> headerNames = hRequest.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String headerName = (String) headerNames.nextElement();
+            String log = String.format("%1$s: %2$s", headerName,
+                    hRequest.getHeader(headerName));
+            WebRecorderPlugin.getDefault().printConsole(log);
+            
+        }
+
         if (method.equals(METHOD_GET)) {
             WebRecorderPlugin.getDefault().printConsole("GET:   " + url);
             String queryString = hRequest.getQueryString();

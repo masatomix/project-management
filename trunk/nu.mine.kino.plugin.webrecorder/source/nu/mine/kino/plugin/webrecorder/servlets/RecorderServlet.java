@@ -40,6 +40,7 @@ import org.eclipse.jetty.servlets.ProxyServlet;
  * 
  * @author Masatomi KINO
  * @version $Revision$
+ * @deprecated
  */
 public class RecorderServlet extends ProxyServlet {
     // 本来ならProxyServletの結果をそのまま横取りしてファイルに保存し、
@@ -51,7 +52,6 @@ public class RecorderServlet extends ProxyServlet {
      */
     private static final Logger logger = Logger
             .getLogger(RecorderServlet.class);
-
 
     private ServletContext servletContext;
 

@@ -26,10 +26,11 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * 何度もBodyの読み出しができるようにする為だけのFilter。
+ * 何度もリクエストのBodyの読み出しができる {@link MultiReadHttpServletRequest} へ切り替える 為のFilter。
  * 
  * @author Masatomi KINO
  * @version $Revision$
+ * @see MultiReadHttpServletRequest
  */
 public class MultiReadFilter implements Filter {
     /**

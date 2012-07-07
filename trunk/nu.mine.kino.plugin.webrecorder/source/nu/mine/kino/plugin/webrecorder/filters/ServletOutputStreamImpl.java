@@ -20,6 +20,9 @@ import java.io.IOException;
 import javax.servlet.ServletOutputStream;
 
 /**
+ * {@link ServletOutputStream }を拡張して、クライアントへレスポンスを返すとともに
+ * 指定されたファイルへもレスポンスを保存するStreamです
+ * 
  * @author Masatomi KINO
  * @version $Revision$
  */

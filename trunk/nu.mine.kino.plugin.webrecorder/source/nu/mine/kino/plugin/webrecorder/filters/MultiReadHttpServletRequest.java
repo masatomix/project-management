@@ -29,6 +29,7 @@ import org.apache.commons.io.IOUtils;
  * 
  * @author Masatomi KINO
  * @version $Revision$
+ * @see MultiReadFilter
  */
 public class MultiReadHttpServletRequest extends HttpServletRequestWrapper {
     // /**

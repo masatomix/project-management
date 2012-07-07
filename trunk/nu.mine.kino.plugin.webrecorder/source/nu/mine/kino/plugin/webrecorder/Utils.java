@@ -60,13 +60,16 @@ public class Utils {
 
         switch (mode) {
         case RECORD:
+            // 録画モードは、ファイルを保存するためのRecordFilterと、
+            // リクエストヘッダのAccept Encodingヘッダを除去することでGzip圧縮されたレスポンスを
+            // サーバが返さないようにする、AcceptEncodingRemoveFilter を通してる
             context.addServlet(ProxyServlet.class, "/*");
             context.addFilter(AcceptEncodingRemoveFilter.class, "/*",
                     EnumSet.of(REQUEST));
-            context.addFilter(RecordFilter.class, "/*",
-                    EnumSet.of(REQUEST));
+            context.addFilter(RecordFilter.class, "/*", EnumSet.of(REQUEST));
             break;
         case PLAY:
+            // Playモードはローカルファイルがあったらそちらから返すPlayFilterを通してる
             context.addServlet(ProxyServlet.class, "/*");
             context.addFilter(PlayFilter.class, "/*", EnumSet.of(REQUEST));
             break;
