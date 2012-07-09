@@ -148,6 +148,12 @@
             id="nu.mine.kino.plugin.webrecorder.category"
             name="Web Recorder">
       </category>
+      <view
+            category="nu.mine.kino.plugin.webrecorder.category"
+            class="nu.mine.kino.plugin.webrecorder.views.ListView"
+            id="nu.mine.kino.plugin.webrecorder.views.ListView"
+            name="List View">
+      </view>
    </extension>
 
 

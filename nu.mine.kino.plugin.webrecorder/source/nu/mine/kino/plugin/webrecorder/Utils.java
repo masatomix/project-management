@@ -15,7 +15,12 @@ package nu.mine.kino.plugin.webrecorder;
 import static javax.servlet.DispatcherType.REQUEST;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.EnumSet;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import nu.mine.kino.plugin.commons.utils.StringUtils;
 import nu.mine.kino.plugin.webrecorder.filters.AcceptEncodingRemoveFilter;
@@ -23,10 +28,13 @@ import nu.mine.kino.plugin.webrecorder.filters.LogFilter;
 import nu.mine.kino.plugin.webrecorder.filters.MultiReadFilter;
 import nu.mine.kino.plugin.webrecorder.filters.PlayFilter;
 import nu.mine.kino.plugin.webrecorder.filters.RecordFilter;
+import nu.mine.kino.plugin.webrecorder.filters.ViewAddFilter;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlets.ProxyServlet;
@@ -80,6 +88,7 @@ public class Utils {
             break;
         }
 
+        context.addFilter(ViewAddFilter.class, "/*", EnumSet.of(REQUEST));
         server.start();
         WebRecorderPlugin.getDefault().printConsole(mode + " ‚ª‹N“®‚µ‚Ü‚µ‚½");
         server.join();
