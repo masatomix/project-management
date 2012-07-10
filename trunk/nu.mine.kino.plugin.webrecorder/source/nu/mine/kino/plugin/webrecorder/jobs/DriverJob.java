@@ -68,10 +68,14 @@ public class DriverJob extends Job {
     protected IStatus run(IProgressMonitor monitor) {
         monitor.beginTask(url + " を " + method + " でリクエスト中...", 10);
         try {
+            IStatus status = Status.CANCEL_STATUS;
             if (ProxyConstant.METHOD_POST.equals(method)) {
-                executePost();
+                status = executePost();
             } else if (ProxyConstant.METHOD_GET.equals(method)) {
-                executeGet();
+                status = executeGet();
+            }
+            if (status.equals(Status.CANCEL_STATUS)) {
+                return Status.CANCEL_STATUS;
             }
         } catch (final Exception e) {
             // URLがおかしいと、ココ。
@@ -87,7 +91,7 @@ public class DriverJob extends Job {
 
     }
 
-    private void executePost() throws IOException, ClientProtocolException {
+    private IStatus executePost() throws IOException, ClientProtocolException {
         // String contentType = hRequest.getContentType();
         HttpHost proxy = null;
         if (isWithProxy) {
@@ -110,9 +114,10 @@ public class DriverJob extends Job {
                 }
             });
         }
+        return Status.OK_STATUS;
     }
 
-    private void executeGet() throws IOException, ClientProtocolException {
+    private IStatus executeGet() throws IOException, ClientProtocolException {
         HttpHost proxy = null;
         if (isWithProxy) {
             int port = WebRecorderPlugin.getDefault().getPort();
@@ -133,6 +138,7 @@ public class DriverJob extends Job {
             });
 
         }
+        return Status.OK_STATUS;
     }
 
     private boolean checkAsyncExec(Runnable thread) {

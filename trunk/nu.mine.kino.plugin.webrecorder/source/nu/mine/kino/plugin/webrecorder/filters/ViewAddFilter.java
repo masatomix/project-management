@@ -156,6 +156,7 @@ public class ViewAddFilter implements Filter {
     private void setResponseInfo(HttpServletResponse response,
             RequestResponseModel model) {
         if (response.getHeaderNames().size() == 0) {
+            // Ç≥Ç¡Ç´éûä‘êÿÇÍÇµÇΩÇ¡ÇƒÇ±Ç∆
             return;
         }
         Collection<String> headerNames = response.getHeaderNames();
@@ -165,19 +166,29 @@ public class ViewAddFilter implements Filter {
             System.out.println(log);
         }
         System.out.println(response.getCharacterEncoding());
-        System.out.println(response.getContentType());
-        System.out.println(response.getStatus());
 
+        Date resDate = createResDate(response);
+        String resContentType = response.getContentType();
+        String resContentLength = response.getHeader("resContentLength");
+        int status = response.getStatus();
+
+        model.setResDate(resDate);
+        model.setResContentLength(resContentLength);
+        model.setResContentType(resContentType);
+        model.setStatus(status);
+    }
+
+    private Date createResDate(HttpServletResponse response) {
         try {
             // http://kenichiro22.hatenablog.com/entry/20090526/1243308889
             DateFormat df = new SimpleDateFormat(
                     "EEE, dd MMM yyyy hh:mm:ss zzz", java.util.Locale.US);
-            Date parse = df.parse(response.getHeader("Date"));
-            model.setResDate(parse);
+            return df.parse(response.getHeader("Date"));
         } catch (ParseException e) {
             // TODO é©ìÆê∂ê¨Ç≥ÇÍÇΩ catch ÉuÉçÉbÉN
             e.printStackTrace();
         }
+        return null;
     }
 
     private void setRequestInfo(HttpServletRequest request,
