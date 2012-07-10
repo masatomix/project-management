@@ -2,14 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: nu.mine.kino.plugin.webrecorder;singleton:=true
-Bundle-Version: 0.2.4.qualifier
+Bundle-Version: 0.2.5.qualifier
 Bundle-Activator: nu.mine.kino.plugin.webrecorder.WebRecorderPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
  nu.mine.kino.plugin.log4j;bundle-version="0.0.1",
  nu.mine.kino.plugin.commons.lib;bundle-version="0.9.0",
- nu.mine.kino.plugin.commons.utils;bundle-version="0.9.1",
+ nu.mine.kino.plugin.commons.utils;bundle-version="0.9.3",
  org.eclipse.ui.console
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

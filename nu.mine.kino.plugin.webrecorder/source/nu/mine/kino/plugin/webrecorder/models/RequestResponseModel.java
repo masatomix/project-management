@@ -22,6 +22,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  */
 public class RequestResponseModel {
 
+    private int status;
+
     private String host;
 
     private String url;
@@ -122,17 +124,17 @@ public class RequestResponseModel {
         this.resDate = resDate;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     @Override
-    public String toString() {
-        return new ToStringBuilder(this).append("host", host)
-                .append("url", url).append("method", method)
-                .append("reqContentType", reqContentType)
-                .append("reqContentLength", reqContentLength)
-                .append("requestBody", requestBody)
-                .append("queryString", queryString)
-                .append("resContentType", resContentType)
-                .append("resContentLength", resContentLength)
-                .append("resDate", resDate).toString();
+    public String toString(){
+    return new ToStringBuilder(this).append("status",status).append("host",host).append("url",url).append("method",method).append("reqContentType",reqContentType).append("reqContentLength",reqContentLength).append("requestBody",requestBody).append("queryString",queryString).append("resContentType",resContentType).append("resContentLength",resContentLength).append("resDate",resDate).toString();
     }
 
 }
