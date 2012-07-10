@@ -27,6 +27,8 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.log4j.Logger;
 
 /**
@@ -42,37 +44,45 @@ public class HttpClientUtils {
     private static final Logger logger = Logger
             .getLogger(HttpClientUtils.class);
 
-    public static String doGet(String url, HttpHost proxy)
-            throws ClientProtocolException, IOException {
-        logger.debug("doGet(String) - start");
-
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpGet httpget = new HttpGet(url);
-        logger.info("doGet URL: " + httpget.getURI());
-
-        if (proxy != null) {
-            httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY,
-                    proxy);
-        }
-
-        // Create a response handler
-        ResponseHandler<String> responseHandler = new BasicResponseHandler();
-        String responseBody = httpclient.execute(httpget, responseHandler);
-
-        logger.debug("doGet(String) - end");
-        return responseBody;
-    }
-
-    public static String doGet(String url) throws ClientProtocolException,
-            IOException {
-        return doGet(url, null);
-    }
+    // public static String doGet(String url, HttpHost proxy)
+    // throws ClientProtocolException, IOException {
+    // logger.debug("doGet(String) - start");
+    //
+    // HttpClient httpclient = new DefaultHttpClient();
+    //
+    // HttpParams params = httpclient.getParams();
+    // HttpConnectionParams.setConnectionTimeout(params, 1000); // 接続のタイムアウト
+    // HttpConnectionParams.setSoTimeout(params, 10000); // データ取得のタイムアウト
+    //
+    // HttpGet httpget = new HttpGet(url);
+    // logger.info("doGet URL: " + httpget.getURI());
+    //
+    // if (proxy != null) {
+    // httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY,
+    // proxy);
+    // }
+    //
+    // // Create a response handler
+    // ResponseHandler<String> responseHandler = new BasicResponseHandler();
+    // String responseBody = httpclient.execute(httpget, responseHandler);
+    //
+    // logger.debug("doGet(String) - end");
+    // return responseBody;
+    // }
+    //
+    // public static String doGet(String url) throws ClientProtocolException,
+    // IOException {
+    // return doGet(url, null);
+    // }
 
     public static HttpEntity getHttpEntity(String url, HttpHost proxy)
             throws ClientProtocolException, IOException {
 
         HttpGet httpget = new HttpGet(url);
         HttpClient httpclient = new DefaultHttpClient();
+        HttpParams params = httpclient.getParams();
+        HttpConnectionParams.setConnectionTimeout(params, 1000); // 接続のタイムアウト
+        HttpConnectionParams.setSoTimeout(params, 10000); // データ取得のタイムアウト
 
         if (proxy != null) {
             // HttpHost proxy = new HttpHost("127.0.0.1", 8008);
@@ -93,8 +103,13 @@ public class HttpClientUtils {
     public static HttpEntity getHttpEntity(String url, String requestBody,
             String contentType, HttpHost proxy) throws ClientProtocolException,
             IOException {
+
         HttpPost httppost = new HttpPost(url);
         HttpClient httpclient = new DefaultHttpClient();
+
+        HttpParams params = httpclient.getParams();
+        HttpConnectionParams.setConnectionTimeout(params, 1000); // 接続のタイムアウト
+        HttpConnectionParams.setSoTimeout(params, 10000); // データ取得のタイムアウト
 
         if (proxy != null) {
             httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY,
@@ -115,7 +130,7 @@ public class HttpClientUtils {
         }
 
         httppost.setEntity(postEntity);
-        HttpResponse httpResponse = httpclient.execute(httppost);
+        HttpResponse httpResponse = httpclient.execute(httppost);// この処理に、タイムアウトを仕込みたいな
 
         HttpEntity entity = httpResponse.getEntity();
         return entity;
