@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2010 Masatomi KINO and others. 
+ * Copyright (c) 2012 Masatomi KINO and others. 
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,9 +13,29 @@
 package nu.mine.kino.plugin.webrecorder.models;
 
 /**
+ * model Tの通知を受け取るListenerインタフェース
+ * 
  * @author Masatomi KINO
  * @version $Revision$
+ * @see Models
  */
-public interface ModelListener {
-    public void modelAdded(RequestResponseModel model);
+public interface ModelListener<T> {
+    /**
+     * Modelsクラスにmodelがaddされたときにコールバックされます
+     * 
+     * @param model
+     */
+    void modelAdded(T model);
+
+    /**
+     * Modelsクラスが管理しているリストがすべて削除されたときにコールバックされます
+     */
+    void modelAllRemoved();
+
+    /**
+     * Modelsクラスのmodelが削除されたときにコールバックされます
+     * 
+     * @param model
+     */
+    void modelRemoved(T model);
 }

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2010 Masatomi KINO and others. 
+ * Copyright (c) 2012 Masatomi KINO and others. 
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -133,8 +133,17 @@ public class RequestResponseModel {
     }
 
     @Override
-    public String toString(){
-    return new ToStringBuilder(this).append("status",status).append("host",host).append("url",url).append("method",method).append("reqContentType",reqContentType).append("reqContentLength",reqContentLength).append("requestBody",requestBody).append("queryString",queryString).append("resContentType",resContentType).append("resContentLength",resContentLength).append("resDate",resDate).toString();
+    public String toString() {
+        return new ToStringBuilder(this).append("status", status)
+                .append("host", host).append("url", url)
+                .append("method", method)
+                .append("reqContentType", reqContentType)
+                .append("reqContentLength", reqContentLength)
+                .append("requestBody", requestBody)
+                .append("queryString", queryString)
+                .append("resContentType", resContentType)
+                .append("resContentLength", resContentLength)
+                .append("resDate", resDate).toString();
     }
 
 }

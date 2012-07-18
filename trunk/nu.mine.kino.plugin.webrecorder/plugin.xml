@@ -144,16 +144,17 @@
             id="nu.mine.kino.plugin.webrecorder.views.DriverView"
             name="簡易HTTPクライアント">
       </view>
+      <view
+            category="nu.mine.kino.plugin.webrecorder.category"
+            class="nu.mine.kino.plugin.webrecorder.views.ListView"
+            icon="icons/television.png"
+            id="nu.mine.kino.plugin.webrecorder.views.ListView"
+            name="アクセス一覧">
+      </view>
       <category
             id="nu.mine.kino.plugin.webrecorder.category"
             name="Web Recorder">
       </category>
-      <view
-            category="nu.mine.kino.plugin.webrecorder.category"
-            class="nu.mine.kino.plugin.webrecorder.views.ListView"
-            id="nu.mine.kino.plugin.webrecorder.views.ListView"
-            name="List View">
-      </view>
    </extension>
 
 

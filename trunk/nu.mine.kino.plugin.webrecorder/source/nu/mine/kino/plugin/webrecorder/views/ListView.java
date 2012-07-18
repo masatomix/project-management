@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2010 Masatomi KINO and others. 
+ * Copyright (c) 2012 Masatomi KINO and others. 
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,17 +12,19 @@
 
 package nu.mine.kino.plugin.webrecorder.views;
 
+import java.util.Date;
+
 import nu.mine.kino.plugin.webrecorder.models.ModelListener;
 import nu.mine.kino.plugin.webrecorder.models.Models;
 import nu.mine.kino.plugin.webrecorder.models.RequestResponseModel;
 
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnPixelData;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -33,6 +35,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.wb.swt.ResourceManager;
 
 /**
  * @author Masatomi KINO
@@ -40,28 +43,24 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class ListView extends ViewPart {
 
-    // modelを管理したり、変更をListenerたちに通知したりする
-    private Models models = new Models();
+    // ModelsはRequestResponseModelを管理したり、変更をListenerたちに通知したりする
+    private Models<RequestResponseModel> models = new Models<RequestResponseModel>();
 
-    private static class ContentProvider extends ArrayContentProvider implements
-            ModelListener {
+    private class ContentProvider extends ArrayContentProvider implements
+            ModelListener<RequestResponseModel> {
         private TableViewer viewer;
-
-        public Object[] getElements(Object inputElement) {
-            return new Object[0];
-        }
-
-        public void dispose() {
-        }
 
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             this.viewer = (TableViewer) viewer;
+            // System.out.println("old: " + oldInput);
+            // System.out.println("new: " + newInput);
             if (oldInput != null) {
-                ((Models) oldInput).removeModelListener(this);
+                ((Models<RequestResponseModel>) oldInput)
+                        .removeModelListener(this);
             }
-
             if (newInput != null) {
-                ((Models) newInput).addModelListener(this);
+                ((Models<RequestResponseModel>) newInput)
+                        .addModelListener(this);
             }
         }
 
@@ -69,16 +68,15 @@ public class ListView extends ViewPart {
         public void modelAdded(RequestResponseModel model) {
             viewer.add(model);
         }
-    }
 
-    private class TableLabelProvider extends LabelProvider implements
-            ITableLabelProvider {
-        public Image getColumnImage(Object element, int columnIndex) {
-            return null;
+        @Override
+        public void modelAllRemoved() {
+            viewer.setInput(models);
         }
 
-        public String getColumnText(Object element, int columnIndex) {
-            return element.toString();
+        @Override
+        public void modelRemoved(RequestResponseModel model) {
+            viewer.remove(model);
         }
     }
 
@@ -87,6 +85,8 @@ public class ListView extends ViewPart {
     private Table table;
 
     private TableViewer tableViewer;
+
+    private Action clearAction;
 
     public ListView() {
     }
@@ -117,14 +117,169 @@ public class ListView extends ViewPart {
                 {
                     TableViewerColumn tableViewerColumn = new TableViewerColumn(
                             tableViewer, SWT.NONE);
-                    TableColumn tblclmnNewColumn = tableViewerColumn
+                    tableViewerColumn
+                            .setLabelProvider(new ColumnLabelProvider() {
+                                public Image getImage(Object element) {
+                                    // TODO Auto-generated method stub
+                                    return null;
+                                }
+
+                                public String getText(Object element) {
+                                    // RequestResponseModel model =
+                                    // (RequestResponseModel) element;
+                                    return new Date().toString();
+                                }
+                            });
+                    TableColumn dateColumun = tableViewerColumn.getColumn();
+                    tcl_composite.setColumnData(dateColumun,
+                            new ColumnPixelData(120, true, true));
+                    dateColumun.setText("Date");
+                }
+                {
+                    TableViewerColumn tableViewerColumn = new TableViewerColumn(
+                            tableViewer, SWT.NONE);
+                    tableViewerColumn
+                            .setLabelProvider(new ColumnLabelProvider() {
+                                public Image getImage(Object element) {
+                                    // TODO Auto-generated method stub
+                                    return null;
+                                }
+
+                                public String getText(Object element) {
+                                    RequestResponseModel model = (RequestResponseModel) element;
+                                    return model.getMethod();
+                                }
+                            });
+                    TableColumn methodColumun = tableViewerColumn.getColumn();
+                    tcl_composite.setColumnData(methodColumun,
+                            new ColumnPixelData(75, true, true));
+                    methodColumun.setText("method");
+                }
+                {
+                    TableViewerColumn tableViewerColumn = new TableViewerColumn(
+                            tableViewer, SWT.NONE);
+                    tableViewerColumn
+                            .setLabelProvider(new ColumnLabelProvider() {
+                                public Image getImage(Object element) {
+                                    // TODO Auto-generated method stub
+                                    return null;
+                                }
+
+                                public String getText(Object element) {
+                                    RequestResponseModel model = (RequestResponseModel) element;
+                                    return model.getHost();
+                                }
+                            });
+                    TableColumn hostColumun = tableViewerColumn.getColumn();
+                    tcl_composite.setColumnData(hostColumun,
+                            new ColumnPixelData(140, true, true));
+                    hostColumun.setText("host");
+                }
+                {
+                    TableViewerColumn tableViewerColumn = new TableViewerColumn(
+                            tableViewer, SWT.NONE);
+                    tableViewerColumn
+                            .setLabelProvider(new ColumnLabelProvider() {
+                                public Image getImage(Object element) {
+                                    // TODO Auto-generated method stub
+                                    return null;
+                                }
+
+                                public String getText(Object element) {
+                                    RequestResponseModel model = (RequestResponseModel) element;
+                                    return model.getUrl();
+                                }
+                            });
+                    TableColumn pathColumun = tableViewerColumn.getColumn();
+                    tcl_composite.setColumnData(pathColumun,
+                            new ColumnPixelData(80, true, true));
+                    pathColumun.setText("path");
+                }
+                {
+                    TableViewerColumn tableViewerColumn = new TableViewerColumn(
+                            tableViewer, SWT.NONE);
+                    tableViewerColumn
+                            .setLabelProvider(new ColumnLabelProvider() {
+                                public Image getImage(Object element) {
+                                    // TODO Auto-generated method stub
+                                    return null;
+                                }
+
+                                public String getText(Object element) {
+                                    RequestResponseModel model = (RequestResponseModel) element;
+                                    return model.getQueryString();
+                                }
+                            });
+                    TableColumn parameterColumun = tableViewerColumn
                             .getColumn();
-                    tcl_composite.setColumnData(tblclmnNewColumn,
+                    tcl_composite.setColumnData(parameterColumun,
+                            new ColumnPixelData(100, true, true));
+                    parameterColumun.setText("parameter");
+                }
+                {
+                    TableViewerColumn tableViewerColumn = new TableViewerColumn(
+                            tableViewer, SWT.NONE);
+                    tableViewerColumn
+                            .setLabelProvider(new ColumnLabelProvider() {
+                                public Image getImage(Object element) {
+                                    // TODO Auto-generated method stub
+                                    return null;
+                                }
+
+                                public String getText(Object element) {
+                                    RequestResponseModel model = (RequestResponseModel) element;
+                                    return new Integer(model.getStatus())
+                                            .toString();
+                                }
+                            });
+                    TableColumn statusColumn = tableViewerColumn.getColumn();
+                    tcl_composite.setColumnData(statusColumn,
+                            new ColumnPixelData(40, true, true));
+                    statusColumn.setText("status");
+                }
+                {
+                    TableViewerColumn tableViewerColumn = new TableViewerColumn(
+                            tableViewer, SWT.NONE);
+                    tableViewerColumn
+                            .setLabelProvider(new ColumnLabelProvider() {
+                                public Image getImage(Object element) {
+                                    // TODO Auto-generated method stub
+                                    return null;
+                                }
+
+                                public String getText(Object element) {
+                                    RequestResponseModel model = (RequestResponseModel) element;
+                                    return model.getResContentType();
+                                }
+                            });
+                    TableColumn resContentTypeColumun = tableViewerColumn
+                            .getColumn();
+                    tcl_composite.setColumnData(resContentTypeColumun,
                             new ColumnPixelData(150, true, true));
-                    tblclmnNewColumn.setText("New Column");
+                    resContentTypeColumun.setText("Resoonse Content-Type");
+                }
+                {
+                    TableViewerColumn tableViewerColumn = new TableViewerColumn(
+                            tableViewer, SWT.NONE);
+                    tableViewerColumn
+                            .setLabelProvider(new ColumnLabelProvider() {
+                                public Image getImage(Object element) {
+                                    // TODO Auto-generated method stub
+                                    return null;
+                                }
+
+                                public String getText(Object element) {
+                                    RequestResponseModel model = (RequestResponseModel) element;
+                                    return model.getResContentLength();
+                                }
+                            });
+                    TableColumn resContentLength = tableViewerColumn
+                            .getColumn();
+                    tcl_composite.setColumnData(resContentLength,
+                            new ColumnPixelData(150, true, true));
+                    resContentLength.setText("Response Content-Length");
                 }
                 tableViewer.setContentProvider(new ContentProvider());
-                tableViewer.setLabelProvider(new TableLabelProvider());
             }
         }
         tableViewer.setInput(models);
@@ -139,7 +294,20 @@ public class ListView extends ViewPart {
      * Create the actions.
      */
     private void createActions() {
-        // Create the actions
+        {
+            clearAction = new Action("クリア") {
+                @Override
+                public void run() {
+                    models.removeAllModels();
+                }
+            };
+            clearAction
+                    .setToolTipText("\u30EA\u30B9\u30C8\u3092\u30AF\u30EA\u30A2\u3057\u307E\u3059");
+            clearAction.setImageDescriptor(ResourceManager
+                    .getPluginImageDescriptor(
+                            "nu.mine.kino.plugin.webrecorder",
+                            "icons/clear.gif"));
+        }
     }
 
     /**
@@ -148,6 +316,7 @@ public class ListView extends ViewPart {
     private void initializeToolBar() {
         IToolBarManager toolbarManager = getViewSite().getActionBars()
                 .getToolBarManager();
+        toolbarManager.add(clearAction);
     }
 
     /**
