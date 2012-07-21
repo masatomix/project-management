@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import nu.mine.kino.plugin.commons.utils.StringUtils;
 import nu.mine.kino.plugin.webrecorder.HttpRequestUtils;
+import nu.mine.kino.plugin.webrecorder.WebRecorderPlugin;
 import nu.mine.kino.plugin.webrecorder.models.RequestResponseModel;
 import nu.mine.kino.plugin.webrecorder.views.ListView;
 
@@ -135,6 +136,7 @@ public class ViewAddFilter implements Filter {
                 try {
                     ListView view = (ListView) workbenchPage
                             .showView(ListView.ID);
+                    WebRecorderPlugin.getDefault().printConsole(model.toString());
                     view.addRequestResponseModel(model);
                 } catch (PartInitException e) {
                     // TODO é©ìÆê∂ê¨Ç≥ÇÍÇΩ catch ÉuÉçÉbÉN
@@ -168,9 +170,9 @@ public class ViewAddFilter implements Filter {
         System.out.println(response.getCharacterEncoding());
 
         Date resDate = createResDate(response);
-        String resContentType = response.getContentType();
-        String resContentLength = response.getHeader("resContentLength");
-        int status = response.getStatus();
+        String resContentType = response.getHeader("Content-Type");
+        String resContentLength = response.getHeader("Content-Length");
+        Integer status = response.getStatus();
 
         model.setResDate(resDate);
         model.setResContentLength(resContentLength);

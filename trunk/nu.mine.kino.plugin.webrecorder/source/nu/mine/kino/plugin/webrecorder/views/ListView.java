@@ -12,12 +12,15 @@
 
 package nu.mine.kino.plugin.webrecorder.views;
 
+import java.text.DateFormat;
 import java.util.Date;
 
 import nu.mine.kino.plugin.webrecorder.models.ModelListener;
 import nu.mine.kino.plugin.webrecorder.models.Models;
 import nu.mine.kino.plugin.webrecorder.models.RequestResponseModel;
 
+import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -52,8 +55,6 @@ public class ListView extends ViewPart {
 
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             this.viewer = (TableViewer) viewer;
-            // System.out.println("old: " + oldInput);
-            // System.out.println("new: " + newInput);
             if (oldInput != null) {
                 ((Models<RequestResponseModel>) oldInput)
                         .removeModelListener(this);
@@ -120,20 +121,18 @@ public class ListView extends ViewPart {
                     tableViewerColumn
                             .setLabelProvider(new ColumnLabelProvider() {
                                 public Image getImage(Object element) {
-                                    // TODO Auto-generated method stub
                                     return null;
                                 }
 
                                 public String getText(Object element) {
-                                    // RequestResponseModel model =
-                                    // (RequestResponseModel) element;
-                                    return new Date().toString();
+                                    return DateFormatUtils.format(new Date(),
+                                            "yyyy/MM/dd HH:mm:ss");
                                 }
                             });
                     TableColumn dateColumun = tableViewerColumn.getColumn();
                     tcl_composite.setColumnData(dateColumun,
                             new ColumnPixelData(120, true, true));
-                    dateColumun.setText("Date");
+                    dateColumun.setText("Request Date");
                 }
                 {
                     TableViewerColumn tableViewerColumn = new TableViewerColumn(
@@ -151,6 +150,7 @@ public class ListView extends ViewPart {
                                 }
                             });
                     TableColumn methodColumun = tableViewerColumn.getColumn();
+                    methodColumun.setMoveable(true);
                     tcl_composite.setColumnData(methodColumun,
                             new ColumnPixelData(75, true, true));
                     methodColumun.setText("method");
@@ -228,8 +228,9 @@ public class ListView extends ViewPart {
 
                                 public String getText(Object element) {
                                     RequestResponseModel model = (RequestResponseModel) element;
-                                    return new Integer(model.getStatus())
-                                            .toString();
+                                    Integer status = model.getStatus();
+                                    return status == null ? "" : String
+                                            .valueOf(status);
                                 }
                             });
                     TableColumn statusColumn = tableViewerColumn.getColumn();
@@ -278,6 +279,28 @@ public class ListView extends ViewPart {
                     tcl_composite.setColumnData(resContentLength,
                             new ColumnPixelData(150, true, true));
                     resContentLength.setText("Response Content-Length");
+                }
+                {
+                    TableViewerColumn tableViewerColumn = new TableViewerColumn(
+                            tableViewer, SWT.NONE);
+                    tableViewerColumn
+                            .setLabelProvider(new ColumnLabelProvider() {
+                                public Image getImage(Object element) {
+                                    return null;
+                                }
+
+                                public String getText(Object element) {
+                                    RequestResponseModel model = (RequestResponseModel) element;
+                                    Date resDate = model.getResDate();
+                                    return resDate == null ? ""
+                                            : DateFormatUtils.format(resDate,
+                                                    "yyyy/MM/dd HH:mm:ss");
+                                }
+                            });
+                    TableColumn resDate = tableViewerColumn.getColumn();
+                    tcl_composite.setColumnData(resDate, new ColumnPixelData(
+                            150, true, true));
+                    resDate.setText("Response Date");
                 }
                 tableViewer.setContentProvider(new ContentProvider());
             }
