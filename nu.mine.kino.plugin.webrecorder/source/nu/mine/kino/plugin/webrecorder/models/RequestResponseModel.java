@@ -22,7 +22,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  */
 public class RequestResponseModel {
 
-    private int status;
+    private Integer status;
 
     private String host;
 
@@ -124,11 +124,11 @@ public class RequestResponseModel {
         this.resDate = resDate;
     }
 
-    public int getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
