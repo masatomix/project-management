@@ -12,7 +12,6 @@
 
 package nu.mine.kino.plugin.webrecorder.views;
 
-import java.text.DateFormat;
 import java.util.Date;
 
 import nu.mine.kino.plugin.webrecorder.models.ModelListener;
@@ -20,7 +19,6 @@ import nu.mine.kino.plugin.webrecorder.models.Models;
 import nu.mine.kino.plugin.webrecorder.models.RequestResponseModel;
 
 import org.apache.commons.lang.time.DateFormatUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -130,6 +128,7 @@ public class ListView extends ViewPart {
                                 }
                             });
                     TableColumn dateColumun = tableViewerColumn.getColumn();
+                    dateColumun.setMoveable(true);
                     tcl_composite.setColumnData(dateColumun,
                             new ColumnPixelData(120, true, true));
                     dateColumun.setText("Request Date");
@@ -137,6 +136,7 @@ public class ListView extends ViewPart {
                 {
                     TableViewerColumn tableViewerColumn = new TableViewerColumn(
                             tableViewer, SWT.NONE);
+
                     tableViewerColumn
                             .setLabelProvider(new ColumnLabelProvider() {
                                 public Image getImage(Object element) {
@@ -171,6 +171,7 @@ public class ListView extends ViewPart {
                                 }
                             });
                     TableColumn hostColumun = tableViewerColumn.getColumn();
+                    hostColumun.setMoveable(true);
                     tcl_composite.setColumnData(hostColumun,
                             new ColumnPixelData(140, true, true));
                     hostColumun.setText("host");
@@ -191,6 +192,7 @@ public class ListView extends ViewPart {
                                 }
                             });
                     TableColumn pathColumun = tableViewerColumn.getColumn();
+                    pathColumun.setMoveable(true);
                     tcl_composite.setColumnData(pathColumun,
                             new ColumnPixelData(80, true, true));
                     pathColumun.setText("path");
@@ -212,6 +214,7 @@ public class ListView extends ViewPart {
                             });
                     TableColumn parameterColumun = tableViewerColumn
                             .getColumn();
+                    parameterColumun.setMoveable(true);
                     tcl_composite.setColumnData(parameterColumun,
                             new ColumnPixelData(100, true, true));
                     parameterColumun.setText("parameter");
@@ -234,6 +237,7 @@ public class ListView extends ViewPart {
                                 }
                             });
                     TableColumn statusColumn = tableViewerColumn.getColumn();
+                    statusColumn.setMoveable(true);
                     tcl_composite.setColumnData(statusColumn,
                             new ColumnPixelData(40, true, true));
                     statusColumn.setText("status");
@@ -255,6 +259,7 @@ public class ListView extends ViewPart {
                             });
                     TableColumn resContentTypeColumun = tableViewerColumn
                             .getColumn();
+                    resContentTypeColumun.setMoveable(true);
                     tcl_composite.setColumnData(resContentTypeColumun,
                             new ColumnPixelData(150, true, true));
                     resContentTypeColumun.setText("Resoonse Content-Type");
@@ -276,6 +281,7 @@ public class ListView extends ViewPart {
                             });
                     TableColumn resContentLength = tableViewerColumn
                             .getColumn();
+                    resContentLength.setMoveable(true);
                     tcl_composite.setColumnData(resContentLength,
                             new ColumnPixelData(150, true, true));
                     resContentLength.setText("Response Content-Length");
@@ -298,6 +304,7 @@ public class ListView extends ViewPart {
                                 }
                             });
                     TableColumn resDate = tableViewerColumn.getColumn();
+                    resDate.setMoveable(true);
                     tcl_composite.setColumnData(resDate, new ColumnPixelData(
                             150, true, true));
                     resDate.setText("Response Date");
