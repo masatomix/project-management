@@ -13,6 +13,7 @@
 package nu.mine.kino.plugin.webrecorder.filters;
 
 import static nu.mine.kino.plugin.webrecorder.ProxyConstant.EXCEPT_EXTs;
+import static nu.mine.kino.plugin.webrecorder.ProxyConstant.LINE_SEPARATOR;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -184,7 +185,7 @@ public class ViewAddFilter implements Filter {
             buf.append(System.getProperty("line.separator"));
         }
         // System.out.println(response.getCharacterEncoding());
-        model.setRawResponseHeader(new String(buf));
+        model.setRawResponse(new String(buf));
 
     }
 
@@ -210,8 +211,9 @@ public class ViewAddFilter implements Filter {
         String reqContentType = request.getHeader("Content-Type");
         String reqContentLength = request.getHeader("Content-Length");
 
+        String body = null;
         try {
-            String body = HttpRequestUtils.getBody(request);
+            body = HttpRequestUtils.getBody(request);
             model.setRequestBody(body);
         } catch (IOException e) {
             // TODO é©ìÆê∂ê¨Ç≥ÇÍÇΩ catch ÉuÉçÉbÉN
@@ -234,9 +236,13 @@ public class ViewAddFilter implements Filter {
             String log = String.format("%1$s: %2$s", headerName,
                     request.getHeader(headerName));
             buf.append(log);
-            buf.append(System.getProperty("line.separator"));
+            buf.append(LINE_SEPARATOR);
         }
-        model.setRawRequestHeader(new String(buf));
+        if (body != null) {
+            buf.append(LINE_SEPARATOR);
+            buf.append(body);
+        }
+        model.setRawRequest(new String(buf));
     }
 
     private boolean checkAsyncExec(Runnable thread) {

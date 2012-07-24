@@ -12,9 +12,11 @@
 
 package nu.mine.kino.plugin.webrecorder.views;
 
+import static nu.mine.kino.plugin.webrecorder.ProxyConstant.LINE_SEPARATOR;
+
 import java.util.Date;
 
-import nu.mine.kino.plugin.webrecorder.models.ModelAdapter;
+import nu.mine.kino.plugin.webrecorder.WebRecorderPlugin;
 import nu.mine.kino.plugin.webrecorder.models.ModelListener;
 import nu.mine.kino.plugin.webrecorder.models.Models;
 import nu.mine.kino.plugin.webrecorder.models.RequestResponseModel;
@@ -28,6 +30,7 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -53,7 +56,27 @@ public class ListView extends ViewPart {
     private ISelectionListener selectionListner = new ISelectionListener() {
         @Override
         public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-            System.out.println(selection);
+            if (selection instanceof IStructuredSelection) {
+                IStructuredSelection ss = (IStructuredSelection) selection;
+                if (ss.getFirstElement() instanceof RequestResponseModel) {
+                    RequestResponseModel model = (RequestResponseModel) ss
+                            .getFirstElement();
+
+                    String rawRequest = model.getRawRequest();
+                    String rawResponse = model.getRawResponse();
+                    StringBuffer buf = new StringBuffer();
+                    buf.append("------ Request start.-------" + LINE_SEPARATOR);
+                    buf.append(rawRequest);
+                    buf.append(LINE_SEPARATOR);
+                    buf.append("------ Request end.-------" + LINE_SEPARATOR);
+                    buf.append("------ Response start.-------" + LINE_SEPARATOR);
+                    buf.append(rawResponse);
+                    buf.append("------ Response end.-------" + LINE_SEPARATOR);
+
+                    WebRecorderPlugin.getDefault()
+                            .printReqResConsole(new String(buf));
+                }
+            }
         }
     };
 
@@ -105,9 +128,14 @@ public class ListView extends ViewPart {
 
     @Override
     public void init(IViewSite site) throws PartInitException {
-        // TODO 自動生成されたメソッド・スタブ
         super.init(site);
         getSite().getPage().addSelectionListener(selectionListner);
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        getSite().getPage().removeSelectionListener(selectionListner);
     }
 
     public void addRequestResponseModel(RequestResponseModel model) {
@@ -343,12 +371,12 @@ public class ListView extends ViewPart {
         selectionListner.selectionChanged(null, getSite().getPage()
                 .getSelection());
 
-        models.addModelListener(new ModelAdapter<RequestResponseModel>() {
-            @Override
-            public void modelAdded(RequestResponseModel model) {
-                System.out.println(model);
-            }
-        });
+        // models.addModelListener(new ModelAdapter<RequestResponseModel>() {
+        // @Override
+        // public void modelAdded(RequestResponseModel model) {
+        // System.out.println(model);
+        // }
+        // });
     }
 
     /**
@@ -393,9 +421,4 @@ public class ListView extends ViewPart {
         // Set the focus
     }
 
-    @Override
-    public void dispose() {
-        super.dispose();
-        getSite().getPage().removeSelectionListener(selectionListner);
-    }
 }

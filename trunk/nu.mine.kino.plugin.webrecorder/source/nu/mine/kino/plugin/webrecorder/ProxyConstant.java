@@ -18,6 +18,9 @@ package nu.mine.kino.plugin.webrecorder;
  */
 public interface ProxyConstant {
 
+    public static final String LINE_SEPARATOR = System
+            .getProperty("line.separator");
+
     public static final String PORT = "port";
 
     public static final String CACHE_BASE_PATH = "cacheBasePath";
@@ -32,10 +35,11 @@ public interface ProxyConstant {
 
     public static final String CONSOLE_ID = "Web Recorder";
 
+    public static final String CONSOLE_REQ_RES_ID = "Web Recorder(req/res)";
+
     public static final String METHOD_GET = "GET";
 
     public static final String METHOD_POST = "POST";
-    
 
     public static final String[] EXCEPT_EXTs = new String[] { ".png", ".jpg",
             ".gif", ".css", ".js", ".svg" }; // 情報の出力は不要なので除外
