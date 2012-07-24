@@ -14,6 +14,7 @@ package nu.mine.kino.plugin.webrecorder.views;
 
 import java.util.Date;
 
+import nu.mine.kino.plugin.webrecorder.models.ModelAdapter;
 import nu.mine.kino.plugin.webrecorder.models.ModelListener;
 import nu.mine.kino.plugin.webrecorder.models.Models;
 import nu.mine.kino.plugin.webrecorder.models.RequestResponseModel;
@@ -26,6 +27,7 @@ import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnPixelData;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -35,6 +37,10 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.wb.swt.ResourceManager;
 
@@ -43,6 +49,13 @@ import org.eclipse.wb.swt.ResourceManager;
  * @version $Revision$
  */
 public class ListView extends ViewPart {
+
+    private ISelectionListener selectionListner = new ISelectionListener() {
+        @Override
+        public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+            System.out.println(selection);
+        }
+    };
 
     // ModelsはRequestResponseModelを管理したり、変更をListenerたちに通知したりする
     private Models<RequestResponseModel> models = new Models<RequestResponseModel>();
@@ -88,6 +101,13 @@ public class ListView extends ViewPart {
     private Action clearAction;
 
     public ListView() {
+    }
+
+    @Override
+    public void init(IViewSite site) throws PartInitException {
+        // TODO 自動生成されたメソッド・スタブ
+        super.init(site);
+        getSite().getPage().addSelectionListener(selectionListner);
     }
 
     public void addRequestResponseModel(RequestResponseModel model) {
@@ -318,6 +338,17 @@ public class ListView extends ViewPart {
         initializeToolBar();
         initializeMenu();
 
+        // このビューのSelection ProviderはtableViewer
+        getSite().setSelectionProvider(tableViewer);
+        selectionListner.selectionChanged(null, getSite().getPage()
+                .getSelection());
+
+        models.addModelListener(new ModelAdapter<RequestResponseModel>() {
+            @Override
+            public void modelAdded(RequestResponseModel model) {
+                System.out.println(model);
+            }
+        });
     }
 
     /**
@@ -362,4 +393,9 @@ public class ListView extends ViewPart {
         // Set the focus
     }
 
+    @Override
+    public void dispose() {
+        super.dispose();
+        getSite().getPage().removeSelectionListener(selectionListner);
+    }
 }
