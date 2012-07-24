@@ -44,6 +44,10 @@ public class RequestResponseModel {
 
     private Date resDate;
 
+    private String rawRequestHeader;
+
+    private String rawResponseHeader;
+
     public String getHost() {
         return host;
     }
@@ -132,6 +136,22 @@ public class RequestResponseModel {
         this.status = status;
     }
 
+    public String getRawRequestHeader() {
+        return rawRequestHeader;
+    }
+
+    public String getRawResponseHeader() {
+        return rawResponseHeader;
+    }
+
+    public void setRawRequestHeader(String rawRequestHeader) {
+        this.rawRequestHeader = rawRequestHeader;
+    }
+
+    public void setRawResponseHeader(String rawResponseHeader) {
+        this.rawResponseHeader = rawResponseHeader;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this).append("status", status)
@@ -143,7 +163,9 @@ public class RequestResponseModel {
                 .append("queryString", queryString)
                 .append("resContentType", resContentType)
                 .append("resContentLength", resContentLength)
-                .append("resDate", resDate).toString();
+                .append("resDate", resDate)
+                .append("rawRequestHeader", rawRequestHeader)
+                .append("rawResponseHeader", rawResponseHeader).toString();
     }
 
 }

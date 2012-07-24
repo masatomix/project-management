@@ -20,6 +20,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Enumeration;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -136,7 +137,8 @@ public class ViewAddFilter implements Filter {
                 try {
                     ListView view = (ListView) workbenchPage
                             .showView(ListView.ID);
-                    WebRecorderPlugin.getDefault().printConsole(model.toString());
+                    WebRecorderPlugin.getDefault().printConsole(
+                            model.toString());
                     view.addRequestResponseModel(model);
                 } catch (PartInitException e) {
                     // TODO é©ìÆê∂ê¨Ç≥ÇÍÇΩ catch ÉuÉçÉbÉN
@@ -161,13 +163,6 @@ public class ViewAddFilter implements Filter {
             // Ç≥Ç¡Ç´éûä‘êÿÇÍÇµÇΩÇ¡ÇƒÇ±Ç∆
             return;
         }
-        Collection<String> headerNames = response.getHeaderNames();
-        for (String headerName : headerNames) {
-            String log = String.format("%1$s: %2$s", headerName,
-                    response.getHeader(headerName));
-            System.out.println(log);
-        }
-        System.out.println(response.getCharacterEncoding());
 
         Date resDate = createResDate(response);
         String resContentType = response.getHeader("Content-Type");
@@ -178,6 +173,19 @@ public class ViewAddFilter implements Filter {
         model.setResContentLength(resContentLength);
         model.setResContentType(resContentType);
         model.setStatus(status);
+
+        // rawdataÇÃê›íË
+        StringBuffer buf = new StringBuffer();
+        Collection<String> headerNames = response.getHeaderNames();
+        for (String headerName : headerNames) {
+            String log = String.format("%1$s: %2$s", headerName,
+                    response.getHeader(headerName));
+            buf.append(log);
+            buf.append(System.getProperty("line.separator"));
+        }
+        // System.out.println(response.getCharacterEncoding());
+        model.setRawResponseHeader(new String(buf));
+
     }
 
     private Date createResDate(HttpServletResponse response) {
@@ -216,6 +224,19 @@ public class ViewAddFilter implements Filter {
         model.setQueryString(queryString);
         model.setReqContentLength(reqContentLength);
         model.setReqContentType(reqContentType);
+
+        // rawdataÇÃê›íË
+        StringBuffer buf = new StringBuffer();
+        Enumeration<String> headerNames = request.getHeaderNames();
+
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            String log = String.format("%1$s: %2$s", headerName,
+                    request.getHeader(headerName));
+            buf.append(log);
+            buf.append(System.getProperty("line.separator"));
+        }
+        model.setRawRequestHeader(new String(buf));
     }
 
     private boolean checkAsyncExec(Runnable thread) {
