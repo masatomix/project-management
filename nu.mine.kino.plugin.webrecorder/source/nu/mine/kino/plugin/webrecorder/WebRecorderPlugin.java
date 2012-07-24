@@ -217,6 +217,12 @@ public class WebRecorderPlugin extends AbstractUIPlugin {
         out.println(message);
     }
 
+    public void printReqResConsole(String message) {
+        MessageConsole myConsole = findConsole(ProxyConstant.CONSOLE_REQ_RES_ID);
+        MessageConsoleStream out = myConsole.newMessageStream();
+        out.println(message);
+    }
+
     public MessageConsole findConsole(String name) {
         ConsolePlugin plugin = ConsolePlugin.getDefault();
         IConsoleManager conMan = plugin.getConsoleManager();
