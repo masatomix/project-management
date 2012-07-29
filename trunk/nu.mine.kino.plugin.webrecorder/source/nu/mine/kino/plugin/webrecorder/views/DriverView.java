@@ -71,7 +71,7 @@ public class DriverView extends ViewPart {
     @Override
     public void createPartControl(Composite parent) {
         Composite container = new Composite(parent, SWT.NONE);
-        container.setLayout(new GridLayout(3, false));
+        container.setLayout(new GridLayout(4, false));
 
         comboMethod = new Combo(container, SWT.READ_ONLY);
         comboMethod.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
@@ -91,14 +91,41 @@ public class DriverView extends ViewPart {
 
         txtURL = new Text(container, SWT.BORDER);
         txtURL.setText("http://www.masatom.in/pukiwiki/?cmd=search");
-        txtURL.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
+        txtURL.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3,
                 1));
+
+        txtURL.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                String text = txtURL.getText();
+                if (!StringUtils.isEmpty(text)
+                        && StringUtils.startsWith(text, "http://", "https://")) {
+                    submitButton.setEnabled(true);
+                } else {
+                    submitButton.setEnabled(false);
+                }
+            }
+        });
+
+        Label lblContentType = new Label(container, SWT.NONE);
+        lblContentType.setText("Content Type:");
+
+        comboContentType = new Combo(container, SWT.NONE);
+        comboContentType.setItems(new String[] { "",
+                "application/json; charset=UTF-8",
+                "text/plain; charset=ISO-8859-1",
+                "application/x-www-form-urlencoded" });
+        comboContentType.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true,
+                false, 1, 1));
+        comboContentType.select(0);
+
+        btnIsWithProxy = new Button(container, SWT.CHECK);
+        btnIsWithProxy.setText("Recoder\u7D4C\u7531");
 
         submitButton = new Button(container, SWT.NONE);
         submitButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                
+
                 textResult.setText("");
                 String method = comboMethod.getText();
                 String url = txtURL.getText();
@@ -117,37 +144,14 @@ public class DriverView extends ViewPart {
         });
         submitButton.setText("\u9001\u4FE1");
 
-        txtURL.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                String text = txtURL.getText();
-                if (!StringUtils.isEmpty(text)
-                        && StringUtils.startsWith(text, "http://", "https://")) {
-                    submitButton.setEnabled(true);
-                } else {
-                    submitButton.setEnabled(false);
-                }
-            }
-        });
-
-        Label lblContentType = new Label(container, SWT.NONE);
-        lblContentType.setText("Content Type:");
-
-        comboContentType = new Combo(container, SWT.NONE);
-        comboContentType.setItems(new String[] {"", "application/json; charset=UTF-8", "text/plain; charset=ISO-8859-1", "application/x-www-form-urlencoded"});
-        comboContentType.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true,
-                false, 1, 1));
-        comboContentType.select(0);
-
-        btnIsWithProxy = new Button(container, SWT.CHECK);
-        btnIsWithProxy.setText("Recoder\u7D4C\u7531");
-
         Label lblNewLabel = new Label(container, SWT.NONE);
         lblNewLabel.setText("Request Body:");
         new Label(container, SWT.NONE);
         new Label(container, SWT.NONE);
+        new Label(container, SWT.NONE);
 
         SashForm sashForm = new SashForm(container, SWT.VERTICAL);
-        sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 3,
+        sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 4,
                 1));
 
         textRequestBody = new Text(sashForm, SWT.BORDER | SWT.READ_ONLY
@@ -232,10 +236,10 @@ public class DriverView extends ViewPart {
         txtURL.setText(url);
         textRequestBody.setText(body);
         btnIsWithProxy.setSelection(isWithProxy);
-        
+
         comboMethod.setText(method);
         comboContentType.setText(contentType);
-        
+
     }
 
 }
