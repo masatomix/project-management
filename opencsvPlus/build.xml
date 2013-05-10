@@ -11,13 +11,39 @@
 			<include name="**/*.jar" />
 		</fileset>
 	</path>
-	<!-- クラスパス名の定義 以上 -->
 
+	<path id="cobertura.classpath">
+	<fileset dir="${jar.dir}">
+		<include name="**/*.jar" />
+	</fileset>
+	<fileset dir="." >
+		<include name="cobertura.jar" />
+	</fileset>
+	</path>
+	<!-- クラスパス名の定義 以上 -->
+	
+	<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
+
+
+	<target name="clean">
+		<delete dir="${javadoc.dir}" />
+		<delete dir="${class.dir}" />
+		<delete dir="${reports.dir}" />
+		<delete dir="${correctreports.dir}" />
+	</target>
+	
 	<target name="javac">
 		<mkdir dir="${class.dir}" />
-		<javac srcdir="${src.dir}" destdir="${class.dir}" encoding="${compile.encoding}" includeantruntime="no" memoryInitialSize="256M" fork="yes" memoryMaximumSize="256M" includes="**">
+		<javac srcdir="${src.dir}" destdir="${class.dir}" encoding="${compile.encoding}" includeantruntime="no" memoryInitialSize="256M" fork="yes" memoryMaximumSize="256M" includes="**" debug="true">
 			<classpath refid="my.class.path" />
 		</javac>
+		
+		<copy todir="${class.dir}" preservelastmodified="yes">
+		<fileset dir="${src.dir}">
+		<include name="**" />
+		<exclude name="**/**.java" />
+		</fileset>
+		</copy>
 	</target>
 	
 	<target name="jar">
@@ -57,7 +83,46 @@
 		<javac srcdir="${test.src.dir}" destdir="${class.dir}" encoding="${compile.encoding}" includeantruntime="no" memoryInitialSize="256M" fork="yes" memoryMaximumSize="256M" includes="**">
 			<classpath refid="my.class.path" />
 		</javac>
+		<copy todir="${class.dir}" preservelastmodified="yes">
+		<fileset dir="${test.src.dir}">
+		<include name="**" />
+		<exclude name="**/**.java" />
+		</fileset>
+		</copy>
 	</target>
+
+
+	<target name="instrument" depends="javac">
+		<!--
+			Remove the coverage data file and any old instrumentation.
+		-->
+		<delete file="cobertura.ser"/>
+		<delete dir="${instrumented.dir}" />
+
+		<!--
+			Instrument the application classes, writing the
+			instrumented classes into ${build.instrumented.dir}.
+		-->
+		<cobertura-instrument todir="${instrumented.dir}">
+			<!--
+				The following line causes instrument to ignore any
+				source line containing a reference to log4j, for the
+				purposes of coverage reporting.
+			-->
+			<ignore regex="org.apache.log4j.*" />
+
+			<fileset dir="${class.dir}">
+				<!--
+					Instrument all the application classes, but
+					don't instrument the test classes.
+				-->
+				<include name="**/*.class" />
+				<exclude name="**/*Test.class" />
+			</fileset>
+		</cobertura-instrument>
+	</target>
+
+
 
 	<!-- 以下、UnitTest用タスク -->
 	<!-- JUnitタスクでは，ユニットテストを自動実行して，その結果をファイルに記録します.
@@ -69,13 +134,15 @@
 	<target name="junit" depends="test.javac" description="JUnitを実行します。">
 		<mkdir dir="${reports.dir}" />
 		<mkdir dir="${correctreports.dir}" />
-		<junit printsummary="yes" haltonfailure="no">
+		<junit printsummary="yes" haltonfailure="no" fork="yes" >
+			<classpath location="${instrumented.dir}" />
 			<classpath>
 				<pathelement location="${class.dir}" />
 				<pathelement path="${java.class.path}" />
 				<pathelement path="${my.class.path}" />
 			</classpath>
 			<classpath refid="my.class.path" />
+			<classpath refid="cobertura.classpath" />
 
 			<!--
 				テスト結果は，XML形式で出力します．
@@ -121,6 +188,12 @@
 			-->
 			<report format="frames" todir="${correctreports.dir}" />
 		</junitreport>
+
+		<!--
+			Generate an XML file containing the coverage data using
+			the "srcdir" attribute.
+		-->
+		<cobertura-report srcdir="${src.dir}" destdir="${coverage.reports.dir}" format="html" />
 	</target>
 	<!-- 以上、UnitTest用タスク -->
 </project>
