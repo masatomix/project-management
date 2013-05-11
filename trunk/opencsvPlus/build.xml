@@ -133,11 +133,11 @@
 		JUnitReportタスクで，レポートの集計を行いたいので，失敗しても，
 		そのままテストを続けるように，指定します．
 	-->
-	<target name="junit" depends="test.javac" description="JUnitを実行します。">
+	<target name="junit" depends="test.javac,instrument" description="JUnitを実行します。">
 		<mkdir dir="${reports.dir}" />
 		<mkdir dir="${correctreports.dir}" />
 		<junit printsummary="yes" haltonfailure="no" fork="yes" >
-			<!-- <classpath location="${instrumented.dir}" /> -->
+			<classpath location="${instrumented.dir}" />
 			<classpath>
 				<pathelement location="${class.dir}" />
 				<pathelement path="${java.class.path}" />
@@ -194,8 +194,8 @@
 		<!--
 			Generate an XML file containing the coverage data using
 			the "srcdir" attribute.
-		<cobertura-report srcdir="${src.dir}" destdir="${coverage.reports.dir}" format="html" />
 		-->
+		<cobertura-report srcdir="${src.dir}" destdir="${coverage.reports.dir}" format="html" />
 	</target>
 	<!-- 以上、UnitTest用タスク -->
 </project>
