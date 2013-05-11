@@ -30,6 +30,7 @@
 		<delete dir="${class.dir}" />
 		<delete dir="${reports.dir}" />
 		<delete dir="${correctreports.dir}" />
+		<delete file="${jar.dir}/${jar.name}" />
 	</target>
 	
 	<target name="javac">
@@ -46,7 +47,7 @@
 		</copy>
 	</target>
 	
-	<target name="jar">
+	<target name="jar" depends="javac">
 		<jar destfile="${jar.dir}/${jar.name}" basedir="${class.dir}"  includes="au/com/bytecode/**/**.class" />
 	</target>
 	
