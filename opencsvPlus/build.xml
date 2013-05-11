@@ -42,7 +42,7 @@
 		
 		<copy todir="${class.dir}" preservelastmodified="yes">
 		<fileset dir="${src.dir}">
-		<include name="**/**" />
+		<include name="**" />
 		<exclude name="**/**.java" />
 		</fileset>
 		</copy>
@@ -87,7 +87,7 @@
 		</javac>
 		<copy todir="${class.dir}" preservelastmodified="yes">
 		<fileset dir="${test.src.dir}">
-		<include name="**/**" />
+		<include name="**" />
 		<exclude name="**/**.java" />
 		</fileset>
 		</copy>
@@ -137,7 +137,7 @@
 		<mkdir dir="${reports.dir}" />
 		<mkdir dir="${correctreports.dir}" />
 		<junit printsummary="yes" haltonfailure="no" fork="yes" >
-			<classpath location="${instrumented.dir}" />
+			<!-- <classpath location="${instrumented.dir}" /> -->
 			<classpath>
 				<pathelement location="${class.dir}" />
 				<pathelement path="${java.class.path}" />
