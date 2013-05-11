@@ -42,7 +42,7 @@
 		
 		<copy todir="${class.dir}" preservelastmodified="yes">
 		<fileset dir="${src.dir}">
-		<include name="**" />
+		<include name="**/**" />
 		<exclude name="**/**.java" />
 		</fileset>
 		</copy>
@@ -87,7 +87,7 @@
 		</javac>
 		<copy todir="${class.dir}" preservelastmodified="yes">
 		<fileset dir="${test.src.dir}">
-		<include name="**" />
+		<include name="**/**" />
 		<exclude name="**/**.java" />
 		</fileset>
 		</copy>
