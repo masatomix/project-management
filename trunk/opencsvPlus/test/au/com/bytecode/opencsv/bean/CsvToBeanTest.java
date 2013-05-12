@@ -86,6 +86,7 @@ public class CsvToBeanTest extends TestCase {
         CsvToBean csv = new CsvToBean();
         List<CSVSampleBean> list = csv.parse(strat, new FileReader(CSV_FILE));
         for (CSVSampleBean bean : list) {
+            System.out.println(bean);
             assertNotNull(bean);
         }
     }
@@ -115,6 +116,9 @@ public class CsvToBeanTest extends TestCase {
         HeaderColumnNameMappingStrategy strat = new HeaderColumnNameAutoTranslateMappingStrategy();
         strat.setType(CSVSampleBean.class);
         CsvToBean csv = new CsvToBean();
+        File file = new File(CSV_FILE);
+        System.out.println(file.exists());
+        assertTrue(file.exists());
         List<CSVSampleBean> list = csv.parse(strat, new FileReader(CSV_FILE));
         for (CSVSampleBean bean : list) {
             assertNotNull(bean);
