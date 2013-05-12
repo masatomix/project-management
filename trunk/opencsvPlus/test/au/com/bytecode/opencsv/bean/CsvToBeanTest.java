@@ -86,7 +86,9 @@ public class CsvToBeanTest extends TestCase {
         strat.setColumnMapping(map);
 
         CsvToBean csv = new CsvToBean();
-        List<CSVSampleBean> list = csv.parse(strat, new FileReader(CSV_FILE));
+        //        List<CSVSampleBean> list = csv.parse(strat, new FileReader(CSV_FILE));
+        List<CSVSampleBean> list = csv.parse(strat, new InputStreamReader(
+                new FileInputStream(CSV_FILE), "SHIFT_JIS"));
         for (CSVSampleBean bean : list) {
             System.out.println(bean);
             assertNotNull(bean);
