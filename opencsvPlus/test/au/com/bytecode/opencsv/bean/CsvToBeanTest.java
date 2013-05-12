@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +76,7 @@ public class CsvToBeanTest extends TestCase {
      * @throws Exception
      */
     public void testParseMappingStrategy02() throws Exception {
+        System.out.println("parseMappingStrategy02: start.");
         HeaderColumnNameTranslateMappingStrategy strat = new HeaderColumnNameTranslateMappingStrategy();
         strat.setType(CSVSampleBean.class);
         // CSVのヘッダ名が、どのフィールドにマッピングすればいいかを指定する。
@@ -89,6 +91,7 @@ public class CsvToBeanTest extends TestCase {
             System.out.println(bean);
             assertNotNull(bean);
         }
+        System.out.println("parseMappingStrategy02: end.");
     }
 
     private Map<String, String> createMapping() {
@@ -116,14 +119,14 @@ public class CsvToBeanTest extends TestCase {
         HeaderColumnNameMappingStrategy strat = new HeaderColumnNameAutoTranslateMappingStrategy();
         strat.setType(CSVSampleBean.class);
         CsvToBean csv = new CsvToBean();
-        File file = new File(CSV_FILE);
-        System.out.println(file.exists());
-        assertTrue(file.exists());
-        List<CSVSampleBean> list = csv.parse(strat, new FileReader(CSV_FILE));
+        // List<CSVSampleBean> list = csv.parse(strat, new
+        // FileReader(CSV_FILE));
+        List<CSVSampleBean> list = csv.parse(strat, new InputStreamReader(
+                new FileInputStream(CSV_FILE), "SHIFT_JIS"));
         for (CSVSampleBean bean : list) {
+            System.out.println(bean);
             assertNotNull(bean);
         }
         System.out.println("parseMappingStrategy03: end.");
     }
-
 }
