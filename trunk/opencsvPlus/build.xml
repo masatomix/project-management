@@ -195,7 +195,8 @@
 			Generate an XML file containing the coverage data using
 			the "srcdir" attribute.
 		-->
-		<cobertura-report srcdir="${src.dir}" destdir="${coverage.reports.dir}" format="html" />
+<!--		<cobertura-report srcdir="${src.dir}" destdir="${coverage.reports.dir}" format="html" /> -->
+		<cobertura-report srcdir="${src.dir}" destdir="${coverage.reports.dir}" format="xml" />
 	</target>
 	<!-- 以上、UnitTest用タスク -->
 </project>
