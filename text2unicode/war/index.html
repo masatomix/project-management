@@ -1,0 +1,41 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Text2unicode</title>
+<script type="text/javascript" src="/scripts/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready( function() {
+        $("#text2unicode").click(function(){
+        	var url="text2unicode/t/"+$("#text").val()+".json";
+            $.getJSON(url, function(json){
+                $("#unicode").val(json.unicode);
+                $("#text1").text(json.text);
+                $("#unicode1").text(json.unicode);
+            });
+        });
+    });
+    </script> 
+    <script type="text/javascript">
+    $(document).ready( function() {
+        $("#unicode2text").click(function(){
+        	var url="text2unicode/u/"+$("#unicode").val()+".json";
+            $.getJSON(url, function(json){
+                $("#text").val(json.text);
+                $("#text1").text(json.text);
+                $("#unicode1").text(json.unicode);
+            });
+        });
+    });
+    </script>
+ </head>
+<body>
+text: <input id="text" type='text' name="text"   />
+<input id="text2unicode" type="button" value="text->unicode" /><br />
+unicode: <input id="unicode" type='text' name="unicode"   />
+<input id="unicode2text" type="button" value="unicode->text" /><br />
+
+<div id="text1" ></div>
+<div id="unicode1" ></div>
+
+</body>
+</html>

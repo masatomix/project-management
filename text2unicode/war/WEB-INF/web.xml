@@ -65,6 +65,27 @@
         <servlet-class>bufferings.ktr.wjr.server.service.KtrWjrServiceServlet</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>restServlet</servlet-name>
+        <servlet-class>net.arnx.jsonic.web.RESTServlet</servlet-class>
+        <init-param>
+            <param-name>config</param-name>
+            <param-value>
+                {
+                    "debug": true,
+                    "mappings": {
+                      "/{class}/{uort}/{source}.json":"nu.mine.kino.gae.rest.Ajax${class}Controller"
+                    }
+                }
+            </param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>restServlet</servlet-name>
+        <url-pattern>*.json</url-pattern>
+    </servlet-mapping>
+
+
     <servlet-mapping>
         <servlet-name>GlobalTransactionServlet</servlet-name>
         <url-pattern>/slim3/gtx</url-pattern>
