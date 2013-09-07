@@ -19,6 +19,7 @@ package nu.mine.kino.gae;
  */
 public class UnicodeTextObject {
 
+    //
     private String text;
     private String unicode;
 
