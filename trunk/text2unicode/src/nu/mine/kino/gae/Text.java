@@ -17,6 +17,7 @@ import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
@@ -51,15 +52,14 @@ public class Text {
     }
 
     public String getBase64Encode() {
-        
-        return source;
+        byte[] encodeBase64 = Base64.encodeBase64(source.getBytes(), false);
+        return new String(encodeBase64);
     }
-    
-    
 
     public String getSHA1() {
         return getHash("SHA1");
     }
+
     public String getMD5() {
         return getHash("MD5");
     }
