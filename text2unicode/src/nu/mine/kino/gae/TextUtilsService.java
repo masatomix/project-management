@@ -11,25 +11,31 @@ public class TextUtilsService {
     public String text2Unicode(String text) {
         return StringEscapeUtils.escapeJava(text);
     }
-    
 
+    public String text2URLEncode(String text, String encoding) {
+        return StringEscapeUtils.escapeJava(text);
+    }
 
-    public UnicodeTextObject create(String sourece, char c) {
+    // public String text2(String text, String encoding) {
+    // return StringEscapeUtils.escapeJava(text);
+    // }
+
+    public UnicodeTextObject create(String source, char c) {
         UnicodeTextObject ret = new UnicodeTextObject();
         switch (c) {
         case 'u':
-            String unicode2Text = unicode2Text(sourece);
+            String unicode2Text = unicode2Text(source);
             ret.setText(unicode2Text);
-            ret.setUnicode(sourece);
+            ret.setUnicode(source);
             break;
         case 't':
-            String text2Unicode = text2Unicode(sourece);
+            String text2Unicode = text2Unicode(source);
             ret.setUnicode(text2Unicode);
-            ret.setText(sourece);
+            ret.setText(source);
             break;
         default:
-            ret.setText(sourece);
-            ret.setUnicode(sourece);
+            ret.setText(source);
+            ret.setUnicode(source);
             break;
         }
         return ret;

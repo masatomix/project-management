@@ -74,7 +74,8 @@
                 {
                     "debug": true,
                     "mappings": {
-                      "/{class}/{uort}/{source}.json":"nu.mine.kino.gae.rest.Ajax${class}Controller"
+                      "/{class}/{uort}/{source}.json":"nu.mine.kino.gae.rest.Ajax${class}Controller",
+                      "/{type}/{source}.json":"nu.mine.kino.gae.rest.AjaxTextController"
                     }
                 }
             </param-value>
