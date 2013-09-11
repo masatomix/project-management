@@ -6,20 +6,15 @@
     <script type="text/javascript">
     $(document).ready( function() {
         $("#text2unicode").click(function(){
- 		    var parameter = $("#text").val();
-        	var url="source/"+encodeURIComponent(parameter)+".json";
+        	var url="text2unicode/t/"+$("#text").val()+".json";
             $.getJSON(url, function(json){
-                $("#text").val(json.source);
                 $("#unicode").val(json.unicode);
-                $("#urlEncodeUTF8").val(json.URLEncodeUTF8);
-                $("#SHA1").val(json.SHA1);
-                $("#MD5").val(json.MD5);
-                $("#base64Encode").val(json.base64Encode);
+                $("#text1").text(json.text);
+                $("#unicode1").text(json.unicode);
             });
         });
     });
-    </script>	
-	<!--
+    </script> 
     <script type="text/javascript">
     $(document).ready( function() {
         $("#unicode2text").click(function(){
@@ -32,18 +27,15 @@
         });
     });
     </script>
-	-->
  </head>
 <body>
-text: <input id="text" type='text' name="text"  />
-	  <input id="text2unicode" type="button" value="text->unicode" /> <br />
+text: <input id="text" type='text' name="text"   />
+<input id="text2unicode" type="button" value="text->unicode" /><br />
 unicode: <input id="unicode" type='text' name="unicode"   />
-	  <input id="unicode2text" type="button" value="unicode->text" /> <br />
-urlEncodeUTF8: <input id="urlEncodeUTF8" type='text' name="urlEncodeUTF8"  /> <br />
-SHA-1: <input id="SHA1" type='text' name="SHA1"  /><br />
-MD5: <input id="MD5" type='text' name="MD5"  /><br />
-Base64Encode: <input id="base64Encode" type='text' name="base64Encode"  /><br />
+<input id="unicode2text" type="button" value="unicode->text" /><br />
 
+<div id="text1" ></div>
+<div id="unicode1" ></div>
 
 </body>
 </html>

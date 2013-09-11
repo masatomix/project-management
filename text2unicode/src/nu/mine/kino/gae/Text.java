@@ -52,8 +52,17 @@ public class Text {
     }
 
     public String getBase64Encode() {
-        byte[] encodeBase64 = Base64.encodeBase64(source.getBytes(), false);
-        return new String(encodeBase64);
+        try {
+            System.out.println(source);
+            byte[] encodeBase64 =
+                Base64.encodeBase64(source.getBytes("UTF-8"), false);
+
+            return new String(encodeBase64);
+        } catch (UnsupportedEncodingException e) {
+            // TODO é©ìÆê∂ê¨Ç≥ÇÍÇΩ catch ÉuÉçÉbÉN
+            e.printStackTrace();
+        }
+        return source;
     }
 
     public String getSHA1() {
@@ -77,7 +86,7 @@ public class Text {
         return source;
     }
 
-    private static String toHexString(byte[] b) {
+    private String toHexString(byte[] b) {
         StringBuffer hexString = new StringBuffer();
         String plainText = null;
         for (int i = 0; i < b.length; i++) {

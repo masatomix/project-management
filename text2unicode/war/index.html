@@ -2,19 +2,53 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Text2unicode</title>
+	<style type="text/css">
+	<!--
+	h1 {	background-color: #CCCCCC;	width: 100%;}
+	p {	background-color: #CCCCCC;	width: 50%;}
+	.test {	background-color: #CCCC99;	width: 300px;}
+	#main {	background-color: #CCCC99;	width: 150px;}
+	-->
+	</style>
 <script type="text/javascript" src="/scripts/jquery-1.7.2.min.js"></script>
     <script type="text/javascript">
     $(document).ready( function() {
         $("#text2unicode").click(function(){
-        	var url="text2unicode/t/"+$("#text").val()+".json";
+ 		    var parameter = $("#text").val();
+        	var url="source/"+encodeURIComponent(parameter)+".json";
             $.getJSON(url, function(json){
+                $("#text").val(json.source);
                 $("#unicode").val(json.unicode);
-                $("#text1").text(json.text);
-                $("#unicode1").text(json.unicode);
+                $("#urlEncodeUTF8").val(json.URLEncodeUTF8);
+                $("#URLEncodeEUCJP").val(json.URLEncodeEUCJP);
+                $("#URLEncodeMS932").val(json.URLEncodeMS932);
+                $("#SHA1").val(json.SHA1);
+                $("#MD5").val(json.MD5);
+                $("#base64Encode").val(json.base64Encode);
             });
-        });
+        }); 
     });
-    </script> 
+
+
+    $(document).ready( function() {
+        $("#unicode2text").click(function(){
+ 		    var parameter = $("#unicode").val();
+        	var url="unicode/"+encodeURIComponent(parameter)+".json";
+            $.getJSON(url, function(json){
+                $("#text").val(json.source);
+                $("#unicode").val(json.unicode);
+                $("#urlEncodeUTF8").val(json.URLEncodeUTF8);
+                $("#URLEncodeEUCJP").val(json.URLEncodeEUCJP);
+                $("#URLEncodeMS932").val(json.URLEncodeMS932);
+                $("#SHA1").val(json.SHA1);
+                $("#MD5").val(json.MD5);
+                $("#base64Encode").val(json.base64Encode);
+            });
+        }); 
+    });
+
+    </script>	
+	<!--
     <script type="text/javascript">
     $(document).ready( function() {
         $("#unicode2text").click(function(){
@@ -27,15 +61,75 @@
         });
     });
     </script>
+	-->
  </head>
 <body>
-text: <input id="text" type='text' name="text"   />
-<input id="text2unicode" type="button" value="text->unicode" /><br />
-unicode: <input id="unicode" type='text' name="unicode"   />
-<input id="unicode2text" type="button" value="unicode->text" /><br />
-
-<div id="text1" ></div>
-<div id="unicode1" ></div>
-
+	<table>
+		<tr>
+			<th>text:</th>
+			<td>
+				<input id="text" type='text' name="text" style="width:300px;" />
+			</td>
+			<td>
+				<input id="text2unicode" type="button" value="text->unicode" />
+			</td>
+		</tr>
+		<tr>
+			<th>unicode:</th>
+			<td>
+				<input id="unicode" type='text' name="unicode" 
+					style="width:300px;" />
+			</td>
+			<td>
+				<input id="unicode2text" type="button" value="unicode->text" />
+			</td>
+		</tr>
+		<tr>
+			<th>URLEncode(UTF8):</th>
+			<td>
+				<input id="urlEncodeUTF8" type='text' name="urlEncodeUTF8" 
+					style="width:300px;"/>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<th>URLEncode(EUC-JP):</th>
+			<td>
+				<input id="URLEncodeEUCJP" type='text' name="URLEncodeEUCJP" 
+					style="width:300px;"/>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<th>URLEncode(MS932):</th>
+			<td>
+				<input id="URLEncodeMS932" type='text' name="URLEncodeMS932" 
+					style="width:300px;"/>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<th>SHA-1:</th>
+			<td>
+				<input id="SHA1" type='text' name="SHA1" style="width:300px;" />
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<th>MD5:</th>
+			<td>
+				<input id="MD5" type='text' name="MD5" style="width:300px;" />
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<th>Base64 Encode:</th>
+			<td>
+				<input id="base64Encode" type='text' name="base64Encode" 
+					style="width:300px;" />
+			</td>
+			<td></td>
+		</tr>
+	</table>
 </body>
 </html>
