@@ -13,27 +13,38 @@
 <script type="text/javascript" src="/scripts/jquery-1.7.2.min.js"></script>
     <script type="text/javascript">
     $(document).ready( function() {
-        $("#text2unicode").click(function(){
+        $("#textButton").click(function(){
  		    var parameter = $("#text").val();
         	var url="source/"+encodeURIComponent(parameter)+".json";
-            $.getJSON(url, function(json){
-                $("#text").val(json.source);
-                $("#unicode").val(json.unicode);
-                $("#urlEncodeUTF8").val(json.URLEncodeUTF8);
-                $("#URLEncodeEUCJP").val(json.URLEncodeEUCJP);
-                $("#URLEncodeMS932").val(json.URLEncodeMS932);
-                $("#SHA1").val(json.SHA1);
-                $("#MD5").val(json.MD5);
-                $("#base64Encode").val(json.base64Encode);
-            });
+			doJSON(url);
         }); 
     });
 
-
     $(document).ready( function() {
-        $("#unicode2text").click(function(){
+        $("#unicodeButton").click(function(){
  		    var parameter = $("#unicode").val();
         	var url="unicode/"+encodeURIComponent(parameter)+".json";
+			doJSON(url);
+        }); 
+    });
+
+    $(document).ready( function() {
+        $("#urlEncodeUTF8Button").click(function(){
+ 		    var parameter = $("#urlEncodeUTF8").val();
+        	var url="urlEncodeUTF8/"+encodeURIComponent(parameter)+".json";
+			doJSON(url);
+        }); 
+    });
+    $(document).ready( function() {
+        $("#URLEncodeEUCJPButton").click(function(){
+ 		    var parameter = $("#URLEncodeEUCJP").val();
+        	var url="URLEncodeEUCJP/"+encodeURIComponent(parameter)+".json";
+			doJSON(url);
+        }); 
+    });
+
+
+function doJSON(url){
             $.getJSON(url, function(json){
                 $("#text").val(json.source);
                 $("#unicode").val(json.unicode);
@@ -44,24 +55,9 @@
                 $("#MD5").val(json.MD5);
                 $("#base64Encode").val(json.base64Encode);
             });
-        }); 
-    });
+}
 
     </script>	
-	<!--
-    <script type="text/javascript">
-    $(document).ready( function() {
-        $("#unicode2text").click(function(){
-        	var url="text2unicode/u/"+$("#unicode").val()+".json";
-            $.getJSON(url, function(json){
-                $("#text").val(json.text);
-                $("#text1").text(json.text);
-                $("#unicode1").text(json.unicode);
-            });
-        });
-    });
-    </script>
-	-->
  </head>
 <body>
 	<table>
@@ -71,7 +67,7 @@
 				<input id="text" type='text' name="text" style="width:300px;" />
 			</td>
 			<td>
-				<input id="text2unicode" type="button" value="text->unicode" />
+				<input id="textButton" type="button" value="実行" />
 			</td>
 		</tr>
 		<tr>
@@ -81,7 +77,7 @@
 					style="width:300px;" />
 			</td>
 			<td>
-				<input id="unicode2text" type="button" value="unicode->text" />
+				<input id="unicodeButton" type="button" value="実行" />
 			</td>
 		</tr>
 		<tr>
@@ -90,7 +86,9 @@
 				<input id="urlEncodeUTF8" type='text' name="urlEncodeUTF8" 
 					style="width:300px;"/>
 			</td>
-			<td></td>
+			<td>
+				<input id="urlEncodeUTF8Button" type="button" value="実行" />
+			</td>
 		</tr>
 		<tr>
 			<th>URLEncode(EUC-JP):</th>
@@ -98,7 +96,9 @@
 				<input id="URLEncodeEUCJP" type='text' name="URLEncodeEUCJP" 
 					style="width:300px;"/>
 			</td>
-			<td></td>
+			<td>
+				<input id="URLEncodeEUCJPButton" type="button" value="実行" />
+			</td>
 		</tr>
 		<tr>
 			<th>URLEncode(MS932):</th>
@@ -106,7 +106,9 @@
 				<input id="URLEncodeMS932" type='text' name="URLEncodeMS932" 
 					style="width:300px;"/>
 			</td>
-			<td></td>
+			<td>
+				<input id="URLEncodeMS932Button" type="button" value="実行" />
+			</td>
 		</tr>
 		<tr>
 			<th>SHA-1:</th>
@@ -128,7 +130,9 @@
 				<input id="base64Encode" type='text' name="base64Encode" 
 					style="width:300px;" />
 			</td>
-			<td></td>
+			<td>
+				<input id="base64EncodeButton" type="button" value="実行" />
+			</td>
 		</tr>
 	</table>
 </body>
