@@ -25,10 +25,20 @@ import nu.mine.kino.gae.Text;
 public class AjaxTextController {
     public Text find(Map<String, String> params)
             throws UnsupportedEncodingException {
-        String source = URLDecoder.decode(params.get("source"), "UTF-8");
+        String input = URLDecoder.decode(params.get("source"), "UTF-8");
         System.out.println(params);
         Text result = new Text();
-        result.setSource(source);
+
+        String type = params.get("type");
+        if (type.equals("unicode")) {
+            result.setUnicode(input);
+        } else if (type.equals("urlEncodeUTF8")) {
+            result.setURLEncodeUTF8(input);
+        } else if (type.equals("URLEncodeEUCJP")) {
+            result.setURLEncodeEUCJP(input);
+        } else {
+            result.setSource(input);
+        }
         return result;
     }
 }

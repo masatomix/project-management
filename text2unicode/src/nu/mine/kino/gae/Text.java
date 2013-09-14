@@ -13,6 +13,7 @@
 package nu.mine.kino.gae;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -33,6 +34,11 @@ public class Text {
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public void setUnicode(String unicode) {
+        String source = unicode2Text(unicode);
+        setSource(source);
     }
 
     public String getUnicode() {
@@ -99,9 +105,9 @@ public class Text {
         return new String(hexString);
     }
 
-    // private String unicode2Text(String unicode) {
-    // return StringEscapeUtils.unescapeJava(unicode);
-    // }
+    private String unicode2Text(String unicode) {
+        return StringEscapeUtils.unescapeJava(unicode);
+    }
 
     private String text2Unicode(String text) {
         return StringEscapeUtils.escapeJava(text);
@@ -114,6 +120,23 @@ public class Text {
             e.printStackTrace();
         }
         return source;
+    }
+
+    private void setURLEncode(String input, String encoding) {
+        try {
+            source = URLDecoder.decode(input, encoding);
+        } catch (UnsupportedEncodingException e) {
+            // TODO é©ìÆê∂ê¨Ç≥ÇÍÇΩ catch ÉuÉçÉbÉN
+            e.printStackTrace();
+        }
+    }
+
+    public void setURLEncodeUTF8(String input) {
+        this.setURLEncode(input, "UTF-8");
+    }
+
+    public void setURLEncodeEUCJP(String input) {
+        this.setURLEncode(input, "EUC-JP");
     }
 
 }
