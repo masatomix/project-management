@@ -32,12 +32,22 @@ public class AjaxTextController {
         String type = params.get("type");
         if (type.equals("unicode")) {
             result.setUnicode(input);
+
         } else if (type.equals("urlEncodeUTF8")) {
             result.setURLEncodeUTF8(input);
+
         } else if (type.equals("URLEncodeEUCJP")) {
             result.setURLEncodeEUCJP(input);
+
+        } else if (type.equals("URLEncodeMS932")) {
+            result.setURLEncodeMS932(input);
+
+        } else if (type.equals("base64Encode")) {
+            result.setBase64Encode(input);
+
         } else {
             result.setSource(input);
+
         }
         return result;
     }

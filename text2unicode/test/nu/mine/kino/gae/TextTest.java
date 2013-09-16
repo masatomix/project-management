@@ -13,6 +13,7 @@
 package nu.mine.kino.gae;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
 
 import org.junit.Test;
 
@@ -24,10 +25,15 @@ public class TextTest {
     private Text text = new Text();
 
     @Test
-    public void test() {
-        text.setSource("‚ ");
+    public void testBase64Encode() {
+        String input = "‚ ";
+        String expected = input;
+        text.setSource(input);
         String base64Encode = text.getBase64Encode();
         System.out.println(base64Encode);
+        text.setBase64Encode(base64Encode);
+        String actual = text.getSource();
+        assertThat(actual, is(expected));
 
     }
 
