@@ -4,10 +4,11 @@
 <title>Text2unicode</title>
 	<style type="text/css">
 	<!--
-	h1 {	background-color: #CCCCCC;	width: 100%;}
-	p {	background-color: #CCCCCC;	width: 50%;}
-	.test {	background-color: #CCCC99;	width: 300px;}
-	#main {	background-color: #CCCC99;	width: 150px;}
+textarea {
+width: 300px;
+height: 3em;
+line-height: 1.5em;
+}
 	-->
 	</style>
 <script type="text/javascript" src="/scripts/jquery-1.7.2.min.js"></script>
@@ -43,6 +44,21 @@
         }); 
     });
 
+    $(document).ready( function() {
+        $("#URLEncodeMS932Button").click(function(){
+ 		    var parameter = $("#URLEncodeMS932").val();
+        	var url="URLEncodeMS932/"+encodeURIComponent(parameter)+".json";
+			doJSON(url);
+        }); 
+    });	
+    $(document).ready( function() {
+        $("#base64EncodeButton").click(function(){
+ 		    var parameter = $("#base64Encode").val();
+        	var url="base64Encode/"+encodeURIComponent(parameter)+".json";
+			doJSON(url);
+        }); 
+    });
+
 
 function doJSON(url){
             $.getJSON(url, function(json){
@@ -64,7 +80,7 @@ function doJSON(url){
 		<tr>
 			<th>text:</th>
 			<td>
-				<input id="text" type='text' name="text" style="width:300px;" />
+				<textarea id="text" type='text' name="text" ></textarea>
 			</td>
 			<td>
 				<input id="textButton" type="button" value="実行" />
@@ -73,8 +89,7 @@ function doJSON(url){
 		<tr>
 			<th>unicode:</th>
 			<td>
-				<input id="unicode" type='text' name="unicode" 
-					style="width:300px;" />
+				<textarea id="unicode" type='text' name="unicode" ></textarea>
 			</td>
 			<td>
 				<input id="unicodeButton" type="button" value="実行" />
@@ -83,8 +98,7 @@ function doJSON(url){
 		<tr>
 			<th>URLEncode(UTF8):</th>
 			<td>
-				<input id="urlEncodeUTF8" type='text' name="urlEncodeUTF8" 
-					style="width:300px;"/>
+				<textarea id="urlEncodeUTF8" type='text' name="urlEncodeUTF8" ></textarea>
 			</td>
 			<td>
 				<input id="urlEncodeUTF8Button" type="button" value="実行" />
@@ -93,8 +107,7 @@ function doJSON(url){
 		<tr>
 			<th>URLEncode(EUC-JP):</th>
 			<td>
-				<input id="URLEncodeEUCJP" type='text' name="URLEncodeEUCJP" 
-					style="width:300px;"/>
+				<textarea id="URLEncodeEUCJP" type='text' name="URLEncodeEUCJP" ></textarea>
 			</td>
 			<td>
 				<input id="URLEncodeEUCJPButton" type="button" value="実行" />
@@ -103,8 +116,7 @@ function doJSON(url){
 		<tr>
 			<th>URLEncode(MS932):</th>
 			<td>
-				<input id="URLEncodeMS932" type='text' name="URLEncodeMS932" 
-					style="width:300px;"/>
+				<textarea id="URLEncodeMS932" type='text' name="URLEncodeMS932" ></textarea>
 			</td>
 			<td>
 				<input id="URLEncodeMS932Button" type="button" value="実行" />
@@ -113,7 +125,7 @@ function doJSON(url){
 		<tr>
 			<th>SHA-1:</th>
 			<td>
-				<input id="SHA1" type='text' name="SHA1" style="width:300px;" />
+				<input id="SHA1" type='text' name="SHA1" style="width:300px;height: 3em;" />
 			</td>
 			<td></td>
 		</tr>
@@ -127,8 +139,7 @@ function doJSON(url){
 		<tr>
 			<th>Base64 Encode:</th>
 			<td>
-				<input id="base64Encode" type='text' name="base64Encode" 
-					style="width:300px;" />
+				<textarea id="base64Encode" type='text' name="base64Encode" ></textarea>
 			</td>
 			<td>
 				<input id="base64EncodeButton" type="button" value="実行" />

@@ -62,7 +62,6 @@ public class Text {
             System.out.println(source);
             byte[] encodeBase64 =
                 Base64.encodeBase64(source.getBytes("UTF-8"), false);
-
             return new String(encodeBase64);
         } catch (UnsupportedEncodingException e) {
             // TODO 自動生成された catch ブロック
@@ -138,5 +137,20 @@ public class Text {
     public void setURLEncodeEUCJP(String input) {
         this.setURLEncode(input, "EUC-JP");
     }
+    public void setURLEncodeMS932(String input) {
+        this.setURLEncode(input, "MS932");        
+    }
+
+    public void setBase64Encode(String input) {
+        try {
+            byte[] bytes = input.getBytes("UTF-8");
+            byte[] decodeBase64 = Base64.decodeBase64(bytes);
+            source = new String(decodeBase64,"UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            // TODO 自動生成された catch ブロック
+            e.printStackTrace();
+        }
+    }
+
 
 }
