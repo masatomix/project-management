@@ -37,4 +37,12 @@ public class TextTest {
 
     }
 
+    @Test
+    public void getAscii() {
+        text.setSource("ûü");
+        System.out.println(text.getUTF8Code());
+        System.out.println(text.getMS932Code());
+        System.out.println(text.getEUCJPCode());
+    }
+
 }

@@ -70,6 +70,11 @@ function doJSON(url){
                 $("#SHA1").val(json.SHA1);
                 $("#MD5").val(json.MD5);
                 $("#base64Encode").val(json.base64Encode);
+				//
+                $("#UTF8Code").val(json.UTF8Code);
+                $("#EUCJPCode").val(json.EUCJPCode);
+                $("#MS932Code").val(json.MS932Code);
+				
             });
 }
 
@@ -145,6 +150,31 @@ function doJSON(url){
 				<input id="base64EncodeButton" type="button" value="実行" />
 			</td>
 		</tr>
+		<tr>
+			<th>文字コード(UTF8):</th>
+			<td>
+				<textarea id="UTF8Code" type='text' name="UTF8Code" ></textarea>
+			</td>
+			<td>
+			</td>
+		</tr>
+		<tr>
+			<th>文字コード(EUC-JP):</th>
+			<td>
+				<textarea id="EUCJPCode" type='text' name="EUCJPCode" ></textarea>
+			</td>
+			<td>
+			</td>
+		</tr>
+		<tr>
+			<th>文字コード(MS932):</th>
+			<td>
+				<textarea id="MS932Code" type='text' name="MS932Code" ></textarea>
+			</td>
+			<td>
+			</td>
+		</tr>
+
 	</table>
 </body>
 </html>

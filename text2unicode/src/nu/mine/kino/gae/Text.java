@@ -26,6 +26,9 @@ import org.apache.commons.lang3.StringEscapeUtils;
  * @version $Revision$
  */
 public class Text {
+    private static final String MS932 = "MS932";
+    private static final String EUCJP = "EUC-JP";
+    private static final String UTF8 = "UTF-8";
     private String source;
 
     public String getSource() {
@@ -46,22 +49,23 @@ public class Text {
     }
 
     public String getURLEncodeUTF8() {
-        return this.getURLEncode("UTF-8");
+        return this.getURLEncode(UTF8);
     }
 
     public String getURLEncodeEUCJP() {
-        return this.getURLEncode("EUC-JP");
+        return this.getURLEncode(EUCJP);
     }
 
     public String getURLEncodeMS932() {
-        return this.getURLEncode("MS932");
+        return this.getURLEncode(MS932);
     }
 
     public String getBase64Encode() {
         try {
             System.out.println(source);
             byte[] encodeBase64 =
-                Base64.encodeBase64(source.getBytes("UTF-8"), false);
+                Base64.encodeBase64(source.getBytes(UTF8), false);
+
             return new String(encodeBase64);
         } catch (UnsupportedEncodingException e) {
             // TODO 自動生成された catch ブロック
@@ -81,7 +85,7 @@ public class Text {
     private String getHash(String method) {
         try {
             MessageDigest md = MessageDigest.getInstance(method);
-            md.update(source.getBytes("UTF-8"));
+            md.update(source.getBytes(UTF8));
             return toHexString(md.digest());
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -131,26 +135,48 @@ public class Text {
     }
 
     public void setURLEncodeUTF8(String input) {
-        this.setURLEncode(input, "UTF-8");
+        this.setURLEncode(input, UTF8);
     }
 
     public void setURLEncodeEUCJP(String input) {
-        this.setURLEncode(input, "EUC-JP");
+        this.setURLEncode(input, EUCJP);
     }
+
     public void setURLEncodeMS932(String input) {
-        this.setURLEncode(input, "MS932");        
+        this.setURLEncode(input, MS932);
     }
 
     public void setBase64Encode(String input) {
         try {
-            byte[] bytes = input.getBytes("UTF-8");
+            byte[] bytes = input.getBytes(UTF8);
             byte[] decodeBase64 = Base64.decodeBase64(bytes);
-            source = new String(decodeBase64,"UTF-8");
+            source = new String(decodeBase64, UTF8);
         } catch (UnsupportedEncodingException e) {
             // TODO 自動生成された catch ブロック
             e.printStackTrace();
         }
     }
 
+    private String getCode(String encoding) {
+        try {
+            return toHexString(source.getBytes(encoding));
+        } catch (UnsupportedEncodingException e) {
+            // TODO 自動生成された catch ブロック
+            e.printStackTrace();
+        }
+        return source;
+    }
+
+    public String getUTF8Code() {
+        return getCode(UTF8);
+    }
+
+    public String getMS932Code() {
+        return getCode(MS932);
+    }
+
+    public String getEUCJPCode() {
+        return getCode(EUCJP);
+    }
 
 }
