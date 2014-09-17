@@ -1,0 +1,15 @@
+package ${util.packageName};
+
+#if( ${util.destIFName}=="" )
+	#set($className = "${util.sourceIFName}2${util.destClassName}")
+#else
+	#set($className = "${util.sourceIFName}2${util.destIFName}")
+#end
+
+#if(${util.className}=="")
+public class ${className}  {
+#else
+public class  ${util.className}{
+#end
+
+}

@@ -3,12 +3,15 @@ package nu.mine.kino.plugin.beangenerator;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import net.java.amateras.xlsbeans.XLSBeans;
 import net.java.amateras.xlsbeans.XLSBeansException;
+import nu.mine.kino.plugin.beangenerator.copyutils.sheetdata.IUtilInformation;
+import nu.mine.kino.plugin.beangenerator.copyutils.sheetdata.UtilInformationSheet;
 import nu.mine.kino.plugin.beangenerator.sheetdata.ClassInformationSheet;
 import nu.mine.kino.plugin.beangenerator.sheetdata.IClassInformation;
 import nu.mine.kino.plugin.beangenerator.sheetdata.anno.ClassInformationSheetWithAnno;
@@ -53,7 +56,9 @@ public class Activator extends AbstractUIPlugin {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+     * @see
+     * org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext
+     * )
      */
     public void start(BundleContext context) throws Exception {
         super.start(context);
@@ -63,7 +68,9 @@ public class Activator extends AbstractUIPlugin {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
+     * @see
+     * org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext
+     * )
      */
     public void stop(BundleContext context) throws Exception {
         plugin = null;
@@ -192,6 +199,48 @@ public class Activator extends AbstractUIPlugin {
     public static IWorkbenchWindow getActiveWorkbenchWindow() {
         IWorkbench workbench = getDefault().getWorkbench();
         return workbench.getActiveWorkbenchWindow();
+    }
+
+    public List<IUtilInformation> getCopyUtilInInformations(IFile file)
+            throws CoreException {
+
+        logger.debug("getCopyUtilInInformations(File) - start"); //$NON-NLS-1$
+        File instance = file.getLocation().toFile();
+
+        InputStream in = null;
+        try {
+            in = new FileInputStream(instance);
+            // ここでアノテーションからJavaBeansのマッピングがされ、インスタンスまで生成される
+            UtilInformationSheet sheet = new XLSBeans().load(in,
+                    UtilInformationSheet.class);
+            logger.debug("getCopyUtilInInformations(File) - end"); //$NON-NLS-1$
+            return sheet.getUtilInformation();
+        } catch (FileNotFoundException e) {
+            logger.error("getCopyUtilInInformations(File)", e); //$NON-NLS-1$
+
+            IStatus status = new Status(IStatus.ERROR, Activator.getPluginId(),
+                    IStatus.OK, e.getMessage(), e);
+            throw new CoreException(status);
+        } catch (XLSBeansException e) {
+            logger.error("getCopyUtilInInformations(File)", e); //$NON-NLS-1$
+            IStatus status = new Status(IStatus.ERROR, Activator.getPluginId(),
+                    IStatus.OK, e.getMessage(), e);
+            throw new CoreException(status);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    logger.error("getCopyUtilInInformations(File)", e); //$NON-NLS-1$
+                    IStatus status = new Status(IStatus.ERROR,
+                            Activator.getPluginId(), IStatus.OK,
+                            e.getMessage(), e);
+                    throw new CoreException(status);
+                }
+            }
+
+        }
+
     }
 
 }

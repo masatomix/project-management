@@ -1,0 +1,57 @@
+#if( ${util.methodName}=="" )
+
+#set($methodName = "convert")
+#else
+	#set($methodName = ${util.methodName})
+#end
+
+#if(${util.destIFName}=="" )
+	#set($className = ${util.destClassName})
+#else
+	#set($className = ${util.destIFName})
+#end	
+	/**
+     * 引数のオブジェクトのプロパティからデータをコピーして戻り値のオブジェクトを生成して返すメソッド。
+     * @param source
+     * @return
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
+	public static ${className} ${methodName}(${util.sourceIFName} source) throws IllegalAccessException,
+			InvocationTargetException {
+        ${util.destClassName} dest = new ${util.destClassName}();
+		
+#if(${util.useBeanUtils}=="○")
+		// まずは汎用的なコピー処理。
+        BeanUtils.copyProperties(dest, source);
+#end
+		// 必要に応じて特殊な載せ替え処理 開始
+		${copyStatement}
+		// 特殊な載せ替え処理 終了
+
+        return dest;
+    }
+
+    /**
+     * 第一引数から第二引数へプロパティをコピーするメソッド。
+     * @param source
+     * @param dest
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
+	public static void $methodName(${util.sourceIFName} source,${className} dest) throws IllegalAccessException,
+			InvocationTargetException {
+		
+#if(${util.useBeanUtils}=="○")
+		// まずは汎用的なコピー処理。
+        BeanUtils.copyProperties(dest, source);
+#end
+		// 必要に応じて特殊な載せ替え処理 開始
+		${copyStatement}
+		// 特殊な載せ替え処理 終了
+
+    }
+
+#if(${util.methods}!="")
+${util.methods}
+#end
