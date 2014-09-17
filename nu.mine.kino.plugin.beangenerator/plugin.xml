@@ -1,62 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <plugin>
-<!--   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            id="nu.mine.kino.plugin.beangenerator.objectContribution1"
-            nameFilter="*.xls"
-            objectClass="org.eclipse.core.resources.IFile">
-            <menu
-            id="beangenerator"
-            label="JavaBeans生成"
-            path="additions">
-      </menu>                  <action
-               class="nu.mine.kino.plugin.beangenerator.actions.JavaBeansGeneratorAction"
-               id="nu.mine.kino.plugin.beangenerator.actions.JavaBeansReaderGeneratorAction"
-               label="JavaBeansリーダの生成"
-               menubarPath="beangenerator/additions">
-         </action>
-         <action
-               class="nu.mine.kino.plugin.beangenerator.actions.JavaBeansGeneratorAction"
-               id="nu.mine.kino.plugin.beangenerator.actions.JavaBeansGeneratorAction"
-               label="JavaBeansの生成"
-               menubarPath="beangenerator/additions">
-         </action>
-
-      </objectContribution>
-      <objectContribution
-            id="nu.mine.kino.plugin.beangenerator.objectContribution2"
-            objectClass="org.eclipse.core.resources.IResource">
-      <menu
-            id="beangenerator"
-            label="JavaBeans生成"
-            path="additions">
-      </menu>
-         <action
-               class="nu.mine.kino.plugin.beangenerator.actions.TemplateCreateAction"
-               id="nu.mine.kino.plugin.beangenerator.actions.TemplateCreateAction1"
-               label="JavaBeans用Excelを作成"
-               menubarPath="beangenerator/additions">
-         </action>
-
-      </objectContribution>
-      <objectContribution
-            id="nu.mine.kino.plugin.beangenerator.objectContribution3"
-            objectClass="org.eclipse.jdt.core.IJavaProject"> 
-                 <menu
-            id="beangenerator"
-            label="JavaBeans生成"
-            path="additions">
-      </menu>
-         <action
-               class="nu.mine.kino.plugin.beangenerator.actions.TemplateCreateAction"
-               id="nu.mine.kino.plugin.beangenerator.actions.TemplateCreateAction2"
-               label="JavaBeans用Excelを作成" menubarPath="beangenerator/additions">
-         </action>
-      </objectContribution>
-   </extension>
-  -->
    <extension
          point="org.eclipse.ui.commands">
       <command
@@ -70,6 +14,14 @@
       <command
             id="nu.mine.kino.plugin.beangenerator.actions.TemplateCreateAction"
             name="JavaBeans用Excelを作成">
+      </command>
+      <command
+            id="nu.mine.kino.plugin.beangenerator.actions.CopyUtilTemplateCreateAction"
+            name="設計書サンプルを生成">
+      </command>
+      <command
+            id="nu.mine.kino.plugin.beangenerator.actions.CopyUtilGeneratorAction"
+            name="Utilityソースを自動生成">
       </command>
    </extension>
    <extension
@@ -86,6 +38,14 @@
             class="nu.mine.kino.plugin.beangenerator.handlers.TemplateCreateHandler"
             commandId="nu.mine.kino.plugin.beangenerator.actions.TemplateCreateAction">
       </handler>
+      <handler
+            class="nu.mine.kino.plugin.beangenerator.handlers.CopyUtilGeneratorHandler"
+            commandId="nu.mine.kino.plugin.beangenerator.actions.CopyUtilGeneratorAction">
+      </handler>
+      <handler
+            class="nu.mine.kino.plugin.beangenerator.handlers.CopyUtilTemplateCreateHandler"
+            commandId="nu.mine.kino.plugin.beangenerator.actions.CopyUtilTemplateCreateAction">
+      </handler>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -96,6 +56,7 @@
                label="JavaBeans生成">
             <command
                   commandId="nu.mine.kino.plugin.beangenerator.actions.JavaBeansGeneratorAction"
+                  icon="icons/cup_add.png"
                   style="push">
                <visibleWhen
                      checkEnabled="true">
@@ -106,6 +67,7 @@
             </command>
             <command
                   commandId="nu.mine.kino.plugin.beangenerator.actions.JavaBeansReaderGeneratorAction"
+                  icon="icons/cup_add.png"
                   style="push">
                <visibleWhen
                      checkEnabled="true">
@@ -116,18 +78,93 @@
             </command>
             <command
                   commandId="nu.mine.kino.plugin.beangenerator.actions.TemplateCreateAction"
+                  icon="icons/page_excel.png"
                   style="push">
                <visibleWhen
                      checkEnabled="true">
                   <with
                         variable="activeMenuSelection">
                      <or>
+                     <and>
                      <iterate
                            ifEmpty="false">
                         <adapt
                               type="org.eclipse.jdt.core.IJavaProject">
                         </adapt>
                      </iterate>
+                     </and>
+                     <and>
+                     <iterate
+                           ifEmpty="false">
+                        <adapt
+                              type="org.eclipse.core.resources.IFile">
+                        </adapt>
+                     </iterate>
+                     </and>
+                     <and>
+                     <iterate
+                           ifEmpty="false">
+                        <adapt
+                              type="org.eclipse.core.resources.IFolder">
+                        </adapt>
+                     </iterate>
+                     </and>
+                     </or>
+                  </with>
+               </visibleWhen>
+            </command>
+         </menu>
+      </menuContribution>
+
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <menu
+               icon="icons/page_excel.png"
+               label="載せ替えUtilityの生成">
+            <command
+                  commandId="nu.mine.kino.plugin.beangenerator.actions.CopyUtilGeneratorAction"
+                  icon="icons/cup_add.png"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="true">
+                  <reference
+                        definitionId="nu.mine.kino.plugin.beangenerator.commands.IFileCommandDefinition">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="nu.mine.kino.plugin.beangenerator.actions.CopyUtilTemplateCreateAction"
+                  icon="icons/page_excel.png"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="true">
+                  <with
+                        variable="activeMenuSelection">
+                     <or>
+                     <and>
+                     <iterate
+                           ifEmpty="false">
+                        <adapt
+                              type="org.eclipse.jdt.core.IJavaProject">
+                        </adapt>
+                     </iterate>
+                     </and>
+                     <and>
+                     <iterate
+                           ifEmpty="false">
+                        <adapt
+                              type="org.eclipse.core.resources.IFile">
+                        </adapt>
+                     </iterate>
+                     </and>
+                     <and>
+                     <iterate
+                           ifEmpty="false">
+                        <adapt
+                              type="org.eclipse.core.resources.IFolder">
+                        </adapt>
+                     </iterate>
+                     </and>
                      </or>
                   </with>
                </visibleWhen>

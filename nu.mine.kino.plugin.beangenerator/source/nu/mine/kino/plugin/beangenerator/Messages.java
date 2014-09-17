@@ -20,6 +20,10 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
     private static final String BUNDLE_NAME = "nu.mine.kino.plugin.beangenerator.messages"; //$NON-NLS-1$
 
+    public static String AbstractTemplateCreateHandler_OUTPUT_DIR;
+
+    public static String CopyUtilGeneratorHandler_MSG_DIALOG_DESC;
+
     public static String JavaBeansCreator_MSG_SRCDIR_NOT_FOUND;
 
     public static String JavaBeansCreatorWithProgress_MSG_BEGIN_TASK;
