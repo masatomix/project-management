@@ -14,8 +14,10 @@
      * 引数のオブジェクトのプロパティからデータをコピーして戻り値のオブジェクトを生成して返すメソッド。
      * @param source
      * @return
+#if(${util.useBeanUtils}=="○")
      * @throws IllegalAccessException
      * @throws InvocationTargetException
+#end
      */
 	public static ${className} ${methodName}(${util.sourceIFName} source) 
 #if(${util.useBeanUtils}=="○")
@@ -39,8 +41,10 @@
      * 第一引数から第二引数へプロパティをコピーするメソッド。
      * @param source
      * @param dest
+#if(${util.useBeanUtils}=="○")
      * @throws IllegalAccessException
      * @throws InvocationTargetException
+#end
      */
 	public static void $methodName(${util.sourceIFName} source,${className} dest) 
 #if(${util.useBeanUtils}=="○")
