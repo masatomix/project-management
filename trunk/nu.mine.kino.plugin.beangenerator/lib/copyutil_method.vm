@@ -17,8 +17,11 @@
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-	public static ${className} ${methodName}(${util.sourceIFName} source) throws IllegalAccessException,
-			InvocationTargetException {
+	public static ${className} ${methodName}(${util.sourceIFName} source) 
+#if(${util.useBeanUtils}=="○")
+	   throws IllegalAccessException,InvocationTargetException 
+#end
+	{
         ${util.destClassName} dest = new ${util.destClassName}();
 		
 #if(${util.useBeanUtils}=="○")
@@ -39,9 +42,11 @@
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-	public static void $methodName(${util.sourceIFName} source,${className} dest) throws IllegalAccessException,
-			InvocationTargetException {
-		
+	public static void $methodName(${util.sourceIFName} source,${className} dest) 
+#if(${util.useBeanUtils}=="○")
+	   throws IllegalAccessException,InvocationTargetException 
+#end
+			{
 #if(${util.useBeanUtils}=="○")
 		// まずは汎用的なコピー処理。
         BeanUtils.copyProperties(dest, source);
