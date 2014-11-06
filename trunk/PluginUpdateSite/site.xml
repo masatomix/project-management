@@ -93,8 +93,12 @@
    <feature url="features/nu.mine.kino.plugin.beangenerator_0.6.4.201411031336.jar" id="nu.mine.kino.plugin.beangenerator" version="0.6.4.201411031336">
       <category name="beancreator"/>
    </feature>
+   <feature url="features/nu.mine.kino.plugin.projectmanagement_0.0.1.201411061341.jar" id="nu.mine.kino.plugin.projectmanagement" version="0.0.1.201411061341">
+      <category name="projectmanagement"/>
+   </feature>
    <category-def name="google" label="Google Plugin"/>
    <category-def name="beancreator" label="JavaBeans Creator Plugin"/>
+   <category-def name="projectmanagement" label="EVM Tools Plugin"/>
    <category-def name="plugindocumentcreator" label="Plugin Document Creator Plugin"/>
    <category-def name="utils" label="Utils Plugin"/>
    <category-def name="jdtutilsplugin" label="JDT Utils Plugin"/>
