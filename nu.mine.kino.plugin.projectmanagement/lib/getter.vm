@@ -1,0 +1,12 @@
+#if(${field.fieldNameJ}!="")
+	/**
+	 * ${field.fieldNameJ}‚ğæ“¾‚·‚éB
+	 *
+	 * @return ${field.fieldNameJ}
+	 */
+#end
+	public ${field.FieldType} ${prefix}${cname}() {
+		return ${field.fieldName};
+	}
+
+
