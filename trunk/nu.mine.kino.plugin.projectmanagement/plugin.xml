@@ -4,44 +4,12 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            id="nu.mine.kino.plugin.projectmanagement.actions.JavaBeansGeneratorAction"
-            name="JavaBeansの生成">
-      </command>
-      <command
-            id="nu.mine.kino.plugin.projectmanagement.actions.JavaBeansReaderGeneratorAction"
-            name="JavaBeansリーダの生成">
-      </command>
-      <command
-            id="nu.mine.kino.plugin.projectmanagement.actions.TemplateCreateAction"
-            name="JavaBeans用Excelを作成">
-      </command>
-      <command
             id="nu.mine.kino.plugin.projectmanagement.actions.CopyUtilTemplateCreateAction"
             name="ガントチャートサンプルを生成">
-      </command>
-      <command
-            id="nu.mine.kino.plugin.projectmanagement.actions.CopyUtilGeneratorAction"
-            name="Utilityソースを自動生成">
       </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
-      <handler
-            class="nu.mine.kino.plugin.projectmanagement.handlers.JavaBeansGeneratorHandler"
-            commandId="nu.mine.kino.plugin.projectmanagement.actions.JavaBeansGeneratorAction">
-      </handler>
-      <handler
-            class="nu.mine.kino.plugin.projectmanagement.handlers.JavaBeansGeneratorHandler"
-            commandId="nu.mine.kino.plugin.projectmanagement.actions.JavaBeansReaderGeneratorAction">
-      </handler>
-      <handler
-            class="nu.mine.kino.plugin.projectmanagement.handlers.TemplateCreateHandler"
-            commandId="nu.mine.kino.plugin.projectmanagement.actions.TemplateCreateAction">
-      </handler>
-      <handler
-            class="nu.mine.kino.plugin.projectmanagement.handlers.CopyUtilGeneratorHandler"
-            commandId="nu.mine.kino.plugin.projectmanagement.actions.CopyUtilGeneratorAction">
-      </handler>
       <handler
             class="nu.mine.kino.plugin.projectmanagement.handlers.CopyUtilTemplateCreateHandler"
             commandId="nu.mine.kino.plugin.projectmanagement.actions.CopyUtilTemplateCreateAction">
