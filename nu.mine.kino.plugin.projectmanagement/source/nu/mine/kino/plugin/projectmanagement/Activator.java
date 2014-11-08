@@ -1,23 +1,8 @@
 package nu.mine.kino.plugin.projectmanagement;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-
-import net.java.amateras.xlsbeans.XLSBeans;
-import net.java.amateras.xlsbeans.XLSBeansException;
-import nu.mine.kino.plugin.projectmanagement.copyutils.sheetdata.IUtilInformation;
-import nu.mine.kino.plugin.projectmanagement.copyutils.sheetdata.UtilInformationSheet;
-import nu.mine.kino.plugin.projectmanagement.sheetdata.ClassInformationSheet;
-import nu.mine.kino.plugin.projectmanagement.sheetdata.IClassInformation;
-import nu.mine.kino.plugin.projectmanagement.sheetdata.anno.ClassInformationSheetWithAnno;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
@@ -86,56 +71,6 @@ public class Activator extends AbstractUIPlugin {
         return plugin;
     }
 
-    public List<IClassInformation> getClassInformations(IFile file)
-            throws CoreException {
-        logger.debug("getClassInformations(IFile) - start"); //$NON-NLS-1$
-
-        File instance = file.getLocation().toFile();
-        try {
-            InputStream in = new FileInputStream(instance);
-            // ここでアノテーションからJavaBeansのマッピングがされ、インスタンスまで生成される
-            ClassInformationSheetWithAnno sheet = new XLSBeans().load(in,
-                    ClassInformationSheetWithAnno.class);
-            logger.debug("getClassInformations(IFile) - end"); //$NON-NLS-1$
-            return sheet.getClassInformation();
-        } catch (FileNotFoundException e) {
-            logger.error("getClassInformations(IFile)", e); //$NON-NLS-1$
-            IStatus status = new Status(IStatus.ERROR, Activator.getPluginId(),
-                    IStatus.OK, e.getMessage(), e);
-            throw new CoreException(status);
-        } catch (XLSBeansException e) {
-            logger.warn(e);
-            logger.warn("Annotationナシでもとおるロジックを実行してみる。"); //$NON-NLS-1$
-        }
-        return getClassInformationsWithoutAnno(instance);
-    }
-
-    private List<IClassInformation> getClassInformationsWithoutAnno(
-            File instance) throws CoreException {
-        logger.debug("getClassInformationsWithoutAnno(File) - start"); //$NON-NLS-1$
-
-        try {
-            InputStream in = new FileInputStream(instance);
-            // ここでアノテーションからJavaBeansのマッピングがされ、インスタンスまで生成される
-            ClassInformationSheet sheet = new XLSBeans().load(in,
-                    ClassInformationSheet.class);
-            logger.debug("getClassInformationsWithoutAnno(File) - end"); //$NON-NLS-1$
-            return sheet.getClassInformation();
-        } catch (FileNotFoundException e) {
-            logger.error("getClassInformationsWithoutAnno(File)", e); //$NON-NLS-1$
-
-            IStatus status = new Status(IStatus.ERROR, Activator.getPluginId(),
-                    IStatus.OK, e.getMessage(), e);
-            throw new CoreException(status);
-        } catch (XLSBeansException e) {
-            logger.error("getClassInformationsWithoutAnno(File)", e); //$NON-NLS-1$
-
-            IStatus status = new Status(IStatus.ERROR, Activator.getPluginId(),
-                    IStatus.OK, e.getMessage(), e);
-            throw new CoreException(status);
-        }
-    }
-
     // ////////////////////
     public static String getPluginId() {
         return getDefault().getBundle().getSymbolicName();
@@ -199,48 +134,6 @@ public class Activator extends AbstractUIPlugin {
     public static IWorkbenchWindow getActiveWorkbenchWindow() {
         IWorkbench workbench = getDefault().getWorkbench();
         return workbench.getActiveWorkbenchWindow();
-    }
-
-    public List<IUtilInformation> getCopyUtilInInformations(IFile file)
-            throws CoreException {
-
-        logger.debug("getCopyUtilInInformations(File) - start"); //$NON-NLS-1$
-        File instance = file.getLocation().toFile();
-
-        InputStream in = null;
-        try {
-            in = new FileInputStream(instance);
-            // ここでアノテーションからJavaBeansのマッピングがされ、インスタンスまで生成される
-            UtilInformationSheet sheet = new XLSBeans().load(in,
-                    UtilInformationSheet.class);
-            logger.debug("getCopyUtilInInformations(File) - end"); //$NON-NLS-1$
-            return sheet.getUtilInformation();
-        } catch (FileNotFoundException e) {
-            logger.error("getCopyUtilInInformations(File)", e); //$NON-NLS-1$
-
-            IStatus status = new Status(IStatus.ERROR, Activator.getPluginId(),
-                    IStatus.OK, e.getMessage(), e);
-            throw new CoreException(status);
-        } catch (XLSBeansException e) {
-            logger.error("getCopyUtilInInformations(File)", e); //$NON-NLS-1$
-            IStatus status = new Status(IStatus.ERROR, Activator.getPluginId(),
-                    IStatus.OK, e.getMessage(), e);
-            throw new CoreException(status);
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    logger.error("getCopyUtilInInformations(File)", e); //$NON-NLS-1$
-                    IStatus status = new Status(IStatus.ERROR,
-                            Activator.getPluginId(), IStatus.OK,
-                            e.getMessage(), e);
-                    throw new CoreException(status);
-                }
-            }
-
-        }
-
     }
 
 }
