@@ -20,6 +20,10 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
     private static final String BUNDLE_NAME = "nu.mine.kino.plugin.projectmanagement.messages"; //$NON-NLS-1$
 
+    public static String AbstractExecutorHandler_MSG_DIALOG_DESC;
+
+    public static String AbstractExecutorHandler_MSG_DIALOG_MESSAGE;
+
     public static String AbstractTemplateCreateHandler_OUTPUT_DIR;
 
     public static String CopyUtilGeneratorHandler_MSG_DIALOG_DESC;

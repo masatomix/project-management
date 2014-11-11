@@ -7,12 +7,20 @@
             id="nu.mine.kino.plugin.projectmanagement.actions.CopyUtilTemplateCreateAction"
             name="ガントチャートサンプルを生成">
       </command>
+      <command
+            id="nu.mine.kino.plugin.projectmanagement.handlers.ProjectWriterHandler"
+            name="EVM集計ツール実行">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
       <handler
             class="nu.mine.kino.plugin.projectmanagement.handlers.CopyUtilTemplateCreateHandler"
             commandId="nu.mine.kino.plugin.projectmanagement.actions.CopyUtilTemplateCreateAction">
+      </handler>
+      <handler
+            class="nu.mine.kino.plugin.projectmanagement.handlers.ProjectWriterHandler"
+            commandId="nu.mine.kino.plugin.projectmanagement.handlers.ProjectWriterHandler">
       </handler>
    </extension>
    <extension
@@ -58,6 +66,16 @@
                      </and>
                      </or>
                   </with>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="nu.mine.kino.plugin.projectmanagement.handlers.ProjectWriterHandler"
+                  icon="icons/page_excel.png"
+                  style="push">
+                   <visibleWhen                    checkEnabled="true">
+              <reference
+                    definitionId="nu.mine.kino.plugin.projectmanagement.commands.IFileCommandDefinition">
+              </reference>
                </visibleWhen>
             </command>
          </menu>
