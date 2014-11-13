@@ -68,9 +68,9 @@ public class ProjectWriterHandler extends AbstractExecutorHandler {
                             + parent.getAbsolutePath());
                     try {
                         File jsonFile = ProjectWriter.write(target);
-                        File jsonFile_base = ProjectWriter.write(target_base);
-
                         PVCreator.createFromJSON(jsonFile);
+                        
+                        File jsonFile_base = ProjectWriter.write(target_base);
                         ACCreator.createFromJSON(jsonFile, jsonFile_base);
                         EVCreator.createFromJSON(jsonFile, jsonFile_base);
 
