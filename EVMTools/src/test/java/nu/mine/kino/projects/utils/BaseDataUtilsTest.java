@@ -37,6 +37,7 @@ import org.junit.Test;
  */
 public class BaseDataUtilsTest {
 
+    
     @Test
     public void test() throws ParseException {
         java.io.InputStream in = null;
