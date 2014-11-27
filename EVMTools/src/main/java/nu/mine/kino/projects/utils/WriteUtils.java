@@ -233,6 +233,7 @@ public class WriteUtils {
         buf.append("タスク名" + delimiter);
         buf.append("担当者" + delimiter);
         buf.append("EV" + delimiter);
+        buf.append("進捗率" + delimiter);
         buf.append(Utils.date2Str(project.getBaseDate(), "yyyy/MM/dd"));
         return new String(buf);
     }
