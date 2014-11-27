@@ -86,13 +86,17 @@ public class EVMToolsBuilder extends Builder {
 
         FilePath root = build.getModuleRoot(); // ワークスペースのルート
         FilePath buildRoot = new FilePath(build.getRootDir()); // このビルドのルート
+        listener.getLogger().println("[EVM Tools] JSONファイル作成開始");
         FilePath pmJSON = executeAndCopies(root, buildRoot,
                 new ProjectWriterExecutor(name));
 
         listener.getLogger().println("[EVM Tools] file:" + pmJSON);
 
+        listener.getLogger().println("[EVM Tools] PVファイル作成開始");
         executeAndCopy(root, buildRoot, new PVCreatorExecutor(name));
+        listener.getLogger().println("[EVM Tools] ACファイル作成開始");
         executeAndCopies(root, buildRoot, new ACCreatorExecutor(name));
+        listener.getLogger().println("[EVM Tools] EVファイル作成開始");
         executeAndCopies(root, buildRoot, new EVCreatorExecutor(name));
         // System.out.println(build.getModuleRoot());
         // System.out.println(build.getRootDir());
