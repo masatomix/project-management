@@ -31,6 +31,7 @@
 	  <p>直近+3日間内で、予定があるものを表示</p>
       <table class="pane sortable bigtable" >
         <tr>
+          <th class="pane-header">#</th>
           <th class="pane-header">タスクID</th>
           <th class="pane-header">担当者</th>
           <th class="pane-header">タスク名</th>
@@ -45,6 +46,7 @@
         </tr>
         <j:forEach var="pv" items="${it.PVViews}">
           <tr>
+            <td class="pane">${pv.taskSharp}</td>
             <td class="pane">${pv.taskId}</td>
             <td class="pane">${pv.personInCharge}</td>
             <td class="pane">${pv.taskName}</td>
@@ -59,10 +61,16 @@
           </tr>
         </j:forEach>
       </table>
+      <table class="pane" >
+        <tr>
+          <th style='text-align:right'><a href="documents/${it.fileName}_PVj.tsv">${it.fileName}_PVj.tsv</a></th>
+        </tr>
+      </table>
 
       <h1>直近(<i:formatDate value="${it.baseDate}"/>) の状況(PV/AC/EV)</h1>
       <table class="pane sortable bigtable" >
         <tr>
+          <th class="pane-header">#</th>
           <th class="pane-header">タスクID</th>
           <th class="pane-header">担当者</th>
           <th class="pane-header">タスク名</th>
@@ -75,6 +83,7 @@
         </tr>
         <j:forEach var="bean" items="${it.PVACEVViews}">
           <tr>
+            <td class="pane">${bean.taskSharp}</td>
             <td class="pane">${bean.taskId}</td>
             <td class="pane">${bean.personInCharge}</td>
             <td class="pane">${bean.taskName}</td>
@@ -95,6 +104,7 @@
       <h1>直近(<i:formatDate value="${it.baseDate}"/>) の実績(AC)</h1>
       <table class="pane sortable bigtable" >
         <tr>
+          <th class="pane-header">#</th>
           <th class="pane-header">タスクID</th>
           <th class="pane-header">担当者</th>
           <th class="pane-header">タスク名</th>
@@ -103,6 +113,7 @@
         </tr>
         <j:forEach var="ac" items="${it.PreviousACViews}">
           <tr>
+            <td class="pane">${ac.taskSharp}</td>
             <td class="pane">${ac.taskId}</td>
             <td class="pane">${ac.personInCharge}</td>
             <td class="pane">${ac.taskName}</td>
@@ -110,10 +121,17 @@
             <td class="pane" style="text-align:right">${ac.actualCost!='NaN'?ac.actualCost:"-"}</td>
           </tr>
         </j:forEach>
-      </table>
-      <h1>直近(<i:formatDate value="${it.baseDate}"/>) の成果(EV)</h1>
-      <table class="pane sortable bigtable" >
+		</table>
+      <table class="pane" >
         <tr>
+          <th style='text-align:right'><a href="documents/${it.fileName}_base_ACj.tsv">${it.fileName}_base_ACj.tsv</a></th>
+        </tr>
+      </table>
+
+      <h1>直近(<i:formatDate value="${it.baseDate}"/>) の成果(EV)</h1>
+      <table class="pane sortable bigtable" >		
+        <tr>
+          <th class="pane-header">#</th>
           <th class="pane-header">タスクID</th>
           <th class="pane-header">担当者</th>
           <th class="pane-header">タスク名</th>
@@ -123,6 +141,7 @@
         </tr>
         <j:forEach var="ev" items="${it.previousEVViews}">
           <tr>
+            <td class="pane">${ev.taskSharp}</td>
             <td class="pane">${ev.taskId}</td>
             <td class="pane">${ev.personInCharge}</td>
             <td class="pane">${ev.taskName}</td>
@@ -132,13 +151,11 @@
           </tr>
         </j:forEach>
       </table>
-	  
-	  
-	  
-	  
-
-	  
-	  
+      <table class="pane" >
+        <tr>
+          <th style='text-align:right'><a href="documents/${it.fileName}_base_EVj.tsv">${it.fileName}_base_EVj.tsv</a></th>
+        </tr>
+      </table>
     </l:main-panel>
   </l:layout>
 
