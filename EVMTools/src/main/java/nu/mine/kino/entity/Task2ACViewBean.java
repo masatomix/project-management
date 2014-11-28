@@ -25,6 +25,7 @@ public class Task2ACViewBean {
         ((ACViewBean) dest).setId(source.getId());
         ((ACViewBean) dest).setTaskId(source.getTaskId());
         ((ACViewBean) dest).setType(source.getType());
+        ((ACViewBean) dest).setTaskSharp(source.getTaskSharp());
         ((ACViewBean) dest).setTaskName(source.getTaskName());
         ((ACViewBean) dest).setPersonInCharge(source.getPersonInCharge());
         ((ACViewBean) dest).setTaskAbstract(source.getTaskAbstract());
@@ -50,6 +51,7 @@ public class Task2ACViewBean {
         ((ACViewBean) dest).setId(source.getId());
         ((ACViewBean) dest).setTaskId(source.getTaskId());
         ((ACViewBean) dest).setType(source.getType());
+        ((ACViewBean) dest).setTaskSharp(source.getTaskSharp());
         ((ACViewBean) dest).setTaskName(source.getTaskName());
         ((ACViewBean) dest).setPersonInCharge(source.getPersonInCharge());
         ((ACViewBean) dest).setTaskAbstract(source.getTaskAbstract());

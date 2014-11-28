@@ -50,6 +50,11 @@ public class BaseEVViewBean {
     private String type;
 
     /**
+     * タスクの＃に該当する列 (From Task)
+     */
+    private String taskSharp;
+
+    /**
      * タスク名 (From Task)
      */
     private String taskName;
@@ -142,6 +147,16 @@ public class BaseEVViewBean {
      */
     public void setType(String type) {
         this.type = type;
+    }
+
+    /**
+     * タスクの＃に該当する列をセットする。
+     * 
+     * @param taskSharp
+     *            タスクの＃に該当する列
+     */
+    public void setTaskSharp(String taskSharp) {
+        this.taskSharp = taskSharp;
     }
 
     /**
@@ -269,6 +284,15 @@ public class BaseEVViewBean {
     }
 
     /**
+     * タスクの＃に該当する列を取得する。
+     * 
+     * @return タスクの＃に該当する列
+     */
+    public String getTaskSharp() {
+        return taskSharp;
+    }
+
+    /**
      * タスク名を取得する。
      * 
      * @return タスク名
@@ -336,9 +360,9 @@ public class BaseEVViewBean {
         return new ToStringBuilder(this).append("id", id)
                 .append("ﾀｽｸID", taskId).append("進捗率", progressRate)
                 .append("Earned Value", earnedValue).append("基準日", baseDate)
-                .append("分類", type).append("タスク名", taskName)
-                .append("担当", personInCharge).append("タスク概要", taskAbstract)
-                .append("予定工数", numberOfManDays)
+                .append("分類", type).append("タスクの＃に該当する列", taskSharp)
+                .append("タスク名", taskName).append("担当", personInCharge)
+                .append("タスク概要", taskAbstract).append("予定工数", numberOfManDays)
                 .append("予定開始日", scheduledStartDate)
                 .append("予定終了日", scheduledEndDate)
                 .append("稼動予定日数", numberOfDays).toString();
