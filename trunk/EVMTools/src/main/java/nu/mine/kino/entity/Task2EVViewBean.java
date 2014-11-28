@@ -25,6 +25,7 @@ public class Task2EVViewBean {
         ((EVViewBean) dest).setId(source.getId());
         ((EVViewBean) dest).setTaskId(source.getTaskId());
         ((EVViewBean) dest).setType(source.getType());
+        ((EVViewBean) dest).setTaskSharp(source.getTaskSharp());
         ((EVViewBean) dest).setTaskName(source.getTaskName());
         ((EVViewBean) dest).setPersonInCharge(source.getPersonInCharge());
         ((EVViewBean) dest).setTaskAbstract(source.getTaskAbstract());
@@ -50,6 +51,7 @@ public class Task2EVViewBean {
         ((EVViewBean) dest).setId(source.getId());
         ((EVViewBean) dest).setTaskId(source.getTaskId());
         ((EVViewBean) dest).setType(source.getType());
+        ((EVViewBean) dest).setTaskSharp(source.getTaskSharp());
         ((EVViewBean) dest).setTaskName(source.getTaskName());
         ((EVViewBean) dest).setPersonInCharge(source.getPersonInCharge());
         ((EVViewBean) dest).setTaskAbstract(source.getTaskAbstract());
