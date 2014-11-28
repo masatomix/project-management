@@ -14,7 +14,6 @@ package nu.mine.kino.jenkins.plugins.projectmanagement;
 
 import hudson.model.Action;
 import hudson.model.AbstractBuild;
-import hudson.model.Descriptor;
 import hudson.model.User;
 
 import java.io.File;
@@ -31,9 +30,9 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 
 import jenkins.model.Jenkins;
-
 import nu.mine.kino.entity.ACBean;
 import nu.mine.kino.entity.ACBean2ACViewBean;
 import nu.mine.kino.entity.ACViewBean;
@@ -381,16 +380,47 @@ public class ProjectSummaryAction implements Action {
         this.name = name;
     }
 
-    public void doDynamic(StaplerRequest req, StaplerResponse res)
-            throws IOException, ServletException {
-        // System.out.println(req);
-        // System.out.println(res);
-        // String restOfPath = req.getRestOfPath();
-        // System.out.println(restOfPath);
-        // System.out.println(req.getContextPath());
-        res.sendRedirect2(req.getContextPath() + req.getRestOfPath());
-        // req.getRequestDispatcher(req.getContextPath()+restOfPath).forward(req,
-        // res);
+    public String getFileName() {
+        return name;
     }
 
+    public void doDynamic(StaplerRequest req, StaplerResponse res)
+            throws IOException, ServletException {
+
+        String restOfPath = req.getRestOfPath();
+        System.out.println(restOfPath);
+
+        String prefix = "/documents/";
+        // documentsではじまるURLはビルドディレクトリのファイルを取りに行くってことにする。
+        if (restOfPath.startsWith(prefix)) {
+            String filePath = restOfPath.replace(prefix, "");
+            openFile(req, res, filePath);
+        } else {
+            res.sendRedirect2(req.getContextPath() + req.getRestOfPath());
+            // req.getRequestDispatcher(req.getContextPath()+restOfPath).forward(req,
+            // res);
+        }
+    }
+
+    private void openFile(StaplerRequest req, StaplerResponse res,
+            String filePath) throws FileNotFoundException, IOException {
+
+        System.out.println(filePath);
+        System.out.println(req.getContextPath());
+
+        System.out.println(owner.getRootDir());
+        File file = new File(owner.getRootDir(), filePath);
+        FileInputStream in = null;
+        ServletOutputStream out = res.getOutputStream();
+        try {
+            in = new FileInputStream(file);
+            int i;
+            while ((i = in.read()) != -1) {
+                out.write(i);
+            }
+        } finally {
+            out.close();
+            in.close();
+        }
+    }
 }
