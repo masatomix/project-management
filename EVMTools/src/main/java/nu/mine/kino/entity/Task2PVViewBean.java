@@ -25,6 +25,7 @@ public class Task2PVViewBean {
         ((PVViewBean) dest).setId(source.getId());
         ((PVViewBean) dest).setTaskId(source.getTaskId());
         ((PVViewBean) dest).setType(source.getType());
+        ((PVViewBean) dest).setTaskSharp(source.getTaskSharp());
         ((PVViewBean) dest).setTaskName(source.getTaskName());
         ((PVViewBean) dest).setPersonInCharge(source.getPersonInCharge());
         ((PVViewBean) dest).setTaskAbstract(source.getTaskAbstract());
@@ -50,6 +51,7 @@ public class Task2PVViewBean {
         ((PVViewBean) dest).setId(source.getId());
         ((PVViewBean) dest).setTaskId(source.getTaskId());
         ((PVViewBean) dest).setType(source.getType());
+        ((PVViewBean) dest).setTaskSharp(source.getTaskSharp());
         ((PVViewBean) dest).setTaskName(source.getTaskName());
         ((PVViewBean) dest).setPersonInCharge(source.getPersonInCharge());
         ((PVViewBean) dest).setTaskAbstract(source.getTaskAbstract());
