@@ -230,11 +230,17 @@ public class ProjectUtils {
         EVBean evbean = EVTotalBean2EVBean.convert(evTotalBeanT);
         if (baseInfo != null) {
             EVTotalBean evTotalBeanB = baseInfo.getEV();
-            double earnedValue = evTotalBeanT.getEarnedValue()
-                    - evTotalBeanB.getEarnedValue();
-            // とりあえず処理
-            earnedValue = round(earnedValue);
-            // とりあえず処理
+
+            double earnedValue = evTotalBeanT.getEarnedValue();
+            double earnedValue2 = evTotalBeanB.getEarnedValue();
+
+            if (!Double.isNaN(earnedValue2)) {
+                earnedValue = evTotalBeanT.getEarnedValue()
+                        - evTotalBeanB.getEarnedValue();
+                // とりあえず処理
+                earnedValue = round(earnedValue);
+                // とりあえず処理
+            }
             evbean.setEarnedValue(earnedValue);
 
             // 進捗率については、第二項がNaNである可能性があるので、NaNでないときだけ減算
