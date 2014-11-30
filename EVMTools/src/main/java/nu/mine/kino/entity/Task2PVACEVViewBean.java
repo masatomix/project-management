@@ -25,6 +25,7 @@ public class Task2PVACEVViewBean {
         ((PVACEVViewBean) dest).setId(source.getId());
         ((PVACEVViewBean) dest).setTaskId(source.getTaskId());
         ((PVACEVViewBean) dest).setType(source.getType());
+        ((PVACEVViewBean) dest).setTaskSharp(source.getTaskSharp());
         ((PVACEVViewBean) dest).setTaskName(source.getTaskName());
         ((PVACEVViewBean) dest).setPersonInCharge(source.getPersonInCharge());
         ((PVACEVViewBean) dest).setTaskAbstract(source.getTaskAbstract());
@@ -51,6 +52,7 @@ public class Task2PVACEVViewBean {
         ((PVACEVViewBean) dest).setId(source.getId());
         ((PVACEVViewBean) dest).setTaskId(source.getTaskId());
         ((PVACEVViewBean) dest).setType(source.getType());
+        ((PVACEVViewBean) dest).setTaskSharp(source.getTaskSharp());
         ((PVACEVViewBean) dest).setTaskName(source.getTaskName());
         ((PVACEVViewBean) dest).setPersonInCharge(source.getPersonInCharge());
         ((PVACEVViewBean) dest).setTaskAbstract(source.getTaskAbstract());
