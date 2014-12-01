@@ -17,6 +17,7 @@ import hudson.model.AbstractBuild;
 import hudson.model.User;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -422,5 +423,16 @@ public class ProjectSummaryAction implements Action {
             out.close();
             in.close();
         }
+    }
+
+    public File[] getSummaryFiles() {
+        System.out.println(owner.getRootDir());
+        return owner.getRootDir().listFiles(new FileFilter() {
+
+            @Override
+            public boolean accept(File pathname) {
+                return !pathname.isDirectory() && pathname.getName().startsWith(name);
+            }
+        });
     }
 }
