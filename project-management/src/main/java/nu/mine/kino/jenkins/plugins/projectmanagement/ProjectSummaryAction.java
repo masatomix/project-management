@@ -157,7 +157,7 @@ public class ProjectSummaryAction implements Action {
         User user = null;
         Collection<User> all = User.getAll();
         for (User tmpUser : all) {
-            System.out.println(tmpUser.getId());
+            // System.out.println(tmpUser.getId());
             if (tmpUser.getId().equals(personInCharge)) {
                 user = tmpUser;
                 break;
@@ -389,7 +389,7 @@ public class ProjectSummaryAction implements Action {
             throws IOException, ServletException {
 
         String restOfPath = req.getRestOfPath();
-        System.out.println(restOfPath);
+        // System.out.println(restOfPath);
 
         String prefix = "/documents/";
         // documentsではじまるURLはビルドディレクトリのファイルを取りに行くってことにする。
