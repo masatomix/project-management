@@ -1,0 +1,1 @@
+java -jar ./target/SVNCheckTools-0.0.1-jar-with-dependencies.jar https://www.masatom.in/svnsamples/repo/trunk/ user pass 20141128 20141130
