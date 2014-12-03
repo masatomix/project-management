@@ -4,6 +4,7 @@
   <groupId>nu.mine.kino.project</groupId>
   <artifactId>EVMTools</artifactId>
   <version>0.8.7-SNAPSHOT</version>
+  
   <build>
     <plugins>
       <plugin>
