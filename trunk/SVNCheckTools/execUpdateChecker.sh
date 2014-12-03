@@ -1,0 +1,1 @@
+java -cp ./target/SVNCheckTools-0.0.1-jar-with-dependencies.jar nu.mine.kino.project.UpdateChecker /tmp/EVMTools user pass
