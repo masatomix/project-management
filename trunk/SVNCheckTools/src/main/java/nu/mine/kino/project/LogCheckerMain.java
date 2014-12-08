@@ -44,8 +44,8 @@ public class LogCheckerMain {
     private static String to;
 
     // receives other command line parameters than options
-    @Argument
-    private List<String> arguments = new ArrayList<String>();
+    @Argument(index = 0, metaVar = "format", required = false, usage = "revision, date, author, type, path ...")
+    private static String[] formats;
 
     public static void main(String[] args) throws SVNException, ParseException {
         LogCheckerMain main = new LogCheckerMain();
@@ -60,6 +60,6 @@ public class LogCheckerMain {
             return;
         }
 
-        new LogChecker().print(url, userid, password, from, to);
+        new LogChecker().print(url, userid, password, from, to, formats);
     }
 }

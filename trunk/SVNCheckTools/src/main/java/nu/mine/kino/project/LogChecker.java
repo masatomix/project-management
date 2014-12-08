@@ -12,9 +12,12 @@
 
 package nu.mine.kino.project;
 
+import java.io.StringWriter;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.time.DateFormatUtils;
@@ -34,14 +37,20 @@ import org.tmatesoft.svn.core.wc.SVNLogClient;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
+import au.com.bytecode.opencsv.CSVWriter;
+import au.com.bytecode.opencsv.bean.BeanToCsv;
+import au.com.bytecode.opencsv.bean.ColumnPositionMappingStrategy;
+
 /**
  * @author Masatomi KINO
  * @version $Revision$
  */
 public class LogChecker {
-    
-    public void print(String url, String userid, String password, String from,
-            String to) throws SVNException, ParseException {
+
+    private void internalPrint(String url, String userid, String password,
+            String from, String to, ISVNLogEntryHandler handler)
+            throws SVNException, ParseException {
+
         System.out.printf("[%s]\n", url);
         System.out.printf("[%s]\n", userid);
         System.out.printf("[%s]\n", password);
@@ -55,7 +64,6 @@ public class LogChecker {
                 SVNWCUtil.createDefaultOptions(true), auth).getLogClient();
 
         SVNURL targetUrl = SVNURL.parseURIEncoded(url);
-        ISVNLogEntryHandler handler = new LogEntryHandler();
 
         SVNRepository repository = DAVRepositoryFactory.create(targetUrl);
         repository.setAuthenticationManager(auth);
@@ -66,6 +74,19 @@ public class LogChecker {
         logClient.doLog(targetUrl, null, SVNRevision.HEAD,
                 SVNRevision.create(startDate), SVNRevision.create(endDate),
                 true, true, 50, handler);
+    }
+
+    public void print(String url, String userid, String password, String from,
+            String to, String... format) throws SVNException, ParseException {
+        ISVNLogEntryHandler handler = new LogEntryHandler2(format);
+        internalPrint(url, userid, password, from, to, handler);
+    }
+
+    public void print(String url, String userid, String password, String from,
+            String to) throws SVNException, ParseException {
+        ISVNLogEntryHandler handler = new LogEntryHandler();
+        internalPrint(url, userid, password, from, to, handler);
+
     }
 
     private static class LogEntryHandler implements ISVNLogEntryHandler {
@@ -91,8 +112,59 @@ public class LogChecker {
         }
 
         private String parse(Date date) {
-            String str = DateFormatUtils.format(date,
-                    "yyyy-MM-dd HH:mm:ss");
+            String str = DateFormatUtils.format(date, "yyyy-MM-dd HH:mm:ss");
+            return str;
+        }
+
+    }
+
+    private static class LogEntryHandler2 implements ISVNLogEntryHandler {
+
+        private final String[] format;
+
+        public LogEntryHandler2(String[] format) {
+            this.format = format;
+        }
+
+        @Override
+        public void handleLogEntry(SVNLogEntry entry) throws SVNException {
+            ColumnPositionMappingStrategy<SVNLogBean> strat = new ColumnPositionMappingStrategy<SVNLogBean>();
+            strat.setType(SVNLogBean.class);
+            // CSVの順番で、どのフィールドにマッピングすればいいかを指定する。
+            // String[] columns = new String[] { "type", "path", "revision" };//
+            // フィールド名
+            strat.setColumnMapping(format);
+
+            List<SVNLogBean> list = new ArrayList<SVNLogBean>();
+            long revision = entry.getRevision();
+            String date = parse(entry.getDate());
+            String author = entry.getAuthor();
+
+            // System.out.print(arg0.getChangedPaths());
+            // System.out.println(entry.getMessage());
+            Map<String, SVNLogEntryPath> changedPaths = entry.getChangedPaths();
+            Collection<SVNLogEntryPath> values = changedPaths.values();
+            for (SVNLogEntryPath entryPath : values) {
+                char type = entryPath.getType();
+                String path = entryPath.getPath();
+                SVNLogBean bean = new SVNLogBean();
+                bean.setType(type);
+                bean.setPath(path);
+                bean.setRevision(revision);
+                bean.setDate(date);
+                bean.setAuthor(author);
+                list.add(bean);
+            }
+            // List<CSVSampleBean> list = getList();
+            BeanToCsv csv = new BeanToCsv();
+            StringWriter writer = new StringWriter();
+            csv.writeAll(strat, new CSVWriter(writer, '\t',
+                    CSVWriter.NO_QUOTE_CHARACTER), list);
+            System.out.println(writer.toString());
+        }
+
+        private String parse(Date date) {
+            String str = DateFormatUtils.format(date, "yyyy-MM-dd HH:mm:ss");
             return str;
         }
 
@@ -105,8 +177,22 @@ public class LogChecker {
     }
 
     public static void main(String[] args) throws SVNException, ParseException {
-        new LogChecker().print(args[0], args[1], args[2], args[3], args[4]);
-        // new LogChecker().getLog(null,null,null,null,null);
-    }
+        // new LogChecker().print(args[0], args[1], args[2], args[3], args[4]);
 
+        String[] columns = new String[args.length - 5];
+        if (args.length > 5) {
+            // 配列の index = 5 から、配列の最後までコピー。0番目のところに挿入。
+            System.arraycopy(args, 5, columns, 0, args.length - 5); // (3)
+            // String[] columns = new String[] { "type", "path", "revision" };//
+
+            for (int i = 0; i < columns.length; i++) { // (4)
+                System.out.println(columns[i]);
+            }
+            new LogChecker().print(args[0], args[1], args[2], args[3], args[4],
+                    columns);
+        } else {
+            new LogChecker().print(args[0], args[1], args[2], args[3], args[4]);
+
+        }
+    }
 }
