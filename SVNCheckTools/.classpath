@@ -1,10 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="src" path="src/main/resources"/>
-	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
-	<classpathentry kind="src" output="target/test-classes" path="src/test/resources"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
-	<classpathentry kind="output" path="target/classes"/>
+  <classpathentry kind="src" path="src/test/java" output="target/test-classes" including="**/*.java"/>
+  <classpathentry kind="src" path="src/test/resources" output="target/test-classes" excluding="**/*.java"/>
+  <classpathentry kind="src" path="src/main/java" including="**/*.java"/>
+  <classpathentry kind="src" path="src/main/resources" excluding="**/*.java"/>
+  <classpathentry kind="output" path="target/classes"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+  <classpathentry kind="var" path="M2_REPO/org/tmatesoft/svnkit/svnkit/1.8.5/svnkit-1.8.5.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/jcraft/jsch.agentproxy.svnkit-trilead-ssh2/0.0.7/jsch.agentproxy.svnkit-trilead-ssh2-0.0.7.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/trilead/trilead-ssh2/1.0.0-build217/trilead-ssh2-1.0.0-build217.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/jcraft/jsch.agentproxy.core/0.0.7/jsch.agentproxy.core-0.0.7.jar"/>
+  <classpathentry kind="var" path="M2_REPO/net/java/dev/jna/jna/3.5.2/jna-3.5.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/tmatesoft/sqljet/sqljet/1.1.10/sqljet-1.1.10.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/antlr/antlr-runtime/3.4/antlr-runtime-3.4.jar" sourcepath="M2_REPO/org/antlr/antlr-runtime/3.4/antlr-runtime-3.4-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/Users/masatomix/.m2/repository/org/antlr/antlr-runtime/3.4/antlr-runtime-3.4-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/net/java/dev/jna/platform/3.5.2/platform-3.5.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/jcraft/jsch.agentproxy.connector-factory/0.0.7/jsch.agentproxy.connector-factory-0.0.7.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/jcraft/jsch.agentproxy.usocket-jna/0.0.7/jsch.agentproxy.usocket-jna-0.0.7.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/jcraft/jsch.agentproxy.usocket-nc/0.0.7/jsch.agentproxy.usocket-nc-0.0.7.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/jcraft/jsch.agentproxy.sshagent/0.0.7/jsch.agentproxy.sshagent-0.0.7.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/jcraft/jsch.agentproxy.pageant/0.0.7/jsch.agentproxy.pageant-0.0.7.jar"/>
+  <classpathentry kind="var" path="M2_REPO/de/regnis/q/sequence/sequence-library/1.0.2/sequence-library-1.0.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-lang/commons-lang/2.2/commons-lang-2.2.jar" sourcepath="M2_REPO/commons-lang/commons-lang/2.2/commons-lang-2.2-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/Users/masatomix/.m2/repository/commons-lang/commons-lang/2.2/commons-lang-2.2-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/args4j/args4j/2.0.29/args4j-2.0.29.jar"/>
+  <classpathentry kind="src" path="/opencsvPlus"/>
+  <classpathentry kind="var" path="M2_REPO/au/com/bytecode/opencsv/2.4/opencsv-2.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-beanutils/commons-beanutils-core/1.8.3/commons-beanutils-core-1.8.3.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.2/commons-logging-1.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.jar" sourcepath="M2_REPO/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/Users/masatomix/.m2/repository/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
 </classpath>
