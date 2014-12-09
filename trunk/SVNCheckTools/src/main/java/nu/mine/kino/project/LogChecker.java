@@ -78,15 +78,13 @@ public class LogChecker {
 
     public void print(String url, String userid, String password, String from,
             String to, String... format) throws SVNException, ParseException {
-        ISVNLogEntryHandler handler = new LogEntryHandler2(format);
+        ISVNLogEntryHandler handler = null;
+        if (format == null) {
+            handler = new LogEntryHandler();
+        } else {
+            handler = new LogEntryHandler2(format);
+        }
         internalPrint(url, userid, password, from, to, handler);
-    }
-
-    public void print(String url, String userid, String password, String from,
-            String to) throws SVNException, ParseException {
-        ISVNLogEntryHandler handler = new LogEntryHandler();
-        internalPrint(url, userid, password, from, to, handler);
-
     }
 
     private static class LogEntryHandler implements ISVNLogEntryHandler {
@@ -154,17 +152,37 @@ public class LogChecker {
                 bean.setDate(date);
                 bean.setAuthor(author);
                 list.add(bean);
+                BeanToCsv csv = new BeanToCsv();
+                String[] records = csv.write(strat, bean);
+                for (String element : records) {
+                    System.out.print(element + "\t");
+                }
+                System.out.println();
+
             }
             // List<CSVSampleBean> list = getList();
-            BeanToCsv csv = new BeanToCsv();
-            StringWriter writer = new StringWriter();
-            csv.writeAll(strat, new CSVWriter(writer, '\t',
-                    CSVWriter.NO_QUOTE_CHARACTER), list);
-            System.out.println(writer.toString());
+            // BeanToCsv csv = new BeanToCsv();
+            // StringWriter writer = new StringWriter();
+
+            // FileWriter writer = null;
+            // try {
+            // writer = new FileWriter(new File("hoge.tsv"));
+            // } catch (IOException e) {
+            // e.printStackTrace();
+            // }
+
+            // csv.writeAll(strat, new CSVWriter(writer, '\t',
+            // CSVWriter.NO_QUOTE_CHARACTER), list);
+            // System.out.println(writer.toString());
+
+            // for (SVNLogBean logbean : list) {
+            // System.out.println(logbean);
+            // }
         }
 
         private String parse(Date date) {
-            String str = DateFormatUtils.format(date, "yyyy-MM-dd HH:mm:ss");
+            String pattern = "yyyy-MM-dd HH:mm:ss";
+            String str = DateFormatUtils.format(date, pattern);
             return str;
         }
 

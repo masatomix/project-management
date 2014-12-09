@@ -34,23 +34,7 @@ public class BeanToCsv {
     public void writeAll(HeaderColumnNameMappingStrategy strategy,
             CSVWriter out, List<?> beanList) {
 
-        Map<String, String> map = null;
-        if (strategy instanceof HeaderColumnNameTranslateMappingStrategy) {
-            map = ((HeaderColumnNameTranslateMappingStrategy) strategy)
-                    .getColumnMapping();
-        } else if (strategy instanceof ColumnPositionMappingStrategy) {
-            // カラム指定のStrategyなら、key=column,value=columnってマッピングを自作する
-            String[] columnMapping = ((ColumnPositionMappingStrategy) strategy)
-                    .getColumnMapping();
-            map = new LinkedHashMap<String, String>();
-            for (String key : columnMapping) {
-                map.put(key, key);
-            }
-        } else {
-            // それ以外だったら、strategyのクラスファイルのそばから取ってみる。
-            Class type = strategy.getType();
-            map = MapUtils.createMapping(null, type);
-        }
+        Map<String, String> map = createMap(strategy);
 
         Set<String> keySet = map.keySet();
         String[] header = keySet.toArray(new String[keySet.size()]);
@@ -75,6 +59,43 @@ public class BeanToCsv {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public String[] write(HeaderColumnNameMappingStrategy strategy, Object bean) {
+
+        Map<String, String> map = createMap(strategy);
+        Set<String> keySet = map.keySet();
+        String[] header = keySet.toArray(new String[keySet.size()]);
+        // ヘッダ名と同じ[i]番目に、メソッド名をセット。
+        String[] methodNames = new String[keySet.size()];
+        for (int i = 0; i < header.length; i++) {
+            methodNames[i] = map.get(header[i]);
+        }
+
+        String[] values = convert(bean, methodNames);
+        return values;
+    }
+
+    private Map<String, String> createMap(
+            HeaderColumnNameMappingStrategy strategy) {
+        Map<String, String> map = null;
+        if (strategy instanceof HeaderColumnNameTranslateMappingStrategy) {
+            map = ((HeaderColumnNameTranslateMappingStrategy) strategy)
+                    .getColumnMapping();
+        } else if (strategy instanceof ColumnPositionMappingStrategy) {
+            // カラム指定のStrategyなら、key=column,value=columnってマッピングを自作する
+            String[] columnMapping = ((ColumnPositionMappingStrategy) strategy)
+                    .getColumnMapping();
+            map = new LinkedHashMap<String, String>();
+            for (String key : columnMapping) {
+                map.put(key, key);
+            }
+        } else {
+            // それ以外だったら、strategyのクラスファイルのそばから取ってみる。
+            Class type = strategy.getType();
+            map = MapUtils.createMapping(null, type);
+        }
+        return map;
     }
 
     /**

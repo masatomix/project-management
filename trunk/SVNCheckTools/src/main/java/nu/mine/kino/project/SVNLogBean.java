@@ -12,6 +12,8 @@
 
 package nu.mine.kino.project;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 /**
  * @author Masatomi KINO
  * @version $Revision$
@@ -66,6 +68,13 @@ public class SVNLogBean {
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this).append("type", type)
+                .append("path", path).append("revision", revision)
+                .append("date", date).append("author", author).toString();
     }
 
 }
