@@ -13,13 +13,15 @@
 package nu.mine.kino.project;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
+import org.kohsuke.args4j.OptionDef;
+import org.kohsuke.args4j.spi.EnumOptionHandler;
+import org.kohsuke.args4j.spi.Parameters;
+import org.kohsuke.args4j.spi.Setter;
 import org.tmatesoft.svn.core.SVNException;
 
 /**
@@ -45,7 +47,7 @@ public class LogCheckerMain {
 
     // receives other command line parameters than options
     @Argument(index = 0, metaVar = "format", required = false, usage = "revision, date, author, type, path ...")
-    private static String[] formats;
+    private static String[] format;
 
     public static void main(String[] args) throws SVNException, ParseException {
         LogCheckerMain main = new LogCheckerMain();
@@ -60,6 +62,6 @@ public class LogCheckerMain {
             return;
         }
 
-        new LogChecker().print(url, userid, password, from, to, formats);
+        new LogChecker().print(url, userid, password, from, to, format);
     }
 }

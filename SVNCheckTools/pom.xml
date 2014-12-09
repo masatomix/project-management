@@ -20,7 +20,7 @@
       <configuration>
     	      <archive>
     	        <manifest>
-    	          <mainClass>nu.mine.kino.project.LogChecker</mainClass>
+    	          <mainClass>nu.mine.kino.project.LogCheckerMain</mainClass>
     	        </manifest>
     	      </archive>
         <descriptorRefs>
