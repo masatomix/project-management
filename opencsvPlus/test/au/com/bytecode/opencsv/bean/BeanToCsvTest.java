@@ -15,7 +15,7 @@ package au.com.bytecode.opencsv.bean;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
+import java.io.StringWriter;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -39,6 +39,33 @@ public class BeanToCsvTest extends TestCase {
         // カンマ区切りで、""で囲まない、ばあい。
         csv.writeAll(strat, new CSVWriter(new FileWriter("SampleOut01.csv"),
                 ',', CSVWriter.NO_ESCAPE_CHARACTER), list);
+
+    }
+
+    public void testWriteAll01_1() throws Exception {
+        // HeaderColumnNameMappingStrategy を使うと、設定ファイルから値を設定することができる。
+        HeaderColumnNameMappingStrategy strat = new HeaderColumnNameMappingStrategy();
+        // FileInputStream in = new FileInputStream(new File("hogehoge.txt"));
+        // strat.setInputStream(in);
+        strat.setType(CSVSampleBean.class);
+
+        BeanToCsv csv = new BeanToCsv();
+        List<CSVSampleBean> list = getList();
+        CSVWriter out = null;
+        try {
+            // カンマ区切りで、""で囲まない、ばあい。
+            StringWriter writer = new StringWriter();
+            out = new CSVWriter(writer, ',', CSVWriter.NO_ESCAPE_CHARACTER);
+            // out = new CSVWriter(new FileWriter("SampleOut01_1.csv"), ',',
+            // CSVWriter.NO_ESCAPE_CHARACTER);
+            for (CSVSampleBean bean : list) {
+                csv.write(strat, out, bean);
+            }
+            System.out.println(writer);
+        } finally {
+            if (out != null)
+                out.close();
+        }
 
     }
 
