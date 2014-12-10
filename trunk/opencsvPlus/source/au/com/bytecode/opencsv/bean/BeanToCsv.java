@@ -61,6 +61,22 @@ public class BeanToCsv {
         }
     }
 
+    public void write(HeaderColumnNameMappingStrategy strategy, CSVWriter out,
+            Object bean) {
+
+        Map<String, String> map = createMap(strategy);
+        Set<String> keySet = map.keySet();
+        String[] header = keySet.toArray(new String[keySet.size()]);
+        // ヘッダ名と同じ[i]番目に、メソッド名をセット。
+        String[] methodNames = new String[keySet.size()];
+        for (int i = 0; i < header.length; i++) {
+            methodNames[i] = map.get(header[i]);
+        }
+
+        String[] values = convert(bean, methodNames);
+        out.writeNext(values);
+    }
+
     public String[] write(HeaderColumnNameMappingStrategy strategy, Object bean) {
 
         Map<String, String> map = createMap(strategy);
