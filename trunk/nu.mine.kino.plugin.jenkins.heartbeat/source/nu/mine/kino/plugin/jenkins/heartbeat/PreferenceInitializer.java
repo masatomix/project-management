@@ -29,10 +29,10 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     public void initializeDefaultPreferences() {
         IPreferenceStore store = HeartbeatPlugin.getDefault()
                 .getPreferenceStore();
-        store.setDefault(Constants.BASE_URL, "http://www.google.com/");
+        store.setDefault(Constants.BASE_URL, "http://build:8080/jenkins/");
         store.setDefault(Constants.USER_NAME, "");
         store.setDefault(Constants.PASSWORD, "");
-        store.setDefault(Constants.PERIOD, "10");
+        store.setDefault(Constants.PERIOD, "5");
         store.setDefault(Constants.SHOW_DIALOG, false);
     }
 
