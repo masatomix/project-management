@@ -32,7 +32,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(Constants.BASE_URL, "http://build:8080/jenkins/");
         store.setDefault(Constants.USER_NAME, "");
         store.setDefault(Constants.PASSWORD, "");
-        store.setDefault(Constants.PERIOD, "5");
+        store.setDefault(Constants.PERIOD, "60");
         store.setDefault(Constants.SHOW_DIALOG, false);
     }
 

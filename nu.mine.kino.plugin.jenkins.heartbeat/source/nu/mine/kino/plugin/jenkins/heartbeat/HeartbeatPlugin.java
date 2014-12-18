@@ -6,9 +6,8 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -90,18 +89,17 @@ public class HeartbeatPlugin extends AbstractUIPlugin {
         return imageDescriptorFromPlugin(PLUGIN_ID, path);
     }
 
-    private int num = 0;
+    public int check() throws IOException {
+        String url = getPreferenceStore().getString(Constants.BASE_URL);
 
-    public int check(String username, String password) throws IOException {
-
+        // Client c = Client.create();
+        // WebResource r = c.resource(url);
+        // ClientResponse response = r.get(ClientResponse.class);
         // System.out.println(username);
         // System.out.println(password);
-        Document document = Jsoup.connect(
-                getPreferenceStore().getString(Constants.BASE_URL)).get();
-        System.out.println(document);
-        num++;
-        System.out.println(num);
-        return num % 3;
+
+        Response response = Jsoup.connect(url).timeout(10000).execute();
+        return response.statusCode();
     }
 
     // public Element getNexeShortMail(String username, String password)

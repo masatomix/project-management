@@ -31,7 +31,6 @@ import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
-import org.jsoup.nodes.Element;
 
 //import org.jsoup.nodes.Element;
 
@@ -130,20 +129,13 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
                 public void run() {
                     logger.debug("run() - start");
 
-                    String username = HeartbeatPlugin.getDefault()
-                            .getPreferenceStore()
-                            .getString(Constants.USER_NAME);
-                    String password = HeartbeatPlugin.getDefault()
-                            .getPreferenceStore().getString(Constants.PASSWORD);
                     try {
-                        final int counter = HeartbeatPlugin.getDefault().check(
-                                username, password);
-
+                        final int status = HeartbeatPlugin.getDefault().check();
                         boolean checkFlag = false;
-                        if (counter > 0) {
+                        if (status == 200) {
                             checkFlag = true;
                         }
-                        if (checkFlag) { // sms あり
+                        if (checkFlag) { // あり
                             // logger.debug("未読: " + smsCounter + "件");
 
                             // Element nextShortMail = HeartbeatPlugin
@@ -172,7 +164,8 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
                             // logger.debug("未読: " + smsCounter + "件");
                             // previousSMSId = null;
                             trayItem.setImage(errorImage);
-                            trayItem.setToolTipText("Jenkinsサーバとの接続ができませんでした");
+                            trayItem.setToolTipText("Jenkinsサーバとの接続ができませんでした.Statusコード:"
+                                    + status);
                         }
                     } catch (IOException e) {
                         logger.error("run()", e);
