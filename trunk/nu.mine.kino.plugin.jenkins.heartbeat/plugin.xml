@@ -24,10 +24,14 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="nu.mine.kino.plugin.jenkins.heartbeat.application"
-            name="Hello RCP">
+            name="Jenkins Heartbeat">
          <property
                name="windowImages"
                value="icons/alt_window_16.gif,icons/alt_window_32.gif">
+         </property>
+         <property
+               name="appName"
+               value="Jenkins Heartbeat">
          </property>
       </product>
    </extension>
@@ -36,6 +40,15 @@
       <initializer
             class="nu.mine.kino.plugin.jenkins.heartbeat.PreferenceInitializer">
       </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="nu.mine.kino.plugin.jenkins.heartbeat.preferencepages.MainPreferencePage"
+            class="nu.mine.kino.plugin.jenkins.heartbeat.preferencepages.PreferencePage"
+            id="nu.mine.kino.plugin.jenkins.heartbeat.preferencepages.PreferencePage"
+            name="Jenkins">
+      </page>
    </extension>
 
 </plugin>
