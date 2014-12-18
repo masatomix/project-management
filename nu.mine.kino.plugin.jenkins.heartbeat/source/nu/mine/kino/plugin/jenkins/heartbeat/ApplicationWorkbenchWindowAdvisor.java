@@ -31,6 +31,7 @@ import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
+import org.jsoup.HttpStatusException;
 
 //import org.jsoup.nodes.Element;
 
@@ -167,6 +168,11 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
                             trayItem.setToolTipText("Jenkinsサーバとの接続ができませんでした.Statusコード:"
                                     + status);
                         }
+                    } catch (HttpStatusException e) {
+                        logger.error("run()", e);
+                        trayItem.setImage(errorImage);
+                        trayItem.setToolTipText("Jenkinsサーバとの接続ができませんでした.Statusコード:"
+                                + e.getStatusCode());
                     } catch (IOException e) {
                         logger.error("run()", e);
                         // previousSMSId = null;
