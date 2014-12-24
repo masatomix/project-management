@@ -110,7 +110,7 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
           <th class="pane-header">PV</th>
           <th class="pane-header">AC</th>
           <th class="pane-header">EV</th>
-          <th class="pane-header">進捗率(%)</th>
+          <th class="pane-header">進捗率(%)(累積)</th>
           <th class="pane-header">PV +1</th>
         </tr>
         <j:forEach var="bean" items="${it.PVACEVViews}">
