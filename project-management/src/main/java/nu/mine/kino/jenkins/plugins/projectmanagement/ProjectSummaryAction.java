@@ -222,11 +222,11 @@ public class ProjectSummaryAction implements Action {
             Project targetProject = new JSONProjectCreator()
                     .createProject(target);
 
-            for (EVBean acBean : filterList) {
+            for (EVBean evBean : filterList) {
                 EVViewBean bean = new EVViewBean();
-                EVBean2EVViewBean.convert(acBean, bean);
+                EVBean2EVViewBean.convert(evBean, bean);
                 TaskInformation taskInformation = ProjectUtils
-                        .getTaskInformation(targetProject, acBean.getTaskId());
+                        .getTaskInformation(targetProject, evBean.getTaskId());
                 // if (taskInformation != null) {
                 Task2EVViewBean.convert(taskInformation.getTask(), bean);
                 // }
