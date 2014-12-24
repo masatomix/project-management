@@ -41,6 +41,13 @@ import org.apache.commons.lang.time.DateUtils;
  */
 public class ViewUtils {
 
+    /**
+     * 二点間のプロジェクトを比較して、差分のPV/AC/EVを計算する EVのうち進捗率は、直近時点の数値であり差分ではない。
+     * 
+     * @param project
+     * @param base
+     * @return
+     */
     public static List<PVACEVViewBean> getPVACEVViewBeanList(Project project,
             Project base) {
         List<PVACEVViewBean> retList = new ArrayList<PVACEVViewBean>();
@@ -67,12 +74,12 @@ public class ViewUtils {
         PVBean pvBean = ProjectUtils.getPVBean(todayTaskInfo, targetDate);
         ACBean acBean = ProjectUtils.getACBean(todayTaskInfo, baseTaskInfo);
         EVBean evBean = ProjectUtils.getEVBean(todayTaskInfo, baseTaskInfo);
-        
 
         PVBean2PVACEVViewBean.convert(pvBean, bean);
         ACBean2PVACEVViewBean.convert(acBean, bean);
         EVBean2PVACEVViewBean.convert(evBean, bean);
-        bean.setProgressRate(todayTaskInfo.getEV().getProgressRate());
+        bean.setProgressRate(Utils.round(todayTaskInfo.getEV()
+                .getProgressRate()));
 
         PVBean pvBean_p1 = ProjectUtils.getPVBean(todayTaskInfo,
                 DateUtils.addDays(targetDate, 1));
