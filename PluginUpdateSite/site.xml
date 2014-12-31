@@ -48,6 +48,9 @@
    <feature url="features/nu.mine.kino.plugin.jenkins.heartbeat_0.0.1.201412181349.jar" id="nu.mine.kino.plugin.jenkins.heartbeat" version="0.0.1.201412181349">
       <category name="jenkins"/>
    </feature>
+   <feature url="features/nu.mine.kino.plugin.projectmanagement_0.8.8.201501010842.jar" id="nu.mine.kino.plugin.projectmanagement" version="0.8.8.201501010842">
+      <category name="projectmanagement"/>
+   </feature>
    <category-def name="google" label="Google Plugin"/>
    <category-def name="beancreator" label="JavaBeans Creator Plugin"/>
    <category-def name="projectmanagement" label="EVM Tools Plugin"/>
