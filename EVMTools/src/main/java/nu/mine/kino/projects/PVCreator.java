@@ -12,8 +12,6 @@ package nu.mine.kino.projects;
  ******************************************************************************/
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -37,37 +35,15 @@ public class PVCreator {
 
     private static File internalCreate(File input, ProjectCreator creator,
             String suffix) throws ProjectException {
-        File baseDir = input.getParentFile();
-        String outputStr = input.getName() + suffix;
 
-        java.io.InputStream in = null;
-        try {
-            in = new java.io.FileInputStream(input);
-            Project project = creator.createProject(in);
+        Project project = creator.createProject();
+        Date baseDate = project.getBaseDate();
 
-            Date baseDate = project.getBaseDate();
-            String baseDateStr = new SimpleDateFormat("yyyyMMdd")
-                    .format(baseDate);
+        String baseDateStr = new SimpleDateFormat("yyyyMMdd").format(baseDate);
+        File outputFile = WriteUtils.input2Output(input, baseDateStr, suffix);
 
-            File outputDir = new File(baseDir, baseDateStr);
-            if (!outputDir.exists()) {
-                outputDir.mkdirs();
-            }
-            File outputFile = new File(outputDir, outputStr);
-            WriteUtils.writePV(project, outputFile);
-            return outputFile;
-
-        } catch (FileNotFoundException e) {
-            throw new ProjectException(e);
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    throw new ProjectException(e);
-                }
-            }
-        }
+        WriteUtils.writePV(project, outputFile);
+        return outputFile;
 
     }
 
@@ -81,7 +57,7 @@ public class PVCreator {
      * @throws ProjectException
      */
     public static File create(File input) throws ProjectException {
-        return internalCreate(input, new DefaultProjectCreator(), "_PV.tsv");
+        return internalCreate(input, new ExcelProjectCreator(input), "_PV.tsv");
     }
 
     /**
@@ -94,7 +70,7 @@ public class PVCreator {
      * @throws ProjectException
      */
     public static File createFromJSON(File input) throws ProjectException {
-        return internalCreate(input, new JSONProjectCreator(), "_PVj.tsv");
+        return internalCreate(input, new JSONProjectCreator(input), "_PVj.tsv");
     }
 
 }

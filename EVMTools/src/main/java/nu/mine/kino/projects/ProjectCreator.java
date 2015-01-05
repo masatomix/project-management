@@ -12,9 +12,6 @@
 
 package nu.mine.kino.projects;
 
-import java.io.File;
-import java.io.InputStream;
-
 import nu.mine.kino.entity.Project;
 
 /**
@@ -25,7 +22,13 @@ import nu.mine.kino.entity.Project;
  * @see Project
  */
 public interface ProjectCreator {
-    public Project createProject(InputStream in) throws ProjectException;
 
-    public Project createProject(File input) throws ProjectException;
+    // public Project createProject(InputStream in) throws ProjectException;
+    //
+    // public Project createProject(File input) throws ProjectException;
+
+    public Project createProject(Object... conditions) throws ProjectException;
+
+    // public Project createProject() throws ProjectException;
+
 }

@@ -15,7 +15,7 @@ import java.io.IOException;
 
 import nu.mine.kino.entity.Project;
 import nu.mine.kino.entity.TaskInformation;
-import nu.mine.kino.projects.DefaultProjectCreator;
+import nu.mine.kino.projects.ExcelProjectCreator;
 import nu.mine.kino.projects.ProjectException;
 import nu.mine.kino.projects.utils.ProjectUtils;
 
@@ -36,7 +36,7 @@ public class MainEV {
         java.io.InputStream in = null;
         try {
             in = new java.io.FileInputStream(new File(baseDir, input));
-            Project project =  new DefaultProjectCreator().createProject(in);
+            Project project = new ExcelProjectCreator(in).createProject();
             TaskInformation[] taskInfos = project.getTaskInformations();
             for (TaskInformation taskInfo : taskInfos) {
                 ProjectUtils.calculateEVs(taskInfo, null);
