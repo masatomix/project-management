@@ -71,6 +71,8 @@ public class ACCreatorTest {
 
     @Test
     public void test3() throws FileNotFoundException, ProjectException {
+        ProjectWriter.write(new File("project_management_tools.xls"));
+        ProjectWriter.write(new File("base_project_management_tools.xls"));
 
         File input = new File("project_management_tools.xls.json");
         File input_base = new File("base_project_management_tools.xls.json");
