@@ -12,6 +12,7 @@ package nu.mine.kino.projects;
  ******************************************************************************/
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -19,13 +20,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import nu.mine.kino.entity.ACBean;
 import nu.mine.kino.entity.Project;
 import nu.mine.kino.entity.TaskInformation;
 import nu.mine.kino.projects.utils.ProjectUtils;
 import nu.mine.kino.projects.utils.WriteUtils;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * 2ì_ä‘ÇÃç∑ï™ÇéÊÇÈÇ±Ç∆Ç…ÇÊÇËÅAÇªÇÃä˙ä‘ÇÃACÇéÊìæÇ∑ÇÈÅB
@@ -49,54 +50,49 @@ public class ACCreator {
     }
 
     private static Object[] internalCreateList(File target, File base,
-            ProjectCreator creator) throws ProjectException {
-        java.io.InputStream in1 = null;
-        java.io.InputStream in2 = null;
+            ProjectCreator creator1, ProjectCreator creator2)
+            throws ProjectException {
+        // java.io.InputStream in1 = null;
+        // java.io.InputStream in2 = null;
         try {
-            in1 = new java.io.FileInputStream(target);
-            Project project1 = creator.createProject(in1);
-            in2 = new java.io.FileInputStream(base);
-            Project project2 = creator.createProject(in2);
+            // in1 = new java.io.FileInputStream(target);
+            Project project1 = creator1.createProject();
+            // in2 = new java.io.FileInputStream(base);
+            Project project2 = creator2.createProject();
 
             return internalCreateList(project1, project2);
-        } catch (FileNotFoundException e) {
-            throw new ProjectException(e);
+            // } catch (FileNotFoundException e) {
+            // throw new ProjectException(e);
         } finally {
-            if (in1 != null) {
-                try {
-                    in1.close();
-                } catch (IOException e) {
-                    throw new ProjectException(e);
-                }
-            }
-            if (in2 != null) {
-                try {
-                    in2.close();
-                } catch (IOException e) {
-                    throw new ProjectException(e);
-                }
-            }
+            // if (in1 != null) {
+            // try {
+            // in1.close();
+            // } catch (IOException e) {
+            // throw new ProjectException(e);
+            // }
+            // }
+            // if (in2 != null) {
+            // try {
+            // in2.close();
+            // } catch (IOException e) {
+            // throw new ProjectException(e);
+            // }
+            // }
         }
     }
 
     private static File internalCreate(File target, File base,
-            ProjectCreator creator, String suffix) throws ProjectException {
+            ProjectCreator creator1, ProjectCreator creator2, String suffix)
+            throws ProjectException {
 
-        Object[] tmp = internalCreateList(target, base, creator);
+        Object[] tmp = internalCreateList(target, base, creator1, creator2);
         List<ACBean> returnList = (List<ACBean>) tmp[0];
         Project project1 = (Project) tmp[1];
 
-        File baseDir = target.getParentFile();
-        String fileName = target.getName();
-        String output = fileName + suffix;
-
         Date baseDate = project1.getBaseDate();
         String baseDateStr = new SimpleDateFormat("yyyyMMdd").format(baseDate);
-        File outputDir = new File(baseDir, baseDateStr);
-        if (!outputDir.exists()) {
-            outputDir.mkdirs();
-        }
-        File outputFile = new File(outputDir, output);
+
+        File outputFile = WriteUtils.input2Output(target, baseDateStr, suffix);
         WriteUtils.writeAC(project1, returnList, outputFile);
 
         return outputFile;
@@ -124,7 +120,8 @@ public class ACCreator {
         if (!StringUtils.isEmpty(base_prefix)) {
             suffix = "_" + base_prefix + "AC.tsv";
         }
-        return internalCreate(target, base, new DefaultProjectCreator(), suffix);
+        return internalCreate(target, base, new ExcelProjectCreator(target),
+                new ExcelProjectCreator(base), suffix);
     }
 
     /**
@@ -148,20 +145,21 @@ public class ACCreator {
         if (!StringUtils.isEmpty(base_prefix)) {
             suffix = "_" + base_prefix + "ACj.tsv";
         }
-        return internalCreate(target, base, new JSONProjectCreator(), suffix);
+        return internalCreate(target, base, new JSONProjectCreator(target),
+                new JSONProjectCreator(base), suffix);
     }
 
     public static List<ACBean> createACList(File target, File base)
             throws ProjectException {
         Object[] tmp = internalCreateList(target, base,
-                new DefaultProjectCreator());
+                new ExcelProjectCreator(target), new ExcelProjectCreator(base));
         return (List<ACBean>) tmp[0];
     }
 
     public static List<ACBean> createACListFromJSON(File target, File base)
             throws ProjectException {
-        Object[] tmp = internalCreateList(target, base,
-                new JSONProjectCreator());
+        Object[] tmp = internalCreateList(target, base, new JSONProjectCreator(
+                target), new JSONProjectCreator(base));
         return (List<ACBean>) tmp[0];
     }
 

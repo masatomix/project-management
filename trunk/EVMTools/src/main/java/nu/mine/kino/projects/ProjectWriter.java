@@ -18,7 +18,6 @@ import java.io.UnsupportedEncodingException;
 
 import net.arnx.jsonic.JSON;
 import nu.mine.kino.entity.Project;
-import nu.mine.kino.projects.utils.ProjectUtils;
 import nu.mine.kino.projects.utils.WriteUtils;
 
 /**
@@ -35,7 +34,7 @@ public class ProjectWriter {
         java.io.InputStream in = null;
         try {
             in = new java.io.FileInputStream(input);
-            Project project = new DefaultProjectCreator().createProject(in);
+            Project project = new ExcelProjectCreator(in).createProject();
 
             // System.out.println(project);
             // JSON json = new JSON();
