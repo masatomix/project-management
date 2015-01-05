@@ -11,6 +11,10 @@
             id="nu.mine.kino.plugin.projectmanagement.handlers.ProjectWriterHandler"
             name="EVM集計ツール実行">
       </command>
+      <command
+            id="nu.mine.kino.plugin.projectmanagement.handlers.JSONWriterHandler"
+            name="ExcelをJSONに変換">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -21,6 +25,10 @@
       <handler
             class="nu.mine.kino.plugin.projectmanagement.handlers.ProjectWriterHandler"
             commandId="nu.mine.kino.plugin.projectmanagement.handlers.ProjectWriterHandler">
+      </handler>
+      <handler
+            class="nu.mine.kino.plugin.projectmanagement.handlers.JSONWriterHandler"
+            commandId="nu.mine.kino.plugin.projectmanagement.handlers.JSONWriterHandler">
       </handler>
    </extension>
    <extension
@@ -73,6 +81,16 @@
                   icon="icons/page_excel.png"
                   style="push">
                    <visibleWhen                    checkEnabled="true">
+              <reference
+                    definitionId="nu.mine.kino.plugin.projectmanagement.commands.IFileCommandDefinition">
+              </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="nu.mine.kino.plugin.projectmanagement.handlers.JSONWriterHandler"
+                  icon="icons/page_excel.png"
+                  style="push">
+                                     <visibleWhen                    checkEnabled="true">
               <reference
                     definitionId="nu.mine.kino.plugin.projectmanagement.commands.IFileCommandDefinition">
               </reference>
