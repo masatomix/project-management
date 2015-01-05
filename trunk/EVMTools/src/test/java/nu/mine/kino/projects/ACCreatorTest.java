@@ -69,6 +69,28 @@ public class ACCreatorTest {
 
     }
 
+    @Test
+    public void test3() throws FileNotFoundException, ProjectException {
+
+        File input = new File("project_management_tools.xls.json");
+        File input_base = new File("base_project_management_tools.xls.json");
+        System.out.println(input.getAbsolutePath());
+
+        StopWatch watch = new StopWatch();
+        watch.start();
+
+        List<ACBean> createACList = ACCreator.createACListFromJSON(input,
+                input_base);
+        List<ACBean> filterAC = ProjectUtils.filterList(createACList);
+        watch.stop();
+
+        printList(createACList);
+        printList(filterAC);
+        System.out.println(watch.getTime() + " ms.");
+        watch.reset();
+
+    }
+
     private void printList(List<ACBean> filterAC) {
         System.out.println("------");
         for (ACBean acBean : filterAC) {
