@@ -22,7 +22,7 @@ import java.util.List;
 import net.arnx.jsonic.JSON;
 import nu.mine.kino.entity.PVBean;
 import nu.mine.kino.entity.Project;
-import nu.mine.kino.projects.DefaultProjectCreator;
+import nu.mine.kino.projects.ExcelProjectCreator;
 import nu.mine.kino.projects.JSONProjectCreator;
 import nu.mine.kino.projects.PVCreator;
 import nu.mine.kino.projects.ProjectException;
@@ -49,7 +49,7 @@ public class ProjectUtilsTest {
 
         StopWatch watch = new StopWatch();
         watch.start();
-        Project projectOrg = new DefaultProjectCreator().createProject(in);
+        Project projectOrg = new ExcelProjectCreator(in).createProject();
         watch.stop();
         System.out.println(watch.getTime() + " ms.");
         watch.reset();
@@ -59,8 +59,8 @@ public class ProjectUtilsTest {
         System.out.println(output.getAbsolutePath());
 
         watch.start();
-        Project projectJ = new JSONProjectCreator()
-                .createProject(new FileInputStream(output));
+        Project projectJ = new JSONProjectCreator(new FileInputStream(output))
+                .createProject();
         watch.stop();
         System.out.println(watch.getTime() + " ms.");
 
@@ -89,7 +89,7 @@ public class ProjectUtilsTest {
 
         StopWatch watch = new StopWatch();
         watch.start();
-        Project projectOrg = new DefaultProjectCreator().createProject(in);
+        Project projectOrg = new ExcelProjectCreator(in).createProject();
         watch.stop();
         System.out.println(watch.getTime() + " ms.");
         watch.reset();
