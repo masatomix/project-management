@@ -59,26 +59,44 @@ public class ProjectWriterHandler extends AbstractExecutorHandler {
                     File parent = iFile.getParent().getLocation().toFile();
                     File target = iFile.getLocation().toFile();
 
-                    File target_base = new File(target.getParentFile(), "base_"
-                            + target.getName());
-
                     logger.debug("run(IProgressMonitor)"
                             + target.getAbsolutePath());
                     logger.debug("run(IProgressMonitor)"
                             + parent.getAbsolutePath());
-                    try {
-                        File jsonFile = ProjectWriter.write(target);
-                        PVCreator.createFromJSON(jsonFile);
-                        
-                        File jsonFile_base = ProjectWriter.write(target_base);
-                        ACCreator.createFromJSON(jsonFile, jsonFile_base);
-                        EVCreator.createFromJSON(jsonFile, jsonFile_base);
 
+                    File jsonFile = null;
+                    // 今日分について。ExcelからJSON。JSONからPV
+                    try {
+                        jsonFile = ProjectWriter.write(target);
+                        PVCreator.createFromJSON(jsonFile);
                     } catch (ProjectException e) {
                         logger.error("run(IProgressMonitor)", e);
-
+                        logger.error("今日分からJSONもしくはそのあとのPVを作成するときにエラー。");
                         Activator.logException(e, false);
                         throw new InvocationTargetException(e);
+                    }
+
+                    // Base分と、それとの差分について。
+                    // ExcelからJSON。JSONからAC/EV
+                    String[] prefixArray = { "base_", "base1_", "base2_" };
+                    for (int i = 0; i < prefixArray.length; i++) {
+                        File target_base = new File(target.getParentFile(),
+                                prefixArray[i] + target.getName());
+                        if (target_base.exists()) {
+                            try {
+                                File jsonFile_base = ProjectWriter
+                                        .write(target_base);
+                                ACCreator.createFromJSON(jsonFile,
+                                        jsonFile_base, prefixArray[i]);
+                                EVCreator.createFromJSON(jsonFile,
+                                        jsonFile_base, prefixArray[i]);
+                            } catch (ProjectException e) {
+                                logger.error("run(IProgressMonitor)", e);
+                                logger.error("BaseからJSONもしくはそのあとのAC/EVを作成するときにエラー。");
+                                Activator.logException(e, false);
+                                throw new InvocationTargetException(e);
+                            }
+                        }
                     }
 
                 }
