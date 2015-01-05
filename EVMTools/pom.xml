@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>nu.mine.kino.project</groupId>
   <artifactId>EVMTools</artifactId>
-  <version>0.8.7-SNAPSHOT</version>
+  <version>0.8.8-SNAPSHOT</version>
   
   <build>
     <plugins>
@@ -59,6 +59,16 @@
       <version>4.1</version>
 	  <scope>test</scope>
     </dependency>
+
+
+
+<dependency>
+    <groupId>com.taskadapter</groupId>
+    <artifactId>redmine-java-api</artifactId>
+    <version>2.0.0</version>
+</dependency>
+
+
   </dependencies>
 </project>
 
