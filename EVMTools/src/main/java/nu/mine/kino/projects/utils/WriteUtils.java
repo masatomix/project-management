@@ -38,6 +38,18 @@ import org.apache.commons.lang.time.DateUtils;
 public class WriteUtils {
     private static final String delimiter = "\t";
 
+    public static File input2Output(File input, String subDir, String suffix) {
+        File baseDir = input.getParentFile();
+        String outputStr = input.getName() + suffix;
+
+        File outputDir = new File(baseDir, subDir);
+        if (!outputDir.exists()) {
+            outputDir.mkdirs();
+        }
+        File outputFile = new File(outputDir, outputStr);
+        return outputFile;
+    }
+
     private static String getPVHeader(Project project) {
         StringBuffer buf = new StringBuffer();
         buf.append("#" + delimiter);
