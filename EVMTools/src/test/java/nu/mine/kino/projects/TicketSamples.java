@@ -12,7 +12,10 @@
 
 package nu.mine.kino.projects;
 
+import java.io.File;
 import java.util.List;
+
+import nu.mine.kino.entity.Project;
 
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.RedmineManagerFactory;
@@ -25,9 +28,10 @@ public class TicketSamples {
         // RedmineManager mgr = RedmineManagerFactory.createWithApiKey(
         // redmineHost, apiAccessKey);
         RedmineManager mgr = RedmineManagerFactory.createWithUserAuth(
-                "http://demo.redmine.org/", "masatomix", "xxxxxx");
+                "http://demo.redmine.org/", "masatomix", "hogehoge");
         try {
             tryGetIssues(mgr);
+            tryGetIssues2(mgr);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -39,5 +43,14 @@ public class TicketSamples {
         for (Issue issue : issues) {
             System.out.println(issue.toString());
         }
+    }
+
+    private static void tryGetIssues2(RedmineManager mgr) throws Exception {
+        RedmineProjectCreator creator = new RedmineProjectCreator(mgr);
+        Project createProject = creator.createProject("kinosandboxproject",
+                null);
+        System.out.println(createProject);
+        ProjectWriter.write(createProject, new File("red.json"));
+
     }
 }
