@@ -17,11 +17,13 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.Date;
 import java.util.List;
 
 import net.arnx.jsonic.JSON;
 import nu.mine.kino.entity.PVBean;
 import nu.mine.kino.entity.Project;
+import nu.mine.kino.entity.TaskInformation;
 import nu.mine.kino.projects.ExcelProjectCreator;
 import nu.mine.kino.projects.JSONProjectCreator;
 import nu.mine.kino.projects.PVCreator;
@@ -98,5 +100,45 @@ public class ProjectUtilsTest {
         for (PVBean pvBean : list) {
             System.out.println(pvBean);
         }
+    }
+
+    @Test
+    public void test3() throws FileNotFoundException, ProjectException {
+        File baseDir = new File("./");
+        String fileName = "project_management_tools";
+        String input = fileName + "." + "xls";
+
+        java.io.InputStream in = null;
+        File target = new File(baseDir, input);
+        in = new java.io.FileInputStream(target);
+
+        StopWatch watch = new StopWatch();
+        watch.start();
+        Project project = new ExcelProjectCreator(in).createProject();
+        watch.stop();
+        System.out.println(watch.getTime() + " ms.");
+        watch.reset();
+
+        TaskInformation[] taskInformations = project.getTaskInformations();
+        for (TaskInformation taskInfo : taskInformations) {
+            // 終了予定日 <= 基準日 かつ、終了していないモノをアラート。
+            System.out.println("-----" + taskInfo.getTaskId() + "------");
+            boolean idEnd = (taskInfo.getEV().getEndDate() != null);
+            Date baseDate = project.getBaseDate();
+            Date scheduledEndDate = taskInfo.getTask().getScheduledEndDate();
+            System.out.println("終了?: " + idEnd);// 採用
+            System.out.println("基準日: " + baseDate); // 採用
+            System.out.println("終了予定日: " + scheduledEndDate);
+            if (scheduledEndDate != null) {
+                boolean isBefore = scheduledEndDate.before(baseDate)
+                        || scheduledEndDate.equals(baseDate);// 予定日は基準日より前か
+                System.out.println(isBefore);
+            }
+            // System.out.println("実績終了日: " + taskInfo.getEV().getEndDate());
+            // System.out.println("終了?: "
+            // + (taskInfo.getEV().getProgressRate() == 1.0d));
+            System.out.println("-----");
+        }
+
     }
 }
