@@ -112,6 +112,7 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
           <th class="pane-header">EV</th>
           <th class="pane-header">進捗率(%)(累積)</th>
           <th class="pane-header">PV +1</th>
+          <th class="pane-header">要注意</th>
         </tr>
         <j:forEach var="bean" items="${it.PVACEVViews}">
           <tr>
@@ -125,9 +126,12 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
             <td class="pane" style="text-align:right">${bean.earnedValue!='NaN'? bean.earnedValue: "-"}</td>
             <td class="pane" style="text-align:right">${bean.progressRate!='NaN'? bean.progressRate*100.0: "-"}</td>
             <td class="pane" style="text-align:right">${bean.plannedValue_p1!='NaN'? bean.plannedValue_p1: "-"}</td>
+            <td class="pane" style="text-align:center">${bean.check ? "○":"" }</td>
           </tr>
         </j:forEach>
       </table>
+<div style="text-align:right" tooltip="「要注意」列は、すでに完了していなければいけないものに○をつけています。"><a tabindex="9999"><img src='${imagesURL}/16x16/help.png'  alt="Help for feature: evm" ></img></a></div>
+
 
 
 <hr />
