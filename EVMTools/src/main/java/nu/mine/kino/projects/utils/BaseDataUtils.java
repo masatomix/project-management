@@ -69,15 +69,17 @@ public class BaseDataUtils {
      * @return ç≈è¨ÇÃì˙ït
      */
     private static Date minDate(Map<String, String> plotDataMap) {
+        boolean exist = false;
         Set<String> keySet = plotDataMap.keySet();
         long ans = Long.MAX_VALUE;
         for (String serial : keySet) {
             if (!Utils.isEmpty(plotDataMap.get(serial))) {
                 Date targetDate = Utils.excelSerialValue2Date(serial);
                 ans = Math.min(ans, targetDate.getTime());
+                exist = true;
             }
         }
-        return new Date(ans);
+        return exist ? new Date(ans) : null;
     }
 
     /**
@@ -88,15 +90,17 @@ public class BaseDataUtils {
      * @return ç≈ëÂÇÃì˙ït
      */
     private static Date maxDate(Map<String, String> plotDataMap) {
+        boolean exist = false;
         Set<String> keySet = plotDataMap.keySet();
         long ans = Long.MIN_VALUE;
         for (String serial : keySet) {
             if (!Utils.isEmpty(plotDataMap.get(serial))) {
                 Date targetDate = Utils.excelSerialValue2Date(serial);
                 ans = Math.max(ans, targetDate.getTime());
+                exist = true;
             }
         }
-        return new Date(ans);
+        return exist ? new Date(ans) : null;
 
     }
 
