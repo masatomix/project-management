@@ -13,7 +13,7 @@ package nu.mine.kino.entity;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
- * 画面で使用するAC情報
+ * 画面で使用するPV/AC/EV情報
  * 
  * @author Masatomi KINO and JavaBeans Creator Plug-in
  */
@@ -103,6 +103,11 @@ public class BasePVACEVViewBean {
      * 稼動予定日数 (From Task)
      */
     private int numberOfDays;
+
+    /**
+     * 要注意タスク
+     */
+    private boolean check;
 
     /**
      * idをセットする。
@@ -275,6 +280,16 @@ public class BasePVACEVViewBean {
     }
 
     /**
+     * 要注意タスクをセットする。
+     * 
+     * @param check
+     *            要注意タスク
+     */
+    public void setCheck(boolean check) {
+        this.check = check;
+    }
+
+    /**
      * idを取得する。
      * 
      * @return id
@@ -427,6 +442,15 @@ public class BasePVACEVViewBean {
         return numberOfDays;
     }
 
+    /**
+     * 要注意タスクを取得する。
+     * 
+     * @return 要注意タスク
+     */
+    public boolean isCheck() {
+        return check;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this).append("id", id)
@@ -440,6 +464,7 @@ public class BasePVACEVViewBean {
                 .append("予定工数", numberOfManDays)
                 .append("予定開始日", scheduledStartDate)
                 .append("予定終了日", scheduledEndDate)
-                .append("稼動予定日数", numberOfDays).toString();
+                .append("稼動予定日数", numberOfDays).append("要注意タスク", check)
+                .toString();
     }
 }
