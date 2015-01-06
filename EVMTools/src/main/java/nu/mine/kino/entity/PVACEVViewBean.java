@@ -33,9 +33,11 @@ public class PVACEVViewBean extends BasePVACEVViewBean implements Validatable {
         double pv_p1 = getPlannedValue_p1();
 
         // スケジュール期限が基準日よりあとなのに、100%になっていないもの
-        if (this.getBaseDate().after(getScheduledEndDate())
-                && progressRate != 1.0) {
-            return true;
+        if (getScheduledEndDate() != null) {
+            if (this.getBaseDate().after(getScheduledEndDate())
+                    && progressRate != 1.0) {
+                return true;
+            }
         }
 
         if (Utils.isNonZeroNumeric(pv) || Utils.isNonZeroNumeric(ac)
