@@ -107,7 +107,7 @@ public class ProjectSummaryAction implements Action {
         FileInputStream in = null;
         try {
             in = new FileInputStream(new File(owner.getRootDir(), name));
-            Project project = new JSONProjectCreator().createProject(in);
+            Project project = new JSONProjectCreator(in).createProject();
             TaskInformation[] taskInformations = project.getTaskInformations();
             for (TaskInformation taskInfo : taskInformations) {
                 String personInCharge = taskInfo.getTask().getPersonInCharge();
@@ -182,8 +182,8 @@ public class ProjectSummaryAction implements Action {
                     base);
             // List<ACBean> filterList = ProjectUtils.filterAC(list);
 
-            Project targetProject = new JSONProjectCreator()
-                    .createProject(target);
+            Project targetProject = new JSONProjectCreator(target)
+                    .createProject();
 
             for (ACBean acBean : filterList) {
                 ACViewBean bean = new ACViewBean();
@@ -219,8 +219,8 @@ public class ProjectSummaryAction implements Action {
                     base);
             // List<EVBean> filterList = ProjectUtils.filterEV(list);
 
-            Project targetProject = new JSONProjectCreator()
-                    .createProject(target);
+            Project targetProject = new JSONProjectCreator(target)
+                    .createProject();
 
             for (EVBean evBean : filterList) {
                 EVViewBean bean = new EVViewBean();
@@ -252,7 +252,7 @@ public class ProjectSummaryAction implements Action {
         FileInputStream in = null;
         try {
             in = new FileInputStream(new File(owner.getRootDir(), name));
-            Project project = new JSONProjectCreator().createProject(in);
+            Project project = new JSONProjectCreator(in).createProject();
             return project.getBaseDate();
         } catch (FileNotFoundException e) {
             // TODO é©ìÆê∂ê¨Ç≥ÇÍÇΩ catch ÉuÉçÉbÉN
@@ -277,7 +277,7 @@ public class ProjectSummaryAction implements Action {
         FileInputStream in = null;
         try {
             in = new FileInputStream(new File(owner.getRootDir(), name));
-            Project project = new JSONProjectCreator().createProject(in);
+            Project project = new JSONProjectCreator(in).createProject();
 
             DescriptorImpl descriptor = (DescriptorImpl) Jenkins.getInstance()
                     .getDescriptor(EVMToolsBuilder.class);
@@ -313,9 +313,9 @@ public class ProjectSummaryAction implements Action {
         File target = new File(owner.getRootDir(), name);
         File base = new File(owner.getRootDir(), "base_" + name);
         try {
-            Project targetProject = new JSONProjectCreator()
-                    .createProject(target);
-            Project baseProject = new JSONProjectCreator().createProject(base);
+            Project targetProject = new JSONProjectCreator(target)
+                    .createProject();
+            Project baseProject = new JSONProjectCreator(base).createProject();
 
             DescriptorImpl descriptor = (DescriptorImpl) Jenkins.getInstance()
                     .getDescriptor(EVMToolsBuilder.class);
@@ -431,7 +431,8 @@ public class ProjectSummaryAction implements Action {
 
             @Override
             public boolean accept(File pathname) {
-                return !pathname.isDirectory() && pathname.getName().startsWith(name);
+                return !pathname.isDirectory()
+                        && pathname.getName().startsWith(name);
             }
         });
     }
