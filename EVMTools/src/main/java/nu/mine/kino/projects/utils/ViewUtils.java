@@ -82,6 +82,21 @@ public class ViewUtils {
         PVBean pvBean_p1 = ProjectUtils.getPVBean(todayTaskInfo,
                 DateUtils.addDays(targetDate, 1));
         bean.setPlannedValue_p1(pvBean_p1.getPlannedValue());
+        // ココでチェックして、要注意タスクを表記すること
+        // //////////////
+        // スケジュール期限が基準日よりあとなのに、100%になっていないもの
+        Date scheduledEndDate = bean.getScheduledEndDate();
+        Date baseDate = bean.getBaseDate();
+        if (scheduledEndDate != null) {
+            // 予定日(scheEndDate)が、基準日(baseDate)より前(もしくは等しい)の場合
+            boolean isDelay = scheduledEndDate.before(baseDate)
+                    || scheduledEndDate.equals(baseDate);
+            // 遅れていて、かつ完了していない場合。
+            if (isDelay && bean.getProgressRate() != 1.0) {
+                bean.setCheck(true);
+            }
+        }
+        // //////////////
         return bean;
     }
 
