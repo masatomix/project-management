@@ -13,12 +13,22 @@ package nu.mine.kino.projects;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.arnx.jsonic.JSON;
+import nu.mine.kino.entity.OutputScheduleBean;
 import nu.mine.kino.entity.Project;
+import nu.mine.kino.entity.TaskInformation;
+import nu.mine.kino.entity.TaskInformation2TextScheduleBean;
+import nu.mine.kino.entity.TextScheduleBean;
 import nu.mine.kino.projects.utils.WriteUtils;
+import au.com.bytecode.opencsv.CSVWriter;
+import au.com.bytecode.opencsv.bean.BeanToCsv;
+import au.com.bytecode.opencsv.bean.ColumnPositionMappingStrategy;
 
 /**
  * プロジェクト情報をJSON形式で出力する。
@@ -27,6 +37,40 @@ import nu.mine.kino.projects.utils.WriteUtils;
  * @version $Revision$
  */
 public class ProjectWriter {
+    public static void writeText(Project project, File outputFile)
+            throws ProjectException {
+        List<TextScheduleBean> list = new ArrayList<TextScheduleBean>();
+        TaskInformation[] taskInformations = project.getTaskInformations();
+        for (TaskInformation taskInfo : taskInformations) {
+            OutputScheduleBean bean = new OutputScheduleBean();
+            TaskInformation2TextScheduleBean.convert(taskInfo, bean);
+            list.add(bean);
+        }
+
+        ColumnPositionMappingStrategy<OutputScheduleBean> strat = new ColumnPositionMappingStrategy<OutputScheduleBean>();
+        strat.setType(OutputScheduleBean.class);
+        strat.setColumnMapping(new String[] { "taskId", "taskName",
+                "personInCharge", "numberOfManDays", "scheduledStartDateStr",
+                "scheduledEndDateStr", "progressRate", "numberOfDays",
+                "plannedValue", "earnedValue", "actualCost" });
+        BeanToCsv csv = new BeanToCsv();
+        // StringWriter writer = new StringWriter();
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(outputFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        csv.writeAll(strat, new CSVWriter(writer, '\t',
+                CSVWriter.NO_QUOTE_CHARACTER), list);
+
+        // SVNLogBean bean = new SVNLogBean();
+        // bean.setType(type);
+        // list.add(bean);
+        // BeanToCsv csv = new BeanToCsv();
+        // String[] records = csv.write(strat, bean);
+    }
+
     public static File write(File input) throws ProjectException {
         File baseDir = input.getParentFile();
         String output = input.getName() + "." + "json";
@@ -35,15 +79,7 @@ public class ProjectWriter {
         try {
             in = new java.io.FileInputStream(input);
             Project project = new ExcelProjectCreator(in).createProject();
-
-            // System.out.println(project);
-            // JSON json = new JSON();
-            // json.setPrettyPrint(true);
-            // String jsonStr = json.format(project);
-            //
             File outputFile = new File(baseDir, output);
-            // ProjectUtils.writeFile(jsonStr.getBytes("UTF-8"), outputFile);
-
             write(project, outputFile);
             return outputFile;
 
