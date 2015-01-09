@@ -50,7 +50,8 @@ public class TicketSamples {
         Project createProject = creator.createProject("kinosandboxproject",
                 null);
         System.out.println(createProject);
-        ProjectWriter.write(createProject, new File("red.json"));
+        ProjectWriter.write(createProject, new File("redmineProject.json"));
+        ProjectWriter.writeText(createProject, new File("redmineProject.tsv"));
 
     }
 }
