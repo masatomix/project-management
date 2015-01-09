@@ -17,7 +17,11 @@ import java.util.List;
 
 import nu.mine.kino.entity.ACTotalBean;
 import nu.mine.kino.entity.EVTotalBean;
+import nu.mine.kino.entity.Issue2ACTotalBean;
+import nu.mine.kino.entity.Issue2EVTotalBean;
+import nu.mine.kino.entity.Issue2PVTotalBean;
 import nu.mine.kino.entity.Issue2Task;
+import nu.mine.kino.entity.PVTotalBean;
 import nu.mine.kino.entity.Project;
 import nu.mine.kino.entity.Task;
 import nu.mine.kino.entity.TaskInformation;
@@ -54,23 +58,14 @@ public class RedmineProjectCreator implements ProjectCreator {
                 System.out.println("creator: " + issue.toString());
                 Task task = Issue2Task.convert(issue);
                 String taskId = task.getTaskId();
-
                 TaskInformation info = new TaskInformation();
-
                 info.setTaskId(taskId);
-                ACTotalBean ac = new ACTotalBean();
-                ac.setTaskId(taskId);
-                if (issue.getSpentHours() != null) {
-                    ac.setActualCost(issue.getSpentHours() / 8.0d);
-                }
 
-                EVTotalBean ev = new EVTotalBean();
-                ev.setTaskId(taskId);
-                if (issue.getDoneRatio() != null) {
-                    ev.setProgressRate(issue.getDoneRatio() / 8.0d);
-                }
-
+                PVTotalBean pv = Issue2PVTotalBean.convert(issue);
+                ACTotalBean ac = Issue2ACTotalBean.convert(issue);
+                EVTotalBean ev = Issue2EVTotalBean.convert(issue);
                 info.setTask(task);
+                info.setPV(pv);
                 info.setAC(ac);
                 info.setEV(ev);
 
