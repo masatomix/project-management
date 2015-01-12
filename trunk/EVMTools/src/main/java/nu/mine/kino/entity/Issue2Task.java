@@ -26,7 +26,8 @@ public class Issue2Task {
         // 必要に応じて特殊な載せ替え処理 開始
         ((Task) dest).setTaskId(Integer.toString(source.getId()));
         ((Task) dest).setTaskName(source.getSubject());
-        ((Task) dest).setPersonInCharge(source.getAssignee().getFullName());
+        ((Task) dest).setPersonInCharge(source.getAssignee() != null ? source
+                .getAssignee().getFullName() : null);
         ((Task) dest).setScheduledStartDate(source.getStartDate());
         ((Task) dest).setScheduledEndDate(source.getDueDate());
         ((Task) dest).setNumberOfManDays(toNumberOfManDays(source));
@@ -46,7 +47,8 @@ public class Issue2Task {
         // 必要に応じて特殊な載せ替え処理 開始
         ((Task) dest).setTaskId(Integer.toString(source.getId()));
         ((Task) dest).setTaskName(source.getSubject());
-        ((Task) dest).setPersonInCharge(source.getAssignee().getFullName());
+        ((Task) dest).setPersonInCharge(source.getAssignee() != null ? source
+                .getAssignee().getFullName() : null);
         ((Task) dest).setScheduledStartDate(source.getStartDate());
         ((Task) dest).setScheduledEndDate(source.getDueDate());
         ((Task) dest).setNumberOfManDays(toNumberOfManDays(source));
