@@ -24,21 +24,21 @@ import com.taskadapter.redmineapi.RedmineManagerFactory;
 import com.taskadapter.redmineapi.bean.Issue;
 
 public class TicketSamples {
+    private static final String HOST = "http://demo.redmine.org/";
+
     private static Integer queryId = null; // any
+
+    private static String projectKey = "kinosandboxproject";
 
     public static void main(String[] args) {
         // RedmineManager mgr = RedmineManagerFactory.createWithApiKey(
         // redmineHost, apiAccessKey);
-        RedmineManager mgr = RedmineManagerFactory.createWithUserAuth(
-                "http://demo.redmine.org/", "masatomix", "hogehoge");
+        RedmineManager mgr = RedmineManagerFactory.createWithUserAuth(HOST,
+                "masatomix", "hogehoge");
         try {
-            tryGetIssues(mgr);
-            // tryGetIssues2(mgr);
-            // tryGetIssues3(mgr, "http://demo.redmine.org",
-            // "kinosandboxproject",
-            // "apiAccessKey");
-            tryGetIssues4(mgr, "http://demo.redmine.org", "kinosandboxproject",
-                    "apiAccessKey");
+            // tryGetIssues(mgr);
+            tryGetIssues3(mgr, HOST, projectKey, "apiAccessKey");
+            // tryGetIssues4(mgr, HOST, projectKey, "apiAccessKey");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -54,8 +54,7 @@ public class TicketSamples {
 
     private static void tryGetIssues2(RedmineManager mgr) throws Exception {
         RedmineProjectCreator creator = new RedmineProjectCreator(mgr);
-        Project createProject = creator.createProject("kinosandboxproject",
-                null);
+        Project createProject = creator.createProject(projectKey, null);
         System.out.println(createProject);
         ProjectWriter.write(createProject, new File("redmineProject.json"));
         ProjectWriter.writeText(createProject, new File("redmineProject.tsv"));
@@ -71,7 +70,7 @@ public class TicketSamples {
 
         String webPage = HttpUtils.getWebPage(url);
         System.out.println(webPage);
-        Issue[] issues = JSON.decode(webPage, Issue[].class);
+        Issue[] issues = JSON.decode(webPage, Issue2[].class);
         for (Issue issue : issues) {
             System.out.println(issue);
         }
@@ -91,8 +90,7 @@ public class TicketSamples {
 
         RedmineProjectCreator creator = new RedmineProjectCreator2(mgr,
                 redmineHost, apiAccessKey);
-        Project createProject = creator.createProject("kinosandboxproject",
-                null);
+        Project createProject = creator.createProject(projectKey, null);
 
     }
 }
