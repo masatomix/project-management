@@ -18,6 +18,10 @@
   <f:entry title="Password" field="password">
     <f:textbox />
   </f:entry>
+
+  <f:entry title="or API Key" field="apikey">
+    <f:textbox />
+  </f:entry>
   <f:entry title="ProjectId" field="projectId">
     <f:textbox />
   </f:entry>
