@@ -113,11 +113,6 @@ public class RedmineEVMToolsBuilder extends Builder {
     public boolean perform(AbstractBuild build, Launcher launcher,
             BuildListener listener) throws InterruptedException, IOException {
 
-        // String url = "http://build/redmine";
-        // String userid = "masatomix";
-        // String password = "arorua";
-        // String projectId = "projectmanagementtools";
-        // String queryId = null;
         Integer queryIdInt = null;
         if (!StringUtils.isEmpty(queryId)) {
             queryIdInt = Integer.valueOf(queryId);
