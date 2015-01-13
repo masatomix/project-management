@@ -19,7 +19,7 @@
     <f:textbox />
   </f:entry>
 
-  <f:entry title="or API Key" field="apikey">
+  <f:entry title="or API Key" field="apiKey">
     <f:textbox />
   </f:entry>
   <f:entry title="ProjectId" field="projectId">

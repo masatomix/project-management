@@ -56,7 +56,7 @@ public class RedmineProjectCreator2 extends RedmineProjectCreator {
         System.out.println(url);
         String webPage = HttpUtils.getWebPage(url);
         System.out.println(webPage);
-        Issue[] issues = JSON.decode(webPage, Issue[].class);
+        Issue[] issues = JSON.decode(webPage, Issue2[].class);
         for (Issue issue : issues) {
             System.out.println(issue);
         }
