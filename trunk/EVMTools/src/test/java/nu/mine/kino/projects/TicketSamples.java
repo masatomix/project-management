@@ -30,11 +30,14 @@ public class TicketSamples {
         // RedmineManager mgr = RedmineManagerFactory.createWithApiKey(
         // redmineHost, apiAccessKey);
         RedmineManager mgr = RedmineManagerFactory.createWithUserAuth(
-                "http://demo.redmine.org/", "xxx", "xxx");
+                "http://demo.redmine.org/", "masatomix", "hogehoge");
         try {
-            // tryGetIssues(mgr);
+            tryGetIssues(mgr);
             // tryGetIssues2(mgr);
-            tryGetIssues3(mgr, "http://demo.redmine.org", "kinosandboxproject",
+            // tryGetIssues3(mgr, "http://demo.redmine.org",
+            // "kinosandboxproject",
+            // "apiAccessKey");
+            tryGetIssues4(mgr, "http://demo.redmine.org", "kinosandboxproject",
                     "apiAccessKey");
         } catch (Exception e) {
             e.printStackTrace();
@@ -81,5 +84,15 @@ public class TicketSamples {
         // System.out.println(linkedHashMap);
         // Issue issue = JSON.decode(JSON.encode(linkedHashMap), Issue.class);
         // }
+    }
+
+    private static void tryGetIssues4(RedmineManager mgr, String redmineHost,
+            String projectKey, String apiAccessKey) throws Exception {
+
+        RedmineProjectCreator creator = new RedmineProjectCreator2(mgr,
+                redmineHost, apiAccessKey);
+        Project createProject = creator.createProject("kinosandboxproject",
+                null);
+
     }
 }

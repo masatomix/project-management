@@ -27,6 +27,7 @@ import nu.mine.kino.projects.PVCreator;
 import nu.mine.kino.projects.ProjectException;
 import nu.mine.kino.projects.ProjectWriter;
 import nu.mine.kino.projects.RedmineProjectCreator;
+import nu.mine.kino.projects.RedmineProjectCreator2;
 import nu.mine.kino.projects.utils.Utils;
 
 import org.apache.commons.lang.StringUtils;
@@ -69,16 +70,19 @@ public class RedmineEVMToolsBuilder extends Builder {
 
     private final String queryId;
 
+    private final String apiKey;
+
     // Fields in config.jelly must match the parameter names in the
     // "DataBoundConstructor"
     @DataBoundConstructor
     public RedmineEVMToolsBuilder(String url, String userid, String password,
-            String projectId, String queryId) {
+            String projectId, String queryId, String apiKey) {
         this.url = url;
         this.userid = userid;
         this.password = password;
         this.projectId = projectId;
         this.queryId = queryId;
+        this.apiKey = apiKey;
     }
 
     public String getUrl() {
@@ -101,6 +105,10 @@ public class RedmineEVMToolsBuilder extends Builder {
         return queryId;
     }
 
+    public String getApiKey() {
+        return apiKey;
+    }
+
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher,
             BuildListener listener) throws InterruptedException, IOException {
@@ -114,15 +122,20 @@ public class RedmineEVMToolsBuilder extends Builder {
         if (!StringUtils.isEmpty(queryId)) {
             queryIdInt = Integer.valueOf(queryId);
         }
-        RedmineManager mgr = RedmineManagerFactory.createWithUserAuth(url,
-                userid, password);
-        RedmineProjectCreator creator = new RedmineProjectCreator(mgr);
+        RedmineManager mgr = null;
+        if (StringUtils.isEmpty(apiKey)) {
+            mgr = RedmineManagerFactory.createWithUserAuth(url, userid,
+                    password);
+        } else {
+            mgr = RedmineManagerFactory.createWithApiKey(url, apiKey);
+        }
         listener.getLogger().println("[Redmine EVM Tools] url:" + url);
         listener.getLogger().println(
                 "[Redmine EVM Tools] projectId:" + projectId);
         listener.getLogger().println("[Redmine EVM Tools] queryId:" + queryId);
+
         try {
-            Project project = creator.createProject(projectId, queryIdInt);
+            Project project = createProject(mgr, queryIdInt);
             System.out.println(project);
             File outputFile = new File(build.getRootDir(),
                     "redmineProject.json");
@@ -160,6 +173,19 @@ public class RedmineEVMToolsBuilder extends Builder {
         // // build.addAction(action);
 
         return true;
+    }
+
+    private Project createProject(RedmineManager mgr, Integer queryIdInt)
+            throws ProjectException {
+        RedmineProjectCreator creator = new RedmineProjectCreator(mgr);
+        Project project = null;
+        try {
+            project = creator.createProject(projectId, queryIdInt);
+        } catch (ProjectException e) {
+            creator = new RedmineProjectCreator2(mgr, url, apiKey);
+            project = creator.createProject(projectId, queryIdInt);
+        }
+        return project;
     }
 
     /**

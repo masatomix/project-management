@@ -25,7 +25,6 @@ import nu.mine.kino.entity.PVTotalBean;
 import nu.mine.kino.entity.Project;
 import nu.mine.kino.entity.Task;
 import nu.mine.kino.entity.TaskInformation;
-import nu.mine.kino.projects.utils.Utils;
 
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
@@ -76,8 +75,7 @@ public class RedmineProjectCreator implements ProjectCreator {
 
             return project;
         } catch (RedmineException e) {
-            e.printStackTrace();
+            throw new ProjectException(e);
         }
-        return null;
     }
 }
