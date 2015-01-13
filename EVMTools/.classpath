@@ -43,6 +43,8 @@
     </attributes>
   </classpathentry>
   <classpathentry kind="var" path="M2_REPO/junit/junit/4.1/junit-4.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/sun/jersey/jersey-core/1.17.1/jersey-core-1.17.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/sun/jersey/jersey-client/1.17.1/jersey-client-1.17.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/taskadapter/redmine-java-api/2.0.0/redmine-java-api-2.0.0.jar" sourcepath="M2_REPO/com/taskadapter/redmine-java-api/2.0.0/redmine-java-api-2.0.0-sources.jar">
     <attributes>
       <attribute value="jar:file:/Users/masatomix/.m2/repository/com/taskadapter/redmine-java-api/2.0.0/redmine-java-api-2.0.0-javadoc.jar!/" name="javadoc_location"/>
