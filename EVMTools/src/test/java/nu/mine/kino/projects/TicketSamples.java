@@ -15,7 +15,9 @@ package nu.mine.kino.projects;
 import java.io.File;
 import java.util.List;
 
+import net.arnx.jsonic.JSON;
 import nu.mine.kino.entity.Project;
+import nu.mine.kino.projects.utils.HttpUtils;
 
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.RedmineManagerFactory;
@@ -28,10 +30,12 @@ public class TicketSamples {
         // RedmineManager mgr = RedmineManagerFactory.createWithApiKey(
         // redmineHost, apiAccessKey);
         RedmineManager mgr = RedmineManagerFactory.createWithUserAuth(
-                "http://demo.redmine.org/", "masatomix", "hogehoge");
+                "http://demo.redmine.org/", "xxx", "xxx");
         try {
-            tryGetIssues(mgr);
-            tryGetIssues2(mgr);
+            // tryGetIssues(mgr);
+            // tryGetIssues2(mgr);
+            tryGetIssues3(mgr, "http://demo.redmine.org", "kinosandboxproject",
+                    "apiAccessKey");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -53,5 +57,29 @@ public class TicketSamples {
         ProjectWriter.write(createProject, new File("redmineProject.json"));
         ProjectWriter.writeText(createProject, new File("redmineProject.tsv"));
 
+    }
+
+    private static void tryGetIssues3(RedmineManager mgr, String redmineHost,
+            String projectKey, String apiAccessKey) throws Exception {
+
+        String url = redmineHost + "/projects/" + projectKey + "/"
+                + "issues.json?key=" + apiAccessKey;
+        System.out.println(url);
+
+        String webPage = HttpUtils.getWebPage(url);
+        System.out.println(webPage);
+        Issue[] issues = JSON.decode(webPage, Issue[].class);
+        for (Issue issue : issues) {
+            System.out.println(issue);
+        }
+
+        // Map<String, List<LinkedHashMap>> map = JSON.decode(webPage,
+        // Map.class);
+        // List<LinkedHashMap> issues = map.get("issues");
+        // System.out.println(issues);
+        // for (LinkedHashMap linkedHashMap : issues) {
+        // System.out.println(linkedHashMap);
+        // Issue issue = JSON.decode(JSON.encode(linkedHashMap), Issue.class);
+        // }
     }
 }
