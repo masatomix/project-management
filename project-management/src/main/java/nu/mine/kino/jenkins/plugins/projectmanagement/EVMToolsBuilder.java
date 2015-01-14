@@ -4,6 +4,7 @@ import hudson.Extension;
 import hudson.FilePath;
 import hudson.FilePath.FileCallable;
 import hudson.Launcher;
+import hudson.model.Action;
 import hudson.model.BuildListener;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
+
+import jenkins.model.Jenkins;
 
 import net.sf.json.JSONObject;
 import nu.mine.kino.projects.ACCreator;
@@ -98,13 +101,22 @@ public class EVMToolsBuilder extends Builder {
         executeAndCopies(root, buildRoot, new ACCreatorExecutor(name));
         listener.getLogger().println("[EVM Tools] EVファイル作成開始");
         executeAndCopies(root, buildRoot, new EVCreatorExecutor(name));
+
         // System.out.println(build.getModuleRoot());
         // System.out.println(build.getRootDir());
         // System.out.println(build.getWorkspace());
         // System.out.println(build.getArtifactsDir());
-        ProjectSummaryAction action = new ProjectSummaryAction(build);
+
+        List<ProjectSummaryAction> projectSummaryActions = build
+                .getActions(ProjectSummaryAction.class);
+        ProjectSummaryAction action = null;
+        if (projectSummaryActions.isEmpty()) {
+            action = new ProjectSummaryAction(build);
+            build.addAction(action);
+        } else {
+            action = projectSummaryActions.get(0);
+        }
         action.setFileName(pmJSON.getName());// targetかな??
-        build.addAction(action);
 
         return true;
     }
