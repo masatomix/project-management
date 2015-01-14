@@ -58,6 +58,7 @@ import nu.mine.kino.projects.utils.ProjectUtils;
 import nu.mine.kino.projects.utils.Utils;
 import nu.mine.kino.projects.utils.ViewUtils;
 
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
@@ -72,6 +73,8 @@ public class ProjectSummaryAction implements Action {
     private final AbstractBuild<?, ?> owner;
 
     private String name;
+
+    private String redmineFileName;
 
     public ProjectSummaryAction(AbstractBuild<?, ?> owner) {
         this.owner = owner;
@@ -104,10 +107,12 @@ public class ProjectSummaryAction implements Action {
         // .getId());
         // return all.toArray(new User[all.size()]);
         Map<String, ProjectUser> userMap = new HashMap<String, ProjectUser>();
-        FileInputStream in = null;
         try {
-            in = new FileInputStream(new File(owner.getRootDir(), name));
-            Project project = new JSONProjectCreator(in).createProject();
+            Project project = getProject(name);
+            if (project == null) {
+                return new ProjectUser[0];
+            }
+
             TaskInformation[] taskInformations = project.getTaskInformations();
             for (TaskInformation taskInfo : taskInformations) {
                 String personInCharge = taskInfo.getTask().getPersonInCharge();
@@ -133,20 +138,9 @@ public class ProjectSummaryAction implements Action {
             }
             return userMap.values().toArray(new ProjectUser[userMap.size()]);
             // return userMap.toArray(new ProjectUser[userMap.size()]);
-        } catch (FileNotFoundException e) {
-            // TODO 自動生成された catch ブロック
-            e.printStackTrace();
         } catch (ProjectException e) {
             // TODO 自動生成された catch ブロック
             e.printStackTrace();
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
         return null;
     }
@@ -173,17 +167,33 @@ public class ProjectSummaryAction implements Action {
         return user;
     }
 
+    private Map<String, Project> map = new HashMap<String, Project>();
+
+    public synchronized Project getProject(String name) throws ProjectException {
+        if (StringUtils.isEmpty(name)) {
+            return null;
+        }
+        if (map.containsKey(name)) {
+            return map.get(name);
+        }
+        File target = new File(owner.getRootDir(), name);
+        Project targetProject = new JSONProjectCreator(target).createProject();
+        map.put(name, targetProject);
+        return targetProject;
+    }
+
     public ACViewBean[] getPreviousACViews() {
+        if (StringUtils.isEmpty(name)) {
+            return new ACViewBean[0];
+        }
         try {
+
             List<ACViewBean> retList = new ArrayList<ACViewBean>();
             File target = new File(owner.getRootDir(), name);
+            Project targetProject = getProject(name);
             File base = new File(owner.getRootDir(), "base_" + name);
             List<ACBean> filterList = ACCreator.createACListFromJSON(target,
                     base);
-            // List<ACBean> filterList = ProjectUtils.filterAC(list);
-
-            Project targetProject = new JSONProjectCreator(target)
-                    .createProject();
 
             for (ACBean acBean : filterList) {
                 ACViewBean bean = new ACViewBean();
@@ -205,22 +215,23 @@ public class ProjectSummaryAction implements Action {
         } catch (ProjectException e) {
             // TODO 自動生成された catch ブロック
             e.printStackTrace();
-        } finally {
         }
         return null;
     }
 
     public EVViewBean[] getPreviousEVViews() {
+        if (StringUtils.isEmpty(name)) {
+            return new EVViewBean[0];
+        }
         try {
             List<EVViewBean> retList = new ArrayList<EVViewBean>();
             File target = new File(owner.getRootDir(), name);
+            Project targetProject = getProject(name);
+
             File base = new File(owner.getRootDir(), "base_" + name);
             List<EVBean> filterList = EVCreator.createEVListFromJSON(target,
                     base);
             // List<EVBean> filterList = ProjectUtils.filterEV(list);
-
-            Project targetProject = new JSONProjectCreator(target)
-                    .createProject();
 
             for (EVBean evBean : filterList) {
                 EVViewBean bean = new EVViewBean();
@@ -248,57 +259,43 @@ public class ProjectSummaryAction implements Action {
     }
 
     public Date getBaseDate() {
-
-        FileInputStream in = null;
         try {
-            in = new FileInputStream(new File(owner.getRootDir(), name));
-            Project project = new JSONProjectCreator(in).createProject();
+            String inputName = (!StringUtils.isEmpty(name)) ? name
+                    : redmineFileName;
+            Project project = getProject(inputName);
             return project.getBaseDate();
-        } catch (FileNotFoundException e) {
-            // TODO 自動生成された catch ブロック
-            e.printStackTrace();
         } catch (ProjectException e) {
             // TODO 自動生成された catch ブロック
             e.printStackTrace();
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
         return null;
     }
 
     public PVViewBean[] getPVViews() {
 
-        FileInputStream in = null;
+        DescriptorImpl descriptor = (DescriptorImpl) Jenkins.getInstance()
+                .getDescriptor(EVMToolsBuilder.class);
+        String[] prefixArray = Utils.parseCommna(descriptor.getPrefixs());
+        List<PVViewBean> retList = new ArrayList<PVViewBean>();
         try {
-            in = new FileInputStream(new File(owner.getRootDir(), name));
-            Project project = new JSONProjectCreator(in).createProject();
-
-            DescriptorImpl descriptor = (DescriptorImpl) Jenkins.getInstance()
-                    .getDescriptor(EVMToolsBuilder.class);
-            String[] prefixArray = Utils.parseCommna(descriptor.getPrefixs());
-            List<PVViewBean> retList = ProjectUtils.filterList(
-                    ViewUtils.getPVViewBeanList(project), prefixArray);
-
-            File file = new File(owner.getRootDir(), "redmineProject.json");
-            if (file.exists()) {
-                Project redmineProject = new JSONProjectCreator(file)
-                        .createProject();
-                List<PVViewBean> pvViewBeanList = ViewUtils
-                        .getPVViewBeanList(redmineProject);
-                if (!pvViewBeanList.isEmpty()) {
-                    retList.addAll(pvViewBeanList);
+            if (!StringUtils.isEmpty(name)) {
+                Project project = getProject(name);
+                List<PVViewBean> list = ProjectUtils.filterList(
+                        ViewUtils.getPVViewBeanList(project), prefixArray);
+                if (!list.isEmpty()) {
+                    retList.addAll(list);
                 }
             }
+
+            if (!StringUtils.isEmpty(redmineFileName)) {
+                Project project = getProject(redmineFileName);
+                List<PVViewBean> list = ViewUtils.getPVViewBeanList(project);
+                if (!list.isEmpty()) {
+                    retList.addAll(list);
+                }
+                // }
+            }
             return retList.toArray(new PVViewBean[retList.size()]);
-        } catch (FileNotFoundException e) {
-            // TODO 自動生成された catch ブロック
-            e.printStackTrace();
         } catch (ProjectException e) {
             // TODO 自動生成された catch ブロック
             e.printStackTrace();
@@ -308,25 +305,14 @@ public class ProjectSummaryAction implements Action {
         } catch (InvocationTargetException e) {
             // TODO 自動生成された catch ブロック
             e.printStackTrace();
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
         return null;
     }
 
     public PVACEVViewBean[] getPVACEVViews() {
-        File target = new File(owner.getRootDir(), name);
-        File base = new File(owner.getRootDir(), "base_" + name);
         try {
-            Project targetProject = new JSONProjectCreator(target)
-                    .createProject();
-            Project baseProject = new JSONProjectCreator(base).createProject();
+            Project targetProject = getProject(name);
+            Project baseProject = getProject("base_" + name);
 
             DescriptorImpl descriptor = (DescriptorImpl) Jenkins.getInstance()
                     .getDescriptor(EVMToolsBuilder.class);
@@ -396,6 +382,14 @@ public class ProjectSummaryAction implements Action {
         return name;
     }
 
+    public String getRedmineFileName() {
+        return redmineFileName;
+    }
+
+    public void setRedmineFileName(String redmineFileName) {
+        this.redmineFileName = redmineFileName;
+    }
+
     public void doDynamic(StaplerRequest req, StaplerResponse res)
             throws IOException, ServletException {
 
@@ -447,4 +441,5 @@ public class ProjectSummaryAction implements Action {
             }
         });
     }
+
 }
