@@ -284,6 +284,17 @@ public class ProjectSummaryAction implements Action {
             String[] prefixArray = Utils.parseCommna(descriptor.getPrefixs());
             List<PVViewBean> retList = ProjectUtils.filterList(
                     ViewUtils.getPVViewBeanList(project), prefixArray);
+
+            File file = new File(owner.getRootDir(), "redmineProject.json");
+            if (file.exists()) {
+                Project redmineProject = new JSONProjectCreator(file)
+                        .createProject();
+                List<PVViewBean> pvViewBeanList = ViewUtils
+                        .getPVViewBeanList(redmineProject);
+                if (!pvViewBeanList.isEmpty()) {
+                    retList.addAll(pvViewBeanList);
+                }
+            }
             return retList.toArray(new PVViewBean[retList.size()]);
         } catch (FileNotFoundException e) {
             // TODO é©ìÆê∂ê¨Ç≥ÇÍÇΩ catch ÉuÉçÉbÉN

@@ -13,6 +13,7 @@
 package nu.mine.kino.projects;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import nu.mine.kino.entity.ACTotalBean;
@@ -50,6 +51,7 @@ public class RedmineProjectCreator implements ProjectCreator {
                     queryId);
 
             Project project = new Project();
+            project.setBaseDate(new Date());
             // Issueから、Taskへの変換をココで行う。
 
             List<TaskInformation> taskinfos = new ArrayList<TaskInformation>();
