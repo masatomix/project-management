@@ -129,28 +129,43 @@ public class RedmineEVMToolsBuilder extends Builder {
                 "[Redmine EVM Tools] projectId:" + projectId);
         listener.getLogger().println("[Redmine EVM Tools] queryId:" + queryId);
 
+        String fileName = projectId;
         try {
             Project project = createProject(mgr, queryIdInt);
             System.out.println(project);
-            String fileName = "redmineProject";
             StringBuffer buf = new StringBuffer();
             buf.append(fileName);
             if (!StringUtils.isEmpty(queryId)) {
                 buf.append("_");
                 buf.append(queryId);
             }
+            buf.append(".json");
             fileName = new String(buf);
-            File outputJSON = new File(build.getRootDir(), fileName + ".json");
+            File outputJSON = new File(build.getRootDir(), fileName);
             ProjectWriter.write(project, outputJSON);
             listener.getLogger().println(
                     "[Redmine EVM Tools] JSON File:"
                             + outputJSON.getAbsolutePath());
             File outputTsv = new File(build.getRootDir(), fileName + ".tsv");
             ProjectWriter.writeText(project, outputTsv);
+            listener.getLogger().println(
+                    "[Redmine EVM Tools] TSV File:"
+                            + outputTsv.getAbsolutePath());
 
         } catch (ProjectException e) {
             throw new IOException(e);
         }
+
+        List<ProjectSummaryAction> projectSummaryActions = build
+                .getActions(ProjectSummaryAction.class);
+        ProjectSummaryAction action = null;
+        if (projectSummaryActions.isEmpty()) {
+            action = new ProjectSummaryAction(build);
+            build.addAction(action);
+        } else {
+            action = projectSummaryActions.get(0);
+        }
+        action.setRedmineFileName(fileName);
 
         // FilePath root = build.getModuleRoot(); // ワークスペースのルート
         // FilePath buildRoot = new FilePath(build.getRootDir()); // このビルドのルート
