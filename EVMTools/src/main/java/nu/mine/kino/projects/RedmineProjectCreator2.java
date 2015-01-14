@@ -13,6 +13,7 @@
 package nu.mine.kino.projects;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import net.arnx.jsonic.JSON;
@@ -61,6 +62,7 @@ public class RedmineProjectCreator2 extends RedmineProjectCreator {
             System.out.println(issue);
         }
         Project project = new Project();
+        project.setBaseDate(new Date());
         // Issueから、Taskへの変換をココで行う。
 
         List<TaskInformation> taskinfos = new ArrayList<TaskInformation>();

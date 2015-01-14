@@ -132,14 +132,21 @@ public class RedmineEVMToolsBuilder extends Builder {
         try {
             Project project = createProject(mgr, queryIdInt);
             System.out.println(project);
-            File outputFile = new File(build.getRootDir(),
-                    "redmineProject.json");
-            ProjectWriter.write(project, outputFile);
+            String fileName = "redmineProject";
+            StringBuffer buf = new StringBuffer();
+            buf.append(fileName);
+            if (!StringUtils.isEmpty(queryId)) {
+                buf.append("_");
+                buf.append(queryId);
+            }
+            fileName = new String(buf);
+            File outputJSON = new File(build.getRootDir(), fileName + ".json");
+            ProjectWriter.write(project, outputJSON);
             listener.getLogger().println(
                     "[Redmine EVM Tools] JSON File:"
-                            + outputFile.getAbsolutePath());
-            File tsv = new File(build.getRootDir(), "redmineProject.tsv");
-            ProjectWriter.writeText(project, tsv);
+                            + outputJSON.getAbsolutePath());
+            File outputTsv = new File(build.getRootDir(), fileName + ".tsv");
+            ProjectWriter.writeText(project, outputTsv);
 
         } catch (ProjectException e) {
             throw new IOException(e);
