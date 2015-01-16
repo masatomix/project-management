@@ -177,6 +177,9 @@ public class ProjectSummaryAction implements Action {
             return map.get(name);
         }
         File target = new File(owner.getRootDir(), name);
+        if (!target.exists()) {
+            return null;
+        }
         Project targetProject = new JSONProjectCreator(target).createProject();
         map.put(name, targetProject);
         return targetProject;
@@ -310,6 +313,9 @@ public class ProjectSummaryAction implements Action {
     }
 
     public PVACEVViewBean[] getPVACEVViews() {
+        if (StringUtils.isEmpty(name)) {
+            return new PVACEVViewBean[0];
+        }
         try {
             Project targetProject = getProject(name);
             Project baseProject = getProject("base_" + name);
