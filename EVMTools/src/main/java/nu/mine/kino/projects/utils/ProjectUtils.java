@@ -104,11 +104,14 @@ public class ProjectUtils {
             // System.out.printf("[%f]\n", numOfManDaysPerDay);
 
             if (Utils.isBetween(baseDate, task.getScheduledStartDate(),
-                    task.getScheduledEndDate(), true, true)
-                    && BaseDataUtils
-                            .existsPlot(baseDate, task.getPlotDataMap())) {
-                numOfManDaysPerDay = round(numOfManDaysPerDay);
-                return numOfManDaysPerDay;
+                    task.getScheduledEndDate(), true, true)) {
+                // plotがnullじゃない場合は、存在するかをチェックする。
+                if (task.getPlotDataMap() == null
+                        || BaseDataUtils.existsPlot(baseDate,
+                                task.getPlotDataMap())) {
+                    numOfManDaysPerDay = round(numOfManDaysPerDay);
+                    return numOfManDaysPerDay;
+                }
             }
             return 0.0;
         }
