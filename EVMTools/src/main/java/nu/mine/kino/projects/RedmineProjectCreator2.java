@@ -12,9 +12,17 @@
 
 package nu.mine.kino.projects;
 
+import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 
 import net.arnx.jsonic.JSON;
 import nu.mine.kino.entity.ACTotalBean;
@@ -58,9 +66,48 @@ public class RedmineProjectCreator2 extends RedmineProjectCreator {
         String webPage = HttpUtils.getWebPage(url);
         System.out.println(webPage);
         Issue[] issues = JSON.decode(webPage, Issue2[].class);
-        for (Issue issue : issues) {
-            System.out.println(issue);
+
+        Map<String, Map<String, Object>> decodeMaps = JSON.decode(webPage,
+                Map.class);
+        Collection<Map<String, Object>> values = decodeMaps.values();
+        for (Map<String, Object> map : values) {
+            String id = (String) map.get("id");
+            for (int i = 0; i < issues.length; i++) {
+                Issue ticket = issues[i];
+                if (ticket.getId().equals(id)) {
+                    ticket.setSubject((String) map.get("subject"));
+                    ticket.setDescription((String) map.get("description"));
+
+                    String start_date = (String) map.get("start_date");
+                    String due_date = (String) map.get("due_date");
+
+                    try {
+                        Date start_date_d = StringUtils.isEmpty(start_date) ? null
+                                : DateUtils.parseDate(start_date,
+                                        new String[] { "yyyy/MM/dd" });
+                        Date due_date_d = StringUtils.isEmpty(due_date) ? null
+                                : DateUtils.parseDate(due_date,
+                                        new String[] { "yyyy/MM/dd" });
+                        ticket.setStartDate(start_date_d);
+                        ticket.setDueDate(due_date_d);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    BigDecimal done_ratio = (BigDecimal) map.get("done_ratio");
+                    BigDecimal estimated_hours = (BigDecimal) map
+                            .get("estimated_hours");
+
+                    ticket.setDoneRatio(done_ratio.intValue());
+                    ticket.setEstimatedHours(estimated_hours.floatValue());
+                }
+            }
         }
+
+        // for (Issue issue : issues) {
+        // System.out.println(issue);
+        // }
+
         Project project = new Project();
         project.setBaseDate(new Date());
         // Issueから、Taskへの変換をココで行う。
