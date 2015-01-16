@@ -10,6 +10,10 @@
 
 package nu.mine.kino.entity;
 
+import java.util.Date;
+
+import org.apache.commons.lang.time.DateUtils;
+
 import com.taskadapter.redmineapi.bean.Issue;
 
 public class Issue2Task {
@@ -31,10 +35,23 @@ public class Issue2Task {
         ((Task) dest).setScheduledStartDate(source.getStartDate());
         ((Task) dest).setScheduledEndDate(source.getDueDate());
         ((Task) dest).setNumberOfManDays(toNumberOfManDays(source));
+        ((Task) dest).setNumberOfDays(differenceDays(source.getDueDate(),
+                source.getStartDate()));
 
         // “Áê‚ÈÚ‚¹‘Ö‚¦ˆ— I—¹
 
         return dest;
+    }
+
+    public static int differenceDays(Date date1, Date date2) {
+        if(date1==null || date2==null){
+            return 0;
+        }
+        long datetime1 = date1.getTime();
+        long datetime2 = date2.getTime();
+        long one_date_time = 1000 * 60 * 60 * 24;
+        long diffDays = (datetime1 - datetime2) / one_date_time;
+        return (int) diffDays;
     }
 
     /**
