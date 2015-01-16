@@ -143,11 +143,13 @@ public class RedmineEVMToolsBuilder extends Builder {
             fileName = new String(buf);
             File outputJSON = new File(build.getRootDir(), fileName);
             ProjectWriter.write(project, outputJSON);
+            copyTo(build.getModuleRoot(), outputJSON);
             listener.getLogger().println(
                     "[Redmine EVM Tools] JSON File:"
                             + outputJSON.getAbsolutePath());
             File outputTsv = new File(build.getRootDir(), fileName + ".tsv");
             ProjectWriter.writeText(project, outputTsv);
+            copyTo(build.getModuleRoot(), outputTsv);
             listener.getLogger().println(
                     "[Redmine EVM Tools] TSV File:"
                             + outputTsv.getAbsolutePath());
@@ -190,6 +192,12 @@ public class RedmineEVMToolsBuilder extends Builder {
         // // build.addAction(action);
 
         return true;
+    }
+
+    private void copyTo(FilePath path, File outputTsv)
+            throws IOException, InterruptedException {
+        new FilePath(outputTsv).copyTo(new FilePath(path,
+                outputTsv.getName()));// workspaceÇ÷ÉRÉsÅ[
     }
 
     private Project createProject(RedmineManager mgr, Integer queryIdInt)
