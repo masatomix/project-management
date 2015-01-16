@@ -67,6 +67,7 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
           <th class="pane-header">タスクID</th>
           <th class="pane-header">担当者</th>
           <th class="pane-header">タスク名</th>
+          <th class="pane-header">終了予定</th>
           <th class="pane-header">予定工数</th>
 			<th class="pane-header">-3</th>
 			<th class="pane-header">-2</th>
@@ -82,6 +83,11 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
             <td class="pane">${pv.taskId}</td>
             <td class="pane">${pv.personInCharge}</td>
             <td class="pane">${pv.taskName}</td>
+            <td class="pane">
+			<j:if test="${pv.scheduledEndDate!=null}">
+				<i:formatDate value="${pv.scheduledEndDate}" />
+			</j:if> 
+			</td>
             <td class="pane" style="text-align:right">${pv.numberOfManDays!='NaN'? pv.numberOfManDays:"-"}</td>
             <td class="pane" style="text-align:right">${pv.plannedValue_m3!='NaN'? pv.plannedValue_m3:"-"}</td>
             <td class="pane" style="text-align:right">${pv.plannedValue_m2!='NaN'? pv.plannedValue_m2:"-"}</td>
@@ -106,6 +112,7 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
           <th class="pane-header">タスクID</th>
           <th class="pane-header">担当者</th>
           <th class="pane-header">タスク名</th>
+          <th class="pane-header">終了予定</th>
           <th class="pane-header">予定工数</th>
           <th class="pane-header">PV</th>
           <th class="pane-header">AC</th>
@@ -120,6 +127,11 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
             <td class="pane">${bean.taskId}</td>
             <td class="pane">${bean.personInCharge}</td>
             <td class="pane">${bean.taskName}</td>
+            <td class="pane">
+			<j:if test="${bean.scheduledEndDate!=null}">
+				<i:formatDate value="${bean.scheduledEndDate}" />
+			</j:if> 
+			</td>
             <td class="pane" style="text-align:right">${bean.numberOfManDays!='NaN'? bean.numberOfManDays: "-"}</td><!-- <j:choose><j:when test="${bean.plannedValue!='NaN'}">${bean.plannedValue}</j:when><j:otherwise>-</j:otherwise></j:choose> -->
             <td class="pane" style="text-align:right">${bean.plannedValue!='NaN' ? bean.plannedValue : "-"}</td>
             <td class="pane" style="text-align:right">${bean.actualCost!='NaN' ? bean.actualCost:"-"}</td>
@@ -144,6 +156,7 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
           <th class="pane-header">タスクID</th>
           <th class="pane-header">担当者</th>
           <th class="pane-header">タスク名</th>
+          <th class="pane-header">終了予定</th>
           <th class="pane-header">予定工数</th>
           <th class="pane-header">AC</th>
         </tr>
@@ -153,6 +166,11 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
             <td class="pane">${ac.taskId}</td>
             <td class="pane">${ac.personInCharge}</td>
             <td class="pane">${ac.taskName}</td>
+            <td class="pane">
+			<j:if test="${ac.scheduledEndDate!=null}">
+				<i:formatDate value="${ac.scheduledEndDate}" />
+			</j:if> 
+			</td>
             <td class="pane" style="text-align:right">${ac.numberOfManDays!='NaN'? ac.numberOfManDays:"-"}</td>
             <td class="pane" style="text-align:right">${ac.actualCost!='NaN'?ac.actualCost:"-"}</td>
           </tr>
@@ -171,6 +189,7 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
           <th class="pane-header">タスクID</th>
           <th class="pane-header">担当者</th>
           <th class="pane-header">タスク名</th>
+          <th class="pane-header">終了予定</th>
           <th class="pane-header">予定工数</th>
           <th class="pane-header">EV</th>
           <th class="pane-header">進捗率(%)</th>
@@ -181,6 +200,11 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
             <td class="pane">${ev.taskId}</td>
             <td class="pane">${ev.personInCharge}</td>
             <td class="pane">${ev.taskName}</td>
+            <td class="pane">
+			<j:if test="${ev.scheduledEndDate!=null}">
+				<i:formatDate value="${ev.scheduledEndDate}" />
+			</j:if> 
+			</td>
             <td class="pane" style="text-align:right">${ev.numberOfManDays!='NaN'? ev.numberOfManDays:"-"}</td>
             <td class="pane" style="text-align:right">${ev.earnedValue!='NaN'? ev.earnedValue:"-"}</td>
             <td class="pane" style="text-align:right">${ev.progressRate!='NaN'? ev.progressRate*100.0:"-"}</td>
