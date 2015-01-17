@@ -30,6 +30,7 @@ import nu.mine.kino.projects.RedmineProjectCreator;
 import nu.mine.kino.projects.RedmineProjectCreator2;
 import nu.mine.kino.projects.utils.Utils;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
@@ -141,12 +142,24 @@ public class RedmineEVMToolsBuilder extends Builder {
             }
             buf.append(".json");
             fileName = new String(buf);
+
+            // ビルドのディレクトリに作成し、ワークスペースへコピー。
             File outputJSON = new File(build.getRootDir(), fileName);
             ProjectWriter.write(project, outputJSON);
+
             copyTo(build.getModuleRoot(), outputJSON);
+            // new FilePath(outputJSON).copyTo(new
+            // FilePath(build.getModuleRoot(),
+            // "base_" + outputJSON.getName()));// workspaceへbase_
+
+            // FileUtils.copyFile(outputJSON, new File(build.getRootDir(),
+            // "base_"
+            // + outputJSON.getName()));
+
             listener.getLogger().println(
                     "[Redmine EVM Tools] JSON File:"
                             + outputJSON.getAbsolutePath());
+
             File outputTsv = new File(build.getRootDir(), fileName + ".tsv");
             ProjectWriter.writeText(project, outputTsv);
             copyTo(build.getModuleRoot(), outputTsv);
@@ -194,10 +207,9 @@ public class RedmineEVMToolsBuilder extends Builder {
         return true;
     }
 
-    private void copyTo(FilePath path, File outputTsv)
-            throws IOException, InterruptedException {
-        new FilePath(outputTsv).copyTo(new FilePath(path,
-                outputTsv.getName()));// workspaceへコピー
+    private void copyTo(FilePath path, File source) throws IOException,
+            InterruptedException {
+        new FilePath(source).copyTo(new FilePath(path, source.getName()));// workspaceへコピー
     }
 
     private Project createProject(RedmineManager mgr, Integer queryIdInt)

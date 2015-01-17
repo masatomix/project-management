@@ -142,7 +142,7 @@ public class ProjectSummaryAction implements Action {
             // TODO 自動生成された catch ブロック
             e.printStackTrace();
         }
-        return null;
+        return new ProjectUser[0];
     }
 
     private User searchById(String personInCharge) {
@@ -274,6 +274,11 @@ public class ProjectSummaryAction implements Action {
         return null;
     }
 
+    /**
+     * 直近のタスク(PV)画面のためのデータを返す。
+     * 
+     * @return
+     */
     public PVViewBean[] getPVViews() {
 
         DescriptorImpl descriptor = (DescriptorImpl) Jenkins.getInstance()
@@ -309,25 +314,40 @@ public class ProjectSummaryAction implements Action {
             // TODO 自動生成された catch ブロック
             e.printStackTrace();
         }
-        return null;
+        return new PVViewBean[0];
     }
 
+    /**
+     * 直近の状況(PV/AC/EV)のデータを返す。
+     * 
+     * @return
+     */
     public PVACEVViewBean[] getPVACEVViews() {
-        if (StringUtils.isEmpty(name)) {
-            return new PVACEVViewBean[0];
-        }
+        DescriptorImpl descriptor = (DescriptorImpl) Jenkins.getInstance()
+                .getDescriptor(EVMToolsBuilder.class);
+        String[] prefixArray = Utils.parseCommna(descriptor.getPrefixs());
+
+        List<PVACEVViewBean> retList = new ArrayList<PVACEVViewBean>();
         try {
-            Project targetProject = getProject(name);
-            Project baseProject = getProject("base_" + name);
-
-            DescriptorImpl descriptor = (DescriptorImpl) Jenkins.getInstance()
-                    .getDescriptor(EVMToolsBuilder.class);
-            String[] prefixArray = Utils.parseCommna(descriptor.getPrefixs());
-
-            List<PVACEVViewBean> list = ProjectUtils
-                    .filterList(ViewUtils.getPVACEVViewBeanList(targetProject,
-                            baseProject), prefixArray);
-            return list.toArray(new PVACEVViewBean[list.size()]);
+            if (!StringUtils.isEmpty(name)) {
+                Project targetProject = getProject(name);
+                Project baseProject = getProject("base_" + name);
+                List<PVACEVViewBean> list = ProjectUtils.filterList(ViewUtils
+                        .getPVACEVViewBeanList(targetProject, baseProject),
+                        prefixArray);
+                if (!list.isEmpty()) {
+                    retList.addAll(list);
+                }
+            }
+            if (!StringUtils.isEmpty(redmineFileName)) {
+                Project targetProject = getProject(redmineFileName);
+                List<PVACEVViewBean> list = ViewUtils.getPVACEVViewBeanList(
+                        targetProject);
+                if (!list.isEmpty()) {
+                    retList.addAll(list);
+                }
+            }
+            return retList.toArray(new PVACEVViewBean[retList.size()]);
         } catch (ProjectException e) {
             e.printStackTrace();
         }
