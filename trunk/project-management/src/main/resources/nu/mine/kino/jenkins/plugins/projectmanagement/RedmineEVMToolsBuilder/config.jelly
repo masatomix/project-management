@@ -12,14 +12,13 @@
   <f:entry title="Redmine URL" field="url">
     <f:textbox />
   </f:entry>
+  <f:entry title="API Key(User IDより優先)" field="apiKey">
+    <f:textbox />
+  </f:entry>
   <f:entry title="User ID" field="userid">
     <f:textbox />
   </f:entry>
   <f:entry title="Password" field="password">
-    <f:textbox />
-  </f:entry>
-
-  <f:entry title="or API Key" field="apiKey">
     <f:textbox />
   </f:entry>
   <f:entry title="ProjectId" field="projectId">
