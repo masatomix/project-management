@@ -39,6 +39,57 @@ import org.apache.commons.lang.time.DateUtils;
  */
 public class ViewUtils {
 
+    public static List<PVACEVViewBean> getPVACEVViewBeanList(Project project) {
+        List<PVACEVViewBean> retList = new ArrayList<PVACEVViewBean>();
+        TaskInformation[] todayTaskInfos = project.getTaskInformations();
+        Date baseDate = project.getBaseDate();
+
+        for (TaskInformation todayTaskInfo : todayTaskInfos) {
+            PVACEVViewBean pvViewBean = getPVACEVViewBean(todayTaskInfo,
+                    baseDate);
+            retList.add(pvViewBean);
+        }
+        return retList;
+    }
+
+    public static PVACEVViewBean getPVACEVViewBean(
+            TaskInformation todayTaskInfo, Date targetDate) {
+        PVACEVViewBean bean = new PVACEVViewBean();
+
+        Task task = todayTaskInfo.getTask();
+        Task2PVACEVViewBean.convert(task, bean);
+
+        PVBean pvBean = ProjectUtils.getPVBean(todayTaskInfo, targetDate);
+        // ACBean acBean = ProjectUtils.getACBean(todayTaskInfo, baseTaskInfo);
+        // EVBean evBean = ProjectUtils.getEVBean(todayTaskInfo, baseTaskInfo);
+
+        PVBean2PVACEVViewBean.convert(pvBean, bean);
+        // ACBean2PVACEVViewBean.convert(acBean, bean);
+        // EVBean2PVACEVViewBean.convert(evBean, bean);
+        bean.setProgressRate(Utils.round(todayTaskInfo.getEV()
+                .getProgressRate()));
+
+        PVBean pvBean_p1 = ProjectUtils.getPVBean(todayTaskInfo,
+                DateUtils.addDays(targetDate, 1));
+        bean.setPlannedValue_p1(pvBean_p1.getPlannedValue());
+        // ココでチェックして、要注意タスクを表記すること
+        // //////////////
+        // スケジュール期限が基準日よりあとなのに、100%になっていないもの
+        Date scheduledEndDate = bean.getScheduledEndDate();
+        Date baseDate = bean.getBaseDate();
+        if (scheduledEndDate != null) {
+            // 予定日(scheEndDate)が、基準日(baseDate)より前(もしくは等しい)の場合
+            boolean isDelay = scheduledEndDate.before(baseDate)
+                    || scheduledEndDate.equals(baseDate);
+            // 遅れていて、かつ完了していない場合。
+            if (isDelay && bean.getProgressRate() != 1.0) {
+                bean.setCheck(true);
+            }
+        }
+        // //////////////
+        return bean;
+    }
+
     /**
      * 二点間のプロジェクトを比較して、差分のPV/AC/EVを計算する EVのうち進捗率は、直近時点の数値であり差分ではない。
      * 
