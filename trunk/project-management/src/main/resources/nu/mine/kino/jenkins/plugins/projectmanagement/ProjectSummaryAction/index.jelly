@@ -3,6 +3,11 @@
   <l:layout>
     <st:include it="${it.owner}" page="sidepanel.jelly" />
     <l:main-panel>
+		<!--
+		${it.pvfileExists}/${it.redminePvfileExists}<br />
+		${it.acfileExists}/${it.redmineAcfileExists}<br />
+		${it.evfileExists}/${it.redmineEvfileExists}<br />
+		-->
       <h1>直近(<i:formatDate value="${it.baseDate}"/>) の集計資料</h1>
       <table class="pane sortable bigtable" >
         <tr>
@@ -101,7 +106,9 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
       </table>
       <table class="pane" >
         <tr>
+		<j:if test="${it.pvfileExists}" >
           <th style='text-align:right'><a href="documents/${it.fileName}_PVj.tsv">${it.fileName}_PVj.tsv</a></th>
+		</j:if> 
         </tr>
       </table>
 
@@ -178,8 +185,10 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
 		</table>
       <table class="pane" >
         <tr>
+		<j:if test="${it.acfileExists}" >
           <th style='text-align:right'><a href="documents/${it.fileName}_base_ACj.tsv">${it.fileName}_base_ACj.tsv</a></th>
-        </tr>
+      </j:if>
+	    </tr>
       </table>
 
       <h1>直近(<i:formatDate value="${it.baseDate}"/>) の成果(EV)</h1>
@@ -213,7 +222,9 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
       </table>
       <table class="pane" >
         <tr>
+		<j:if test="${it.evfileExists}" >
           <th style='text-align:right'><a href="documents/${it.fileName}_base_EVj.tsv">${it.fileName}_base_EVj.tsv</a></th>
+	  </j:if>
         </tr>
       </table>
     </l:main-panel>

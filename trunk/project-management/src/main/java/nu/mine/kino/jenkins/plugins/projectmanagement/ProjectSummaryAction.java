@@ -341,8 +341,8 @@ public class ProjectSummaryAction implements Action {
             }
             if (!StringUtils.isEmpty(redmineFileName)) {
                 Project targetProject = getProject(redmineFileName);
-                List<PVACEVViewBean> list = ViewUtils.getPVACEVViewBeanList(
-                        targetProject);
+                List<PVACEVViewBean> list = ViewUtils
+                        .getPVACEVViewBeanList(targetProject);
                 if (!list.isEmpty()) {
                     retList.addAll(list);
                 }
@@ -353,52 +353,6 @@ public class ProjectSummaryAction implements Action {
         }
         return new PVACEVViewBean[0];
     }
-
-    // public PVViewBean[] getTodayTasks() {
-    // FileInputStream in = null;
-    // try {
-    // List<PVViewBean> retList = new ArrayList<PVViewBean>();
-    // in = new FileInputStream(new File(owner.getRootDir(), name));
-    // Project project = ProjectUtils.createProjectFromJSON(in);
-    // List<PVBean> list = PVCreator.createCurrentList(project);
-    // List<PVBean> filterList = ProjectUtils.filter(list);
-    //
-    // for (PVBean pvBean : filterList) {
-    // PVViewBean bean = new PVViewBean();
-    // PVBean2PVViewBean.convert(pvBean, bean);
-    // TaskInformation taskInformation = ProjectUtils
-    // .getTaskInformation(project, pvBean.getTaskId());
-    // // if (taskInformation != null) {
-    // Task2PVViewBean.convert(taskInformation.getTask(), bean);
-    // // }
-    // retList.add(bean);
-    // }
-    //
-    // return retList.toArray(new PVViewBean[retList.size()]);
-    //
-    // } catch (FileNotFoundException e) {
-    // // TODO 自動生成された catch ブロック
-    // e.printStackTrace();
-    // } catch (ProjectException e) {
-    // // TODO 自動生成された catch ブロック
-    // e.printStackTrace();
-    // } catch (IllegalAccessException e) {
-    // // TODO 自動生成された catch ブロック
-    // e.printStackTrace();
-    // } catch (InvocationTargetException e) {
-    // // TODO 自動生成された catch ブロック
-    // e.printStackTrace();
-    // } finally {
-    // if (in != null) {
-    // try {
-    // in.close();
-    // } catch (IOException e) {
-    // e.printStackTrace();
-    // }
-    // }
-    // }
-    // return null;
-    // }
 
     public void setFileName(String name) {
         this.name = name;
@@ -462,10 +416,57 @@ public class ProjectSummaryAction implements Action {
 
             @Override
             public boolean accept(File pathname) {
-                return !pathname.isDirectory()
-                        && pathname.getName().startsWith(name);
+                boolean flag1 = false;
+                boolean flag2 = false;
+                if (!StringUtils.isEmpty(name)) {
+                    flag1 = !pathname.isDirectory()
+                            && pathname.getName().startsWith(name);
+                }
+                if (!StringUtils.isEmpty(redmineFileName)) {
+                    flag2 = !pathname.isDirectory()
+                            && pathname.getName().startsWith(redmineFileName);
+                }
+                return flag1 || flag2;
+
             }
         });
+    }
+
+
+    // 以下は画面上でファイルがあるかをチェックするためのメソッド
+    private static final String[] fileNames = { "_PVj.tsv", "_base_ACj.tsv",
+            "_base_EVj.tsv" };
+
+    private boolean exists(String name) {
+        String[] list = owner.getRootDir().list();
+        for (String string : list) {
+            System.out.println(string);
+        }
+        return new File(owner.getRootDir(), name).exists();
+    }
+
+    public boolean getPvfileExists() {
+        return exists(name + fileNames[0]);
+    }
+
+    public boolean getRedminePvfileExists() {
+        return exists(redmineFileName + fileNames[0]);
+    }
+
+    public boolean getAcfileExists() {
+        return exists(name + fileNames[1]);
+    }
+
+    public boolean getRedmineAcfileExists() {
+        return exists(redmineFileName + fileNames[1]);
+    }
+
+    public boolean getEvfileExists() {
+        return exists(name + fileNames[2]);
+    }
+
+    public boolean getRedmineEvfileExists() {
+        return exists(redmineFileName + fileNames[2]);
     }
 
 }
