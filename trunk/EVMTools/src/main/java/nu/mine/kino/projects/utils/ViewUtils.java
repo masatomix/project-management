@@ -38,7 +38,7 @@ import org.apache.commons.lang.time.DateUtils;
  * @version $Revision$
  */
 public class ViewUtils {
-
+    // 要注意タスクを探す上で大事なメソッド
     public static List<PVACEVViewBean> getPVACEVViewBeanList(Project project) {
         List<PVACEVViewBean> retList = new ArrayList<PVACEVViewBean>();
         TaskInformation[] todayTaskInfos = project.getTaskInformations();
@@ -90,6 +90,7 @@ public class ViewUtils {
         return bean;
     }
 
+    // 要注意タスクを探す上で大事なメソッド
     /**
      * 二点間のプロジェクトを比較して、差分のPV/AC/EVを計算する EVのうち進捗率は、直近時点の数値であり差分ではない。
      * 
@@ -149,6 +150,17 @@ public class ViewUtils {
         }
         // //////////////
         return bean;
+    }
+
+    public static List<PVACEVViewBean> getIsCheckPVACEVViewList(Project project) {
+        List<PVACEVViewBean> isCheckList = new ArrayList<PVACEVViewBean>();
+        List<PVACEVViewBean> list = ViewUtils.getPVACEVViewBeanList(project);
+        for (PVACEVViewBean bean : list) {
+            if (bean.isCheck()) {
+                isCheckList.add(bean);
+            }
+        }
+        return list;
     }
 
     public static List<PVViewBean> getPVViewBeanList(Project project)
