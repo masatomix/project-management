@@ -4,31 +4,45 @@ import hudson.Extension;
 import hudson.FilePath;
 import hudson.FilePath.FileCallable;
 import hudson.Launcher;
-import hudson.model.Action;
 import hudson.model.BuildListener;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.remoting.VirtualChannel;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import hudson.tasks.Mailer;
 import hudson.util.FormValidation;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.ServletException;
 
 import jenkins.model.Jenkins;
 
 import net.sf.json.JSONObject;
+import nu.mine.kino.entity.PVACEVViewBean;
+import nu.mine.kino.entity.Project;
+import nu.mine.kino.jenkins.plugins.projectmanagement.utils.PMUtils;
 import nu.mine.kino.projects.ACCreator;
 import nu.mine.kino.projects.EVCreator;
+import nu.mine.kino.projects.JSONProjectCreator;
 import nu.mine.kino.projects.PVCreator;
 import nu.mine.kino.projects.ProjectException;
 import nu.mine.kino.projects.ProjectWriter;
+import nu.mine.kino.projects.utils.Utils;
+import nu.mine.kino.projects.utils.ViewUtils;
 
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -118,7 +132,67 @@ public class EVMToolsBuilder extends Builder {
         }
         action.setFileName(pmJSON.getName());// targetかな??
 
+        File json = new File(build.getRootDir(), pmJSON.getName());
+        listener.getLogger().println(
+                "[EVM Tools] Project :" + json.getAbsolutePath());
+
+        Project project = null;
+        try {
+            project = new JSONProjectCreator(json).createProject();
+        } catch (ProjectException e) {
+            throw new IOException(e);
+        }
+
+        checkProjectAndMail(project, listener);
         return true;
+    }
+
+    private void checkProjectAndMail(Project project, BuildListener listener)
+            throws IOException {
+        // ///////////////// 以下メール送信系の処理
+        List<PVACEVViewBean> list = ViewUtils.getIsCheckPVACEVViewList(project);
+        StringBuffer messageBuf = new StringBuffer();
+        for (PVACEVViewBean bean : list) {
+            String line = bean.getTaskId() + " : " + bean.getTaskName();
+            // messageBuf.append("要注意タスク: ");
+            // messageBuf.append("\n");
+            messageBuf.append(line);
+            messageBuf.append("\n");
+        }
+
+        String message = new String(messageBuf);
+        listener.getLogger().println("[EVM Tools] : --- 要注意タスク--- ");
+        listener.getLogger().println(message);
+        listener.getLogger().println("[EVM Tools] : --- 要注意タスク--- ");
+
+        DescriptorImpl descriptor = (DescriptorImpl) Jenkins.getInstance()
+                .getDescriptor(EVMToolsBuilder.class);
+
+        boolean useMail = descriptor.getUseMail();
+        listener.getLogger().println("[EVM Tools] メール送信する？ :" + useMail);
+        String address = descriptor.getAddresses();
+        listener.getLogger().println("[EVM Tools] 宛先:" + address);
+
+        if (useMail && !StringUtils.isEmpty(address)) {
+            String[] addresses = Utils.parseCommna(address);
+            for (String string : addresses) {
+                System.out.printf("[%s]\n", string);
+            }
+            try {
+                if (addresses.length > 0) {
+                    PMUtils.sendMail(addresses, message);
+                } else {
+                    String errorMsg = "メール送信に失敗しました。宛先の設定がされていません";
+                    listener.getLogger().println("[EVM Tools] " + errorMsg);
+                    throw new IOException(errorMsg);
+                }
+            } catch (MessagingException e) {
+                String errorMsg = "メール送信に失敗しました。「システムの設定」で E-mail 通知 の設定や宛先などを見直してください";
+                listener.getLogger().println("[EVM Tools] " + errorMsg);
+                throw new IOException(errorMsg);
+
+            }
+        }
     }
 
     /**
@@ -371,6 +445,10 @@ public class EVMToolsBuilder extends Builder {
             BuildStepDescriptor<Builder> {
         private String prefixs;
 
+        private boolean useMail;
+
+        private String addresses;
+
         // /**
         // * To persist global configuration information, simply store it in a
         // * field and call save().
@@ -433,6 +511,8 @@ public class EVMToolsBuilder extends Builder {
             // like setUseFrench)
 
             prefixs = formData.getString("prefixs");
+            useMail = formData.getBoolean("useMail");
+            addresses = formData.getString("addresses");
             save();
             return super.configure(req, formData);
         }
@@ -454,5 +534,16 @@ public class EVMToolsBuilder extends Builder {
         public String getPrefixs() {
             return prefixs;
         }
+
+        // Getterがあれば、保存されるぽい。
+        public boolean getUseMail() {
+            return useMail;
+        }
+
+        // Getterがあれば、保存されるぽい。
+        public String getAddresses() {
+            return addresses;
+        }
     }
+
 }
