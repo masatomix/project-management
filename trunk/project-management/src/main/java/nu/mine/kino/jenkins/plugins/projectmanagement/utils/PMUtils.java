@@ -12,6 +12,17 @@
 
 package nu.mine.kino.jenkins.plugins.projectmanagement.utils;
 
+import hudson.tasks.Mailer;
+
+import java.io.ByteArrayInputStream;
+import java.io.UnsupportedEncodingException;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
 import nu.mine.kino.entity.ProjectUser;
 
 import static nu.mine.kino.projects.utils.Utils.round;
@@ -54,6 +65,20 @@ public class PMUtils {
             tmp += value;
             projectUser.setPlannedValue_p1(round(tmp));
         }
+    }
+
+    public static void sendMail(String[] addresses, String message)
+            throws UnsupportedEncodingException, MessagingException {
+        MimeMessage mimeMessage = new MimeMessage(Mailer.descriptor()
+                .createSession(), new ByteArrayInputStream(
+                message.getBytes("UTF-8")));
+
+        InternetAddress[] to = new InternetAddress[addresses.length];
+        for (int i = 0; i < addresses.length; i++) {
+            to[i] = new InternetAddress(addresses[i], true);
+        }
+        mimeMessage.setRecipients(Message.RecipientType.TO, to);
+//        Transport.send(mimeMessage);
     }
 
 }
