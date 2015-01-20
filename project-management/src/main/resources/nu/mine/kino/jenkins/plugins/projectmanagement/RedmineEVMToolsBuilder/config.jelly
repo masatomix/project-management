@@ -27,4 +27,7 @@
   <f:entry title="queryId" field="queryId">
     <f:textbox />
   </f:entry>
+ <f:entry title="要注意タスクのメール送信先" field="addresses" description="期限切れ未完了タスクがある場合のメール送信先。システム設定のデフォルト値を上書きする場合設定してください。">
+     <f:textbox />
+  </f:entry>
 </j:jelly>
