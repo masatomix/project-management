@@ -123,6 +123,10 @@ public class PMUtils {
             BuildListener listener) throws IOException {
         // ///////////////// 以下メール送信系の処理
         List<PVACEVViewBean> list = ViewUtils.getIsCheckPVACEVViewList(project);
+        if (list.isEmpty()) {
+            listener.getLogger().println("[EVM Tools] : 要注意タスクはありませんでした。");
+            return;
+        }
         StringBuffer messageBuf = new StringBuffer();
         for (PVACEVViewBean bean : list) {
             String line = bean.getTaskId() + " : " + bean.getTaskName();
