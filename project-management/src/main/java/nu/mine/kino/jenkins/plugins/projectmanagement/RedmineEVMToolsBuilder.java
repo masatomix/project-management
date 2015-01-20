@@ -21,8 +21,10 @@ import javax.servlet.ServletException;
 
 import net.sf.json.JSONObject;
 import nu.mine.kino.entity.Project;
+import nu.mine.kino.jenkins.plugins.projectmanagement.utils.PMUtils;
 import nu.mine.kino.projects.ACCreator;
 import nu.mine.kino.projects.EVCreator;
+import nu.mine.kino.projects.JSONProjectCreator;
 import nu.mine.kino.projects.PVCreator;
 import nu.mine.kino.projects.ProjectException;
 import nu.mine.kino.projects.ProjectWriter;
@@ -167,42 +169,15 @@ public class RedmineEVMToolsBuilder extends Builder {
                     "[Redmine EVM Tools] TSV File:"
                             + outputTsv.getAbsolutePath());
 
+            ProjectSummaryAction action = PMUtils
+                    .getProjectSummaryAction(build);
+            action.setRedmineFileName(fileName);
+
+            PMUtils.checkProjectAndMail(project, listener);
+            
         } catch (ProjectException e) {
             throw new IOException(e);
         }
-
-        List<ProjectSummaryAction> projectSummaryActions = build
-                .getActions(ProjectSummaryAction.class);
-        ProjectSummaryAction action = null;
-        if (projectSummaryActions.isEmpty()) {
-            action = new ProjectSummaryAction(build);
-            build.addAction(action);
-        } else {
-            action = projectSummaryActions.get(0);
-        }
-        action.setRedmineFileName(fileName);
-
-        // FilePath root = build.getModuleRoot(); // ワークスペースのルート
-        // FilePath buildRoot = new FilePath(build.getRootDir()); // このビルドのルート
-        // listener.getLogger().println("[EVM Tools] JSONファイル作成開始");
-        // FilePath pmJSON = ekouxecuteAndCopies(root, buildRoot,
-        // new ProjectWriterExecutor(url));
-        //
-        // listener.getLogger().println("[EVM Tools] file:" + pmJSON);
-        //
-        // listener.getLogger().println("[EVM Tools] PVファイル作成開始");
-        // executeAndCopy(root, buildRoot, new PVCreatorExecutor(url));
-        // listener.getLogger().println("[EVM Tools] ACファイル作成開始");
-        // executeAndCopies(root, buildRoot, new ACCreatorExecutor(url));
-        // listener.getLogger().println("[EVM Tools] EVファイル作成開始");
-        // executeAndCopies(root, buildRoot, new EVCreatorExecutor(url));
-        // // System.out.println(build.getModuleRoot());
-        // // System.out.println(build.getRootDir());
-        // // System.out.println(build.getWorkspace());
-        // // System.out.println(build.getArtifactsDir());
-        // // ProjectSummaryAction action = new ProjectSummaryAction(build);
-        // // action.setFileName(pmJSON.getName());// targetかな??
-        // // build.addAction(action);
 
         return true;
     }
