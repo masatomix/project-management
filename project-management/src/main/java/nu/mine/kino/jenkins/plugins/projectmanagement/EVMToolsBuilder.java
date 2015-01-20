@@ -121,15 +121,7 @@ public class EVMToolsBuilder extends Builder {
         // System.out.println(build.getWorkspace());
         // System.out.println(build.getArtifactsDir());
 
-        List<ProjectSummaryAction> projectSummaryActions = build
-                .getActions(ProjectSummaryAction.class);
-        ProjectSummaryAction action = null;
-        if (projectSummaryActions.isEmpty()) {
-            action = new ProjectSummaryAction(build);
-            build.addAction(action);
-        } else {
-            action = projectSummaryActions.get(0);
-        }
+        ProjectSummaryAction action = PMUtils.getProjectSummaryAction(build);
         action.setFileName(pmJSON.getName());// targetかな??
 
         File json = new File(build.getRootDir(), pmJSON.getName());
@@ -143,56 +135,8 @@ public class EVMToolsBuilder extends Builder {
             throw new IOException(e);
         }
 
-        checkProjectAndMail(project, listener);
+        PMUtils.checkProjectAndMail(project, listener);
         return true;
-    }
-
-    private void checkProjectAndMail(Project project, BuildListener listener)
-            throws IOException {
-        // ///////////////// 以下メール送信系の処理
-        List<PVACEVViewBean> list = ViewUtils.getIsCheckPVACEVViewList(project);
-        StringBuffer messageBuf = new StringBuffer();
-        for (PVACEVViewBean bean : list) {
-            String line = bean.getTaskId() + " : " + bean.getTaskName();
-            // messageBuf.append("要注意タスク: ");
-            // messageBuf.append("\n");
-            messageBuf.append(line);
-            messageBuf.append("\n");
-        }
-
-        String message = new String(messageBuf);
-        listener.getLogger().println("[EVM Tools] : --- 要注意タスク--- ");
-        listener.getLogger().println(message);
-        listener.getLogger().println("[EVM Tools] : --- 要注意タスク--- ");
-
-        DescriptorImpl descriptor = (DescriptorImpl) Jenkins.getInstance()
-                .getDescriptor(EVMToolsBuilder.class);
-
-        boolean useMail = descriptor.getUseMail();
-        listener.getLogger().println("[EVM Tools] メール送信する？ :" + useMail);
-        String address = descriptor.getAddresses();
-        listener.getLogger().println("[EVM Tools] 宛先:" + address);
-
-        if (useMail && !StringUtils.isEmpty(address)) {
-            String[] addresses = Utils.parseCommna(address);
-            for (String string : addresses) {
-                System.out.printf("[%s]\n", string);
-            }
-            try {
-                if (addresses.length > 0) {
-                    PMUtils.sendMail(addresses, message);
-                } else {
-                    String errorMsg = "メール送信に失敗しました。宛先の設定がされていません";
-                    listener.getLogger().println("[EVM Tools] " + errorMsg);
-                    throw new IOException(errorMsg);
-                }
-            } catch (MessagingException e) {
-                String errorMsg = "メール送信に失敗しました。「システムの設定」で E-mail 通知 の設定や宛先などを見直してください";
-                listener.getLogger().println("[EVM Tools] " + errorMsg);
-                throw new IOException(errorMsg);
-
-            }
-        }
     }
 
     /**
