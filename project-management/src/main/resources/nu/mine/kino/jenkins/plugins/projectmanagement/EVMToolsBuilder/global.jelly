@@ -20,11 +20,11 @@
     <f:textbox />
   </f:entry>
 
-    <f:entry title="メールを送る" field="useMail"
-      description="Check if we should send mail">
+    <f:entry title="メールで通知する" field="useMail"
+      description="期限切れ未完了タスクがある場合、メールで通知します。">
       <f:checkbox />
     </f:entry>
-  <f:entry title="メール送信先" field="addresses" description="メールサーバはJenkins標準のメールサーバを利用します。">
+  <f:entry title="メール送信先" field="addresses" description="メールサーバはJenkins標準のメール設定を利用します。">
     <f:textbox />
   </f:entry>
   </f:section>
