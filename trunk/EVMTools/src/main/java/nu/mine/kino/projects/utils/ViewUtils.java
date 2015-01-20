@@ -160,7 +160,7 @@ public class ViewUtils {
                 isCheckList.add(bean);
             }
         }
-        return list;
+        return isCheckList;
     }
 
     public static List<PVViewBean> getPVViewBeanList(Project project)
