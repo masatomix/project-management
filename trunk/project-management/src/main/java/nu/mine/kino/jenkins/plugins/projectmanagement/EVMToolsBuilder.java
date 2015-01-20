@@ -71,11 +71,14 @@ public class EVMToolsBuilder extends Builder {
     private static final String[] PREFIX_ARRAY = new String[] { "base_",
             "base1_", "base2_" };
 
+    private final String addresses;
+
     // Fields in config.jelly must match the parameter names in the
     // "DataBoundConstructor"
     @DataBoundConstructor
-    public EVMToolsBuilder(String name) {
+    public EVMToolsBuilder(String name, String addresses) {
         this.name = name;
+        this.addresses = addresses;
     }
 
     /**
@@ -83,6 +86,10 @@ public class EVMToolsBuilder extends Builder {
      */
     public String getName() {
         return name;
+    }
+
+    public String getAddresses() {
+        return addresses;
     }
 
     @Override
@@ -135,7 +142,7 @@ public class EVMToolsBuilder extends Builder {
             throw new IOException(e);
         }
 
-        PMUtils.checkProjectAndMail(project, listener);
+        PMUtils.checkProjectAndMail(project, addresses, listener);
         return true;
     }
 

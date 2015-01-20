@@ -120,7 +120,7 @@ public class PMUtils {
     }
 
     public static void checkProjectAndMail(Project project,
-            BuildListener listener) throws IOException {
+            String otherAddresses, BuildListener listener) throws IOException {
         // ///////////////// 以下メール送信系の処理
         List<PVACEVViewBean> list = ViewUtils.getIsCheckPVACEVViewList(project);
         if (list.isEmpty()) {
@@ -146,7 +146,8 @@ public class PMUtils {
 
         boolean useMail = descriptor.getUseMail();
         listener.getLogger().println("[EVM Tools] メール送信する？ :" + useMail);
-        String address = descriptor.getAddresses();
+        String address = StringUtils.isEmpty(otherAddresses) ? descriptor
+                .getAddresses() : otherAddresses;
         listener.getLogger().println("[EVM Tools] 宛先:" + address);
 
         if (useMail && !StringUtils.isEmpty(address)) {
