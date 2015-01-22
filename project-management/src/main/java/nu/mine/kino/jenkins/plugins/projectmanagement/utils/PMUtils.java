@@ -164,9 +164,11 @@ public class PMUtils {
                 endDate = DateFormatUtils
                         .format(scheduledEndDate, "yyyy/MM/dd");
             }
-            String line = String.format("%s\t%s\t%s\t%s",
-                    bean.getPersonInCharge(), bean.getTaskId(),
-                    bean.getTaskName(), endDate);
+            String personInCharge = StringUtils.isEmpty(bean
+                    .getPersonInCharge()) ? "ñ¢ê›íË" : bean.getPersonInCharge();
+
+            String line = String.format("%s\t%s\t%s\t%s", personInCharge,
+                    bean.getTaskId(), bean.getTaskName(), endDate);
             messageBuf.append(line);
             messageBuf.append("\n");
         }
