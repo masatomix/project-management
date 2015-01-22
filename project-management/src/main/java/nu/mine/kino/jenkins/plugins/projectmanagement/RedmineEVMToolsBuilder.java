@@ -180,7 +180,7 @@ public class RedmineEVMToolsBuilder extends Builder {
                     .getProjectSummaryAction(build);
             action.setRedmineFileName(fileName);
 
-            PMUtils.checkProjectAndMail(project, addresses, listener);
+            PMUtils.checkProjectAndMail(project, addresses, build, listener);
 
         } catch (ProjectException e) {
             throw new IOException(e);
