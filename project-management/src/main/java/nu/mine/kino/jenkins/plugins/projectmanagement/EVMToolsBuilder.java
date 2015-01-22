@@ -431,8 +431,6 @@ public class EVMToolsBuilder extends Builder {
             BuildStepDescriptor<Builder> {
         private String prefixs;
 
-        private boolean useMail;
-
         private String addresses;
 
         // /**
@@ -497,8 +495,12 @@ public class EVMToolsBuilder extends Builder {
             // like setUseFrench)
 
             prefixs = formData.getString("prefixs");
-            useMail = formData.getBoolean("useMail");
-            addresses = formData.getString("addresses");
+            if (formData.has("useMail")) {
+                JSONObject useMail = formData.getJSONObject("useMail");
+                addresses = useMail.getString("addresses");
+            } else {
+                addresses = null;
+            }
             save();
             return super.configure(req, formData);
         }
@@ -519,11 +521,6 @@ public class EVMToolsBuilder extends Builder {
         // Getterがあれば、保存されるぽい。
         public String getPrefixs() {
             return prefixs;
-        }
-
-        // Getterがあれば、保存されるぽい。
-        public boolean getUseMail() {
-            return useMail;
         }
 
         // Getterがあれば、保存されるぽい。
