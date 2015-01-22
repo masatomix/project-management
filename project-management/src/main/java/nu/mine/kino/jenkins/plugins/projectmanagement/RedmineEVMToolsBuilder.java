@@ -77,11 +77,14 @@ public class RedmineEVMToolsBuilder extends Builder {
 
     private final String addresses;
 
+    private final boolean sendAll;
+
     // Fields in config.jelly must match the parameter names in the
     // "DataBoundConstructor"
     @DataBoundConstructor
     public RedmineEVMToolsBuilder(String url, String userid, String password,
-            String projectId, String queryId, String apiKey, String addresses) {
+            String projectId, String queryId, String apiKey, String addresses,
+            boolean sendAll) {
         this.url = url;
         this.userid = userid;
         this.password = password;
@@ -89,6 +92,7 @@ public class RedmineEVMToolsBuilder extends Builder {
         this.queryId = queryId;
         this.apiKey = apiKey;
         this.addresses = addresses;
+        this.sendAll = sendAll;
     }
 
     public String getUrl() {
@@ -117,6 +121,10 @@ public class RedmineEVMToolsBuilder extends Builder {
 
     public String getAddresses() {
         return addresses;
+    }
+    
+    public boolean getSendAll(){
+        return sendAll;
     }
 
     @Override
@@ -180,7 +188,8 @@ public class RedmineEVMToolsBuilder extends Builder {
                     .getProjectSummaryAction(build);
             action.setRedmineFileName(fileName);
 
-            PMUtils.checkProjectAndMail(project, addresses, build, listener);
+            PMUtils.checkProjectAndMail(project, addresses, build, listener,
+                    sendAll);
 
         } catch (ProjectException e) {
             throw new IOException(e);

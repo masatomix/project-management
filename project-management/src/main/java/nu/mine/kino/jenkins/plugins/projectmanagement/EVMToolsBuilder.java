@@ -59,12 +59,15 @@ public class EVMToolsBuilder extends Builder {
 
     private final String addresses;
 
+    private final boolean sendAll;
+
     // Fields in config.jelly must match the parameter names in the
     // "DataBoundConstructor"
     @DataBoundConstructor
-    public EVMToolsBuilder(String name, String addresses) {
+    public EVMToolsBuilder(String name, String addresses, boolean sendAll) {
         this.name = name;
         this.addresses = addresses;
+        this.sendAll = sendAll;
     }
 
     /**
@@ -129,7 +132,7 @@ public class EVMToolsBuilder extends Builder {
             throw new IOException(e);
         }
 
-        PMUtils.checkProjectAndMail(project, addresses, build, listener);
+        PMUtils.checkProjectAndMail(project, addresses, build, listener,sendAll);
 
         // testMethod(build, listener);
         return true;
