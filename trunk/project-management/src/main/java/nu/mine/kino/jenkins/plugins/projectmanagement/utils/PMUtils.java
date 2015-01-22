@@ -143,8 +143,7 @@ public class PMUtils {
             list = ViewUtils.getIsCheckPVACEVViewList(project);
             header = "以下、期限が過ぎましたが完了していない要注意タスクです。 ";
         } else {
-            // 要修正
-            list = ViewUtils.getIsCheckPVACEVViewList(project);
+            list = ViewUtils.getPVACEVViewBeanList(project);
             header = "以下、条件に合致したタスクです。 ";
         }
 
