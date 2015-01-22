@@ -96,7 +96,7 @@ public class PMUtils {
         mimeMessage.setRecipients(Message.RecipientType.TO, to);
         mimeMessage.setSubject(subject, "ISO-2022-JP");
         mimeMessage.setText(message, "ISO-2022-JP");
-        // Transport.send(mimeMessage);
+        Transport.send(mimeMessage);
     }
 
     /**
