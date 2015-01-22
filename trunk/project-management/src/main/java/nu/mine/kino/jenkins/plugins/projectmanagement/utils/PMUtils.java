@@ -15,12 +15,14 @@ package nu.mine.kino.jenkins.plugins.projectmanagement.utils;
 import static nu.mine.kino.projects.utils.Utils.round;
 import hudson.model.BuildListener;
 import hudson.model.AbstractBuild;
+import hudson.model.Hudson;
 import hudson.tasks.Mailer;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
 import java.util.List;
 
 import javax.mail.Message;
@@ -41,6 +43,7 @@ import nu.mine.kino.projects.utils.Utils;
 import nu.mine.kino.projects.utils.ViewUtils;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 
 /**
  * @author Masatomi KINO
@@ -82,8 +85,9 @@ public class PMUtils {
         }
     }
 
-    public static void sendMail(String[] addresses, String message)
-            throws UnsupportedEncodingException, MessagingException {
+    public static void sendMail(String[] addresses, String subject,
+            String message) throws UnsupportedEncodingException,
+            MessagingException {
 
         MimeMessage mimeMessage = new MimeMessage(Mailer.descriptor()
                 .createSession());
@@ -93,7 +97,7 @@ public class PMUtils {
             to[i] = new InternetAddress(addresses[i], true);
         }
         mimeMessage.setRecipients(Message.RecipientType.TO, to);
-        mimeMessage.setSubject("要注意タスクの連絡", "ISO-2022-JP");
+        mimeMessage.setSubject(subject, "ISO-2022-JP");
         mimeMessage.setText(message, "ISO-2022-JP");
         Transport.send(mimeMessage);
     }
@@ -120,7 +124,20 @@ public class PMUtils {
     }
 
     public static void checkProjectAndMail(Project project,
-            String otherAddresses, BuildListener listener) throws IOException {
+            String otherAddresses, AbstractBuild build, BuildListener listener)
+            throws IOException {
+
+        // 参考 org.jenkinsci.plugins.tokenmacro.impl.BuildUrlMacro
+        String BUILD_URL = new StringBuilder()
+                .append(Hudson.getInstance().getRootUrl())
+                .append(build.getUrl()).toString();
+        String PROJECT_NAME = build.getProject().getName();
+        String BUILD_NUMBER = String.valueOf(build.getNumber());
+
+        String subject = String.format("%s - Build # %s の要注意タスク", PROJECT_NAME,
+                BUILD_NUMBER);
+        String footer = String.format(
+                "Check console output at %s to view the results.", BUILD_URL);
         // ///////////////// 以下メール送信系の処理
         List<PVACEVViewBean> list = ViewUtils.getIsCheckPVACEVViewList(project);
         if (list.isEmpty()) {
@@ -128,13 +145,19 @@ public class PMUtils {
             return;
         }
         StringBuffer messageBuf = new StringBuffer();
+        messageBuf.append("以下、期限が過ぎましたが完了していない要注意タスクです。 ");
+        messageBuf.append("\n");
+        messageBuf.append("担当者\tタスクID\tタスク名\t期限");
+        messageBuf.append("\n");
         for (PVACEVViewBean bean : list) {
-            String line = bean.getTaskId() + " : " + bean.getTaskName();
-            // messageBuf.append("要注意タスク: ");
-            // messageBuf.append("\n");
+            String endDate = DateFormatUtils.format(bean.getScheduledEndDate(),"yyyy/MM/dd");
+            String line = String.format("%s\t%s\t%s\t%s",
+                    bean.getPersonInCharge(), bean.getTaskId(),
+                    bean.getTaskName(), endDate);
             messageBuf.append(line);
             messageBuf.append("\n");
         }
+        messageBuf.append(footer);
 
         String message = new String(messageBuf);
         listener.getLogger().println("[EVM Tools] : --- 要注意タスク--- ");
@@ -157,7 +180,7 @@ public class PMUtils {
             }
             try {
                 if (addresses.length > 0) {
-                    PMUtils.sendMail(addresses, message);
+                    PMUtils.sendMail(addresses, subject, message);
                 } else {
                     String errorMsg = "メール送信に失敗しました。宛先の設定がされていません";
                     listener.getLogger().println("[EVM Tools] " + errorMsg);

@@ -10,27 +10,16 @@ import hudson.model.AbstractProject;
 import hudson.remoting.VirtualChannel;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
-import hudson.tasks.Mailer;
 import hudson.util.FormValidation;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import javax.servlet.ServletException;
 
-import jenkins.model.Jenkins;
-
 import net.sf.json.JSONObject;
-import nu.mine.kino.entity.PVACEVViewBean;
 import nu.mine.kino.entity.Project;
 import nu.mine.kino.jenkins.plugins.projectmanagement.utils.PMUtils;
 import nu.mine.kino.projects.ACCreator;
@@ -39,10 +28,7 @@ import nu.mine.kino.projects.JSONProjectCreator;
 import nu.mine.kino.projects.PVCreator;
 import nu.mine.kino.projects.ProjectException;
 import nu.mine.kino.projects.ProjectWriter;
-import nu.mine.kino.projects.utils.Utils;
-import nu.mine.kino.projects.utils.ViewUtils;
 
-import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -95,6 +81,7 @@ public class EVMToolsBuilder extends Builder {
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher,
             BuildListener listener) throws InterruptedException, IOException {
+
         // This is where you 'build' the project.
         // Since this is a dummy, we just say 'hello world' and call that a
         // build.
@@ -142,9 +129,57 @@ public class EVMToolsBuilder extends Builder {
             throw new IOException(e);
         }
 
-        PMUtils.checkProjectAndMail(project, addresses, listener);
+        PMUtils.checkProjectAndMail(project, addresses, build, listener);
+
+        // testMethod(build, listener);
         return true;
     }
+
+    // private void testMethod(AbstractBuild build, BuildListener listener)
+    // throws IOException, InterruptedException {
+    // try {
+    // ExtensionList<TokenMacro> all = TokenMacro.all();
+    // for (TokenMacro tokenMacro : all) {
+    // listener.getLogger().println(tokenMacro.toString());
+    // }
+    //
+    // List<TokenMacro> privateMacros = new ArrayList<TokenMacro>();
+    // ClassLoader cl = Jenkins.getInstance().pluginManager.uberClassLoader;
+    // for (final IndexItem<EmailToken, TokenMacro> item : Index.load(
+    // EmailToken.class, TokenMacro.class, cl)) {
+    // try {
+    // privateMacros.add(item.instance());
+    // } catch (Exception e) {
+    // // ignore errors loading tokens
+    // }
+    // }
+    // String expand = TokenMacro.expandAll(build, listener,
+    // "$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!",
+    // false, null);
+    // listener.getLogger().println(expand);
+    // expand = TokenMacro.expandAll(build, listener,
+    // "Check console output at $BUILD_URL to view the results.",
+    // false, null);
+    // listener.getLogger().println(expand);
+    // String BUILD_URL = (new StringBuilder())
+    // .append(Hudson.getInstance().getRootUrl())
+    // .append(build.getUrl()).toString();
+    // String PROJECT_NAME = build.getProject().getName();
+    // String BUILD_NUMBER = String.valueOf(build.getNumber());
+    //
+    // listener.getLogger()
+    // .println(
+    // String.format("%s - Build # %s", PROJECT_NAME,
+    // BUILD_NUMBER));
+    // listener.getLogger().println(
+    // String.format(
+    // "Check console output at %s to view the results.",
+    // BUILD_URL));
+    // } catch (MacroEvaluationException e1) {
+    // // TODO 自動生成された catch ブロック
+    // e1.printStackTrace();
+    // }
+    // }
 
     /**
      * rootに対してcallableな処理を実行し、結果ファイルをbuildRootの下に配置する。
