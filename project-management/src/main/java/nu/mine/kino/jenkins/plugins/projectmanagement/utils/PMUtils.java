@@ -20,6 +20,7 @@ import hudson.tasks.Mailer;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
 import java.util.List;
 
 import javax.mail.Message;
@@ -157,8 +158,12 @@ public class PMUtils {
         messageBuf.append("担当者\tタスクID\tタスク名\t期限");
         messageBuf.append("\n");
         for (PVACEVViewBean bean : list) {
-            String endDate = DateFormatUtils.format(bean.getScheduledEndDate(),
-                    "yyyy/MM/dd");
+            Date scheduledEndDate = bean.getScheduledEndDate();
+            String endDate = "未設定";
+            if (scheduledEndDate != null) {
+                endDate = DateFormatUtils
+                        .format(scheduledEndDate, "yyyy/MM/dd");
+            }
             String line = String.format("%s\t%s\t%s\t%s",
                     bean.getPersonInCharge(), bean.getTaskId(),
                     bean.getTaskName(), endDate);
