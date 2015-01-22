@@ -18,11 +18,8 @@ import hudson.model.AbstractBuild;
 import hudson.model.Hudson;
 import hudson.tasks.Mailer;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.Date;
 import java.util.List;
 
 import javax.mail.Message;
@@ -99,7 +96,7 @@ public class PMUtils {
         mimeMessage.setRecipients(Message.RecipientType.TO, to);
         mimeMessage.setSubject(subject, "ISO-2022-JP");
         mimeMessage.setText(message, "ISO-2022-JP");
-        Transport.send(mimeMessage);
+//        Transport.send(mimeMessage);
     }
 
     /**
@@ -150,7 +147,8 @@ public class PMUtils {
         messageBuf.append("担当者\tタスクID\tタスク名\t期限");
         messageBuf.append("\n");
         for (PVACEVViewBean bean : list) {
-            String endDate = DateFormatUtils.format(bean.getScheduledEndDate(),"yyyy/MM/dd");
+            String endDate = DateFormatUtils.format(bean.getScheduledEndDate(),
+                    "yyyy/MM/dd");
             String line = String.format("%s\t%s\t%s\t%s",
                     bean.getPersonInCharge(), bean.getTaskId(),
                     bean.getTaskName(), endDate);
@@ -167,7 +165,7 @@ public class PMUtils {
         DescriptorImpl descriptor = (DescriptorImpl) Jenkins.getInstance()
                 .getDescriptor(EVMToolsBuilder.class);
 
-        boolean useMail = descriptor.getUseMail();
+        boolean useMail = !StringUtils.isEmpty(descriptor.getAddresses());
         listener.getLogger().println("[EVM Tools] メール送信する？ :" + useMail);
         String address = StringUtils.isEmpty(otherAddresses) ? descriptor
                 .getAddresses() : otherAddresses;
