@@ -96,7 +96,7 @@ public class PMUtils {
         mimeMessage.setRecipients(Message.RecipientType.TO, to);
         mimeMessage.setSubject(subject, "ISO-2022-JP");
         mimeMessage.setText(message, "ISO-2022-JP");
-//        Transport.send(mimeMessage);
+        // Transport.send(mimeMessage);
     }
 
     /**
@@ -121,8 +121,8 @@ public class PMUtils {
     }
 
     public static void checkProjectAndMail(Project project,
-            String otherAddresses, AbstractBuild build, BuildListener listener)
-            throws IOException {
+            String otherAddresses, AbstractBuild build, BuildListener listener,
+            boolean sendAll) throws IOException {
 
         // 参考 org.jenkinsci.plugins.tokenmacro.impl.BuildUrlMacro
         String BUILD_URL = new StringBuilder()
@@ -131,18 +131,29 @@ public class PMUtils {
         String PROJECT_NAME = build.getProject().getName();
         String BUILD_NUMBER = String.valueOf(build.getNumber());
 
-        String subject = String.format("%s - Build # %s の要注意タスク", PROJECT_NAME,
+        String subject = String.format("%s - Build # %s のタスク", PROJECT_NAME,
                 BUILD_NUMBER);
         String footer = String.format(
                 "Check console output at %s to view the results.", BUILD_URL);
         // ///////////////// 以下メール送信系の処理
-        List<PVACEVViewBean> list = ViewUtils.getIsCheckPVACEVViewList(project);
+
+        String header = null;
+        List<PVACEVViewBean> list = null;
+        if (!sendAll) {
+            list = ViewUtils.getIsCheckPVACEVViewList(project);
+            header = "以下、期限が過ぎましたが完了していない要注意タスクです。 ";
+        } else {
+            // 要修正
+            list = ViewUtils.getIsCheckPVACEVViewList(project);
+            header = "以下、条件に合致したタスクです。 ";
+        }
+
         if (list.isEmpty()) {
             listener.getLogger().println("[EVM Tools] : 要注意タスクはありませんでした。");
             return;
         }
         StringBuffer messageBuf = new StringBuffer();
-        messageBuf.append("以下、期限が過ぎましたが完了していない要注意タスクです。 ");
+        messageBuf.append(header);
         messageBuf.append("\n");
         messageBuf.append("担当者\tタスクID\tタスク名\t期限");
         messageBuf.append("\n");
@@ -170,6 +181,7 @@ public class PMUtils {
         String address = StringUtils.isEmpty(otherAddresses) ? descriptor
                 .getAddresses() : otherAddresses;
         listener.getLogger().println("[EVM Tools] 宛先:" + address);
+        listener.getLogger().println("[EVM Tools] 期限切れ以外も通知？:" + sendAll);
 
         if (useMail && !StringUtils.isEmpty(address)) {
             String[] addresses = Utils.parseCommna(address);
