@@ -18,6 +18,7 @@ import java.util.List;
 import net.arnx.jsonic.JSON;
 import nu.mine.kino.entity.Project;
 import nu.mine.kino.projects.utils.HttpUtils;
+import nu.mine.kino.projects.utils.URIUtils;
 
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.RedmineManagerFactory;
@@ -64,8 +65,10 @@ public class TicketSamples {
     private static void tryGetIssues3(RedmineManager mgr, String redmineHost,
             String projectKey, String apiAccessKey) throws Exception {
 
-        String url = redmineHost + "/projects/" + projectKey + "/"
-                + "issues.json?key=" + apiAccessKey;
+        String url = URIUtils.resolveURIStr(redmineHost, "projects/"
+                + projectKey + "/" + "issues.json?key=" + apiAccessKey);
+        // String url = redmineHost + "/projects/" + projectKey + "/"
+        // + "issues.json?key=" + apiAccessKey;
         System.out.println(url);
 
         String webPage = HttpUtils.getWebPage(url);
