@@ -36,6 +36,7 @@ import nu.mine.kino.entity.Project;
 import nu.mine.kino.entity.Task;
 import nu.mine.kino.entity.TaskInformation;
 import nu.mine.kino.projects.utils.HttpUtils;
+import nu.mine.kino.projects.utils.URIUtils;
 
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.Issue;
@@ -138,8 +139,7 @@ public class RedmineProjectCreator2 extends RedmineProjectCreator {
 
     private String createURL(String projectId, Integer queryId) {
         StringBuffer buf = new StringBuffer();
-        buf.append(redmineHost);
-        buf.append("/projects/");
+        buf.append("projects/");
         buf.append(projectId);
         buf.append("/");
         buf.append("issues.json?key=");
@@ -148,7 +148,9 @@ public class RedmineProjectCreator2 extends RedmineProjectCreator {
             buf.append("&query_id=");
             buf.append(queryId);
         }
-        String url = new String(buf);
-        return url;
+        String path = new String(buf);
+        String uri = URIUtils.resolveURIStr(redmineHost, path);
+
+        return uri;
     }
 }
