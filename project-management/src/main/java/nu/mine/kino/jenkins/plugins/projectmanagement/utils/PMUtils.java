@@ -155,6 +155,9 @@ public class PMUtils {
         StringBuffer messageBuf = new StringBuffer();
         messageBuf.append(header);
         messageBuf.append("\n");
+        messageBuf.append("\n");
+        messageBuf.append("--------------------");
+        messageBuf.append("\n");
         messageBuf.append("担当者\tタスクID\tタスク名\t期限");
         messageBuf.append("\n");
         for (PVACEVViewBean bean : list) {
@@ -172,6 +175,8 @@ public class PMUtils {
             messageBuf.append(line);
             messageBuf.append("\n");
         }
+        messageBuf.append("--------------------");
+        messageBuf.append("\n");
         messageBuf.append(footer);
 
         String message = new String(messageBuf);
