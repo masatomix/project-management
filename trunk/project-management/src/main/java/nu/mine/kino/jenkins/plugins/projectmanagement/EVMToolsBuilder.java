@@ -101,6 +101,10 @@ public class EVMToolsBuilder extends Builder {
     public boolean perform(AbstractBuild build, Launcher launcher,
             BuildListener listener) throws InterruptedException, IOException {
 
+        listener.getLogger().println("[EVM Tools] name      :" + name);
+        listener.getLogger().println("[EVM Tools] addresses :" + addresses);
+        listener.getLogger().println("[EVM Tools] sendAll   :" + sendAll);
+        listener.getLogger().println("[EVM Tools] higawari  :" + higawari);
         // This is where you 'build' the project.
         // Since this is a dummy, we just say 'hello world' and call that a
         // build.
