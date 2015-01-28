@@ -118,6 +118,8 @@ public class EVMToolsBuilder extends Builder {
 
         // 日替わり運用をちゃんと行うのであれば。
         if (higawari) {
+            listener.getLogger()
+                    .println("[EVM Tools] Jenkins日替わり管理バージョンで稼働します");
             checkHigawari(root, name, listener);
         }
 
@@ -213,23 +215,37 @@ public class EVMToolsBuilder extends Builder {
         // 元々あったファイルと、date.datの日付を見比べる必要あり。
 
         FilePath org = new FilePath(root, fileName);
+
+        listener.getLogger().println("[EVM Tools] Org  file :" + fileName);
         FilePath target = new FilePath(root, org.getName() + ".tmp");
+
+        listener.getLogger().println(
+                "[EVM Tools] Dest file :" + target.getName());
         if (target.exists()) {
-            Boolean bool = root.act(new HOGE(target.getName()));
-            System.out.println(bool);
+            listener.getLogger().println(
+                    "[EVM Tools] Dest file がすでに存在するので、上書きしてよいかをチェックしてからコピーします");
+            Boolean bool = root.act(new DateChecker(target.getName()));
+
+            listener.getLogger().println("[EVM Tools] チェック結果:" + bool);
             if (!bool) {
-                System.out.println("日替わりが行われてない可能性があります");
+                listener.getLogger().println(
+                        "[EVM Tools] 日替わりが行われてない可能性がありますので、エラーとします。");
             } else {
-                System.out.println("日替わりが行われていますね。");
+                listener.getLogger().println(
+                        "[EVM Tools] 日替わりが行われていますので、コピーします。");
+                org.copyTo(target);
             }
+        } else {
+            listener.getLogger().println(
+                    "[EVM Tools] Dest file が存在しないので、そのままコピーします。");
+            org.copyTo(target);
         }
-        org.copyTo(target);
     }
 
-    private static class HOGE implements FileCallable<Boolean> {
+    private static class DateChecker implements FileCallable<Boolean> {
         private final String dotTmpFileName;
 
-        public HOGE(String name) {
+        public DateChecker(String name) {
             dotTmpFileName = name;
         }
 
@@ -241,6 +257,9 @@ public class EVMToolsBuilder extends Builder {
                         dotTmpFileName)).createProject().getBaseDate();
                 String format = DateFormatUtils.format(baseDate, "yyyyMMdd");
                 File dateFile = new File(f, "date.dat");
+                if (dateFile.exists()) {
+                    System.out.println("ファイルが存在します。");
+                }
 
                 String string = ReadUtils.readFile(dateFile);
                 System.out.println(string);
