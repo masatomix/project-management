@@ -1,5 +1,6 @@
 package nu.mine.kino.jenkins.plugins.projectmanagement;
 
+import hudson.AbortException;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.FilePath.FileCallable;
@@ -14,6 +15,8 @@ import hudson.util.FormValidation;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -33,6 +36,7 @@ import nu.mine.kino.projects.ProjectWriter;
 import nu.mine.kino.projects.utils.ReadUtils;
 
 import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -71,11 +75,11 @@ public class EVMToolsBuilder extends Builder {
     // "DataBoundConstructor"
     @DataBoundConstructor
     public EVMToolsBuilder(String name, String addresses, boolean sendAll,
-            boolean higawawri) {
+            boolean higawari) {
         this.name = name;
         this.addresses = addresses;
         this.sendAll = sendAll;
-        this.higawari = higawawri;
+        this.higawari = higawari;
     }
 
     /**
@@ -101,30 +105,18 @@ public class EVMToolsBuilder extends Builder {
     public boolean perform(AbstractBuild build, Launcher launcher,
             BuildListener listener) throws InterruptedException, IOException {
 
-        listener.getLogger().println("[EVM Tools] name      :" + name);
-        listener.getLogger().println("[EVM Tools] addresses :" + addresses);
-        listener.getLogger().println("[EVM Tools] sendAll   :" + sendAll);
-        listener.getLogger().println("[EVM Tools] higawari  :" + higawari);
-        // This is where you 'build' the project.
-        // Since this is a dummy, we just say 'hello world' and call that a
-        // build.
-
-        // This also shows how you can consult the global configuration of the
-        // builder
-        // if (getDescriptor().getUseFrench())
-        // listener.getLogger().println("Bonjour, " + name + "!");
-        // else
-        // listener.getLogger().println("Hello, " + name + "!");
-        //
-        // Collection<User> all = User.getAll();
-
+        listener.getLogger().println("[EVM Tools] 集計対象: " + name);
         FilePath root = build.getModuleRoot(); // ワークスペースのルート
 
         // 日替わり運用をちゃんと行うのであれば。
+        boolean higawariOKFlag = false;
         if (higawari) {
             listener.getLogger()
                     .println("[EVM Tools] Jenkins日替わり管理バージョンで稼働します");
-            checkHigawari(root, name, listener);
+            higawariOKFlag = checkHigawari(root, name, listener);
+            if (!higawariOKFlag) {
+                throw new AbortException("日替わりチェックでエラーとなったため、ビルドを停止します。");
+            }
         }
 
         FilePath buildRoot = new FilePath(build.getRootDir()); // このビルドのルート
@@ -141,10 +133,14 @@ public class EVMToolsBuilder extends Builder {
         listener.getLogger().println("[EVM Tools] EVファイル作成開始");
         executeAndCopies(root, buildRoot, new EVCreatorExecutor(name));
 
-        // System.out.println(build.getModuleRoot());
-        // System.out.println(build.getRootDir());
-        // System.out.println(build.getWorkspace());
-        // System.out.println(build.getArtifactsDir());
+        if (higawari && higawariOKFlag) { // 日替わり管理していて、かつ日替わりしていいよと言うことなので
+            listener.getLogger().println(
+                    "[EVM Tools] 集計も完了したので、前回取り込んだファイルを上書き保存します");
+            FilePath targetFile = new FilePath(root, name);
+            FilePath previousNewestFile = new FilePath(root,
+                    targetFile.getName() + ".tmp"); // 前回取り込んだ最新ファイルへの参照
+            targetFile.copyTo(previousNewestFile);
+        }
 
         ProjectSummaryAction action = PMUtils.getProjectSummaryAction(build);
         action.setFileName(pmJSON.getName());// targetかな??
@@ -167,116 +163,111 @@ public class EVMToolsBuilder extends Builder {
         return true;
     }
 
-    // private void testMethod(AbstractBuild build, BuildListener listener)
-    // throws IOException, InterruptedException {
-    // try {
-    // ExtensionList<TokenMacro> all = TokenMacro.all();
-    // for (TokenMacro tokenMacro : all) {
-    // listener.getLogger().println(tokenMacro.toString());
-    // }
-    //
-    // List<TokenMacro> privateMacros = new ArrayList<TokenMacro>();
-    // ClassLoader cl = Jenkins.getInstance().pluginManager.uberClassLoader;
-    // for (final IndexItem<EmailToken, TokenMacro> item : Index.load(
-    // EmailToken.class, TokenMacro.class, cl)) {
-    // try {
-    // privateMacros.add(item.instance());
-    // } catch (Exception e) {
-    // // ignore errors loading tokens
-    // }
-    // }
-    // String expand = TokenMacro.expandAll(build, listener,
-    // "$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!",
-    // false, null);
-    // listener.getLogger().println(expand);
-    // expand = TokenMacro.expandAll(build, listener,
-    // "Check console output at $BUILD_URL to view the results.",
-    // false, null);
-    // listener.getLogger().println(expand);
-    // String BUILD_URL = (new StringBuilder())
-    // .append(Hudson.getInstance().getRootUrl())
-    // .append(build.getUrl()).toString();
-    // String PROJECT_NAME = build.getProject().getName();
-    // String BUILD_NUMBER = String.valueOf(build.getNumber());
-    //
-    // listener.getLogger()
-    // .println(
-    // String.format("%s - Build # %s", PROJECT_NAME,
-    // BUILD_NUMBER));
-    // listener.getLogger().println(
-    // String.format(
-    // "Check console output at %s to view the results.",
-    // BUILD_URL));
-    // } catch (MacroEvaluationException e1) {
-    // // TODO 自動生成された catch ブロック
-    // e1.printStackTrace();
-    // }
-    // }
-
     // ワークスペースルートにtmpファイルコピー。
-    private void checkHigawari(FilePath root, String fileName,
+    /**
+     * @param root
+     *            ワークスペースのルート
+     * @param fileName
+     *            集計対象ファイル
+     * @param listener
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    private boolean checkHigawari(FilePath root, String fileName,
             BuildListener listener) throws IOException, InterruptedException {
         // 元々あったファイルと、date.datの日付を見比べる必要あり。
+        PrintStream logger = listener.getLogger();
 
-        FilePath org = new FilePath(root, fileName);
+        FilePath targetFile = new FilePath(root, fileName);
+        FilePath previousNewestFile = new FilePath(root, targetFile.getName()
+                + ".tmp"); // 前回取り込んだ最新ファイルへの参照
 
-        listener.getLogger().println("[EVM Tools] Org  file :" + fileName);
-        FilePath target = new FilePath(root, org.getName() + ".tmp");
+        String shimeFileName = "date.dat";
+        FilePath shimeFile = new FilePath(root, shimeFileName); // 基準日ファイル
 
-        listener.getLogger().println(
-                "[EVM Tools] Dest file :" + target.getName());
-        if (target.exists()) {
-            listener.getLogger().println(
-                    "[EVM Tools] Dest file がすでに存在するので、上書きしてよいかをチェックしてからコピーします");
-            Boolean bool = root.act(new DateChecker(target.getName()));
+        logger.println("[EVM Tools] 前回取り込んだ最新ファイル: "
+                + previousNewestFile.getName());
+        logger.println("[EVM Tools] 日替わり基準日ファイル: " + shimeFile.getName());
 
-            listener.getLogger().println("[EVM Tools] チェック結果:" + bool);
-            if (!bool) {
-                listener.getLogger().println(
-                        "[EVM Tools] 日替わりが行われてない可能性がありますので、エラーとします。");
-            } else {
-                listener.getLogger().println(
-                        "[EVM Tools] 日替わりが行われていますので、コピーします。");
-                org.copyTo(target);
-            }
+        if (!previousNewestFile.exists()) {
+            logger.println("[EVM Tools] 前回取り込んだファイルが存在しないのでこのまま集計処理を実施します。");
+            return true;
+        }
+
+        if (!shimeFile.exists()) {
+            logger.println("[EVM Tools] 日替わり基準日ファイルが存在しないのでこのまま集計処理を実施します。");
+            return true;
+        }
+
+        logger.println("[EVM Tools] 前回取り込んだファイルも日替わり基準日ファイルも存在します。");
+        logger.println("[EVM Tools] 集計が正常終了したら前回ファイルは上書きしてしまうので、日付をチェックして上書きしてよいかを確認してから、集計処理を実施します。");
+
+        Date targetDate = root
+                .act(new DateGetter(targetFile.getName(), "excel"));// 集計対象の日付
+        Date newestDate = root.act(new DateGetter(previousNewestFile.getName(),
+                "excel"));// 今まで取り込んだ基準日
+        Date shimeDate = root.act(new DateGetter(shimeFileName, "txt"));// 直近、シメた基準日
+
+        logger.println("[EVM Tools] 対象ファイルの基準日:"
+                + DateFormatUtils.format(targetDate, "yyyyMMdd"));
+        logger.println("[EVM Tools] 前回取り込んだファイル基準日:"
+                + DateFormatUtils.format(newestDate, "yyyyMMdd"));
+        logger.println("[EVM Tools] 日替わり基準日:"
+                + DateFormatUtils.format(shimeDate, "yyyyMMdd"));
+
+        if (targetDate.getTime() == newestDate.getTime()) {// 同じ基準日のデータの取込なので、OK
+            logger.println("[EVM Tools] 同じ基準日のデータの取込なので問題ない");
+            return true;
+        }
+
+        if (newestDate.getTime() == shimeDate.getTime()) {// シメ直後など。次はどんな基準日が来るか分からないので、OK。
+            logger.println("[EVM Tools] 前回基準日と日替わり基準日が同じなので、対象ファイルは様々な基準日があり得るので問題ない");
+            return true;
         } else {
-            listener.getLogger().println(
-                    "[EVM Tools] Dest file が存在しないので、そのままコピーします。");
-            org.copyTo(target);
+            if (targetDate.getTime() > newestDate.getTime()) {
+                logger.println("[EVM Tools] 前回基準日と日替わり基準日が異なるが、対象ファイルの基準日が、前回基準日より大きい。日替わりが行われていない可能性が高い");
+                return false;
+            } else {
+                logger.println("[EVM Tools] 前回基準日と日替わり基準日が異なるが、対象ファイルの基準日が、前回基準日より以下なので問題ない");
+                return true;
+            }
         }
     }
 
-    private static class DateChecker implements FileCallable<Boolean> {
-        private final String dotTmpFileName;
+    private static class DateGetter implements FileCallable<Date> {
+        private final String fileName;
 
-        public DateChecker(String name) {
-            dotTmpFileName = name;
+        private final String format;
+
+        public DateGetter(String name, String format) {
+            fileName = name;
+            this.format = format;
         }
 
         @Override
-        public Boolean invoke(File f, VirtualChannel channel)
-                throws IOException, InterruptedException {
-            try {
-                Date baseDate = new ExcelProjectCreator(new File(f,
-                        dotTmpFileName)).createProject().getBaseDate();
-                String format = DateFormatUtils.format(baseDate, "yyyyMMdd");
-                File dateFile = new File(f, "date.dat");
-                if (dateFile.exists()) {
-                    System.out.println("ファイルが存在します。");
+        public Date invoke(File f, VirtualChannel channel) throws IOException,
+                InterruptedException {
+            File target = new File(f, fileName);
+            if ("excel".equals(format)) {
+                try {
+                    Date baseDate = new ExcelProjectCreator(target)
+                            .createProject().getBaseDate();
+                    return baseDate;
+                } catch (ProjectException e) {
+                    e.printStackTrace();
                 }
-
-                String string = ReadUtils.readFile(dateFile);
-                System.out.println(string);
-                System.out.println(format);
-                return string.equals(format);
-
-            } catch (ProjectException e) {
-                // TODO 自動生成された catch ブロック
-                e.printStackTrace();
+            } else {
+                String string = ReadUtils.readFile(target);
+                try {
+                    Date parseDate = DateUtils.parseDate(string,
+                            new String[] { "yyyyMMdd" });
+                    return parseDate;
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
-            return Boolean.FALSE;
+            return null;
         }
-
     }
 
     /**
@@ -626,5 +617,97 @@ public class EVMToolsBuilder extends Builder {
             return addresses;
         }
     }
+
+    // private static class DateChecker implements FileCallable<Boolean> {
+    // private final String dotTmpFileName;
+    //
+    // public DateChecker(String name) {
+    // dotTmpFileName = name;
+    // }
+    //
+    // @Override
+    // public Boolean invoke(File f, VirtualChannel channel)
+    // throws IOException, InterruptedException {
+    // try {
+    // Date baseDate = new ExcelProjectCreator(new File(f,
+    // dotTmpFileName)).createProject().getBaseDate();
+    // String format = DateFormatUtils.format(baseDate, "yyyyMMdd");
+    // File dateFile = new File(f, "date.dat");
+    // if (dateFile.exists()) {
+    // System.out.println("ファイルが存在します。");
+    // }
+    //
+    // String string = ReadUtils.readFile(dateFile);
+    // System.out.println(string);
+    // System.out.println(format);
+    // return string.equals(format);
+    //
+    // } catch (ProjectException e) {
+    // // TODO 自動生成された catch ブロック
+    // e.printStackTrace();
+    // }
+    // return Boolean.FALSE;
+    // }
+    //
+    // }
+
+    // private void testMethod(AbstractBuild build, BuildListener listener)
+    // throws IOException, InterruptedException {
+    // try {
+    // ExtensionList<TokenMacro> all = TokenMacro.all();
+    // for (TokenMacro tokenMacro : all) {
+    // listener.getLogger().println(tokenMacro.toString());
+    // }
+    //
+    // List<TokenMacro> privateMacros = new ArrayList<TokenMacro>();
+    // ClassLoader cl = Jenkins.getInstance().pluginManager.uberClassLoader;
+    // for (final IndexItem<EmailToken, TokenMacro> item : Index.load(
+    // EmailToken.class, TokenMacro.class, cl)) {
+    // try {
+    // privateMacros.add(item.instance());
+    // } catch (Exception e) {
+    // // ignore errors loading tokens
+    // }
+    // }
+    // String expand = TokenMacro.expandAll(build, listener,
+    // "$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!",
+    // false, null);
+    // listener.getLogger().println(expand);
+    // expand = TokenMacro.expandAll(build, listener,
+    // "Check console output at $BUILD_URL to view the results.",
+    // false, null);
+    // listener.getLogger().println(expand);
+    // String BUILD_URL = (new StringBuilder())
+    // .append(Hudson.getInstance().getRootUrl())
+    // .append(build.getUrl()).toString();
+    // String PROJECT_NAME = build.getProject().getName();
+    // String BUILD_NUMBER = String.valueOf(build.getNumber());
+    //
+    // listener.getLogger()
+    // .println(
+    // String.format("%s - Build # %s", PROJECT_NAME,
+    // BUILD_NUMBER));
+    // listener.getLogger().println(
+    // String.format(
+    // "Check console output at %s to view the results.",
+    // BUILD_URL));
+    // } catch (MacroEvaluationException e1) {
+    // // TODO 自動生成された catch ブロック
+    // e1.printStackTrace();
+    // }
+    // }
+
+    // This is where you 'build' the project.
+    // Since this is a dummy, we just say 'hello world' and call that a
+    // build.
+
+    // This also shows how you can consult the global configuration of the
+    // builder
+    // if (getDescriptor().getUseFrench())
+    // listener.getLogger().println("Bonjour, " + name + "!");
+    // else
+    // listener.getLogger().println("Hello, " + name + "!");
+    //
+    // Collection<User> all = User.getAll();
 
 }
