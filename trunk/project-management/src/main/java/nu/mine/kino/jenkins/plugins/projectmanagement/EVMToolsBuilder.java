@@ -15,6 +15,7 @@ import hudson.util.FormValidation;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -24,11 +25,14 @@ import nu.mine.kino.entity.Project;
 import nu.mine.kino.jenkins.plugins.projectmanagement.utils.PMUtils;
 import nu.mine.kino.projects.ACCreator;
 import nu.mine.kino.projects.EVCreator;
+import nu.mine.kino.projects.ExcelProjectCreator;
 import nu.mine.kino.projects.JSONProjectCreator;
 import nu.mine.kino.projects.PVCreator;
 import nu.mine.kino.projects.ProjectException;
 import nu.mine.kino.projects.ProjectWriter;
+import nu.mine.kino.projects.utils.ReadUtils;
 
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -61,13 +65,17 @@ public class EVMToolsBuilder extends Builder {
 
     private final boolean sendAll;
 
+    private final boolean higawari;
+
     // Fields in config.jelly must match the parameter names in the
     // "DataBoundConstructor"
     @DataBoundConstructor
-    public EVMToolsBuilder(String name, String addresses, boolean sendAll) {
+    public EVMToolsBuilder(String name, String addresses, boolean sendAll,
+            boolean higawawri) {
         this.name = name;
         this.addresses = addresses;
         this.sendAll = sendAll;
+        this.higawari = higawawri;
     }
 
     /**
@@ -79,6 +87,14 @@ public class EVMToolsBuilder extends Builder {
 
     public String getAddresses() {
         return addresses;
+    }
+
+    public boolean getSendAll() {
+        return sendAll;
+    }
+
+    public boolean getHigawari() {
+        return higawari;
     }
 
     @Override
@@ -99,6 +115,12 @@ public class EVMToolsBuilder extends Builder {
         // Collection<User> all = User.getAll();
 
         FilePath root = build.getModuleRoot(); // ワークスペースのルート
+
+        // 日替わり運用をちゃんと行うのであれば。
+        if (higawari) {
+            checkHigawari(root, name, listener);
+        }
+
         FilePath buildRoot = new FilePath(build.getRootDir()); // このビルドのルート
         listener.getLogger().println("[EVM Tools] JSONファイル作成開始");
         FilePath pmJSON = executeAndCopies(root, buildRoot,
@@ -132,7 +154,8 @@ public class EVMToolsBuilder extends Builder {
             throw new IOException(e);
         }
 
-        PMUtils.checkProjectAndMail(project, addresses, build, listener,sendAll);
+        PMUtils.checkProjectAndMail(project, addresses, build, listener,
+                sendAll);
 
         // testMethod(build, listener);
         return true;
@@ -183,6 +206,55 @@ public class EVMToolsBuilder extends Builder {
     // e1.printStackTrace();
     // }
     // }
+
+    // ワークスペースルートにtmpファイルコピー。
+    private void checkHigawari(FilePath root, String fileName,
+            BuildListener listener) throws IOException, InterruptedException {
+        // 元々あったファイルと、date.datの日付を見比べる必要あり。
+
+        FilePath org = new FilePath(root, fileName);
+        FilePath target = new FilePath(root, org.getName() + ".tmp");
+        if (target.exists()) {
+            Boolean bool = root.act(new HOGE(target.getName()));
+            System.out.println(bool);
+            if (!bool) {
+                System.out.println("日替わりが行われてない可能性があります");
+            } else {
+                System.out.println("日替わりが行われていますね。");
+            }
+        }
+        org.copyTo(target);
+    }
+
+    private static class HOGE implements FileCallable<Boolean> {
+        private final String dotTmpFileName;
+
+        public HOGE(String name) {
+            dotTmpFileName = name;
+        }
+
+        @Override
+        public Boolean invoke(File f, VirtualChannel channel)
+                throws IOException, InterruptedException {
+            try {
+                Date baseDate = new ExcelProjectCreator(new File(f,
+                        dotTmpFileName)).createProject().getBaseDate();
+                String format = DateFormatUtils.format(baseDate, "yyyyMMdd");
+                File dateFile = new File(f, "date.dat");
+
+                String string = ReadUtils.readFile(dateFile);
+                System.out.println(string);
+                System.out.println(format);
+                return string.equals(format);
+
+            } catch (ProjectException e) {
+                // TODO 自動生成された catch ブロック
+                e.printStackTrace();
+            }
+            return Boolean.FALSE;
+        }
+
+    }
 
     /**
      * rootに対してcallableな処理を実行し、結果ファイルをbuildRootの下に配置する。
