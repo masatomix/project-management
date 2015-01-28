@@ -19,13 +19,13 @@
   <f:entry title="期限切れ以外も通知する。" field="sendAll" description="基本的には期限切れタスクをメール送信しますが、このチェックを入れることですべてのタスクをメール送信します。">
     <f:checkbox />
   </f:entry>
-
-  <f:section title="プロジェクトの高度なオプション">
-  <f:advanced>
   <f:entry title="日替わり処理をJenkinsにやってもらう" field="higawari" >
     <f:checkbox />
   </f:entry>
+<!--
+  <f:section title="プロジェクトの高度なオプション">
+  <f:advanced>
   </f:advanced>
-</f:section>
+</f:section>-->
 
 </j:jelly>
