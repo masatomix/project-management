@@ -16,7 +16,16 @@
   <f:entry title="要注意タスクのメール送信先" field="addresses" description="期限切れ未完了タスクがある場合のメール送信先。システム設定のデフォルト値を上書きする場合設定してください。">
     <f:textbox />
   </f:entry>
-  <f:entry title="期限切れ以外も通知する。" field="sendAll" >
+  <f:entry title="期限切れ以外も通知する。" field="sendAll" description="基本的には期限切れタスクをメール送信しますが、このチェックを入れることですべてのタスクをメール送信します。">
     <f:checkbox />
   </f:entry>
+
+  <f:section title="プロジェクトの高度なオプション">
+  <f:advanced>
+  <f:entry title="日替わり処理をJenkinsにやってもらう" field="higawari" >
+    <f:checkbox />
+  </f:entry>
+  </f:advanced>
+</f:section>
+
 </j:jelly>
