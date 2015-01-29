@@ -12,17 +12,11 @@
 
 package nu.mine.kino.projects;
 
-import java.math.BigDecimal;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.codec.binary.Base64;
 
 import net.arnx.jsonic.JSON;
 import nu.mine.kino.entity.ACTotalBean;
@@ -45,17 +39,12 @@ import com.taskadapter.redmineapi.bean.Issue;
  * @author Masatomi KINO
  * @version $Revision$
  */
-public class RedmineProjectCreator2 extends RedmineProjectCreator {
+public class RedmineProjectCreator2 implements ProjectCreator {
 
-    private final String redmineHost;
+    private final RedmineConfig config;
 
-    private final String apiKey;
-
-    public RedmineProjectCreator2(RedmineManager redmineManager,
-            String redmineHost, String apiKey) {
-        super(redmineManager);
-        this.redmineHost = redmineHost;
-        this.apiKey = apiKey;
+    public RedmineProjectCreator2(RedmineConfig config) {
+        this.config = config;
     }
 
     public Project createProject(Object... conditions) throws ProjectException {
@@ -64,7 +53,14 @@ public class RedmineProjectCreator2 extends RedmineProjectCreator {
 
         String url = createURL(projectId, queryId);
         System.out.println(url);
-        String webPage = HttpUtils.getWebPage(url);
+
+        String webPage = null;
+        if (config.isApiKeyFlag()) {
+            webPage = HttpUtils.getWebPage(url);
+        } else {
+            webPage = HttpUtils.getWebPage(url, config.getUserId(),
+                    config.getPassword());
+        }
         System.out.println(webPage);
         Issue[] issues = JSON.decode(webPage, Issue2[].class);
 
@@ -142,15 +138,22 @@ public class RedmineProjectCreator2 extends RedmineProjectCreator {
         buf.append("projects/");
         buf.append(projectId);
         buf.append("/");
-        buf.append("issues.json?key=");
-        buf.append(apiKey);
-        if (queryId != null) {
-            buf.append("&query_id=");
-            buf.append(queryId);
+        buf.append("issues.json");
+        if (config.isApiKeyFlag()) {
+            buf.append("?key=");
+            buf.append(config.getApiAccessKey());
+            if (queryId != null) {
+                buf.append("&query_id=");
+                buf.append(queryId);
+            }
+        } else {
+            if (queryId != null) {
+                buf.append("?query_id=");
+                buf.append(queryId);
+            }
         }
         String path = new String(buf);
-        String uri = URIUtils.resolveURIStr(redmineHost, path);
-
+        String uri = URIUtils.resolveURIStr(config.getRedmineHost(), path);
         return uri;
     }
 }

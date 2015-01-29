@@ -40,7 +40,6 @@ public class RedmineProjectCreatorTest {
 
     private static String userId = "masatomix";
 
-
     // @Test
     public void test1() throws ProjectException {
         RedmineManager mgr = RedmineManagerFactory.createWithUserAuth(HOST,
@@ -57,11 +56,13 @@ public class RedmineProjectCreatorTest {
         extracted(creator, "case02");
     }
 
+    // @Test
     public void test03() throws ProjectException {
-        RedmineManager mgr = RedmineManagerFactory.createWithUserAuth(HOST,
-                userId, password);
-        RedmineProjectCreator creator = new RedmineProjectCreator2(mgr, HOST,
-                apikey);
+        RedmineConfig config = new RedmineConfig(HOST, apikey);
+        // RedmineConfig config = new RedmineConfig(HOST, userId, password);
+        // RedmineManager mgr = RedmineManagerFactory.createWithUserAuth(HOST,
+        // userId, password);
+        ProjectCreator creator = new RedmineProjectCreator2(config);
         extracted(creator, "case03");
     }
 
