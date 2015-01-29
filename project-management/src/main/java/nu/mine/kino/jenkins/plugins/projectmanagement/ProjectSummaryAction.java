@@ -12,6 +12,7 @@
 
 package nu.mine.kino.jenkins.plugins.projectmanagement;
 
+import static nu.mine.kino.projects.utils.Utils.round;
 import hudson.model.Action;
 import hudson.model.AbstractBuild;
 import hudson.model.User;
@@ -54,6 +55,7 @@ import nu.mine.kino.projects.ACCreator;
 import nu.mine.kino.projects.EVCreator;
 import nu.mine.kino.projects.JSONProjectCreator;
 import nu.mine.kino.projects.ProjectException;
+import nu.mine.kino.projects.utils.BaseDataUtils;
 import nu.mine.kino.projects.utils.ProjectUtils;
 import nu.mine.kino.projects.utils.Utils;
 import nu.mine.kino.projects.utils.ViewUtils;
@@ -98,6 +100,46 @@ public class ProjectSummaryAction implements Action {
 
     public AbstractBuild<?, ?> getOwner() {
         return owner;
+    }
+
+    public PVACEVViewBean getCurrentPVACEV() {
+        try {
+            double plannedValue = 0.0d;
+            double actualCost = 0.0d;
+            double earnedValue = 0.0d;
+
+            Project project = null;
+            if (!StringUtils.isEmpty(name)) {
+                project = getProject(name);
+            } else if (!StringUtils.isEmpty(redmineFileName)) {
+                project = getProject(redmineFileName);
+            }
+
+            Date baseDate = project.getBaseDate();
+            TaskInformation[] taskInformations = project.getTaskInformations();
+
+            for (TaskInformation info : taskInformations) {
+                double calculatePV = ProjectUtils.calculatePV(info, baseDate);
+                plannedValue += (Double.isNaN(calculatePV) ? 0.0d : calculatePV);
+                // System.out.println("ID:" + info.getTaskId() + "\t"
+                // + info.getPV().getPlannedValue()+"\t"+calculatePV);
+                actualCost += (Double.isNaN(info.getAC().getActualCost()) ? 0.0d
+                        : info.getAC().getActualCost());
+                earnedValue += (Double.isNaN(info.getEV().getEarnedValue()) ? 0.0d
+                        : info.getEV().getEarnedValue());
+            }
+
+            PVACEVViewBean bean = new PVACEVViewBean();
+            bean.setActualCost(round(actualCost));
+            bean.setPlannedValue(round(plannedValue));
+            bean.setEarnedValue(round(earnedValue));
+            bean.setBaseDate(baseDate);
+            return bean;
+        } catch (ProjectException e) {
+            // TODO 自動生成された catch ブロック
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public ProjectUser[] getUsers() {
@@ -431,7 +473,6 @@ public class ProjectSummaryAction implements Action {
             }
         });
     }
-
 
     // 以下は画面上でファイルがあるかをチェックするためのメソッド
     private static final String[] fileNames = { "_PVj.tsv", "_base_ACj.tsv",
