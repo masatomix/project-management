@@ -153,7 +153,8 @@ public class EVMToolsBuilder extends Builder {
         try {
             project = new JSONProjectCreator(json).createProject();
         } catch (ProjectException e) {
-            throw new IOException(e);
+            listener.getLogger().println(e);
+            throw new AbortException(e.getMessage());
         }
 
         PMUtils.checkProjectAndMail(project, addresses, build, listener,
@@ -163,7 +164,6 @@ public class EVMToolsBuilder extends Builder {
         return true;
     }
 
-    // ワークスペースルートにtmpファイルコピー。
     /**
      * @param root
      *            ワークスペースのルート
@@ -182,18 +182,17 @@ public class EVMToolsBuilder extends Builder {
         FilePath previousNewestFile = new FilePath(root, targetFile.getName()
                 + ".tmp"); // 前回取り込んだ最新ファイルへの参照
 
-        String shimeFileName = "date.dat";
+        String shimeFileName = PMConstants.DATE_DAT_FILENAME;
         FilePath shimeFile = new FilePath(root, shimeFileName); // 基準日ファイル
 
         logger.println("[EVM Tools] 前回取り込んだ最新ファイル: "
                 + previousNewestFile.getName());
-        logger.println("[EVM Tools] 日替わり基準日ファイル: " + shimeFile.getName());
-
         if (!previousNewestFile.exists()) {
             logger.println("[EVM Tools] 前回取り込んだファイルが存在しないのでこのまま集計処理を実施します。");
             return true;
         }
 
+        logger.println("[EVM Tools] 日替わり基準日ファイル: " + shimeFile.getName());
         if (!shimeFile.exists()) {
             logger.println("[EVM Tools] 日替わり基準日ファイルが存在しないのでこのまま集計処理を実施します。");
             return true;
@@ -240,7 +239,7 @@ public class EVMToolsBuilder extends Builder {
         private final String format;
 
         public DateGetter(String name, String format) {
-            fileName = name;
+            this.fileName = name;
             this.format = format;
         }
 
@@ -249,13 +248,7 @@ public class EVMToolsBuilder extends Builder {
                 InterruptedException {
             File target = new File(f, fileName);
             if ("excel".equals(format)) {
-                try {
-                    Date baseDate = new ExcelProjectCreator(target)
-                            .createProject().getBaseDate();
-                    return baseDate;
-                } catch (ProjectException e) {
-                    e.printStackTrace();
-                }
+                return PMUtils.getBaseDateFromExcel(target);
             } else {
                 String string = ReadUtils.readFile(target);
                 try {

@@ -27,6 +27,8 @@ import hudson.cli.CLICommand;
 import hudson.model.AbstractProject;
 import hudson.remoting.VirtualChannel;
 
+import nu.mine.kino.jenkins.plugins.projectmanagement.PMConstants;
+import nu.mine.kino.jenkins.plugins.projectmanagement.utils.PMUtils;
 import nu.mine.kino.projects.ExcelProjectCreator;
 import nu.mine.kino.projects.ProjectException;
 import nu.mine.kino.projects.utils.WriteUtils;
@@ -36,6 +38,8 @@ import org.apache.commons.lang.time.DateFormatUtils;
 import org.kohsuke.args4j.Argument;
 
 /**
+ * JenkinsによってEVM Excelマクロファイルの日替わり処理を実施します。
+ * 
  * @author Masatomi KINO
  * @version $Revision$
  */
@@ -86,21 +90,22 @@ public class HigawariCommand extends CLICommand {
     }
 
     private static class CopyExecutor implements FileCallable<Void> {
+
         @Override
         public Void invoke(File f, VirtualChannel channel) throws IOException,
                 InterruptedException {
-            try {
-                Date baseDate = new ExcelProjectCreator(f).createProject()
-                        .getBaseDate();
+            Date baseDate = PMUtils.getBaseDateFromExcel(f);
+            if (baseDate != null) {
                 String baseDateStr = DateFormatUtils.format(baseDate,
                         "yyyyMMdd");
-                WriteUtils.writeFile(baseDateStr.getBytes(),
-                        new File(f.getParentFile(), "date.dat"));
-            } catch (ProjectException e) {
-                e.printStackTrace();
+                WriteUtils
+                        .writeFile(baseDateStr.getBytes(),
+                                new File(f.getParentFile(),
+                                        PMConstants.DATE_DAT_FILENAME));
             }
             return null;
         }
+
     }
 
 }
