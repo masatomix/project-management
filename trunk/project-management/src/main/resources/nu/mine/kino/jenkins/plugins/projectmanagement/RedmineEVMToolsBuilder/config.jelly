@@ -31,7 +31,7 @@
      <f:textbox />
   </f:entry>
   
-  <f:entry title="期限切れ以外も通知する。" field="sendAll" >
+  <f:entry title="期限切れ以外も通知する。" field="sendAll" description="基本的には期限切れタスクをメール送信しますが、このチェックを入れることですべてのタスクをメール送信します。">
     <f:checkbox />
   </f:entry>
 </j:jelly>
