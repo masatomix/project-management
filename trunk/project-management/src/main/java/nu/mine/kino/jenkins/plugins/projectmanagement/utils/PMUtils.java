@@ -13,11 +13,13 @@
 package nu.mine.kino.jenkins.plugins.projectmanagement.utils;
 
 import static nu.mine.kino.projects.utils.Utils.round;
+import hudson.AbortException;
 import hudson.model.BuildListener;
 import hudson.model.AbstractBuild;
 import hudson.model.Hudson;
 import hudson.tasks.Mailer;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
@@ -37,6 +39,8 @@ import nu.mine.kino.jenkins.plugins.projectmanagement.EVMToolsBuilder;
 import nu.mine.kino.jenkins.plugins.projectmanagement.EVMToolsBuilder.DescriptorImpl;
 import nu.mine.kino.jenkins.plugins.projectmanagement.ProjectSummaryAction;
 import nu.mine.kino.jenkins.plugins.projectmanagement.RedmineEVMToolsBuilder;
+import nu.mine.kino.projects.ExcelProjectCreator;
+import nu.mine.kino.projects.ProjectException;
 import nu.mine.kino.projects.utils.Utils;
 import nu.mine.kino.projects.utils.ViewUtils;
 
@@ -205,14 +209,24 @@ public class PMUtils {
                 } else {
                     String errorMsg = "メール送信に失敗しました。宛先の設定がされていません";
                     listener.getLogger().println("[EVM Tools] " + errorMsg);
-                    throw new IOException(errorMsg);
+                    throw new AbortException(errorMsg);
                 }
             } catch (MessagingException e) {
                 String errorMsg = "メール送信に失敗しました。「システムの設定」で E-mail 通知 の設定や宛先などを見直してください";
                 listener.getLogger().println("[EVM Tools] " + errorMsg);
-                throw new IOException(errorMsg);
+                throw new AbortException(errorMsg);
 
             }
         }
     }
+
+    public static Date getBaseDateFromExcel(File f) {
+        try {
+            return new ExcelProjectCreator(f).createProject().getBaseDate();
+        } catch (ProjectException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

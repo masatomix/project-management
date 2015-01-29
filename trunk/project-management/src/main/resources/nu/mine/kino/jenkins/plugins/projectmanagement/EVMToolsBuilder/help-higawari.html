@@ -11,6 +11,14 @@
 </p>
 
 <p>
-「日替わりして！」というリクエストの送信先ですが、「○○(書き途中)」へHTTPリクエストを送信してください。
+「日替わりして！」というリクエストですが、Jenkinsのコマンド実行の仕組みを利用します。
+Jenkinsにアクセスして<br />
+ Jenkinsの管理 >> Jenkins CLI を開くとヘルプが参照できますが、具体的には
+<ul>
+	<li>
+ java -jar jenkins-cli.jar -s http://localhost:8080/jenkins higawari EVMTools project_management_tools.xls
+ </li>
+ </ul>
+ などとすることで日替わり処理が実行されます。
 </p>
 </div>
