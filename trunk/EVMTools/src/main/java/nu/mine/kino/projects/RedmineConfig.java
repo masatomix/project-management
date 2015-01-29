@@ -29,7 +29,7 @@ public class RedmineConfig {
     private boolean apiKeyFlag = false;
 
     RedmineConfig(String redmineHost) {
-        if (!redmineHost.endsWith("/")) {
+        if (redmineHost.endsWith("/")) {
             this.redmineHost = redmineHost;
         } else {
             this.redmineHost = redmineHost + "/";
