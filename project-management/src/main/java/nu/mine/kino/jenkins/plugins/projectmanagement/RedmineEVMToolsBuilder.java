@@ -26,8 +26,10 @@ import nu.mine.kino.projects.ACCreator;
 import nu.mine.kino.projects.EVCreator;
 import nu.mine.kino.projects.JSONProjectCreator;
 import nu.mine.kino.projects.PVCreator;
+import nu.mine.kino.projects.ProjectCreator;
 import nu.mine.kino.projects.ProjectException;
 import nu.mine.kino.projects.ProjectWriter;
+import nu.mine.kino.projects.RedmineConfig;
 import nu.mine.kino.projects.RedmineProjectCreator;
 import nu.mine.kino.projects.RedmineProjectCreator2;
 import nu.mine.kino.projects.utils.Utils;
@@ -122,8 +124,8 @@ public class RedmineEVMToolsBuilder extends Builder {
     public String getAddresses() {
         return addresses;
     }
-    
-    public boolean getSendAll(){
+
+    public boolean getSendAll() {
         return sendAll;
     }
 
@@ -136,11 +138,14 @@ public class RedmineEVMToolsBuilder extends Builder {
             queryIdInt = Integer.valueOf(queryId);
         }
         RedmineManager mgr = null;
+        RedmineConfig config = null;
         if (StringUtils.isEmpty(apiKey)) {
             mgr = RedmineManagerFactory.createWithUserAuth(url, userid,
                     password);
+            config = new RedmineConfig(url, userid, password);
         } else {
             mgr = RedmineManagerFactory.createWithApiKey(url, apiKey);
+            config = new RedmineConfig(url, apiKey);
         }
         listener.getLogger().println("[Redmine EVM Tools] url:" + url);
         listener.getLogger().println(
@@ -149,7 +154,7 @@ public class RedmineEVMToolsBuilder extends Builder {
 
         String fileName = projectId;
         try {
-            Project project = createProject(mgr, queryIdInt);
+            Project project = createProject(mgr, config, queryIdInt);
             System.out.println(project);
             StringBuffer buf = new StringBuffer();
             buf.append(fileName);
@@ -203,14 +208,14 @@ public class RedmineEVMToolsBuilder extends Builder {
         new FilePath(source).copyTo(new FilePath(path, source.getName()));// workspaceÇ÷ÉRÉsÅ[
     }
 
-    private Project createProject(RedmineManager mgr, Integer queryIdInt)
-            throws ProjectException {
-        RedmineProjectCreator creator = new RedmineProjectCreator(mgr);
+    private Project createProject(RedmineManager mgr, RedmineConfig config,
+            Integer queryIdInt) throws ProjectException {
+        ProjectCreator creator = new RedmineProjectCreator(mgr);
         Project project = null;
         try {
             project = creator.createProject(projectId, queryIdInt);
         } catch (ProjectException e) {
-            creator = new RedmineProjectCreator2(mgr, url, apiKey);
+            creator = new RedmineProjectCreator2(config);
             project = creator.createProject(projectId, queryIdInt);
         }
         return project;

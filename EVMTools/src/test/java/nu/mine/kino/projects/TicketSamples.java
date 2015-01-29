@@ -91,8 +91,8 @@ public class TicketSamples {
     private static void tryGetIssues4(RedmineManager mgr, String redmineHost,
             String projectKey, String apiAccessKey) throws Exception {
 
-        RedmineProjectCreator creator = new RedmineProjectCreator2(mgr,
-                redmineHost, apiAccessKey);
+        ProjectCreator creator = new RedmineProjectCreator2(new RedmineConfig(
+                redmineHost, apiAccessKey));
         Project createProject = creator.createProject(projectKey, null);
 
     }
