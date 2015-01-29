@@ -306,12 +306,6 @@ public class RedmineEVMToolsBuilder extends Builder {
             }
         }
 
-        private File extracted(File target) {
-            File baseDir = target.getParentFile();
-            String output = target.getName() + "." + "json";
-            File file = new File(baseDir, output);
-            return file;
-        }
     }
 
     private static class PVCreatorExecutor implements FileCallable<FilePath> {
