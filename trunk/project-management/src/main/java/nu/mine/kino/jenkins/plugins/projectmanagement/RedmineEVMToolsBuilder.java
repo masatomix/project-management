@@ -140,10 +140,14 @@ public class RedmineEVMToolsBuilder extends Builder {
         RedmineManager mgr = null;
         RedmineConfig config = null;
         if (StringUtils.isEmpty(apiKey)) {
+            listener.getLogger().println(
+                    "[Redmine EVM Tools] userId/Password‚ÅÚ‘±‚µ‚Ü‚·B");
             mgr = RedmineManagerFactory.createWithUserAuth(url, userid,
                     password);
             config = new RedmineConfig(url, userid, password);
+
         } else {
+            listener.getLogger().println("[Redmine EVM Tools] API Key‚ÅÚ‘±‚µ‚Ü‚·B");
             mgr = RedmineManagerFactory.createWithApiKey(url, apiKey);
             config = new RedmineConfig(url, apiKey);
         }
