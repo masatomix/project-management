@@ -181,6 +181,7 @@ public class PMUtils {
         }
         messageBuf.append("--------------------");
         messageBuf.append("\n");
+        messageBuf.append("\n");
         messageBuf.append(footer);
 
         String message = new String(messageBuf);
