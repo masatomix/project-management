@@ -82,7 +82,7 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
         </j:forEach>
       </table>
 
-      <h1>直近(<i:formatDate value="${it.baseDate}"/> 前後3日) のタスク(PV)</h1>
+      <h1>直近(<i:formatDate value="${it.baseDate}"/>) の前後3日のタスク(PV)</h1>
 	  <p>直近+3日間内で、予定があるものを表示</p>
       <table class="pane sortable bigtable" >
         <tr>
@@ -130,7 +130,7 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
         </tr>
       </table>
 
-      <h1>直近(<i:formatDate value="${it.baseDate}"/>) の状況(PV/AC/EV)</h1>
+      <h1>直近(<i:formatDate value="${it.baseDate}"/>) その日の状況(PV/AC/EV)</h1>
       <table class="pane sortable bigtable" >
         <tr>
           <th class="pane-header">#</th>
@@ -174,7 +174,7 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
 <hr />
 
 
-      <h1>直近(<i:formatDate value="${it.baseDate}"/>) の実績(AC)</h1>
+      <h1>直近(<i:formatDate value="${it.baseDate}"/>) その日の実績(AC)</h1>
       <table class="pane sortable bigtable" >
         <tr>
           <th class="pane-header">#</th>
@@ -209,7 +209,7 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
 	    </tr>
       </table>
 
-      <h1>直近(<i:formatDate value="${it.baseDate}"/>) の成果(EV)</h1>
+      <h1>直近(<i:formatDate value="${it.baseDate}"/>) その日の成果(EV)</h1>
       <table class="pane sortable bigtable" >		
         <tr>
           <th class="pane-header">#</th>
