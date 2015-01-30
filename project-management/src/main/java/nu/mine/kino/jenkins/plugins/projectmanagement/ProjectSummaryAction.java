@@ -118,16 +118,21 @@ public class ProjectSummaryAction implements Action {
             Date baseDate = project.getBaseDate();
             TaskInformation[] taskInformations = project.getTaskInformations();
 
+            System.out.println("------");
             for (TaskInformation info : taskInformations) {
-                double calculatePV = ProjectUtils.calculatePV(info, baseDate);
-                plannedValue += (Double.isNaN(calculatePV) ? 0.0d : calculatePV);
-                // System.out.println("ID:" + info.getTaskId() + "\t"
-                // + info.getPV().getPlannedValue()+"\t"+calculatePV);
+                double calculatePVs = ProjectUtils.calculatePVs(info, baseDate);
+                plannedValue += (Double.isNaN(calculatePVs) ? 0.0d
+                        : calculatePVs);
                 actualCost += (Double.isNaN(info.getAC().getActualCost()) ? 0.0d
                         : info.getAC().getActualCost());
                 earnedValue += (Double.isNaN(info.getEV().getEarnedValue()) ? 0.0d
                         : info.getEV().getEarnedValue());
+
+                System.out.println(info.getTaskId() + "\t" + calculatePVs
+                        + "\t" + info.getAC().getActualCost() + "\t"
+                        + info.getEV().getEarnedValue());
             }
+            System.out.println("------");
 
             PVACEVViewBean bean = new PVACEVViewBean();
             bean.setActualCost(round(actualCost));
