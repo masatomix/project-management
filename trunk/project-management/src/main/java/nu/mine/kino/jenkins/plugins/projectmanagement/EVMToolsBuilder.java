@@ -335,6 +335,13 @@ public class EVMToolsBuilder extends Builder {
                                 ProjectWriter.write(base));
                         returnList.add(result_base);
                     }
+                    if (!createJsonFlag) {
+                        FilePath result_base = new FilePath(new File(
+                                base.getParentFile(), base.getName() + "."
+                                        + "json"));
+                        if (result_base.exists()) {
+                            returnList.add(result_base);                        }
+                    }
                 }
                 return returnList.toArray(new FilePath[returnList.size()]);
             } catch (ProjectException e) {
