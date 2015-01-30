@@ -64,44 +64,62 @@ public class HigawariCommand extends CLICommand {
     protected int run() throws Exception {
         // 相対的に指定されたファイルについて、ワークスペースルートにファイルコピーします。
         FilePath someWorkspace = job.getSomeWorkspace();
-        FilePath source = new FilePath(someWorkspace, fileName + ".tmp");
-        stdout.println(source);
+        FilePath org = new FilePath(someWorkspace, fileName);
+        // FilePath excelSource = new FilePath(someWorkspace, fileName +
+        // ".tmp");
+        FilePath jsonSource = new FilePath(someWorkspace, fileName + ".json"
+                + ".tmp");
+        stdout.println(org);
         stdout.println("このファイルの日替わり処理を行います。");
-        if (source.exists()) {
+        // if (excelSource.exists() && jsonSource.exists()) { //
+        if (jsonSource.exists()) { //
             String tmpPrefix = prefix;
             if (StringUtils.isEmpty(prefix)) {
                 tmpPrefix = "base";
             }
 
             String destFileName = tmpPrefix + "_"
-                    + (new FilePath(someWorkspace, fileName).getName());
+                    + (new FilePath(someWorkspace, fileName).getName())
+                    + ".json";
             FilePath dest = new FilePath(someWorkspace, destFileName);
-            source.copyTo(dest);
-            stdout.println("copy to");
-            stdout.println(dest);
+            jsonSource.copyTo(dest);
+            stdout.println("[" + jsonSource.getName() + "] -> ["
+                    + dest.getName() + "] コピー完了");
 
-            source.act(new CopyExecutor());
-
+            String baseDateStr = jsonSource.act(new DateFileCopyExecutor());
+            stdout.println("基準日: " + baseDateStr + " を締めました。日替わり処理が正常終了しました。");
         } else {
-            stderr.println("指定したファイルが存在しませんでした。");
+            stderr.println("---- エラーが発生したため日替わり処理を停止します。------");
+//            if (!excelSource.exists()) {
+//                stderr.println("バックアップファイル:");
+//                stderr.println(excelSource);
+//                stderr.println("が存在しないため日替わり処理を停止します。");
+//            }
+            if (!jsonSource.exists()) {
+                stderr.println("バックアップファイル(基準日も取得する):");
+                stderr.println(jsonSource);
+                stderr.println("が存在しないため日替わり処理を停止します。");
+            }
+            stderr.println("------------------------------------------------");
             return -1;
         }
         return 0;
     }
 
-    private static class CopyExecutor implements FileCallable<Void> {
+    private static class DateFileCopyExecutor implements FileCallable<String> {// DateFileCopy
 
         @Override
-        public Void invoke(File f, VirtualChannel channel) throws IOException,
-                InterruptedException {
-            Date baseDate = PMUtils.getBaseDateFromExcel(f);
+        public String invoke(File jsonFile, VirtualChannel channel)
+                throws IOException, InterruptedException {
+            Date baseDate = PMUtils.getBaseDateFromJSON(jsonFile);
+            // Date baseDate = PMUtils.getBaseDateFromExcel(f);
             if (baseDate != null) {
                 String baseDateStr = DateFormatUtils.format(baseDate,
                         "yyyyMMdd");
-                WriteUtils
-                        .writeFile(baseDateStr.getBytes(),
-                                new File(f.getParentFile(),
-                                        PMConstants.DATE_DAT_FILENAME));
+                WriteUtils.writeFile(baseDateStr.getBytes(),
+                        new File(jsonFile.getParentFile(),
+                                PMConstants.DATE_DAT_FILENAME));
+                return baseDateStr;
             }
             return null;
         }

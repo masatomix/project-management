@@ -40,6 +40,8 @@ import nu.mine.kino.jenkins.plugins.projectmanagement.EVMToolsBuilder.Descriptor
 import nu.mine.kino.jenkins.plugins.projectmanagement.ProjectSummaryAction;
 import nu.mine.kino.jenkins.plugins.projectmanagement.RedmineEVMToolsBuilder;
 import nu.mine.kino.projects.ExcelProjectCreator;
+import nu.mine.kino.projects.JSONProjectCreator;
+import nu.mine.kino.projects.ProjectCreator;
 import nu.mine.kino.projects.ProjectException;
 import nu.mine.kino.projects.utils.Utils;
 import nu.mine.kino.projects.utils.ViewUtils;
@@ -223,7 +225,25 @@ public class PMUtils {
 
     public static Date getBaseDateFromExcel(File f) {
         try {
-            return new ExcelProjectCreator(f).createProject().getBaseDate();
+            return getBaseDate(new ExcelProjectCreator(f));
+        } catch (ProjectException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Date getBaseDateFromJSON(File f) {
+        try {
+            return getBaseDate(new JSONProjectCreator(f));
+        } catch (ProjectException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Date getBaseDate(ProjectCreator creator) {
+        try {
+            return creator.createProject().getBaseDate();
         } catch (ProjectException e) {
             e.printStackTrace();
         }

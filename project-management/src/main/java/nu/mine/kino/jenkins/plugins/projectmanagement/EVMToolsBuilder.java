@@ -28,7 +28,6 @@ import nu.mine.kino.entity.Project;
 import nu.mine.kino.jenkins.plugins.projectmanagement.utils.PMUtils;
 import nu.mine.kino.projects.ACCreator;
 import nu.mine.kino.projects.EVCreator;
-import nu.mine.kino.projects.ExcelProjectCreator;
 import nu.mine.kino.projects.JSONProjectCreator;
 import nu.mine.kino.projects.PVCreator;
 import nu.mine.kino.projects.ProjectException;
@@ -122,7 +121,7 @@ public class EVMToolsBuilder extends Builder {
         FilePath buildRoot = new FilePath(build.getRootDir()); // このビルドのルート
         listener.getLogger().println("[EVM Tools] JSONファイル作成開始");
         FilePath pmJSON = executeAndCopies(root, buildRoot,
-                new ProjectWriterExecutor(name));
+                new ProjectWriterExecutor(name, !higawari));
 
         listener.getLogger().println("[EVM Tools] file:" + pmJSON);
 
@@ -136,18 +135,22 @@ public class EVMToolsBuilder extends Builder {
         if (higawari && higawariOKFlag) { // 日替わり管理していて、かつ日替わりしていいよと言うことなので
             listener.getLogger().println(
                     "[EVM Tools] 集計も完了したので、前回取り込んだファイルを上書き保存します");
-            FilePath targetFile = new FilePath(root, name);
-            FilePath previousNewestFile = new FilePath(root,
-                    targetFile.getName() + ".tmp"); // 前回取り込んだ最新ファイルへの参照
-            targetFile.copyTo(previousNewestFile);
+            // FilePath targetFile = new FilePath(root, name);
+            // FilePath previousNewestFile = new FilePath(root,
+            // targetFile.getName() + ".tmp"); // 前回取り込んだ最新ファイルへの参照
+            // targetFile.copyTo(previousNewestFile); // 上書き。
+
+            FilePath previousNewestJsonFile = new FilePath(root,
+                    pmJSON.getName() + ".tmp"); // 前回取り込んだ最新ファイルへの参照
+            pmJSON.copyTo(previousNewestJsonFile);
         }
 
         ProjectSummaryAction action = PMUtils.getProjectSummaryAction(build);
-        action.setFileName(pmJSON.getName());// targetかな??
+        action.setFileName(pmJSON.getName());
 
         File json = new File(build.getRootDir(), pmJSON.getName());
-        listener.getLogger().println(
-                "[EVM Tools] Project :" + json.getAbsolutePath());
+        // listener.getLogger().println(
+        // "[EVM Tools] Project :" + json.getAbsolutePath());
 
         Project project = null;
         try {
@@ -178,14 +181,14 @@ public class EVMToolsBuilder extends Builder {
         // 元々あったファイルと、date.datの日付を見比べる必要あり。
         PrintStream logger = listener.getLogger();
 
-        FilePath targetFile = new FilePath(root, fileName);
+        FilePath targetFile = new FilePath(root, fileName + ".json");
         FilePath previousNewestFile = new FilePath(root, targetFile.getName()
-                + ".tmp"); // 前回取り込んだ最新ファイルへの参照
+                + ".tmp"); // 前回取り込んだ最新ファイル(のJSONファイル)への参照
 
         String shimeFileName = PMConstants.DATE_DAT_FILENAME;
         FilePath shimeFile = new FilePath(root, shimeFileName); // 基準日ファイル
 
-        logger.println("[EVM Tools] 前回取り込んだ最新ファイル: "
+        logger.println("[EVM Tools] 前回取り込んだ最新ファイル(JSONファイル): "
                 + previousNewestFile.getName());
         if (!previousNewestFile.exists()) {
             logger.println("[EVM Tools] 前回取り込んだファイルが存在しないのでこのまま集計処理を実施します。");
@@ -202,9 +205,9 @@ public class EVMToolsBuilder extends Builder {
         logger.println("[EVM Tools] 集計が正常終了したら前回ファイルは上書きしてしまうので、日付をチェックして上書きしてよいかを確認してから、集計処理を実施します。");
 
         Date targetDate = root
-                .act(new DateGetter(targetFile.getName(), "excel"));// 集計対象の日付
+                .act(new DateGetter(targetFile.getName(), "json"));// 集計対象の日付
         Date newestDate = root.act(new DateGetter(previousNewestFile.getName(),
-                "excel"));// 今まで取り込んだ基準日
+                "json"));// 今まで取り込んだ基準日
         Date shimeDate = root.act(new DateGetter(shimeFileName, "txt"));// 直近、シメた基準日
 
         logger.println("[EVM Tools] 対象ファイルの基準日:"
@@ -249,6 +252,8 @@ public class EVMToolsBuilder extends Builder {
             File target = new File(f, fileName);
             if ("excel".equals(format)) {
                 return PMUtils.getBaseDateFromExcel(target);
+            } else if ("json".equals(format)) {
+                return PMUtils.getBaseDateFromJSON(target);
             } else {
                 String string = ReadUtils.readFile(target);
                 try {
@@ -308,27 +313,16 @@ public class EVMToolsBuilder extends Builder {
             FileCallable<FilePath[]> {
         private final String fileName;
 
-        public ProjectWriterExecutor(String fileName) {
+        private final boolean createJsonFlag;
+
+        public ProjectWriterExecutor(String fileName, boolean createJsonFlag) {
             this.fileName = fileName;
+            this.createJsonFlag = createJsonFlag;
         }
 
         public FilePath[] invoke(File f, VirtualChannel channel)
                 throws IOException, InterruptedException {
             File target = new File(f, fileName);
-            // String prefix = "base_";
-            // File base = new File(target.getParentFile(), prefix
-            // + target.getName()); // file名にPrefix: base_をつけた
-
-            // File targetOutputFile = extracted(target);
-            // File baseOutputFile = extracted(base);
-
-            // //// Add ////
-            // すでにJSONファイルがあったら、作らない、という処理。
-            // if (targetOutputFile.exists() && baseOutputFile.exists()) {
-            // return new FilePath[] { new FilePath(targetOutputFile),
-            // new FilePath(baseOutputFile) };
-            // }
-            // //// Add ////
             try {
                 List<FilePath> returnList = new ArrayList<FilePath>();
                 File result = ProjectWriter.write(target);
@@ -336,7 +330,7 @@ public class EVMToolsBuilder extends Builder {
                 for (String base_prefix : PREFIX_ARRAY) {
                     File base = new File(target.getParentFile(), base_prefix
                             + target.getName());
-                    if (base.exists()) {
+                    if (base.exists() && createJsonFlag) {
                         FilePath result_base = new FilePath(
                                 ProjectWriter.write(base));
                         returnList.add(result_base);
