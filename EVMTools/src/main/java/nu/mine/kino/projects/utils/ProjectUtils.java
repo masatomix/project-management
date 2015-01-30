@@ -85,6 +85,10 @@ public class ProjectUtils {
 
     }
 
+    public static double calculatePVs(TaskInformation taskInfo, Date baseDate) {
+        return calculatePVs(taskInfo.getTask(), baseDate);
+    }
+
     /**
      * 基準日(その日のみの)のPVを計算する。その日に タスクがなければ0. なんらかの理由で、稼働予定日数=Nanとか0の場合Double.NaN
      * なんらかの理由で、予定工数がNaNの場合も、Double.NaN。
