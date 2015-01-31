@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>nu.mine.kino.project</groupId>
   <artifactId>EVMTools</artifactId>
-  <version>0.9.3-SNAPSHOT</version>
+  <version>0.9.4-SNAPSHOT</version>
   
   <build>
     <plugins>
@@ -88,6 +88,11 @@
 			<artifactId>opencsv</artifactId>
 			<version>2.4</version>
 		</dependency>
+    <dependency>
+	<groupId>org.bbreak.excella</groupId>
+	<artifactId>excella-core</artifactId>
+	<version>1.8</version>
+    </dependency>
   </dependencies>
 </project>
 

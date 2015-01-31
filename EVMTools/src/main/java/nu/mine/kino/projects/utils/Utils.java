@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
 
 /**
@@ -137,9 +138,13 @@ public class Utils {
     }
 
     static String date2Str(Date date, String pattern) {
-        SimpleDateFormat fmt = new SimpleDateFormat();
-        fmt.applyPattern(pattern);
-        return fmt.format(date);
+        // SimpleDateFormat fmt = new SimpleDateFormat();
+        // fmt.applyPattern(pattern);
+        // return fmt.format(date);
+        if (date == null) {
+            return null;
+        }
+        return DateFormatUtils.format(date, pattern);
     }
 
     public static boolean isNonZeroNumeric(double d) {
