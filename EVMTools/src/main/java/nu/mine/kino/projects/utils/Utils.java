@@ -137,7 +137,7 @@ public class Utils {
         }
     }
 
-    static String date2Str(Date date, String pattern) {
+    public static String date2Str(Date date, String pattern) {
         // SimpleDateFormat fmt = new SimpleDateFormat();
         // fmt.applyPattern(pattern);
         // return fmt.format(date);

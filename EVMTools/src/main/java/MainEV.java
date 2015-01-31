@@ -10,8 +10,6 @@
  ******************************************************************************/
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 import nu.mine.kino.entity.Project;
 import nu.mine.kino.entity.TaskInformation;
@@ -33,25 +31,26 @@ public class MainEV {
         String input = fileName + "." + "xls";
         // String output = fileName + "." + "tsv";
 
-        java.io.InputStream in = null;
+        // java.io.InputStream in = null;
         try {
-            in = new java.io.FileInputStream(new File(baseDir, input));
-            Project project = new ExcelProjectCreator(in).createProject();
+            // in = new java.io.FileInputStream(new File(baseDir, input));
+            Project project = new ExcelProjectCreator(new File(baseDir, input))
+                    .createProject();
             TaskInformation[] taskInfos = project.getTaskInformations();
             for (TaskInformation taskInfo : taskInfos) {
                 ProjectUtils.calculateEVs(taskInfo, null);
             }
 
-        } catch (FileNotFoundException e) {
-            throw new ProjectException(e);
+            // } catch (FileNotFoundException e) {
+            // throw new ProjectException(e);
         } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    throw new ProjectException(e);
-                }
-            }
+            // if (in != null) {
+            // try {
+            // in.close();
+            // } catch (IOException e) {
+            // throw new ProjectException(e);
+            // }
+            // }
         }
     }
 }

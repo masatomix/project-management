@@ -11,6 +11,12 @@ package nu.mine.kino.projects.utils;
  * $Id$
  ******************************************************************************/
 
+import static nu.mine.kino.projects.utils.PoiUtils.getDataFirstRowNum;
+import static nu.mine.kino.projects.utils.PoiUtils.getDataLastRowNum;
+import static nu.mine.kino.projects.utils.PoiUtils.getDate;
+import static nu.mine.kino.projects.utils.PoiUtils.getHeaderIndex;
+import static nu.mine.kino.projects.utils.PoiUtils.getTaskId;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -38,55 +44,9 @@ import org.junit.Test;
  */
 public class POITest {
 
-    public static Date getDate(Cell dateCell) {
-        Date baseDate = null;
-        if (dateCell != null) {// taskId列は数値が入っていて、それを文字列で取りたい
-            if (dateCell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                if (PoiUtil.isCellDateFormatted(dateCell)) {
-                    baseDate = dateCell.getDateCellValue();
-                }
-            }
-        }
-        return baseDate;
-    }
+    FileInputStream in = null;
 
-    // タスクIDを取得する。
-    public static String getTaskId(Cell taskIdCell) {
-        String taskId = null;
-        if (taskIdCell != null) {// taskId列は数値が入っていて、それを文字列で取りたい
-            if (taskIdCell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                taskId = (String) PoiUtil
-                        .getCellValue(taskIdCell, String.class);
-            }
-        }
-        return taskId;
-    }
-
-    public static int getHeaderIndex(Sheet sheet) {
-        int number = Integer.MIN_VALUE;
-        Iterator<Row> e = sheet.rowIterator();
-        int counter = 0;
-        while (e.hasNext()) {
-            Row row = e.next();
-            Cell cell = row.getCell(0);
-            if (cell.getCellType() != Cell.CELL_TYPE_STRING) {
-            } else {
-                if ("#".equals(cell.getStringCellValue())) {
-                    number = counter;
-                }
-            }
-            counter++;
-        }
-        return number;
-    }
-
-    public static int getDataFirstRowNum(Sheet sheet) {
-        return getHeaderIndex(sheet) + 2;
-    }
-
-    public static int getDataLastRowNum(Sheet sheet) {
-        return PoiUtil.getLastRowNum(sheet, 0, 0);
-    }
+    Workbook workbook = null;
 
     // //////////////////////
     @Test
@@ -147,6 +107,7 @@ public class POITest {
         Sheet sheet = workbook.getSheetAt(0);
         Iterator<Row> e = sheet.rowIterator();
         System.out.println("--- 日付系のテスト ---");
+        int index=0;
         while (e.hasNext()) {
             Row row = e.next();
             Cell taskIdCell = row.getCell(1);
@@ -162,7 +123,9 @@ public class POITest {
                     Utils.date2Str(sDate, pattern),
                     Utils.date2Str(eDate, pattern));
 
+            index++;
         }
+        System.out.println(index);
         System.out.println("--- 日付系のテスト ---");
 
     }
@@ -261,10 +224,6 @@ public class POITest {
         }
 
     }
-
-    FileInputStream in = null;
-
-    Workbook workbook = null;
 
     @Before
     public void before() {

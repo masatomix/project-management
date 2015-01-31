@@ -45,13 +45,13 @@ public class ProjectUtilsTest {
         String fileName = "project_management_tools";
         String input = fileName + "." + "xls";
 
-        java.io.InputStream in = null;
+        // java.io.InputStream in = null;
         File target = new File(baseDir, input);
-        in = new java.io.FileInputStream(target);
+        // in = new java.io.FileInputStream(target);
 
         StopWatch watch = new StopWatch();
         watch.start();
-        Project projectOrg = new ExcelProjectCreator(in).createProject();
+        Project projectOrg = new ExcelProjectCreator(target).createProject();
         watch.stop();
         System.out.println(watch.getTime() + " ms.");
         watch.reset();
@@ -85,13 +85,13 @@ public class ProjectUtilsTest {
         String fileName = "project_management_tools";
         String input = fileName + "." + "xls";
 
-        java.io.InputStream in = null;
+        // java.io.InputStream in = null;
         File target = new File(baseDir, input);
-        in = new java.io.FileInputStream(target);
+        // in = new java.io.FileInputStream(target);
 
         StopWatch watch = new StopWatch();
         watch.start();
-        Project projectOrg = new ExcelProjectCreator(in).createProject();
+        Project projectOrg = new ExcelProjectCreator(target).createProject();
         watch.stop();
         System.out.println(watch.getTime() + " ms.");
         watch.reset();
@@ -108,13 +108,13 @@ public class ProjectUtilsTest {
         String fileName = "project_management_tools";
         String input = fileName + "." + "xls";
 
-        java.io.InputStream in = null;
+        // java.io.InputStream in = null;
         File target = new File(baseDir, input);
-        in = new java.io.FileInputStream(target);
+        // in = new java.io.FileInputStream(target);
 
         StopWatch watch = new StopWatch();
         watch.start();
-        Project project = new ExcelProjectCreator(in).createProject();
+        Project project = new ExcelProjectCreator(target).createProject();
         watch.stop();
         System.out.println(watch.getTime() + " ms.");
         watch.reset();
