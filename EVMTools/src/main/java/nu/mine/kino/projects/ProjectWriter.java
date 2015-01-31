@@ -75,24 +75,24 @@ public class ProjectWriter {
         File baseDir = input.getParentFile();
         String output = input.getName() + "." + "json";
 
-        java.io.InputStream in = null;
+        // java.io.InputStream in = null;
         try {
-            in = new java.io.FileInputStream(input);
-            Project project = new ExcelProjectCreator(in).createProject();
+            // in = new java.io.FileInputStream(input);
+            Project project = new ExcelProjectCreator(input).createProject();
             File outputFile = new File(baseDir, output);
             write(project, outputFile);
             return outputFile;
 
-        } catch (FileNotFoundException e) {
-            throw new ProjectException(e);
+            // } catch (FileNotFoundException e) {
+            // throw new ProjectException(e);
         } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    throw new ProjectException(e);
-                }
-            }
+            // if (in != null) {
+            // try {
+            // in.close();
+            // } catch (IOException e) {
+            // throw new ProjectException(e);
+            // }
+            // }
         }
     }
 
