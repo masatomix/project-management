@@ -12,9 +12,16 @@
 
 package nu.mine.kino.projects;
 
+import static nu.mine.kino.projects.utils.PoiUtils.getDate;
+import static nu.mine.kino.projects.utils.PoiUtils.getTaskId;
+
 import java.io.File;
-import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import net.java.amateras.xlsbeans.XLSBeans;
@@ -32,6 +39,15 @@ import nu.mine.kino.entity.PVTotalBean;
 import nu.mine.kino.entity.Project;
 import nu.mine.kino.entity.Task;
 import nu.mine.kino.entity.TaskInformation;
+import nu.mine.kino.projects.utils.PoiUtils;
+import nu.mine.kino.projects.utils.Utils;
+
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 /**
  * @author Masatomi KINO
@@ -39,12 +55,15 @@ import nu.mine.kino.entity.TaskInformation;
  */
 public class ExcelProjectCreator extends InputStreamProjectCreator {
 
-    public ExcelProjectCreator(InputStream in) {
-        super(in);
-    }
+    // public ExcelProjectCreator(InputStream in) {
+    // super(in);
+    // }
+
+    private final File file;
 
     public ExcelProjectCreator(File file) throws ProjectException {
         super(file);
+        this.file = file;
     }
 
     /**
@@ -54,6 +73,49 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
      */
     @Override
     public Project createProjectFromStream() throws ProjectException {
+
+        FileInputStream in = null;
+        try {
+            in = new FileInputStream(file);
+            Workbook workbook = null;
+            workbook = WorkbookFactory.create(in);
+            Sheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> e = sheet.rowIterator();
+            while (e.hasNext()) {
+                Row row = e.next();
+                Cell taskIdCell = row.getCell(1);
+                String taskId = getTaskId(taskIdCell);
+                System.out.printf("[%s],[%s],[%s],[%s],[%s],", taskId,
+                        row.getCell(15), row.getCell(22), row.getCell(23),
+                        row.getCell(24));
+
+                Cell scheduledSDateCell = row.getCell(16);
+                Date sDate = getDate(scheduledSDateCell);
+                Cell scheduledEDateCell = row.getCell(17);
+                Date eDate = getDate(scheduledEDateCell);
+
+                String pattern = "yyyy/MM/dd";
+                System.out.printf("[%s],[%s],[%s]\n", taskId,
+                        Utils.date2Str(sDate, pattern),
+                        Utils.date2Str(eDate, pattern));
+
+            }
+        } catch (InvalidFormatException e) {
+            throw new ProjectException(e);
+        } catch (FileNotFoundException e) {
+            throw new ProjectException(e);
+        } catch (IOException e) {
+            throw new ProjectException(e);
+        } finally {
+            if (in != null)
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    // TODO é©ìÆê∂ê¨Ç≥ÇÍÇΩ catch ÉuÉçÉbÉN
+                    e.printStackTrace();
+                }
+        }
+
         try {
             List<TaskInformation> taskInfoList = new ArrayList<TaskInformation>();
             ExcelScheduleBeanSheet sheet = new XLSBeans().load(
@@ -110,5 +172,4 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
             // }
         }
     }
-
 }
