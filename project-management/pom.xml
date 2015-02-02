@@ -9,7 +9,7 @@
   <groupId>nu.mine.kino.jenkins.plugins</groupId>
   <artifactId>project-management</artifactId>
   <name>Project Management Plugin</name>
-  <version>0.9.3-SNAPSHOT</version>
+  <version>0.9.4-SNAPSHOT</version>
   <packaging>hpi</packaging>
 
   <licenses>
@@ -65,7 +65,7 @@
 	<dependency>
 		<groupId>nu.mine.kino.project</groupId>
 		<artifactId>EVMTools</artifactId>
-		<version>0.9.3-SNAPSHOT</version>
+		<version>0.9.4-SNAPSHOT</version>
 	</dependency>
   	<dependency>
 		<groupId>org.jenkins-ci.plugins</groupId>
