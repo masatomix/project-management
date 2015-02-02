@@ -25,6 +25,13 @@ import org.bbreak.excella.core.util.PoiUtil;
  * @version $Revision$
  */
 public class PoiUtils {
+    public static Object getCellValue(Cell cell, Class propertyClass) {
+        if (cell == null) {
+            return null;
+        }
+        return PoiUtil.getCellValue(cell, propertyClass);
+    }
+
     public static Date getDate(Cell dateCell) {
         Date baseDate = null;
         if (dateCell != null) {// taskId—ñ‚Í”’l‚ª“ü‚Á‚Ä‚¢‚ÄA‚»‚ê‚ğ•¶š—ñ‚Åæ‚è‚½‚¢
