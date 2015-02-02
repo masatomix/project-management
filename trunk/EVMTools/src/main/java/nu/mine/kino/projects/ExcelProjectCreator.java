@@ -21,13 +21,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import net.java.amateras.xlsbeans.XLSBeans;
 import net.java.amateras.xlsbeans.XLSBeansException;
 import nu.mine.kino.entity.ACTotalBean;
 import nu.mine.kino.entity.EVTotalBean;
+import nu.mine.kino.entity.ExcelPOIScheduleBean;
 import nu.mine.kino.entity.ExcelScheduleBean;
 import nu.mine.kino.entity.ExcelScheduleBean2ACTotalBean;
 import nu.mine.kino.entity.ExcelScheduleBean2EVTotalBean;
@@ -37,11 +40,14 @@ import nu.mine.kino.entity.ExcelScheduleBean2TaskInformation;
 import nu.mine.kino.entity.ExcelScheduleBeanSheet2Project;
 import nu.mine.kino.entity.PVTotalBean;
 import nu.mine.kino.entity.Project;
+import nu.mine.kino.entity.Row2ExcelPOIScheduleBean;
 import nu.mine.kino.entity.Task;
 import nu.mine.kino.entity.TaskInformation;
 import nu.mine.kino.projects.utils.PoiUtils;
 import nu.mine.kino.projects.utils.Utils;
 
+import org.apache.commons.collections.map.HashedMap;
+import org.apache.poi.POIDocument;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -74,6 +80,7 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
     @Override
     public Project createProjectFromStream() throws ProjectException {
 
+        Map<String, ExcelPOIScheduleBean> poiMap = new HashMap<String, ExcelPOIScheduleBean>();
         FileInputStream in = null;
         try {
             in = new FileInputStream(file);
@@ -81,24 +88,20 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
             workbook = WorkbookFactory.create(in);
             Sheet sheet = workbook.getSheetAt(0);
             Iterator<Row> e = sheet.rowIterator();
+            int index = 0;
+            int dataIndex = PoiUtils.getDataFirstRowNum(sheet);
             while (e.hasNext()) {
+                // ヘッダが終わるまで飛ばす。
+                if (index < dataIndex) {
+                    e.next();
+                    index++;
+                    continue;
+                }
+                // データ部の処理
                 Row row = e.next();
                 Cell taskIdCell = row.getCell(1);
                 String taskId = getTaskId(taskIdCell);
-                System.out.printf("[%s],[%s],[%s],[%s],[%s],", taskId,
-                        row.getCell(15), row.getCell(22), row.getCell(23),
-                        row.getCell(24));
-
-                Cell scheduledSDateCell = row.getCell(16);
-                Date sDate = getDate(scheduledSDateCell);
-                Cell scheduledEDateCell = row.getCell(17);
-                Date eDate = getDate(scheduledEDateCell);
-
-                String pattern = "yyyy/MM/dd";
-                System.out.printf("[%s],[%s],[%s]\n", taskId,
-                        Utils.date2Str(sDate, pattern),
-                        Utils.date2Str(eDate, pattern));
-
+                poiMap.put(taskId, createPOIBean(row));
             }
         } catch (InvalidFormatException e) {
             throw new ProjectException(e);
@@ -141,11 +144,19 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
                     taskInfo.setEV(evTotalBean);
                     taskInfoList.add(taskInfo);
 
-                    // System.out.println(instance);
-                    // System.out.println(task);
-                    // System.out.println(pvTotalBean);
-                    // System.out.println(acTotalBean);
-                    // System.out.println(evTotalBean);
+                    ExcelPOIScheduleBean poiBean = poiMap.get(instance
+                            .getTaskId());
+                    System.out.print("poi: ");
+                    System.out.println(poiBean);
+
+                    // //// ココで、NULLでないばあいの載せ替えを実施。全部。
+                    if (poiBean != null) {
+                        setPV(poiBean, pvTotalBean);
+                        setAC(poiBean, acTotalBean);
+                        setEV(poiBean, evTotalBean);
+                        setTask(poiBean, task);
+                    }
+
                 }
             }
 
@@ -171,5 +182,89 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
             // }
             // }
         }
+    }
+
+    private void setTask(ExcelPOIScheduleBean source, Task dest) {
+        if (source.getScheduledEndDate() != null) {
+            dest.setScheduledEndDate(source.getScheduledEndDate());
+        }
+        if (source.getScheduledStartDate() != null) {
+            dest.setScheduledStartDate(source.getScheduledStartDate());
+        }
+        if (source.getNumberOfDays() != null) {
+            dest.setNumberOfDays(source.getNumberOfDays());
+        }
+        if (source.getNumberOfManDays() != null) {
+            dest.setNumberOfManDays(source.getNumberOfManDays());
+        }
+    }
+
+    private void setEV(ExcelPOIScheduleBean source, EVTotalBean dest) {
+        if (source.getEarnedValue() != null) {
+            dest.setEarnedValue(source.getEarnedValue());
+        }
+        if (source.getProgressRate() != null) {
+            dest.setProgressRate(source.getProgressRate());
+        }
+        if (source.getEndDate() != null) {
+            dest.setEndDate(source.getEndDate());
+        }
+        if (source.getStartDate() != null) {
+            dest.setStartDate(source.getStartDate());
+        }
+    }
+
+    private void setAC(ExcelPOIScheduleBean source, ACTotalBean dest) {
+        if (source.getActualCost() != null) {
+            dest.setActualCost(source.getActualCost());
+        }
+    }
+
+    private void setPV(ExcelPOIScheduleBean source, PVTotalBean dest) {
+        if (source.getPlannedValue() != null) {
+            dest.setPlannedValue(source.getPlannedValue());
+        }
+    }
+
+    private ExcelPOIScheduleBean createPOIBean(Row row) {
+        Cell taskIdCell = row.getCell(1);
+        String taskId = getTaskId(taskIdCell);
+        // 15 予定工数
+        // 20 進捗率 0.8とかそういう値が取れる
+        // 21 稼働予定日数
+        // 22 PV
+        // 23 EV
+        // 24 AC
+        // PoiUtils.getCellValue(row.getCell(15), Double.class);
+        // PoiUtils.getCellValue(row.getCell(20), Double.class);
+        // PoiUtils.getCellValue(row.getCell(22), Double.class);
+        // PoiUtils.getCellValue(row.getCell(23), Double.class);
+        // PoiUtils.getCellValue(row.getCell(24), Double.class);
+        System.out.printf("[%s],[%s],[%s],[%s],[%s],[%s],", taskId,
+                PoiUtils.getCellValue(row.getCell(15), Double.class),
+                PoiUtils.getCellValue(row.getCell(20), Double.class),
+                PoiUtils.getCellValue(row.getCell(21), Integer.class),
+                PoiUtils.getCellValue(row.getCell(22), Double.class),
+                PoiUtils.getCellValue(row.getCell(23), Double.class),
+                PoiUtils.getCellValue(row.getCell(24), Double.class));
+        // row.getCell(15), row.getCell(20), row.getCell(22),
+        // row.getCell(23), row.getCell(24));
+
+        // 16 予定開始日
+        // 17 予定終了日
+        // 18 実績開始日
+        // 19 実績終了日
+        Date sDate = getDate(row.getCell(16));
+        Date eDate = getDate(row.getCell(17));
+        Date asDate = getDate(row.getCell(18));
+        Date aeDate = getDate(row.getCell(19));
+
+        String pattern = "yyyy/MM/dd";
+        System.out.printf("[%s],[%s],[%s],[%s],[%s]\n", taskId,
+                Utils.date2Str(sDate, pattern), Utils.date2Str(eDate, pattern),
+                Utils.date2Str(asDate, pattern),
+                Utils.date2Str(aeDate, pattern));
+        ExcelPOIScheduleBean bean = Row2ExcelPOIScheduleBean.convert(row);
+        return bean;
     }
 }
