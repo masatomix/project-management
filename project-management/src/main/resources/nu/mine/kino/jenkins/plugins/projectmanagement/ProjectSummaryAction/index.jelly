@@ -41,8 +41,7 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
 </table>
 
 
-<!--
-      <h1>直近(<i:formatDate value="${it.baseDate}"/>) 時点のプロジェクト全体のPV/AC/EV (まだテスト中。。)</h1>
+      <h1>直近(<i:formatDate value="${it.baseDate}"/>) 時点のプロジェクト全体のPV/AC/EV</h1>
       <table class="pane sortable bigtable" >
         <tr>
           <th class="pane-header">PV</th>
@@ -55,7 +54,7 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
             <td class="pane" style="text-align:center">${it.currentPVACEV.earnedValue!='NaN'? it.currentPVACEV.earnedValue: "-"}</td>
 	</tr>
       </table>
--->
+
 
 
       <h1>直近(<i:formatDate value="${it.baseDate}"/>) のメンバー別サマリー</h1>
@@ -246,10 +245,6 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
         </tr>
       </table>
 
-${it.currentPVACEV.plannedValue}<br />
-${it.currentPVACEV.actualCost}<br />
-${it.currentPVACEV.earnedValue}<br />
-↑まだデバッグレベル
     </l:main-panel>
   </l:layout>
 
