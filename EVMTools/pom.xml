@@ -36,6 +36,11 @@
       <name>Project Amateras Maven2 Repository</name>
       <url>http://amateras.sourceforge.jp/mvn/</url>
     </repository>
+    <repository>
+      <id>nu.mine.kino</id>
+      <name>EVMTools Maven2 Repository</name>
+      <url>http://www.masatom.in/repo/</url>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>
