@@ -160,7 +160,7 @@ public class Utils {
             return d;
         }
         // return d;
-        return new BigDecimal(d).setScale(4, BigDecimal.ROUND_HALF_UP)
+        return new BigDecimal(d).setScale(5, BigDecimal.ROUND_HALF_UP)
                 .doubleValue();
     }
 
@@ -169,7 +169,7 @@ public class Utils {
             return d;
         }
         BigDecimal org = new BigDecimal(d);
-        BigDecimal rounded = org.setScale(4, BigDecimal.ROUND_HALF_UP);
+        BigDecimal rounded = org.setScale(5, BigDecimal.ROUND_HALF_UP);
         return rounded.doubleValue();
     }
 
