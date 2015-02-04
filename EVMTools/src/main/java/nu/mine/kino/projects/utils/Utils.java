@@ -152,10 +152,25 @@ public class Utils {
     }
 
     public static double round(double d) {
-        if (!Double.isNaN(d)) {
-            d = Math.round(d * 1000.0) / 1000.0;
+        // if (!Double.isNaN(d)) {
+        // d = Math.round(d * 1000.0) / 1000.0;
+        // }
+        // return d;
+        if (Double.isNaN(d)) {
+            return d;
         }
-        return d;
+        // return d;
+        return new BigDecimal(d).setScale(4, BigDecimal.ROUND_HALF_UP)
+                .doubleValue();
+    }
+
+    public static Double round(Double d) {
+        if (d == null || Double.isNaN(d)) {
+            return d;
+        }
+        BigDecimal org = new BigDecimal(d);
+        BigDecimal rounded = org.setScale(4, BigDecimal.ROUND_HALF_UP);
+        return rounded.doubleValue();
     }
 
     public static String[] parseCommna(String prefixs) {
