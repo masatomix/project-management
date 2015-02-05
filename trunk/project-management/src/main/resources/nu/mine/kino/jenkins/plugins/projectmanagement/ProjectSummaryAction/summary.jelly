@@ -1,0 +1,23 @@
+<j:jelly xmlns:j="jelly:core"
+         xmlns:d="jelly:define"
+         xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson"
+         xmlns:f="/lib/form"
+         xmlns:i="jelly:fmt">
+    <t:summary icon="document.gif">
+
+      <h2>直近(<i:formatDate value="${it.baseDate}"/>) 時点のプロジェクト全体のPV/AC/EV</h2>
+      <table class="pane sortable bigtable" >
+        <tr>
+          <th class="pane-header">PV</th>
+          <th class="pane-header">AC</th>
+          <th class="pane-header">EV</th>
+        </tr>
+          <tr>
+            <td class="pane" style="text-align:center">${it.currentPVACEV.plannedValue!='NaN' ? it.currentPVACEV.plannedValue : "-"}</td>
+            <td class="pane" style="text-align:center">${it.currentPVACEV.actualCost!='NaN' ? it.currentPVACEV.actualCost:"-"}</td>
+            <td class="pane" style="text-align:center">${it.currentPVACEV.earnedValue!='NaN'? it.currentPVACEV.earnedValue: "-"}</td>
+	</tr>
+      </table>
+    </t:summary>
+</j:jelly>
