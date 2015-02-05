@@ -5,6 +5,7 @@ import hudson.Extension;
 import hudson.FilePath;
 import hudson.FilePath.FileCallable;
 import hudson.Launcher;
+import hudson.model.Action;
 import hudson.model.BuildListener;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
@@ -211,11 +212,14 @@ public class EVMToolsBuilder extends Builder {
         Date shimeDate = root.act(new DateGetter(shimeFileName, "txt"));// 直近、シメた基準日
 
         logger.println("[EVM Tools] 対象ファイルの基準日:"
-                + DateFormatUtils.format(targetDate, "yyyyMMdd"));
+                + DateFormatUtils.format(targetDate, "yyyyMMdd") + " : "
+                + targetFile.getName());
         logger.println("[EVM Tools] 前回取り込んだファイル基準日:"
-                + DateFormatUtils.format(newestDate, "yyyyMMdd"));
+                + DateFormatUtils.format(newestDate, "yyyyMMdd") + " : "
+                + previousNewestFile.getName());
         logger.println("[EVM Tools] 日替わり基準日:"
-                + DateFormatUtils.format(shimeDate, "yyyyMMdd"));
+                + DateFormatUtils.format(shimeDate, "yyyyMMdd") + " : "
+                + shimeFileName);
 
         if (targetDate.getTime() == newestDate.getTime()) {// 同じ基準日のデータの取込なので、OK
             logger.println("[EVM Tools] 同じ基準日のデータの取込なので問題ない");
@@ -340,7 +344,8 @@ public class EVMToolsBuilder extends Builder {
                                 base.getParentFile(), base.getName() + "."
                                         + "json"));
                         if (result_base.exists()) {
-                            returnList.add(result_base);                        }
+                            returnList.add(result_base);
+                        }
                     }
                 }
                 return returnList.toArray(new FilePath[returnList.size()]);
@@ -482,6 +487,11 @@ public class EVMToolsBuilder extends Builder {
             }
             return null;
         }
+    }
+
+    @Override
+    public Action getProjectAction(AbstractProject<?, ?> project) {
+        return new ProjectSummaryProjectAction(project);
     }
 
     // Overridden for better type safety.
