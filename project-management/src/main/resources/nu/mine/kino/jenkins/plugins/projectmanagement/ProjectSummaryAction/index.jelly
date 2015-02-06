@@ -45,13 +45,13 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
       <table class="pane sortable bigtable" >
         <tr>
           <th class="pane-header">PV</th>
-          <th class="pane-header">AC</th>
           <th class="pane-header">EV</th>
+          <th class="pane-header">AC</th>
         </tr>
           <tr>
             <td class="pane" style="text-align:center">${it.currentPVACEV.plannedValue!='NaN' ? it.currentPVACEV.plannedValue : "-"}</td>
-            <td class="pane" style="text-align:center">${it.currentPVACEV.actualCost!='NaN' ? it.currentPVACEV.actualCost:"-"}</td>
             <td class="pane" style="text-align:center">${it.currentPVACEV.earnedValue!='NaN'? it.currentPVACEV.earnedValue: "-"}</td>
+            <td class="pane" style="text-align:center">${it.currentPVACEV.actualCost!='NaN' ? it.currentPVACEV.actualCost:"-"}</td>
 	</tr>
       </table>
 
@@ -64,8 +64,8 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
           <th class="pane-header">ユーザ名</th>
           <th class="pane-header">E-mail</th>
           <th class="pane-header">直近PV</th>
-          <th class="pane-header">直近AC</th>
           <th class="pane-header">直近EV</th>
+          <th class="pane-header">直近AC</th>
           <th class="pane-header">直近PV+1</th>
         </tr>
         <j:forEach var="user" items="${it.users}">
@@ -74,8 +74,8 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
             <td class="pane"><a href="${user.url}">${user.fullName}</a></td>
             <td class="pane"><a href="mailto:${user.emailAddress}">${user.emailAddress}</a></td>
             <td class="pane" style="text-align:right">${user.plannedValue!='NaN'? user.plannedValue:"-"}</td>
-            <td class="pane" style="text-align:right">${user.actualCost!='NaN'? user.actualCost:"-"}</td>
             <td class="pane" style="text-align:right">${user.earnedValue!='NaN'? user.earnedValue:"-"}</td>
+            <td class="pane" style="text-align:right">${user.actualCost!='NaN'? user.actualCost:"-"}</td>
             <td class="pane" style="text-align:right">${user.plannedValue_p1!='NaN'? user.plannedValue_p1:"-"}</td>
 			</tr>
         </j:forEach>
@@ -139,8 +139,8 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
           <th class="pane-header">終了予定</th>
           <th class="pane-header">予定工数</th>
           <th class="pane-header">PV</th>
-          <th class="pane-header">AC</th>
           <th class="pane-header">EV</th>
+          <th class="pane-header">AC</th>
           <th class="pane-header">進捗率(%)(累積)</th>
           <th class="pane-header">PV +1</th>
           <th class="pane-header">要注意</th>
@@ -158,10 +158,10 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
 			</td>
             <td class="pane" style="text-align:right">${bean.numberOfManDays!='NaN'? bean.numberOfManDays: "-"}</td><!-- <j:choose><j:when test="${bean.plannedValue!='NaN'}">${bean.plannedValue}</j:when><j:otherwise>-</j:otherwise></j:choose> -->
             <td class="pane" style="text-align:right">${bean.plannedValue!='NaN' ? bean.plannedValue : "-"}</td>
-            <td class="pane" style="text-align:right">${bean.actualCost!='NaN' ? bean.actualCost:"-"}</td>
             <td class="pane" style="text-align:right">${bean.earnedValue!='NaN'? bean.earnedValue: "-"}</td>
-            <td class="pane" style="text-align:right">${bean.progressRate!='NaN'? bean.progressRate*100.0: "-"}</td>
+            <td class="pane" style="text-align:right">${bean.actualCost!='NaN' ? bean.actualCost:"-"}</td>
             <td class="pane" style="text-align:right">${bean.plannedValue_p1!='NaN'? bean.plannedValue_p1: "-"}</td>
+            <td class="pane" style="text-align:right">${bean.progressRate!='NaN'? bean.progressRate*100.0: "-"}</td>
             <td class="pane" style="text-align:center">${bean.check ? "○":"" }</td>
           </tr>
         </j:forEach>
@@ -173,40 +173,6 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
 <hr />
 
 
-      <h1>直近(<i:formatDate value="${it.baseDate}"/>) その日の実績(AC)</h1>
-      <table class="pane sortable bigtable" >
-        <tr>
-          <th class="pane-header">#</th>
-          <th class="pane-header">タスクID</th>
-          <th class="pane-header">担当者</th>
-          <th class="pane-header">タスク名</th>
-          <th class="pane-header">終了予定</th>
-          <th class="pane-header">予定工数</th>
-          <th class="pane-header">AC</th>
-        </tr>
-        <j:forEach var="ac" items="${it.PreviousACViews}">
-          <tr>
-            <td class="pane">${ac.taskSharp}</td>
-            <td class="pane">${ac.taskId}</td>
-            <td class="pane">${ac.personInCharge}</td>
-            <td class="pane">${ac.taskName}</td>
-            <td class="pane">
-			<j:if test="${ac.scheduledEndDate!=null}">
-				<i:formatDate value="${ac.scheduledEndDate}" />
-			</j:if> 
-			</td>
-            <td class="pane" style="text-align:right">${ac.numberOfManDays!='NaN'? ac.numberOfManDays:"-"}</td>
-            <td class="pane" style="text-align:right">${ac.actualCost!='NaN'?ac.actualCost:"-"}</td>
-          </tr>
-        </j:forEach>
-		</table>
-      <table class="pane" >
-        <tr>
-		<j:if test="${it.acfileExists}" >
-          <th style='text-align:right'><a href="documents/${it.fileName}_base_ACj.tsv">${it.fileName}_base_ACj.tsv</a></th>
-      </j:if>
-	    </tr>
-      </table>
 
       <h1>直近(<i:formatDate value="${it.baseDate}"/>) その日の成果(EV)</h1>
       <table class="pane sortable bigtable" >		
@@ -243,6 +209,43 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
           <th style='text-align:right'><a href="documents/${it.fileName}_base_EVj.tsv">${it.fileName}_base_EVj.tsv</a></th>
 	  </j:if>
         </tr>
+      </table>
+
+
+
+      <h1>直近(<i:formatDate value="${it.baseDate}"/>) その日の実績(AC)</h1>
+      <table class="pane sortable bigtable" >
+        <tr>
+          <th class="pane-header">#</th>
+          <th class="pane-header">タスクID</th>
+          <th class="pane-header">担当者</th>
+          <th class="pane-header">タスク名</th>
+          <th class="pane-header">終了予定</th>
+          <th class="pane-header">予定工数</th>
+          <th class="pane-header">AC</th>
+        </tr>
+        <j:forEach var="ac" items="${it.PreviousACViews}">
+          <tr>
+            <td class="pane">${ac.taskSharp}</td>
+            <td class="pane">${ac.taskId}</td>
+            <td class="pane">${ac.personInCharge}</td>
+            <td class="pane">${ac.taskName}</td>
+            <td class="pane">
+			<j:if test="${ac.scheduledEndDate!=null}">
+				<i:formatDate value="${ac.scheduledEndDate}" />
+			</j:if> 
+			</td>
+            <td class="pane" style="text-align:right">${ac.numberOfManDays!='NaN'? ac.numberOfManDays:"-"}</td>
+            <td class="pane" style="text-align:right">${ac.actualCost!='NaN'?ac.actualCost:"-"}</td>
+          </tr>
+        </j:forEach>
+		</table>
+      <table class="pane" >
+        <tr>
+		<j:if test="${it.acfileExists}" >
+          <th style='text-align:right'><a href="documents/${it.fileName}_base_ACj.tsv">${it.fileName}_base_ACj.tsv</a></th>
+      </j:if>
+	    </tr>
       </table>
 
     </l:main-panel>

@@ -7,13 +7,13 @@
       <table class="pane sortable bigtable" >
         <tr>
           <th class="pane-header">PV</th>
-          <th class="pane-header">AC</th>
           <th class="pane-header">EV</th>
+          <th class="pane-header">AC</th>
         </tr>
           <tr>
             <td class="pane" style="text-align:center">${it.currentPVACEV.plannedValue!='NaN' ? it.currentPVACEV.plannedValue : "-"}</td>
-            <td class="pane" style="text-align:center">${it.currentPVACEV.actualCost!='NaN' ? it.currentPVACEV.actualCost:"-"}</td>
             <td class="pane" style="text-align:center">${it.currentPVACEV.earnedValue!='NaN'? it.currentPVACEV.earnedValue: "-"}</td>
+            <td class="pane" style="text-align:center">${it.currentPVACEV.actualCost!='NaN' ? it.currentPVACEV.actualCost:"-"}</td>
 	</tr>
       </table>		
         </t:summary>
