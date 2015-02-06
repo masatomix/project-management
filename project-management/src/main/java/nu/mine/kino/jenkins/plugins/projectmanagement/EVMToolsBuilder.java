@@ -108,6 +108,13 @@ public class EVMToolsBuilder extends Builder {
         listener.getLogger().println("[EVM Tools] 集計対象: " + name);
         FilePath root = build.getModuleRoot(); // ワークスペースのルート
 
+        // 順番的に、日替わりチェックは、JSONファイルを作ってから行うようにした。
+        FilePath buildRoot = new FilePath(build.getRootDir()); // このビルドのルート
+        listener.getLogger().println("[EVM Tools] JSONファイル作成開始");
+        FilePath pmJSON = executeAndCopies(root, buildRoot,
+                new ProjectWriterExecutor(name, !higawari));
+        listener.getLogger().println("[EVM Tools] 作成完了。ファイル名: " + pmJSON);
+
         // 日替わり運用をちゃんと行うのであれば。
         boolean higawariOKFlag = false;
         if (higawari) {
@@ -119,12 +126,6 @@ public class EVMToolsBuilder extends Builder {
             }
         }
 
-        FilePath buildRoot = new FilePath(build.getRootDir()); // このビルドのルート
-        listener.getLogger().println("[EVM Tools] JSONファイル作成開始");
-        FilePath pmJSON = executeAndCopies(root, buildRoot,
-                new ProjectWriterExecutor(name, !higawari));
-
-        listener.getLogger().println("[EVM Tools] file:" + pmJSON);
 
         listener.getLogger().println("[EVM Tools] PVファイル作成開始");
         executeAndCopy(root, buildRoot, new PVCreatorExecutor(name));
@@ -172,7 +173,7 @@ public class EVMToolsBuilder extends Builder {
      * @param root
      *            ワークスペースのルート
      * @param fileName
-     *            集計対象ファイル
+     *            集計対象Excelファイル
      * @param listener
      * @throws IOException
      * @throws InterruptedException
@@ -334,12 +335,12 @@ public class EVMToolsBuilder extends Builder {
                 for (String base_prefix : PREFIX_ARRAY) {
                     File base = new File(target.getParentFile(), base_prefix
                             + target.getName());
-                    if (base.exists() && createJsonFlag) {
+                    if (base.exists() && createJsonFlag) { // 日替わりモードでないときは(baseがあるばあいは)昨日のファイルのJSON化を行う
                         FilePath result_base = new FilePath(
                                 ProjectWriter.write(base));
                         returnList.add(result_base);
                     }
-                    if (!createJsonFlag) {
+                    if (!createJsonFlag) { // 日替わりモードの場合は、base_xx.jsonを(ある場合は)そのまま使う
                         FilePath result_base = new FilePath(new File(
                                 base.getParentFile(), base.getName() + "."
                                         + "json"));
