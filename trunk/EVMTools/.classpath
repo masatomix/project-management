@@ -71,4 +71,5 @@
       <attribute value="jar:file:/Users/masatomix/.m2/repository/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1-javadoc.jar!/" name="javadoc_location"/>
     </attributes>
   </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/org/bbreak/excella/excella-core/1.8/excella-core-1.8.jar"/>
 </classpath>
