@@ -42,7 +42,7 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
 
 
       <h1>直近(<i:formatDate value="${it.baseDate}"/>) 時点のプロジェクト全体のPV/AC/EV</h1>
-      <table class="pane sortable bigtable" >
+      <table class="pane bigtable" >
         <tr>
           <th class="pane-header">PV</th>
           <th class="pane-header">EV</th>

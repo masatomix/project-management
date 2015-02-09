@@ -101,7 +101,7 @@ public class HigawariCommand extends CLICommand {
                 File file = new File(shimeBuild.getRootDir().getAbsolutePath(),
                         seriesFileName);
                 WriteUtils.writeFile(currentData.getBytes(), file);
-                stdout.printf("EVM時系列情報ファイルに情報を追記してビルド %s に書き込みました。\n",
+                stdout.printf("EVM時系列情報ファイルに情報を追記してビルド #%s に書き込みました。\n",
                         shimeBuild.getNumber());
             }
 
@@ -123,34 +123,7 @@ public class HigawariCommand extends CLICommand {
         return 0;
     }
 
-    private String findSeriesFile(String fileName) {
-        AbstractBuild<?, ?> build = PMUtils.findBuild(job, fileName);
-        if (build == null) {
-            stdout.println("EVM時系列情報ファイルがプロジェクト上に存在しないので、ファイルを新規作成します。");
-            return null;
-        } else {
-            stdout.printf("EVM時系列情報ファイルが ビルド %s 上に見つかりました。\n",
-                    build.getNumber());
-        }
-        try {
-            return ReadUtils.readFile(new File(build.getRootDir(), fileName));
-        } catch (IOException e) {
-            stderr.println("EVM時系列情報ファイルを探す際にエラーが発生したので、ファイルを新規作成します。");
-        }
-        return null;
-    }
-
-    private String appendData(String prevData, int buildNumber,
-            String baseDateStr) {
-        StringBuffer buffer = new StringBuffer();
-        if (prevData != null) {
-            buffer.append(prevData).append("\n");
-        }
-        return new String(buffer.append(baseDateStr).append("\t")
-                .append(buildNumber));
-    }
-
-    private static class DateFileCopyExecutor implements FileCallable<String> {// DateFileCopy
+    private static class DateFileCopyExecutor implements FileCallable<String> {
 
         @Override
         public String invoke(File jsonFile, VirtualChannel channel)
@@ -170,4 +143,30 @@ public class HigawariCommand extends CLICommand {
 
     }
 
+    private String findSeriesFile(String fileName) {
+        AbstractBuild<?, ?> build = PMUtils.findBuild(job, fileName);
+        if (build == null) {
+            stdout.println("EVM時系列情報ファイルがプロジェクト上に存在しないので、ファイルを新規作成します。");
+            return null;
+        } else {
+            stdout.printf("EVM時系列情報ファイルが ビルド #%s 上に見つかりました。\n",
+                    build.getNumber());
+        }
+        try {
+            return ReadUtils.readFile(new File(build.getRootDir(), fileName));
+        } catch (IOException e) {
+            stderr.println("EVM時系列情報ファイルを探す際にエラーが発生したので、ファイルを新規作成します。");
+        }
+        return null;
+    }
+
+    private String appendData(String prevData, int buildNumber,
+            String baseDateStr) {
+        StringBuffer buffer = new StringBuffer();
+        if (prevData != null) {
+            buffer.append(prevData).append("\n");
+        }
+        return new String(buffer.append(baseDateStr).append("\t")
+                .append(buildNumber));
+    }
 }
