@@ -16,6 +16,7 @@ import static nu.mine.kino.projects.utils.Utils.round;
 import hudson.AbortException;
 import hudson.model.BuildListener;
 import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
 import hudson.model.Hudson;
 import hudson.tasks.Mailer;
 
@@ -246,6 +247,26 @@ public class PMUtils {
             return creator.createProject().getBaseDate();
         } catch (ProjectException e) {
             e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * このプロジェクトが持つビルドの中で、該当するファイル名がルートディレクトリに存在する、最新のビルドを返します。
+     * 
+     * @param project
+     * @param fileName
+     * @return
+     */
+    public static AbstractBuild<?, ?> findBuild(AbstractProject<?, ?> project,
+            String fileName) {
+        AbstractBuild<?, ?> b = project.getLastSuccessfulBuild();
+        while (b != null) {
+            if (new File(b.getRootDir(), fileName).exists()) {
+                return b;
+            } else {
+                b = b.getPreviousBuild();
+            }
         }
         return null;
     }
