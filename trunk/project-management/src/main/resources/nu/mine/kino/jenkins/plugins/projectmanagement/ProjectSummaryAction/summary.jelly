@@ -7,7 +7,7 @@
     <t:summary icon="document.gif">
 
       <h2>直近(<i:formatDate value="${it.baseDate}"/>) 時点のプロジェクト全体のPV/AC/EV</h2>
-      <table class="pane sortable bigtable" >
+      <table class="pane bigtable" >
         <tr>
           <th class="pane-header">PV</th>
           <th class="pane-header">EV</th>
