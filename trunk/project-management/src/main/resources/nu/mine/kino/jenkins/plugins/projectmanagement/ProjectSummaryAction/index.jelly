@@ -160,8 +160,8 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
             <td class="pane" style="text-align:right">${bean.plannedValue!='NaN' ? bean.plannedValue : "-"}</td>
             <td class="pane" style="text-align:right">${bean.earnedValue!='NaN'? bean.earnedValue: "-"}</td>
             <td class="pane" style="text-align:right">${bean.actualCost!='NaN' ? bean.actualCost:"-"}</td>
-            <td class="pane" style="text-align:right">${bean.plannedValue_p1!='NaN'? bean.plannedValue_p1: "-"}</td>
             <td class="pane" style="text-align:right">${bean.progressRate!='NaN'? bean.progressRate*100.0: "-"}</td>
+            <td class="pane" style="text-align:right">${bean.plannedValue_p1!='NaN'? bean.plannedValue_p1: "-"}</td>
             <td class="pane" style="text-align:center">${bean.check ? "○":"" }</td>
           </tr>
         </j:forEach>
