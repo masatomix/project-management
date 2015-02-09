@@ -29,7 +29,7 @@
         </tr>
         <j:forEach var="bean" items="${it.seriesActions}">
           <tr>
-            <td class="pane" style="text-align:right"><i:formatDate value="${it.baseDate}"/></td>
+            <td class="pane" style="text-align:right"><i:formatDate value="${bean.baseDate}"/></td>
             <td class="pane" style="text-align:center">${bean.currentPVACEV.plannedValue!='NaN' ? bean.currentPVACEV.plannedValue : "-"}</td>
             <td class="pane" style="text-align:center">${bean.currentPVACEV.earnedValue!='NaN'? bean.currentPVACEV.earnedValue: "-"}</td>
             <td class="pane" style="text-align:center">${bean.currentPVACEV.actualCost!='NaN' ? bean.currentPVACEV.actualCost:"-"}</td>
