@@ -514,5 +514,9 @@ public class ProjectSummaryAction implements Action {
     public boolean getRedmineEvfileExists() {
         return exists(redmineFileName + fileNames[2]);
     }
+    
+    public int getBuildNumber(){
+        return owner.getNumber();
+    }
 
 }

@@ -1,10 +1,9 @@
 <j:jelly xmlns:j="jelly:core" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt" xmlns:u="/hudson/plugins/robot/util">
     <table style="margin-top: 1em; margin-left:1em;">
-	<j:if test="${it.baseDate!=null}">
         <t:summary icon="clipboard.png">
-        ホントはココに時系列の統計をとった結果を載せたいがとりあえず直近のプロジェクト状況を。。
-      <h2>直近(<i:formatDate value="${it.baseDate}"/>) 時点のプロジェクト全体のPV/AC/EV</h2>
-      <table class="pane sortable bigtable" >
+	<j:if test="${it.baseDate!=null}">
+	<h2>直近(<i:formatDate value="${it.baseDate}"/>) 時点のプロジェクト全体のPV/AC/EV</h2>
+      <table class="pane bigtable" >
         <tr>
           <th class="pane-header">PV</th>
           <th class="pane-header">EV</th>
@@ -15,8 +14,33 @@
             <td class="pane" style="text-align:center">${it.currentPVACEV.earnedValue!='NaN'? it.currentPVACEV.earnedValue: "-"}</td>
             <td class="pane" style="text-align:center">${it.currentPVACEV.actualCost!='NaN' ? it.currentPVACEV.actualCost:"-"}</td>
 	</tr>
-      </table>		
+      </table>
+	</j:if>
+	  
+
+	<h2>プロジェクト全体の時系列PV/AC/EV</h2>
+      <table class="pane bigtable" >
+        <tr>
+          <th class="pane-header">基準日</th>
+          <th class="pane-header">PV</th>
+          <th class="pane-header">EV</th>
+          <th class="pane-header">AC</th>
+          <th class="pane-header">ビルドNo</th>
+        </tr>
+        <j:forEach var="bean" items="${it.seriesActions}">
+          <tr>
+            <td class="pane" style="text-align:right"><i:formatDate value="${it.baseDate}"/></td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.plannedValue!='NaN' ? bean.currentPVACEV.plannedValue : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.earnedValue!='NaN'? bean.currentPVACEV.earnedValue: "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.actualCost!='NaN' ? bean.currentPVACEV.actualCost:"-"}</td>
+            <td class="pane" style="text-align:right"><a href="./${bean.buildNumber}">#${bean.buildNumber}</a></td>
+	</tr>
+	</j:forEach>
+      </table>
         </t:summary>
-		</j:if>	
+		
+	
+
+
     </table>
 </j:jelly>
