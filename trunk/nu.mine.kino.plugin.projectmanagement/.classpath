@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="lib/poi-3.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-ooxml-3.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-ooxml-schemas-3.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/excella-core-1.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/opencsv-2.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/opencsvPlus-0.0.2-SNAPSHOT.jar"/>

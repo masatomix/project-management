@@ -51,7 +51,7 @@
    <feature url="features/nu.mine.kino.plugin.projectmanagement_0.8.8.201501060140.jar" id="nu.mine.kino.plugin.projectmanagement" version="0.8.8.201501060140">
       <category name="projectmanagement"/>
    </feature>
-   <feature url="features/nu.mine.kino.plugin.projectmanagement_0.9.5.201502120120.jar" id="nu.mine.kino.plugin.projectmanagement" version="0.9.5.201502120120">
+   <feature url="features/nu.mine.kino.plugin.projectmanagement_0.9.5.201502120132.jar" id="nu.mine.kino.plugin.projectmanagement" version="0.9.5.201502120132">
       <category name="projectmanagement"/>
    </feature>
    <category-def name="google" label="Google Plugin"/>
