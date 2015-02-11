@@ -18,7 +18,7 @@
 	</j:if>
 	  
 
-	<h2>プロジェクト全体の時系列PV/AC/EV</h2>
+	<h2>プロジェクト全体の時系列 PV/AC/EV (確定済情報)</h2>
       <table class="pane bigtable" >
         <tr>
           <th class="pane-header">基準日</th>
