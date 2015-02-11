@@ -24,6 +24,7 @@ import nu.mine.kino.projects.EVCreator;
 import nu.mine.kino.projects.PVCreator;
 import nu.mine.kino.projects.ProjectException;
 import nu.mine.kino.projects.ProjectWriter;
+import nu.mine.kino.projects.utils.ProjectUtils;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -82,17 +83,32 @@ public class ProjectWriterHandler extends AbstractExecutorHandler {
                     for (int i = 0; i < prefixArray.length; i++) {
                         File target_base = new File(target.getParentFile(),
                                 prefixArray[i] + target.getName());
-                        if (target_base.exists()) {
+
+                        File jsonFile_base = ProjectUtils
+                                .findJSONFilePath(target_base);
+                        if (target_base.exists() && !jsonFile_base.exists()) { // xlsがあるがjsonはないばあいだけ、作る。
                             try {
-                                File jsonFile_base = ProjectWriter
+                                jsonFile_base = ProjectWriter
                                         .write(target_base);
+                            } catch (ProjectException e) {
+                                logger.error("run(IProgressMonitor)", e);
+                                logger.error("BaseからJSONを作成するときにエラー。");
+                                Activator.logException(e, false);
+                                throw new InvocationTargetException(e);
+                            }
+                        }
+
+                        if (jsonFile_base.exists()) {
+                            try {
+                                // jsonFile_base = ProjectWriter
+                                // .write(target_base);
                                 ACCreator.createFromJSON(jsonFile,
                                         jsonFile_base, prefixArray[i]);
                                 EVCreator.createFromJSON(jsonFile,
                                         jsonFile_base, prefixArray[i]);
                             } catch (ProjectException e) {
                                 logger.error("run(IProgressMonitor)", e);
-                                logger.error("BaseからJSONもしくはそのあとのAC/EVを作成するときにエラー。");
+                                logger.error("AC/EVを作成するときにエラー。");
                                 Activator.logException(e, false);
                                 throw new InvocationTargetException(e);
                             }
