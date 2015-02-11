@@ -47,6 +47,7 @@ import nu.mine.kino.projects.utils.PoiUtils;
 import nu.mine.kino.projects.utils.Utils;
 
 import org.apache.commons.collections.map.HashedMap;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.POIDocument;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -130,6 +131,13 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
                 if (!instance.getId().equals("")) {
                     instance.setBaseDate(sheet.getBaseDate());
                     Task task = ExcelScheduleBean2Task.convert(instance);
+                    if (StringUtils.isEmpty(task.getTaskId())) {
+                        String message = String
+                                .format("id: %s のタスクIDが未記載です。必須項目のためエラーとして処理を終了します。",
+                                        task.getId());
+                        throw new ProjectException(message);
+                    }
+
                     PVTotalBean pvTotalBean = ExcelScheduleBean2PVTotalBean
                             .convert(instance);
                     ACTotalBean acTotalBean = ExcelScheduleBean2ACTotalBean

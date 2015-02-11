@@ -13,6 +13,7 @@ package nu.mine.kino.projects.utils;
 
 import static nu.mine.kino.projects.utils.Utils.round;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -316,5 +317,9 @@ public class ProjectUtils {
             }
         }
         return returnList;
+    }
+
+    public static File findJSONFilePath(File input) {
+        return new File(input.getParentFile(), input.getName() + "." + "json");
     }
 }
