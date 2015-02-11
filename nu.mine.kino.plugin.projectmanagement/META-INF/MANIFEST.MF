@@ -19,7 +19,10 @@ Bundle-ClassPath: nu.mine.kino.plugin.projectmanagement.jar,
  lib/EVMTools-0.9.5-SNAPSHOT.jar,
  lib/excella-core-1.8.jar,
  lib/opencsv-2.4.jar,
- lib/opencsvPlus-0.0.2-SNAPSHOT.jar
+ lib/opencsvPlus-0.0.2-SNAPSHOT.jar,
+ lib/poi-3.6.jar,
+ lib/poi-ooxml-3.6.jar,
+ lib/poi-ooxml-schemas-3.6.jar
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
