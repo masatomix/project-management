@@ -13,6 +13,7 @@
 package nu.mine.kino.jenkins.plugins.projectmanagement;
 
 import static nu.mine.kino.projects.utils.Utils.round;
+import static nu.mine.kino.projects.utils.Utils.isNonZeroNumeric;
 import hudson.model.Action;
 import hudson.model.AbstractBuild;
 import hudson.model.User;
@@ -40,6 +41,7 @@ import nu.mine.kino.entity.ACBean2ACViewBean;
 import nu.mine.kino.entity.ACViewBean;
 import nu.mine.kino.entity.EVBean;
 import nu.mine.kino.entity.EVBean2EVViewBean;
+import nu.mine.kino.entity.EVMViewBean;
 import nu.mine.kino.entity.EVViewBean;
 import nu.mine.kino.entity.PVACEVViewBean;
 import nu.mine.kino.entity.PVViewBean;
@@ -55,7 +57,6 @@ import nu.mine.kino.projects.ACCreator;
 import nu.mine.kino.projects.EVCreator;
 import nu.mine.kino.projects.JSONProjectCreator;
 import nu.mine.kino.projects.ProjectException;
-import nu.mine.kino.projects.utils.BaseDataUtils;
 import nu.mine.kino.projects.utils.ProjectUtils;
 import nu.mine.kino.projects.utils.Utils;
 import nu.mine.kino.projects.utils.ViewUtils;
@@ -102,11 +103,12 @@ public class ProjectSummaryAction implements Action {
         return owner;
     }
 
-    public PVACEVViewBean getCurrentPVACEV() {
+    public EVMViewBean getCurrentPVACEV() {
         try {
-            double plannedValue = 0.0d;
-            double actualCost = 0.0d;
-            double earnedValue = 0.0d;
+            double pv = 0.0d;
+            double ac = 0.0d;
+            double ev = 0.0d;
+            double bac = 0.0d;
 
             Project project = null;
             if (!StringUtils.isEmpty(name)) {
@@ -121,24 +123,56 @@ public class ProjectSummaryAction implements Action {
             System.out.println("------");
             for (TaskInformation info : taskInformations) {
                 double calculatePVs = ProjectUtils.calculatePVs(info, baseDate);
-                plannedValue += (Double.isNaN(calculatePVs) ? 0.0d
-                        : calculatePVs);
-                actualCost += (Double.isNaN(info.getAC().getActualCost()) ? 0.0d
-                        : info.getAC().getActualCost());
-                earnedValue += (Double.isNaN(info.getEV().getEarnedValue()) ? 0.0d
+                pv += (Double.isNaN(calculatePVs) ? 0.0d : calculatePVs);
+                ac += (Double.isNaN(info.getAC().getActualCost()) ? 0.0d : info
+                        .getAC().getActualCost());
+                ev += (Double.isNaN(info.getEV().getEarnedValue()) ? 0.0d
                         : info.getEV().getEarnedValue());
 
                 System.out.println(info.getTaskId() + "\t" + calculatePVs
                         + "\t" + info.getAC().getActualCost() + "\t"
                         + info.getEV().getEarnedValue());
+
+                double bacPerTask = info.getTask().getNumberOfManDays();
+                bac += (Double.isNaN(bacPerTask) ? 0.0d : bacPerTask);
             }
             System.out.println("------");
 
-            PVACEVViewBean bean = new PVACEVViewBean();
-            bean.setActualCost(round(actualCost));
-            bean.setPlannedValue(round(plannedValue));
-            bean.setEarnedValue(round(earnedValue));
+            EVMViewBean bean = new EVMViewBean();
+
+            bean.setActualCost(round(ac));
+            bean.setPlannedValue(round(pv));
+            bean.setEarnedValue(round(ev));
             bean.setBaseDate(baseDate);
+            bean.setBac(bac);
+            
+            double sv = Double.NaN;
+            double cv = Double.NaN;
+            double spi = Double.NaN;
+            double cpi = Double.NaN;
+            double etc = Double.NaN;
+            double eac = Double.NaN;
+            double vac = Double.NaN;
+            
+            if (isNonZeroNumeric(pv) && isNonZeroNumeric(ac)
+                    && isNonZeroNumeric(ev)) {
+                sv = ev - pv;
+                cv = ev - ac;
+                spi = ev / pv;
+                cpi = ev / ac;
+                etc = (bac - ev) / cpi;
+                eac = ac + etc;
+                vac = bac - eac;
+            }
+
+            bean.setSv(round(sv));
+            bean.setCv(round(cv));
+            bean.setSpi(round(spi));
+            bean.setCpi(round(cpi));
+            bean.setEtc(round(etc));
+            bean.setEac(round(eac));
+            bean.setVac(round(vac));
+
             return bean;
         } catch (ProjectException e) {
             // TODO é©ìÆê∂ê¨Ç≥ÇÍÇΩ catch ÉuÉçÉbÉN
@@ -514,8 +548,8 @@ public class ProjectSummaryAction implements Action {
     public boolean getRedmineEvfileExists() {
         return exists(redmineFileName + fileNames[2]);
     }
-    
-    public int getBuildNumber(){
+
+    public int getBuildNumber() {
         return owner.getNumber();
     }
 
