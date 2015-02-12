@@ -59,7 +59,7 @@
           <th class="pane-header">ETC</th>
           <th class="pane-header">EAC</th>
           <th class="pane-header">VAC</th>
-          <th class="pane-header">BAC(総工数)</th>
+          <th class="pane-header">BAC</th>
           <th class="pane-header">ビルドNo</th>
         </tr>
         <j:forEach var="bean" items="${it.seriesActions}">
