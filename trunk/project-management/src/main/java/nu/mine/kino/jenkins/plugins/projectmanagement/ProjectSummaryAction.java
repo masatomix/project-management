@@ -144,7 +144,7 @@ public class ProjectSummaryAction implements Action {
             bean.setPlannedValue(round(pv));
             bean.setEarnedValue(round(ev));
             bean.setBaseDate(baseDate);
-            bean.setBac(bac);
+            bean.setBac(round(bac));
             
             double sv = Double.NaN;
             double cv = Double.NaN;
