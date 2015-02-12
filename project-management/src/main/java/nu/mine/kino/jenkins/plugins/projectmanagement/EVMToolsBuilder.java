@@ -33,6 +33,7 @@ import nu.mine.kino.projects.JSONProjectCreator;
 import nu.mine.kino.projects.PVCreator;
 import nu.mine.kino.projects.ProjectException;
 import nu.mine.kino.projects.ProjectWriter;
+import nu.mine.kino.projects.utils.ProjectUtils;
 import nu.mine.kino.projects.utils.ReadUtils;
 
 import org.apache.commons.lang.time.DateFormatUtils;
@@ -126,7 +127,6 @@ public class EVMToolsBuilder extends Builder {
             }
         }
 
-
         listener.getLogger().println("[EVM Tools] PVファイル作成開始");
         executeAndCopy(root, buildRoot, new PVCreatorExecutor(name));
         listener.getLogger().println("[EVM Tools] ACファイル作成開始");
@@ -183,7 +183,8 @@ public class EVMToolsBuilder extends Builder {
         // 元々あったファイルと、date.datの日付を見比べる必要あり。
         PrintStream logger = listener.getLogger();
 
-        FilePath targetFile = new FilePath(root, fileName + ".json");
+        FilePath targetFile = new FilePath(root,
+                ProjectUtils.findJSONFileName(fileName));
         FilePath previousNewestFile = new FilePath(root, targetFile.getName()
                 + ".tmp"); // 前回取り込んだ最新ファイル(のJSONファイル)への参照
 
@@ -342,8 +343,8 @@ public class EVMToolsBuilder extends Builder {
                     }
                     if (!createJsonFlag) { // 日替わりモードの場合は、base_xx.jsonを(ある場合は)そのまま使う
                         FilePath result_base = new FilePath(new File(
-                                base.getParentFile(), base.getName() + "."
-                                        + "json"));
+                                base.getParentFile(),
+                                ProjectUtils.findJSONFileName(base.getName())));
                         if (result_base.exists()) {
                             returnList.add(result_base);
                         }
@@ -371,7 +372,7 @@ public class EVMToolsBuilder extends Builder {
             // + target.getName()); // file名にPrefix: base_をつけた
             try {
                 File jsonFile = new File(target.getParentFile(),
-                        target.getName() + ".json");
+                        ProjectUtils.findJSONFileName(target.getName()));
                 if (jsonFile.exists()) {
                     File result = PVCreator.createFromJSON(jsonFile);
                     return new FilePath(result);
@@ -417,10 +418,10 @@ public class EVMToolsBuilder extends Builder {
         private FilePath execute(File target, String base_prefix)
                 throws ProjectException {
 
-            File jsonFile = new File(target.getParentFile(), target.getName()
-                    + ".json");
-            File jsonFile_base = new File(target.getParentFile(), base_prefix
-                    + target.getName() + ".json");
+            File jsonFile = new File(target.getParentFile(), ProjectUtils.findJSONFileName(target.getName())
+                    );
+            File jsonFile_base = new File(target.getParentFile(),ProjectUtils.findJSONFileName( base_prefix
+                    + target.getName()) );
             if (jsonFile_base.exists()) {
                 File result = ACCreator.createFromJSON(jsonFile, jsonFile_base,
                         base_prefix);
@@ -470,10 +471,10 @@ public class EVMToolsBuilder extends Builder {
         private FilePath execute(File target, String base_prefix)
                 throws ProjectException {
 
-            File jsonFile = new File(target.getParentFile(), target.getName()
-                    + ".json");
-            File jsonFile_base = new File(target.getParentFile(), base_prefix
-                    + target.getName() + ".json");
+            File jsonFile = new File(target.getParentFile(), ProjectUtils.findJSONFileName(target.getName())
+                    );
+            File jsonFile_base = new File(target.getParentFile(), ProjectUtils.findJSONFileName(base_prefix
+                    + target.getName()));
             if (jsonFile_base.exists()) {
                 File result = EVCreator.createFromJSON(jsonFile, jsonFile_base,
                         base_prefix);

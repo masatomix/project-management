@@ -12,7 +12,6 @@ package nu.mine.kino.projects;
  ******************************************************************************/
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -25,6 +24,7 @@ import nu.mine.kino.entity.Project;
 import nu.mine.kino.entity.TaskInformation;
 import nu.mine.kino.entity.TaskInformation2TextScheduleBean;
 import nu.mine.kino.entity.TextScheduleBean;
+import nu.mine.kino.projects.utils.ProjectUtils;
 import nu.mine.kino.projects.utils.WriteUtils;
 import au.com.bytecode.opencsv.CSVWriter;
 import au.com.bytecode.opencsv.bean.BeanToCsv;
@@ -72,14 +72,15 @@ public class ProjectWriter {
     }
 
     public static File write(File input) throws ProjectException {
-        File baseDir = input.getParentFile();
-        String output = input.getName() + "." + "json";
+        File outputFile = ProjectUtils.findJSONFilePath(input);
+        // File baseDir = input.getParentFile();
+        // String output = input.getName() + "." + "json";
 
         // java.io.InputStream in = null;
         try {
             // in = new java.io.FileInputStream(input);
             Project project = new ExcelProjectCreator(input).createProject();
-            File outputFile = new File(baseDir, output);
+            // File outputFile = new File(baseDir, output);
             write(project, outputFile);
             return outputFile;
 

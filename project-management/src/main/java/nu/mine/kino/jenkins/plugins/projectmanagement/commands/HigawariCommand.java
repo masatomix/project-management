@@ -26,6 +26,7 @@ import java.util.Date;
 
 import nu.mine.kino.jenkins.plugins.projectmanagement.PMConstants;
 import nu.mine.kino.jenkins.plugins.projectmanagement.utils.PMUtils;
+import nu.mine.kino.projects.utils.ProjectUtils;
 import nu.mine.kino.projects.utils.ReadUtils;
 import nu.mine.kino.projects.utils.WriteUtils;
 
@@ -65,8 +66,8 @@ public class HigawariCommand extends CLICommand {
         FilePath org = new FilePath(someWorkspace, fileName);
         // FilePath excelSource = new FilePath(someWorkspace, fileName +
         // ".tmp");
-        FilePath jsonSource = new FilePath(someWorkspace, fileName + ".json"
-                + ".tmp");
+        FilePath jsonSource = new FilePath(someWorkspace,
+                ProjectUtils.findJSONFileName(fileName) + ".tmp");
         stdout.println(org);
         stdout.println("このファイルの日替わり処理を行います。");
         // if (excelSource.exists() && jsonSource.exists()) { //
@@ -76,9 +77,10 @@ public class HigawariCommand extends CLICommand {
                 tmpPrefix = "base";
             }
 
-            String destFileName = tmpPrefix + "_"
-                    + (new FilePath(someWorkspace, fileName).getName())
-                    + ".json";
+            String destFileName = tmpPrefix
+                    + "_"
+                    + ProjectUtils.findJSONFileName((new FilePath(
+                            someWorkspace, fileName).getName()));
             FilePath dest = new FilePath(someWorkspace, destFileName);
             jsonSource.copyTo(dest);
             stdout.println("[" + jsonSource.getName() + "] -> ["

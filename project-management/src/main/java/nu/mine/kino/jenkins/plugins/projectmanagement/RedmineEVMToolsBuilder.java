@@ -32,6 +32,7 @@ import nu.mine.kino.projects.ProjectWriter;
 import nu.mine.kino.projects.RedmineConfig;
 import nu.mine.kino.projects.RedmineProjectCreator;
 import nu.mine.kino.projects.RedmineProjectCreator2;
+import nu.mine.kino.projects.utils.ProjectUtils;
 import nu.mine.kino.projects.utils.Utils;
 
 import org.apache.commons.io.FileUtils;
@@ -326,7 +327,7 @@ public class RedmineEVMToolsBuilder extends Builder {
             // + target.getName()); // file–¼‚ÉPrefix: base_‚ð‚Â‚¯‚½
             try {
                 File jsonFile = new File(target.getParentFile(),
-                        target.getName() + ".json");
+                        ProjectUtils.findJSONFileName(target.getName()));
                 if (jsonFile.exists()) {
                     File result = PVCreator.createFromJSON(jsonFile);
                     return new FilePath(result);
@@ -372,10 +373,11 @@ public class RedmineEVMToolsBuilder extends Builder {
         private FilePath execute(File target, String base_prefix)
                 throws ProjectException {
 
-            File jsonFile = new File(target.getParentFile(), target.getName()
-                    + ".json");
-            File jsonFile_base = new File(target.getParentFile(), base_prefix
-                    + target.getName() + ".json");
+            File jsonFile = new File(target.getParentFile(),
+                    ProjectUtils.findJSONFileName(target.getName()));
+            File jsonFile_base = new File(target.getParentFile(),
+                    ProjectUtils.findJSONFileName(base_prefix
+                            + target.getName()));
             if (jsonFile_base.exists()) {
                 File result = ACCreator.createFromJSON(jsonFile, jsonFile_base,
                         base_prefix);
@@ -425,10 +427,11 @@ public class RedmineEVMToolsBuilder extends Builder {
         private FilePath execute(File target, String base_prefix)
                 throws ProjectException {
 
-            File jsonFile = new File(target.getParentFile(), target.getName()
-                    + ".json");
-            File jsonFile_base = new File(target.getParentFile(), base_prefix
-                    + target.getName() + ".json");
+            File jsonFile = new File(target.getParentFile(),
+                    ProjectUtils.findJSONFileName(target.getName()));
+            File jsonFile_base = new File(target.getParentFile(),
+                    ProjectUtils.findJSONFileName(base_prefix
+                            + target.getName()));
             if (jsonFile_base.exists()) {
                 File result = EVCreator.createFromJSON(jsonFile, jsonFile_base,
                         base_prefix);
