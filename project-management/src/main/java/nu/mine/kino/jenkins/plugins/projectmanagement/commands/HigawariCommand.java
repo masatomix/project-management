@@ -164,11 +164,11 @@ public class HigawariCommand extends CLICommand {
 
     private String appendData(String prevData, int buildNumber,
             String baseDateStr) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuffer buffer = new StringBuffer().append(baseDateStr)
+                .append("\t").append(buildNumber);
         if (prevData != null) {
-            buffer.append(prevData).append("\n");
+            buffer.append("\n").append(prevData);
         }
-        return new String(buffer.append(baseDateStr).append("\t")
-                .append(buildNumber));
+        return new String(buffer);
     }
 }
