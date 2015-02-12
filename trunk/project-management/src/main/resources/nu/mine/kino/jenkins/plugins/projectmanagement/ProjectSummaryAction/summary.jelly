@@ -5,6 +5,7 @@
          xmlns:f="/lib/form"
          xmlns:i="jelly:fmt">
     <t:summary icon="document.gif">
+	<j:if test="${it.baseDate!=null}">
 
       <h2>直近(<i:formatDate value="${it.baseDate}"/>) 時点のプロジェクト全体のPV/AC/EV</h2>
       <table class="pane bigtable" >
@@ -19,5 +20,6 @@
             <td class="pane" style="text-align:center">${it.currentPVACEV.actualCost!='NaN' ? it.currentPVACEV.actualCost:"-"}</td>
 	</tr>
       </table>
+	  </j:if>
     </t:summary>
 </j:jelly>
