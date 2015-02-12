@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import nu.mine.kino.entity.PVACEVViewBean;
+import nu.mine.kino.entity.EVMViewBean;
 import nu.mine.kino.jenkins.plugins.projectmanagement.utils.PMUtils;
 import nu.mine.kino.projects.utils.ReadUtils;
 
@@ -69,7 +69,7 @@ public class ProjectSummaryProjectAction implements Action {
         return actions.toArray(new ProjectSummaryAction[actions.size()]);
     }
 
-    public PVACEVViewBean getCurrentPVACEV() {
+    public EVMViewBean getCurrentPVACEV() {
         final AbstractBuild<?, ?> tb = project.getLastSuccessfulBuild();
         AbstractBuild<?, ?> b = project.getLastBuild();
         while (b != null) {
