@@ -320,6 +320,11 @@ public class ProjectUtils {
     }
 
     public static File findJSONFilePath(File input) {
-        return new File(input.getParentFile(), input.getName() + "." + "json");
+        return new File(input.getParentFile(),
+                findJSONFileName(input.getName()));
+    }
+
+    public static String findJSONFileName(String input) {
+        return new String(new StringBuffer().append(input).append(".json"));
     }
 }
