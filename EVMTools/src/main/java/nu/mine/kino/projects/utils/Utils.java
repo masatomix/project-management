@@ -152,6 +152,10 @@ public class Utils {
     }
 
     public static double round(double d) {
+        return round(d, 5);
+    }
+
+    public static double round(double d, int scale) {
         // if (!Double.isNaN(d)) {
         // d = Math.round(d * 1000.0) / 1000.0;
         // }
@@ -160,16 +164,20 @@ public class Utils {
             return d;
         }
         // return d;
-        return new BigDecimal(d).setScale(5, BigDecimal.ROUND_HALF_UP)
+        return new BigDecimal(d).setScale(scale, BigDecimal.ROUND_HALF_UP)
                 .doubleValue();
     }
 
     public static Double round(Double d) {
+        return round(d, 5);
+    }
+
+    public static Double round(Double d, int scale) {
         if (d == null || Double.isNaN(d)) {
             return d;
         }
         BigDecimal org = new BigDecimal(d);
-        BigDecimal rounded = org.setScale(5, BigDecimal.ROUND_HALF_UP);
+        BigDecimal rounded = org.setScale(scale, BigDecimal.ROUND_HALF_UP);
         return rounded.doubleValue();
     }
 
