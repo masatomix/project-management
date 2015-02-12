@@ -3,8 +3,14 @@ BAC (Budget at Completion)	完了時の総工数 <br />
 SV  (Scheduled Variance)	スケジュールの差異 := EV-PV <br />
 CV  (Cost Variance)	コストの差異 := EV-AC <br />
 SPI (Schedule Performance Index)	スケジュール効率指数 := EV/PV <br />
+　　1.0 より大きければ、予定のスケジュール(PV)より、進捗(EV)が進んでいることを表します。<br />
 CPI (Cost Performance Index)	コスト効率指数 := EV/AC <br />
+　　1.0 より大きければ、よりすくない稼働(AC)で、効率よく成果(EV)を出せていることを表します。<br />
 ETC (Estimate To Completion)	残作業コスト予測 := (BAC-EV)/CPI <br />
+　　残EV(分子の BAC-EV)を、この効率(CPI)でやったとき、あとどれだけACが必要か。<br />
+　　このETCはいろいろな算出方法があるらしいがここでは左記を採用。<br />
 EAC (Estimate At Completion)	完了時コスト予測 := AC+ETC <br />
-VAC (Variance At Completion)	完了時コスト差異 := BAC-EAC <br />
+　　いまのACに"あとどれだけACがいるか(ETC)"をたせば、総ACが予測できる。<br />
+VAC (Variance At Completion)	完了時コスト差異 := BAC-EAC <br/ >
+　　元の総工数から、予測工数を引けば、コストの差異が出せる。<br />
 </div>
