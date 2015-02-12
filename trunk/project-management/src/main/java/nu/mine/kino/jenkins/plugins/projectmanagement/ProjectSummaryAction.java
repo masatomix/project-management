@@ -140,11 +140,11 @@ public class ProjectSummaryAction implements Action {
 
             EVMViewBean bean = new EVMViewBean();
 
-            bean.setActualCost(round(ac));
-            bean.setPlannedValue(round(pv));
-            bean.setEarnedValue(round(ev));
+            bean.setPlannedValue(round(pv,2));
+            bean.setActualCost(round(ac,2));
+            bean.setEarnedValue(round(ev,2));
+            bean.setBac(round(bac,2));
             bean.setBaseDate(baseDate);
-            bean.setBac(round(bac));
             
             double sv = Double.NaN;
             double cv = Double.NaN;
@@ -165,13 +165,15 @@ public class ProjectSummaryAction implements Action {
                 vac = bac - eac;
             }
 
-            bean.setSv(round(sv));
-            bean.setCv(round(cv));
-            bean.setSpi(round(spi));
-            bean.setCpi(round(cpi));
-            bean.setEtc(round(etc));
-            bean.setEac(round(eac));
-            bean.setVac(round(vac));
+            bean.setSv(round(sv,2));
+            bean.setCv(round(cv,2));
+            
+            bean.setSpi(round(spi,3));
+            bean.setCpi(round(cpi,3));
+            
+            bean.setEtc(round(etc,2));
+            bean.setEac(round(eac,2));
+            bean.setVac(round(vac,2));
 
             return bean;
         } catch (ProjectException e) {
