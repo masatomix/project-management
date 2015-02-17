@@ -25,6 +25,11 @@
       <id>repo.jenkins-ci.org</id>
       <url>http://repo.jenkins-ci.org/public/</url>
     </repository>
+    <repository>
+      <id>nu.mine.kino</id>
+      <name>EVMTools Maven2 Repository</name>
+      <url>http://www.masatom.in/repo/</url>
+    </repository>
   </repositories>
 
   <pluginRepositories>
@@ -73,13 +78,7 @@
 			</plugin>
 		</plugins>
 	</build>
-  <repositories>
-    <repository>
-      <id>nu.mine.kino</id>
-      <name>EVMTools Maven2 Repository</name>
-      <url>http://www.masatom.in/repo/</url>
-    </repository>
-  </repositories>
+
 	<dependencies>
 	<dependency>
 		<groupId>nu.mine.kino.project</groupId>
