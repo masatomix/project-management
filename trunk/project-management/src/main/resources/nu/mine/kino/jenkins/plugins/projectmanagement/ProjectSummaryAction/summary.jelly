@@ -13,13 +13,30 @@
           <th class="pane-header">PV</th>
           <th class="pane-header">EV</th>
           <th class="pane-header">AC</th>
+          <th class="pane-header">SPI</th>
+          <th class="pane-header">CPI</th>
         </tr>
           <tr>
             <td class="pane" style="text-align:center">${it.currentPVACEV.plannedValue!='NaN' ? it.currentPVACEV.plannedValue : "-"}</td>
             <td class="pane" style="text-align:center">${it.currentPVACEV.earnedValue!='NaN'? it.currentPVACEV.earnedValue: "-"}</td>
             <td class="pane" style="text-align:center">${it.currentPVACEV.actualCost!='NaN' ? it.currentPVACEV.actualCost:"-"}</td>
+            <td class="pane" style="text-align:center">${it.currentPVACEV.spi!='NaN' ? it.currentPVACEV.spi : "-"}</td>
+            <td class="pane" style="text-align:center">${it.currentPVACEV.cpi!='NaN' ? it.currentPVACEV.cpi : "-"}</td>
 	</tr>
       </table>
+<table>
+<tr hashelp="true" class="optional-block-start " ref="cb6">
+ <td colspan="3"><label class="attach-previous">EVM用語の説明</label></td>
+ <td><a helpurl="${resURL}/plugin/project-management/help/pvacev.html" href="#" class="help-button" tabindex="9999"><img src='${imagesURL}/16x16/help.png'  alt="Help for feature: evm" ></img></a></td>
+</tr>
+<tr class="help-area">
+  <td></td>
+  <td colspan="2"><div class="help">ロード中</div></td>
+  <td></td>
+</tr>
+</table>
+
+
 	  </j:if>
     </t:summary>
 </j:jelly>
