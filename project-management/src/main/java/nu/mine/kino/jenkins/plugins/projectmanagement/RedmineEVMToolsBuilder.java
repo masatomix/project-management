@@ -65,8 +65,9 @@ public class RedmineEVMToolsBuilder extends Builder {
 
     private final String url;
 
-    private static final String[] PREFIX_ARRAY = new String[] { "base_",
-            "base1_", "base2_" };
+    private static final String[] PREFIX_ARRAY = new String[] {
+            PMConstants.BASE + "_", PMConstants.BASE + "1_",
+            PMConstants.BASE + "2_" };
 
     private final String userid;
 
