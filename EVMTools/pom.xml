@@ -120,11 +120,12 @@
   
   
    <distributionManagement>
-	<repository>
+<!--	<repository>
       <id>nu.mine.kino</id>
       <name>EVMTools Maven2 Repository</name>
       <url>scp://masatomix@192.168.10.12/var/www/html/repo/</url>
 	</repository>
+-->
 	<repository>
       <id>nu.mine.kino.ftp</id>
       <name>EVMTools Maven2 Repository</name>
