@@ -17,7 +17,10 @@ package nu.mine.kino.jenkins.plugins.projectmanagement;
  * @version $Revision$
  */
 public interface PMConstants {
+    public static final String BASE = "base";
 
-    public static final String DATE_DAT_FILENAME = "base_date.dat";
+    public static final String DATE_DAT_FILENAME = BASE + "_date.dat";
+
     public static final String SERIES_DAT_FILENAME = "series.dat";
+
 }

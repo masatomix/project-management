@@ -57,7 +57,7 @@ public class HigawariCommand extends CLICommand {
         return "指定したプロジェクトの日替わり処理を行います。";
     }
 
-    private static final String seriesFileName = PMConstants.SERIES_DAT_FILENAME;
+    private static final String seriesFileNameSuffix = PMConstants.SERIES_DAT_FILENAME;
 
     @Override
     protected int run() throws Exception {
@@ -70,11 +70,10 @@ public class HigawariCommand extends CLICommand {
                 ProjectUtils.findJSONFileName(fileName) + ".tmp");
         stdout.println(org);
         stdout.println("このファイルの日替わり処理を行います。");
-        // if (excelSource.exists() && jsonSource.exists()) { //
         if (jsonSource.exists()) { //
             String tmpPrefix = prefix;
             if (StringUtils.isEmpty(prefix)) {
-                tmpPrefix = "base";
+                tmpPrefix = PMConstants.BASE;
             }
 
             String destFileName = tmpPrefix
@@ -90,22 +89,9 @@ public class HigawariCommand extends CLICommand {
             stdout.println("基準日: " + baseDateStr + " を締めました。日替わり処理が正常終了しました。");
 
             // Prefix引数ナシの時だけ、時系列ファイルを書き込む
-            if (StringUtils.isEmpty(prefix)) {
-                final AbstractBuild<?, ?> shimeBuild = job
-                        .getLastSuccessfulBuild();
-                // stdout.printf("[%s]\n",
-                // shimeBuild.getRootDir().getAbsolutePath());
-                // stdout.printf("[%s]:[%s]:[%s]\n", baseDateStr,
-                // shimeBuild.getNumber(), shimeBuild.getId());
-                String prevData = findSeriesFile(seriesFileName);
-                String currentData = appendData(prevData,
-                        shimeBuild.getNumber(), baseDateStr);
-                File file = new File(shimeBuild.getRootDir().getAbsolutePath(),
-                        seriesFileName);
-                WriteUtils.writeFile(currentData.getBytes(), file);
-                stdout.printf("EVM時系列情報ファイルに情報を追記してビルド #%s に書き込みました。\n",
-                        shimeBuild.getNumber());
-            }
+            final AbstractBuild<?, ?> shimeBuild = job.getLastSuccessfulBuild();
+            String seriesFileName = tmpPrefix + "_" + seriesFileNameSuffix;
+            writeSeriesFile(baseDateStr, seriesFileName, shimeBuild);
 
         } else {
             stderr.println("---- エラーが発生したため日替わり処理を停止します。------");
@@ -123,6 +109,22 @@ public class HigawariCommand extends CLICommand {
             return -1;
         }
         return 0;
+    }
+
+    private void writeSeriesFile(String baseDateStr, String fileName,
+            final AbstractBuild<?, ?> shimeBuild) {
+        // stdout.printf("[%s]\n",
+        // shimeBuild.getRootDir().getAbsolutePath());
+        // stdout.printf("[%s]:[%s]:[%s]\n", baseDateStr,
+        // shimeBuild.getNumber(), shimeBuild.getId());
+        String prevData = findSeriesFile(fileName);
+        String currentData = appendData(prevData, shimeBuild.getNumber(),
+                baseDateStr);
+        File file = new File(shimeBuild.getRootDir().getAbsolutePath(),
+                fileName);
+        WriteUtils.writeFile(currentData.getBytes(), file);
+        stdout.printf("EVM時系列情報ファイル(%s)に情報を追記してビルド #%s に書き込みました。\n", fileName,
+                shimeBuild.getNumber());
     }
 
     private static class DateFileCopyExecutor implements FileCallable<String> {
@@ -148,10 +150,11 @@ public class HigawariCommand extends CLICommand {
     private String findSeriesFile(String fileName) {
         AbstractBuild<?, ?> build = PMUtils.findBuild(job, fileName);
         if (build == null) {
-            stdout.println("EVM時系列情報ファイルがプロジェクト上に存在しないので、ファイルを新規作成します。");
+            stdout.printf("EVM時系列情報ファイル(%s)がプロジェクト上に存在しないので、ファイルを新規作成します。\n",
+                    fileName);
             return null;
         } else {
-            stdout.printf("EVM時系列情報ファイルが ビルド #%s 上に見つかりました。\n",
+            stdout.printf("EVM時系列情報ファイル(%s)が ビルド #%s 上に見つかりました。\n", fileName,
                     build.getNumber());
         }
         try {

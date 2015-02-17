@@ -63,8 +63,9 @@ public class EVMToolsBuilder extends Builder {
 
     private final String name;
 
-    private static final String[] PREFIX_ARRAY = new String[] { "base_",
-            "base1_", "base2_" };
+    private static final String[] PREFIX_ARRAY = new String[] {
+            PMConstants.BASE + "_", PMConstants.BASE + "1_",
+            PMConstants.BASE + "2_" };
 
     private final String addresses;
 
@@ -368,8 +369,6 @@ public class EVMToolsBuilder extends Builder {
         public FilePath invoke(File f, VirtualChannel channel)
                 throws IOException, InterruptedException {
             File target = new File(f, fileName);
-            // File base = new File(target.getParentFile(), "base_"
-            // + target.getName()); // file–¼‚ÉPrefix: base_‚ð‚Â‚¯‚½
             try {
                 File jsonFile = new File(target.getParentFile(),
                         ProjectUtils.findJSONFileName(target.getName()));
@@ -418,10 +417,11 @@ public class EVMToolsBuilder extends Builder {
         private FilePath execute(File target, String base_prefix)
                 throws ProjectException {
 
-            File jsonFile = new File(target.getParentFile(), ProjectUtils.findJSONFileName(target.getName())
-                    );
-            File jsonFile_base = new File(target.getParentFile(),ProjectUtils.findJSONFileName( base_prefix
-                    + target.getName()) );
+            File jsonFile = new File(target.getParentFile(),
+                    ProjectUtils.findJSONFileName(target.getName()));
+            File jsonFile_base = new File(target.getParentFile(),
+                    ProjectUtils.findJSONFileName(base_prefix
+                            + target.getName()));
             if (jsonFile_base.exists()) {
                 File result = ACCreator.createFromJSON(jsonFile, jsonFile_base,
                         base_prefix);
@@ -471,10 +471,11 @@ public class EVMToolsBuilder extends Builder {
         private FilePath execute(File target, String base_prefix)
                 throws ProjectException {
 
-            File jsonFile = new File(target.getParentFile(), ProjectUtils.findJSONFileName(target.getName())
-                    );
-            File jsonFile_base = new File(target.getParentFile(), ProjectUtils.findJSONFileName(base_prefix
-                    + target.getName()));
+            File jsonFile = new File(target.getParentFile(),
+                    ProjectUtils.findJSONFileName(target.getName()));
+            File jsonFile_base = new File(target.getParentFile(),
+                    ProjectUtils.findJSONFileName(base_prefix
+                            + target.getName()));
             if (jsonFile_base.exists()) {
                 File result = EVCreator.createFromJSON(jsonFile, jsonFile_base,
                         base_prefix);

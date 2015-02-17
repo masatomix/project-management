@@ -77,6 +77,8 @@ public class ProjectSummaryAction implements Action {
 
     private String name;
 
+    private String basePrefix = PMConstants.BASE;
+
     private String redmineFileName;
 
     public ProjectSummaryAction(AbstractBuild<?, ?> owner) {
@@ -140,12 +142,12 @@ public class ProjectSummaryAction implements Action {
 
             EVMViewBean bean = new EVMViewBean();
 
-            bean.setPlannedValue(round(pv,2));
-            bean.setActualCost(round(ac,2));
-            bean.setEarnedValue(round(ev,2));
-            bean.setBac(round(bac,2));
+            bean.setPlannedValue(round(pv, 2));
+            bean.setActualCost(round(ac, 2));
+            bean.setEarnedValue(round(ev, 2));
+            bean.setBac(round(bac, 2));
             bean.setBaseDate(baseDate);
-            
+
             double sv = Double.NaN;
             double cv = Double.NaN;
             double spi = Double.NaN;
@@ -153,7 +155,7 @@ public class ProjectSummaryAction implements Action {
             double etc = Double.NaN;
             double eac = Double.NaN;
             double vac = Double.NaN;
-            
+
             if (isNonZeroNumeric(pv) && isNonZeroNumeric(ac)
                     && isNonZeroNumeric(ev)) {
                 sv = ev - pv;
@@ -165,15 +167,15 @@ public class ProjectSummaryAction implements Action {
                 vac = bac - eac;
             }
 
-            bean.setSv(round(sv,2));
-            bean.setCv(round(cv,2));
-            
-            bean.setSpi(round(spi,3));
-            bean.setCpi(round(cpi,3));
-            
-            bean.setEtc(round(etc,2));
-            bean.setEac(round(eac,2));
-            bean.setVac(round(vac,2));
+            bean.setSv(round(sv, 2));
+            bean.setCv(round(cv, 2));
+
+            bean.setSpi(round(spi, 3));
+            bean.setCpi(round(cpi, 3));
+
+            bean.setEtc(round(etc, 2));
+            bean.setEac(round(eac, 2));
+            bean.setVac(round(vac, 2));
 
             return bean;
         } catch (ProjectException e) {
@@ -277,7 +279,7 @@ public class ProjectSummaryAction implements Action {
             List<ACViewBean> retList = new ArrayList<ACViewBean>();
             File target = new File(owner.getRootDir(), name);
             Project targetProject = getProject(name);
-            File base = new File(owner.getRootDir(), "base_" + name);
+            File base = new File(owner.getRootDir(), basePrefix + "_" + name);
             List<ACBean> filterList = ACCreator.createACListFromJSON(target,
                     base);
 
@@ -314,7 +316,7 @@ public class ProjectSummaryAction implements Action {
             File target = new File(owner.getRootDir(), name);
             Project targetProject = getProject(name);
 
-            File base = new File(owner.getRootDir(), "base_" + name);
+            File base = new File(owner.getRootDir(), basePrefix + "_" + name);
             List<EVBean> filterList = EVCreator.createEVListFromJSON(target,
                     base);
             // List<EVBean> filterList = ProjectUtils.filterEV(list);
@@ -414,7 +416,7 @@ public class ProjectSummaryAction implements Action {
         try {
             if (!StringUtils.isEmpty(name)) {
                 Project targetProject = getProject(name);
-                Project baseProject = getProject("base_" + name);
+                Project baseProject = getProject(basePrefix + "_" + name);
                 List<PVACEVViewBean> list = ProjectUtils.filterList(ViewUtils
                         .getPVACEVViewBeanList(targetProject, baseProject),
                         prefixArray);
@@ -451,6 +453,10 @@ public class ProjectSummaryAction implements Action {
 
     public void setRedmineFileName(String redmineFileName) {
         this.redmineFileName = redmineFileName;
+    }
+
+    public void setBasePrefix(String basePrefix) {
+        this.basePrefix = basePrefix;
     }
 
     public void doDynamic(StaplerRequest req, StaplerResponse res)
