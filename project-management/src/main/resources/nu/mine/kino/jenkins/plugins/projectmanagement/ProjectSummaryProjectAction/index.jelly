@@ -22,7 +22,7 @@
             <td class="pane" style="text-align:center">${bean.currentPVACEV.actualCost!='NaN' ? bean.currentPVACEV.actualCost : "-"}</td>
             <td class="pane" style="text-align:center">${bean.currentPVACEV.spi!='NaN' ? bean.currentPVACEV.spi : "-"}</td>
             <td class="pane" style="text-align:center">${bean.currentPVACEV.cpi!='NaN' ? bean.currentPVACEV.cpi : "-"}</td>
-            <td class="pane" style="text-align:right"><a href="./${bean.buildNumber}">#${bean.buildNumber}</a></td>
+            <td class="pane" style="text-align:right"><a href="../${bean.buildNumber}">#${bean.buildNumber}</a></td>
 	</tr>
 	</j:forEach>
       </table>
@@ -73,7 +73,7 @@
 			<td class="pane" style="text-align:center">${bean.currentPVACEV.etc!='NaN' ? bean.currentPVACEV.etc : "-"}</td>
 			<td class="pane" style="text-align:center">${bean.currentPVACEV.eac!='NaN' ? bean.currentPVACEV.eac : "-"}</td>
 			<td class="pane" style="text-align:center">${bean.currentPVACEV.vac!='NaN' ? bean.currentPVACEV.vac : "-"}</td>
-            <td class="pane" style="text-align:right"><a href="./${bean.buildNumber}">#${bean.buildNumber}</a></td>
+            <td class="pane" style="text-align:right"><a href="../${bean.buildNumber}">#${bean.buildNumber}</a></td>
 	</tr>
 	</j:forEach>
       </table>
