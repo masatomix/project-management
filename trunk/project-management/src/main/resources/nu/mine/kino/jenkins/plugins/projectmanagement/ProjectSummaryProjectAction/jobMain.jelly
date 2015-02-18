@@ -2,7 +2,7 @@
     <table style="margin-top: 1em; margin-left:1em;">
         <t:summary icon="clipboard.png">
 	<j:if test="${it.baseDate!=null}">
-	<h2>直近(<i:formatDate value="${it.baseDate}"/>) 時点のプロジェクト全体のPV/AC/EV</h2>
+	<h2>直近(<i:formatDate value="${it.baseDate}"/>) 時点のプロジェクト全体のEVM指数</h2>
       <table class="pane bigtable" >
         <tr>
           <th class="pane-header">PV</th>
@@ -10,6 +10,7 @@
           <th class="pane-header">AC</th>
           <th class="pane-header">SPI</th>
           <th class="pane-header">CPI</th>
+          <th class="pane-header">ビルドNo</th>
         </tr>
           <tr>
             <td class="pane" style="text-align:center">${it.currentPVACEV.plannedValue!='NaN' ? it.currentPVACEV.plannedValue : "-"}</td>
@@ -17,6 +18,7 @@
             <td class="pane" style="text-align:center">${it.currentPVACEV.actualCost!='NaN' ? it.currentPVACEV.actualCost:"-"}</td>
             <td class="pane" style="text-align:center">${it.currentPVACEV.spi!='NaN' ? it.currentPVACEV.spi : "-"}</td>
             <td class="pane" style="text-align:center">${it.currentPVACEV.cpi!='NaN' ? it.currentPVACEV.cpi : "-"}</td>
+            <td class="pane" style="text-align:right"><a href="./${it.buildNumber}">#${it.buildNumber}</a></td>
 	</tr>
       </table>
 <table>
@@ -31,9 +33,8 @@
 </tr>
 </table>
 	</j:if>
-	  
 
-	<h2>プロジェクト全体の、確定済み EVM指数(要注目指数)</h2>
+	<h2>プロジェクト全体の、確定済み EVM要注目指数(日次)</h2>
       <table class="pane sortable bigtable" >
         <tr>
           <th class="pane-header">基準日</th>
@@ -52,46 +53,6 @@
             <td class="pane" style="text-align:center">${bean.currentPVACEV.actualCost!='NaN' ? bean.currentPVACEV.actualCost : "-"}</td>
             <td class="pane" style="text-align:center">${bean.currentPVACEV.spi!='NaN' ? bean.currentPVACEV.spi : "-"}</td>
             <td class="pane" style="text-align:center">${bean.currentPVACEV.cpi!='NaN' ? bean.currentPVACEV.cpi : "-"}</td>
-            <td class="pane" style="text-align:right"><a href="./${bean.buildNumber}">#${bean.buildNumber}</a></td>
-	</tr>
-	</j:forEach>
-      </table>
-
-	  
-	  
-	  
-	  
-	  	<h2>プロジェクト全体の、確定済み EVM指数(全指数)</h2>
-      <table class="pane sortable bigtable" >
-        <tr>
-          <th class="pane-header">基準日</th>
-          <th class="pane-header">BAC</th>
-          <th class="pane-header">PV</th>
-          <th class="pane-header">EV</th>
-          <th class="pane-header">AC</th>
-          <th class="pane-header">SV</th>
-          <th class="pane-header">CV</th>
-          <th class="pane-header">SPI</th>
-          <th class="pane-header">CPI</th>
-          <th class="pane-header">ETC</th>
-          <th class="pane-header">EAC</th>
-          <th class="pane-header">VAC</th>
-          <th class="pane-header">ビルドNo</th>
-        </tr>
-        <j:forEach var="bean" items="${it.seriesActions}">
-          <tr>
-            <td class="pane" style="text-align:right"><i:formatDate value="${bean.baseDate}"/></td>
-            <td class="pane" style="text-align:center">${bean.currentPVACEV.bac!='NaN' ? bean.currentPVACEV.bac : "-"}</td>
-            <td class="pane" style="text-align:center">${bean.currentPVACEV.plannedValue!='NaN' ? bean.currentPVACEV.plannedValue : "-"}</td>
-            <td class="pane" style="text-align:center">${bean.currentPVACEV.earnedValue!='NaN'? bean.currentPVACEV.earnedValue : "-"}</td>
-            <td class="pane" style="text-align:center">${bean.currentPVACEV.actualCost!='NaN' ? bean.currentPVACEV.actualCost : "-"}</td>
-			<td class="pane" style="text-align:center">${bean.currentPVACEV.sv!='NaN' ? bean.currentPVACEV.sv : "-"}</td>
-			<td class="pane" style="text-align:center">${bean.currentPVACEV.cv!='NaN' ? bean.currentPVACEV.cv : "-"}</td>
-            <td class="pane" style="text-align:center">${bean.currentPVACEV.spi!='NaN' ? bean.currentPVACEV.spi : "-"}</td>
-            <td class="pane" style="text-align:center">${bean.currentPVACEV.cpi!='NaN' ? bean.currentPVACEV.cpi : "-"}</td>
-			<td class="pane" style="text-align:center">${bean.currentPVACEV.etc!='NaN' ? bean.currentPVACEV.etc : "-"}</td>
-			<td class="pane" style="text-align:center">${bean.currentPVACEV.eac!='NaN' ? bean.currentPVACEV.eac : "-"}</td>
-			<td class="pane" style="text-align:center">${bean.currentPVACEV.vac!='NaN' ? bean.currentPVACEV.vac : "-"}</td>
             <td class="pane" style="text-align:right"><a href="./${bean.buildNumber}">#${bean.buildNumber}</a></td>
 	</tr>
 	</j:forEach>
@@ -99,7 +60,7 @@
 <table>
 <tr hashelp="true" class="optional-block-start " ref="cb6">
  <td colspan="3"><label class="attach-previous">EVM用語の説明</label></td>
- <td><a helpurl="${resURL}/plugin/project-management/help/evm.html" href="#" class="help-button" tabindex="9999"><img src='${imagesURL}/16x16/help.png'  alt="Help for feature: evm" ></img></a></td>
+ <td><a helpurl="${resURL}/plugin/project-management/help/pvacev.html" href="#" class="help-button" tabindex="9999"><img src='${imagesURL}/16x16/help.png'  alt="Help for feature: evm" ></img></a></td>
 </tr>
 <tr class="help-area">
   <td></td>
@@ -109,6 +70,77 @@
 </table>
 
 
+	<h2>プロジェクト全体の、確定済み EVM要注目指数(週次)</h2>
+      <table class="pane sortable bigtable" >
+        <tr>
+          <th class="pane-header">基準日</th>
+          <th class="pane-header">PV</th>
+          <th class="pane-header">EV</th>
+          <th class="pane-header">AC</th>
+          <th class="pane-header">SPI</th>
+          <th class="pane-header">CPI</th>
+          <th class="pane-header">ビルドNo</th>
+        </tr>
+        <j:forEach var="bean" items="${it.seriesActionsBase1}">
+          <tr>
+            <td class="pane" style="text-align:right"><i:formatDate value="${bean.baseDate}"/></td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.plannedValue!='NaN' ? bean.currentPVACEV.plannedValue : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.earnedValue!='NaN'? bean.currentPVACEV.earnedValue : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.actualCost!='NaN' ? bean.currentPVACEV.actualCost : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.spi!='NaN' ? bean.currentPVACEV.spi : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.cpi!='NaN' ? bean.currentPVACEV.cpi : "-"}</td>
+            <td class="pane" style="text-align:right"><a href="./${bean.buildNumber}">#${bean.buildNumber}</a></td>
+	</tr>
+	</j:forEach>
+      </table>
+<table>
+<tr hashelp="true" class="optional-block-start " ref="cb6">
+ <td colspan="3"><label class="attach-previous">EVM用語の説明</label></td>
+ <td><a helpurl="${resURL}/plugin/project-management/help/pvacev.html" href="#" class="help-button" tabindex="9999"><img src='${imagesURL}/16x16/help.png'  alt="Help for feature: evm" ></img></a></td>
+</tr>
+<tr class="help-area">
+  <td></td>
+  <td colspan="2"><div class="help">ロード中</div></td>
+  <td></td>
+</tr>
+</table>
+
+
+
+	<h2>プロジェクト全体の、確定済み EVM要注目指数(月次)</h2>
+      <table class="pane sortable bigtable" >
+        <tr>
+          <th class="pane-header">基準日</th>
+          <th class="pane-header">PV</th>
+          <th class="pane-header">EV</th>
+          <th class="pane-header">AC</th>
+          <th class="pane-header">SPI</th>
+          <th class="pane-header">CPI</th>
+          <th class="pane-header">ビルドNo</th>
+        </tr>
+        <j:forEach var="bean" items="${it.seriesActionsBase2}">
+          <tr>
+            <td class="pane" style="text-align:right"><i:formatDate value="${bean.baseDate}"/></td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.plannedValue!='NaN' ? bean.currentPVACEV.plannedValue : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.earnedValue!='NaN'? bean.currentPVACEV.earnedValue : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.actualCost!='NaN' ? bean.currentPVACEV.actualCost : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.spi!='NaN' ? bean.currentPVACEV.spi : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.cpi!='NaN' ? bean.currentPVACEV.cpi : "-"}</td>
+            <td class="pane" style="text-align:right"><a href="./${bean.buildNumber}">#${bean.buildNumber}</a></td>
+	</tr>
+	</j:forEach>
+      </table>
+<table>
+<tr hashelp="true" class="optional-block-start " ref="cb6">
+ <td colspan="3"><label class="attach-previous">EVM用語の説明</label></td>
+ <td><a helpurl="${resURL}/plugin/project-management/help/pvacev.html" href="#" class="help-button" tabindex="9999"><img src='${imagesURL}/16x16/help.png'  alt="Help for feature: evm" ></img></a></td>
+</tr>
+<tr class="help-area">
+  <td></td>
+  <td colspan="2"><div class="help">ロード中</div></td>
+  <td></td>
+</tr>
+</table>
 
         </t:summary>
 		
