@@ -104,13 +104,7 @@
           </tr>
         </j:forEach>
       </table>
-      <table class="pane" >
-        <tr>
-		<j:if test="${it.pvfileExists}" >
-          <th style='text-align:right'><a href="documents/${it.fileName}_PVj.tsv">${it.fileName}_PVj.tsv</a></th>
-		</j:if> 
-        </tr>
-      </table>
+
 
       <h1>直近(<i:formatDate value="${it.baseDate}"/>) までの状況(PV/AC/EV)</h1>
 	  <p>ベースの基準日から直近までの状況</p>
@@ -188,13 +182,6 @@
           </tr>
         </j:forEach>
       </table>
-      <table class="pane" >
-        <tr>
-		<j:if test="${it.evfileExists}" >
-          <th style='text-align:right'><a href="documents/${it.fileName}_base_EVj.tsv">${it.fileName}_base_EVj.tsv</a></th>
-	  </j:if>
-        </tr>
-      </table>
 
 
 
@@ -226,13 +213,6 @@
           </tr>
         </j:forEach>
 		</table>
-      <table class="pane" >
-        <tr>
-		<j:if test="${it.acfileExists}" >
-          <th style='text-align:right'><a href="documents/${it.fileName}_base_ACj.tsv">${it.fileName}_base_ACj.tsv</a></th>
-      </j:if>
-	    </tr>
-      </table>
 
       <h1>直近(<i:formatDate value="${it.baseDate}"/>) の集計資料</h1>
       <table class="pane sortable bigtable" >

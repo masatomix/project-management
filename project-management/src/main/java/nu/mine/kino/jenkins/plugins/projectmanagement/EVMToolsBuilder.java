@@ -38,6 +38,7 @@ import nu.mine.kino.projects.utils.ReadUtils;
 
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.lang.time.StopWatch;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -102,6 +103,17 @@ public class EVMToolsBuilder extends Builder {
         return higawari;
     }
 
+    /**
+     * ワークスペース上の該当ファイルから、JSONファイルを作成。また存在するなら該当ファイル(base,base1,base2)
+     * ExcelからJSONファイルを作成。 またPV/AC/EVのtsvファイルも作成。
+     * 作成された諸々のファイル群はビルドディレクトリ(中央にある)にコピーされ、Actionから参照可能となる。
+     * 
+     * ただし、tsvファイル群はダウンロード時使用するのでコピー必須だが、
+     * jsonファイルはProject情報としてシリアライズされていれば不要かもしれない。 どちらが速いか要確認であるが。
+     * 
+     * @see hudson.tasks.BuildStepCompatibilityLayer#perform(hudson.model.AbstractBuild,
+     *      hudson.Launcher, hudson.model.BuildListener)
+     */
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher,
             BuildListener listener) throws InterruptedException, IOException {
@@ -109,30 +121,55 @@ public class EVMToolsBuilder extends Builder {
         listener.getLogger().println("[EVM Tools] 集計対象: " + name);
         FilePath root = build.getModuleRoot(); // ワークスペースのルート
 
+        StopWatch watch = new StopWatch();
+
+        watch.start();
         // 順番的に、日替わりチェックは、JSONファイルを作ってから行うようにした。
         FilePath buildRoot = new FilePath(build.getRootDir()); // このビルドのルート
         listener.getLogger().println("[EVM Tools] JSONファイル作成開始");
         FilePath pmJSON = executeAndCopies(root, buildRoot,
                 new ProjectWriterExecutor(name, !higawari));
         listener.getLogger().println("[EVM Tools] 作成完了。ファイル名: " + pmJSON);
+        watch.stop();
+        System.out.printf("%s 作成時間:[%d] ms\n", pmJSON.getName(),
+                watch.getTime());
+        watch.reset();
 
         // 日替わり運用をちゃんと行うのであれば。
         boolean higawariOKFlag = false;
         if (higawari) {
             listener.getLogger()
                     .println("[EVM Tools] Jenkins日替わり管理バージョンで稼働します");
+            watch.start();
             higawariOKFlag = checkHigawari(root, name, listener);
+            watch.stop();
+            System.out.printf("日替わりチェック時間:[%d] ms\n", watch.getTime());
+            watch.reset();
             if (!higawariOKFlag) {
                 throw new AbortException("日替わりチェックでエラーとなったため、ビルドを停止します。");
             }
         }
 
+        watch.start();
         listener.getLogger().println("[EVM Tools] PVファイル作成開始");
         executeAndCopy(root, buildRoot, new PVCreatorExecutor(name));
+        watch.stop();
+        System.out.printf("PV作成時間:[%d] ms\n", watch.getTime());
+        watch.reset();
+
+        watch.start();
         listener.getLogger().println("[EVM Tools] ACファイル作成開始");
         executeAndCopies(root, buildRoot, new ACCreatorExecutor(name));
+        watch.stop();
+        System.out.printf("AC作成時間:[%d] ms\n", watch.getTime());
+        watch.reset();
+
+        watch.start();
         listener.getLogger().println("[EVM Tools] EVファイル作成開始");
         executeAndCopies(root, buildRoot, new EVCreatorExecutor(name));
+        watch.stop();
+        System.out.printf("EV作成時間:[%d] ms\n", watch.getTime());
+        watch.reset();
 
         if (higawari && higawariOKFlag) { // 日替わり管理していて、かつ日替わりしていいよと言うことなので
             listener.getLogger().println(
@@ -142,24 +179,41 @@ public class EVMToolsBuilder extends Builder {
             // targetFile.getName() + ".tmp"); // 前回取り込んだ最新ファイルへの参照
             // targetFile.copyTo(previousNewestFile); // 上書き。
 
+            watch.start();
             FilePath previousNewestJsonFile = new FilePath(root,
                     pmJSON.getName() + ".tmp"); // 前回取り込んだ最新ファイルへの参照
             pmJSON.copyTo(previousNewestJsonFile);
+            watch.stop();
+            System.out.printf("%s 作成時間:[%d] ms\n",
+                    previousNewestJsonFile.getName(), watch.getTime());
+            watch.reset();
         }
 
         // ProjectSummaryAction action = PMUtils.getProjectSummaryAction(build);
         // action.setFileName(pmJSON.getName());
         for (int i = 0; i < PREFIX_ARRAY.length; i++) {
-            ProjectSummaryAction action = new ProjectSummaryAction(build);
-            action.setFileName(pmJSON.getName());
-            action.setBasePrefix(PREFIX_ARRAY[i]);
-            build.addAction(action);
+            File base_json = new File(build.getRootDir(),
+                    ProjectUtils.findJSONFileName(PREFIX_ARRAY[i] + "_" + name));
+            System.out.println(base_json.getAbsolutePath());
+
+            if (base_json.exists() || i == 0) {
+                watch.reset();
+                watch.start();
+                ProjectSummaryAction action = new ProjectSummaryAction(build);
+                action.setFileName(pmJSON.getName());
+                action.setBasePrefix(PREFIX_ARRAY[i]);
+                build.addAction(action);
+                watch.stop();
+                System.out.printf("%s 追加時間:[%d] ms\n", action, watch.getTime());
+            }
         }
 
         File json = new File(build.getRootDir(), pmJSON.getName());
         // listener.getLogger().println(
         // "[EVM Tools] Project :" + json.getAbsolutePath());
 
+        watch.reset();
+        watch.start();
         Project project = null;
         try {
             project = new JSONProjectCreator(json).createProject();
@@ -167,11 +221,19 @@ public class EVMToolsBuilder extends Builder {
             listener.getLogger().println(e);
             throw new AbortException(e.getMessage());
         }
+        watch.stop();
+        System.out
+                .printf("メール送信チェックのためのProject作成時間:[%d] ms\n", watch.getTime());
 
+        watch.reset();
+        watch.start();
         PMUtils.checkProjectAndMail(project, addresses, build, listener,
                 sendAll);
+        watch.stop();
+        System.out.printf("メール送信時間:[%d] ms\n", watch.getTime());
 
         // testMethod(build, listener);
+        watch = null;
         return true;
     }
 
