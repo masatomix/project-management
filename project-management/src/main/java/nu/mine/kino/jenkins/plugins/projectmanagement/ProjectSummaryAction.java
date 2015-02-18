@@ -77,12 +77,13 @@ public class ProjectSummaryAction implements Action {
 
     private String name;
 
-    private String basePrefix = PMConstants.BASE;
+    private String basePrefix;
 
     private String redmineFileName;
 
     public ProjectSummaryAction(AbstractBuild<?, ?> owner) {
         this.owner = owner;
+        basePrefix = PMConstants.BASE;
     }
 
     @Override
@@ -93,12 +94,12 @@ public class ProjectSummaryAction implements Action {
 
     @Override
     public String getDisplayName() {
-        return "プロジェクトサマリー";
+        return String.format("プロジェクトサマリー(%s)", basePrefix);
     }
 
     @Override
     public String getUrlName() {
-        return "project-summary";
+        return "project-summary" + "_" + basePrefix;
     }
 
     public AbstractBuild<?, ?> getOwner() {
