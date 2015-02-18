@@ -62,6 +62,7 @@ import nu.mine.kino.projects.utils.Utils;
 import nu.mine.kino.projects.utils.ViewUtils;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.StopWatch;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
@@ -107,6 +108,8 @@ public class ProjectSummaryAction implements Action {
     }
 
     public EVMViewBean getCurrentPVACEV() {
+        StopWatch watch = new StopWatch();
+        watch.start();
         try {
             double pv = 0.0d;
             double ac = 0.0d;
@@ -123,7 +126,7 @@ public class ProjectSummaryAction implements Action {
             Date baseDate = project.getBaseDate();
             TaskInformation[] taskInformations = project.getTaskInformations();
 
-            System.out.println("------");
+            // System.out.println("------");
             for (TaskInformation info : taskInformations) {
                 double calculatePVs = ProjectUtils.calculatePVs(info, baseDate);
                 pv += (Double.isNaN(calculatePVs) ? 0.0d : calculatePVs);
@@ -132,14 +135,14 @@ public class ProjectSummaryAction implements Action {
                 ev += (Double.isNaN(info.getEV().getEarnedValue()) ? 0.0d
                         : info.getEV().getEarnedValue());
 
-                System.out.println(info.getTaskId() + "\t" + calculatePVs
-                        + "\t" + info.getAC().getActualCost() + "\t"
-                        + info.getEV().getEarnedValue());
+                // System.out.println(info.getTaskId() + "\t" + calculatePVs
+                // + "\t" + info.getAC().getActualCost() + "\t"
+                // + info.getEV().getEarnedValue());
 
                 double bacPerTask = info.getTask().getNumberOfManDays();
                 bac += (Double.isNaN(bacPerTask) ? 0.0d : bacPerTask);
             }
-            System.out.println("------");
+            // System.out.println("------");
 
             EVMViewBean bean = new EVMViewBean();
 
@@ -182,6 +185,11 @@ public class ProjectSummaryAction implements Action {
         } catch (ProjectException e) {
             // TODO 自動生成された catch ブロック
             e.printStackTrace();
+        } finally {
+            watch.stop();
+            System.out.printf("EVMViewBean getCurrentPVACEV() (EVM) 時間: [%d] ms\n",
+                    watch.getTime());
+            watch = null;
         }
         return null;
     }
@@ -256,22 +264,30 @@ public class ProjectSummaryAction implements Action {
     private Map<String, Project> map = new HashMap<String, Project>();
 
     public synchronized Project getProject(String name) throws ProjectException {
+        StopWatch watch = new StopWatch();
+        watch.start();
         if (StringUtils.isEmpty(name)) {
             return null;
         }
         if (map.containsKey(name)) {
-            return map.get(name);
+            Project project = map.get(name);
+            return project;
         }
         File target = new File(owner.getRootDir(), name);
         if (!target.exists()) {
             return null;
         }
         Project targetProject = new JSONProjectCreator(target).createProject();
+        watch.stop();
+        System.out.printf("%s -> Project 時間: [%d] ms\n", name, watch.getTime());
+        watch = null;
         map.put(name, targetProject);
         return targetProject;
     }
 
     public ACViewBean[] getPreviousACViews() {
+        StopWatch watch = new StopWatch();
+        watch.start();
         if (StringUtils.isEmpty(name)) {
             return new ACViewBean[0];
         }
@@ -304,11 +320,18 @@ public class ProjectSummaryAction implements Action {
         } catch (ProjectException e) {
             // TODO 自動生成された catch ブロック
             e.printStackTrace();
+        } finally {
+            watch.stop();
+            System.out.printf("getPreviousACViews 時間: [%d] ms\n",
+                    watch.getTime());
+            watch = null;
         }
         return null;
     }
 
     public EVViewBean[] getPreviousEVViews() {
+        StopWatch watch = new StopWatch();
+        watch.start();
         if (StringUtils.isEmpty(name)) {
             return new EVViewBean[0];
         }
@@ -343,6 +366,10 @@ public class ProjectSummaryAction implements Action {
             // TODO 自動生成された catch ブロック
             e.printStackTrace();
         } finally {
+            watch.stop();
+            System.out.printf("getPreviousEVViews 時間: [%d] ms\n",
+                    watch.getTime());
+            watch = null;
         }
         return null;
     }
@@ -366,6 +393,8 @@ public class ProjectSummaryAction implements Action {
      * @return
      */
     public PVViewBean[] getPVViews() {
+        StopWatch watch = new StopWatch();
+        watch.start();
 
         DescriptorImpl descriptor = (DescriptorImpl) Jenkins.getInstance()
                 .getDescriptor(EVMToolsBuilder.class);
@@ -399,6 +428,11 @@ public class ProjectSummaryAction implements Action {
         } catch (InvocationTargetException e) {
             // TODO 自動生成された catch ブロック
             e.printStackTrace();
+        } finally {
+            watch.stop();
+            System.out.printf("getPVViews 時間: [%d] ms\n",
+                    watch.getTime());
+            watch = null;
         }
         return new PVViewBean[0];
     }
@@ -409,6 +443,8 @@ public class ProjectSummaryAction implements Action {
      * @return
      */
     public PVACEVViewBean[] getPVACEVViews() {
+        StopWatch watch = new StopWatch();
+        watch.start();
         DescriptorImpl descriptor = (DescriptorImpl) Jenkins.getInstance()
                 .getDescriptor(EVMToolsBuilder.class);
         String[] prefixArray = Utils.parseCommna(descriptor.getPrefixs());
@@ -436,6 +472,11 @@ public class ProjectSummaryAction implements Action {
             return retList.toArray(new PVACEVViewBean[retList.size()]);
         } catch (ProjectException e) {
             e.printStackTrace();
+        } finally {
+            watch.stop();
+            System.out.printf("PVACEVViewBean[] getPVACEVViews() 時間: [%d] ms\n",
+                    watch.getTime());
+            watch = null;
         }
         return new PVACEVViewBean[0];
     }

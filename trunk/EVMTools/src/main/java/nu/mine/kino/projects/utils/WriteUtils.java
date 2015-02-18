@@ -109,7 +109,7 @@ public class WriteUtils {
             TaskInformation[] informations = project.getTaskInformations();
             for (TaskInformation taskInfo : informations) {
                 String pvForPrint = getPvForPrint(project, taskInfo);
-                System.out.println(pvForPrint);
+                // System.out.println(pvForPrint);
 
                 writer.write(pvForPrint, 0, pvForPrint.length());
                 writer.newLine();
@@ -156,7 +156,7 @@ public class WriteUtils {
                     buf.append(acBean.getActualCost());
                 }
                 String message = new String(buf);
-                System.out.println(message);
+                // System.out.println(message);
                 writer.write(message, 0, message.length());
                 writer.newLine();
             }
@@ -217,7 +217,7 @@ public class WriteUtils {
                     buf.append(evBean.getProgressRate());
                 }
                 String message = new String(buf);
-                System.out.println(message);
+                // System.out.println(message);
                 writer.write(message, 0, message.length());
                 writer.newLine();
             }
