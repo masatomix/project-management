@@ -32,7 +32,6 @@
   <td></td>
 </tr>
 </table>
-	</j:if>
 
 	<h2>プロジェクト全体の、確定済み EVM要注目指数(日次)</h2>
       <table class="pane sortable bigtable" >
@@ -142,6 +141,7 @@
 </tr>
 </table>
 
+	</j:if>
         </t:summary>
 		
 	
