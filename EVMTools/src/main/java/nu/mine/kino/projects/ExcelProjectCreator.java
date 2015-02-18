@@ -132,9 +132,9 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
                     instance.setBaseDate(sheet.getBaseDate());
                     Task task = ExcelScheduleBean2Task.convert(instance);
                     if (StringUtils.isEmpty(task.getTaskId())) {
-                        String message = String
-                                .format("id: %s のタスクIDが未記載です。必須項目のためエラーとして処理を終了します。",
-                                        task.getId());
+                        String message = String.format(
+                                "id: %s のタスクIDが未記載です。必須項目のためエラーとして処理を終了します。",
+                                task.getId());
                         throw new ProjectException(message);
                     }
 
@@ -154,8 +154,8 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
 
                     ExcelPOIScheduleBean poiBean = poiMap.get(instance
                             .getTaskId());
-                    System.out.print("poi: ");
-                    System.out.println(poiBean);
+                    // System.out.print("poi: ");
+                    // System.out.println(poiBean);
 
                     // //// ココで、NULLでないばあいの載せ替えを実施。全部。
                     if (poiBean != null) {
@@ -235,43 +235,43 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
     }
 
     private ExcelPOIScheduleBean createPOIBean(Row row) {
-        Cell taskIdCell = row.getCell(1);
-        String taskId = getTaskId(taskIdCell);
-        // 15 予定工数
-        // 20 進捗率 0.8とかそういう値が取れる
-        // 21 稼働予定日数
-        // 22 PV
-        // 23 EV
-        // 24 AC
-        // PoiUtils.getCellValue(row.getCell(15), Double.class);
-        // PoiUtils.getCellValue(row.getCell(20), Double.class);
-        // PoiUtils.getCellValue(row.getCell(22), Double.class);
-        // PoiUtils.getCellValue(row.getCell(23), Double.class);
-        // PoiUtils.getCellValue(row.getCell(24), Double.class);
-        System.out.printf("[%s],[%s],[%s],[%s],[%s],[%s],", taskId,
-                PoiUtils.getCellValue(row.getCell(15), Double.class),
-                PoiUtils.getCellValue(row.getCell(20), Double.class),
-                PoiUtils.getCellValue(row.getCell(21), Integer.class),
-                PoiUtils.getCellValue(row.getCell(22), Double.class),
-                PoiUtils.getCellValue(row.getCell(23), Double.class),
-                PoiUtils.getCellValue(row.getCell(24), Double.class));
-        // row.getCell(15), row.getCell(20), row.getCell(22),
-        // row.getCell(23), row.getCell(24));
-
-        // 16 予定開始日
-        // 17 予定終了日
-        // 18 実績開始日
-        // 19 実績終了日
-        Date sDate = getDate(row.getCell(16));
-        Date eDate = getDate(row.getCell(17));
-        Date asDate = getDate(row.getCell(18));
-        Date aeDate = getDate(row.getCell(19));
-
-        String pattern = "yyyy/MM/dd";
-        System.out.printf("[%s],[%s],[%s],[%s],[%s]\n", taskId,
-                Utils.date2Str(sDate, pattern), Utils.date2Str(eDate, pattern),
-                Utils.date2Str(asDate, pattern),
-                Utils.date2Str(aeDate, pattern));
+        // Cell taskIdCell = row.getCell(1);
+        // String taskId = getTaskId(taskIdCell);
+        // // 15 予定工数
+        // // 20 進捗率 0.8とかそういう値が取れる
+        // // 21 稼働予定日数
+        // // 22 PV
+        // // 23 EV
+        // // 24 AC
+        // // PoiUtils.getCellValue(row.getCell(15), Double.class);
+        // // PoiUtils.getCellValue(row.getCell(20), Double.class);
+        // // PoiUtils.getCellValue(row.getCell(22), Double.class);
+        // // PoiUtils.getCellValue(row.getCell(23), Double.class);
+        // // PoiUtils.getCellValue(row.getCell(24), Double.class);
+        // System.out.printf("[%s],[%s],[%s],[%s],[%s],[%s],", taskId,
+        // PoiUtils.getCellValue(row.getCell(15), Double.class),
+        // PoiUtils.getCellValue(row.getCell(20), Double.class),
+        // PoiUtils.getCellValue(row.getCell(21), Integer.class),
+        // PoiUtils.getCellValue(row.getCell(22), Double.class),
+        // PoiUtils.getCellValue(row.getCell(23), Double.class),
+        // PoiUtils.getCellValue(row.getCell(24), Double.class));
+        // // row.getCell(15), row.getCell(20), row.getCell(22),
+        // // row.getCell(23), row.getCell(24));
+        //
+        // // 16 予定開始日
+        // // 17 予定終了日
+        // // 18 実績開始日
+        // // 19 実績終了日
+        // Date sDate = getDate(row.getCell(16));
+        // Date eDate = getDate(row.getCell(17));
+        // Date asDate = getDate(row.getCell(18));
+        // Date aeDate = getDate(row.getCell(19));
+        //
+        // String pattern = "yyyy/MM/dd";
+        // System.out.printf("[%s],[%s],[%s],[%s],[%s]\n", taskId,
+        // Utils.date2Str(sDate, pattern), Utils.date2Str(eDate, pattern),
+        // Utils.date2Str(asDate, pattern),
+        // Utils.date2Str(aeDate, pattern));
         ExcelPOIScheduleBean bean = Row2ExcelPOIScheduleBean.convert(row);
         return bean;
     }

@@ -7,6 +7,7 @@
       <table class="pane sortable bigtable" >
         <tr>
           <th class="pane-header">基準日</th>
+          <th class="pane-header">BAC</th>
           <th class="pane-header">PV</th>
           <th class="pane-header">EV</th>
           <th class="pane-header">AC</th>
@@ -17,6 +18,7 @@
         <j:forEach var="bean" items="${it.seriesActions}">
           <tr>
             <td class="pane" style="text-align:right"><i:formatDate value="${bean.baseDate}"/></td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.bac!='NaN' ? bean.currentPVACEV.bac : "-"}</td>
             <td class="pane" style="text-align:center">${bean.currentPVACEV.plannedValue!='NaN' ? bean.currentPVACEV.plannedValue : "-"}</td>
             <td class="pane" style="text-align:center">${bean.currentPVACEV.earnedValue!='NaN'? bean.currentPVACEV.earnedValue : "-"}</td>
             <td class="pane" style="text-align:center">${bean.currentPVACEV.actualCost!='NaN' ? bean.currentPVACEV.actualCost : "-"}</td>
