@@ -4,8 +4,10 @@
          xmlns:t="/lib/hudson"
          xmlns:f="/lib/form"
          xmlns:i="jelly:fmt">
-    <t:summary icon="document.gif">
 	<j:if test="${it.baseDate!=null}">
+	<j:if test="${it.urlName=='project-summary_base'}">
+    <t:summary icon="document.gif">
+
 
       <h2>直近(<i:formatDate value="${it.baseDate}"/>) 時点のプロジェクト全体のPV/AC/EV</h2>
       <table class="pane bigtable" >
@@ -36,7 +38,39 @@
 </tr>
 </table>
 
+      <h1>直近(<i:formatDate value="${it.baseDate}"/>) の集計資料</h1>
+      <table class="pane sortable bigtable" >
+        <tr>
+          <th class="pane-header">ファイル</th>
+        </tr>
+        <j:forEach var="file" items="${it.summaryFiles}">
+          <tr>
+            <td class="pane"><a href="documents/${file.name}">${file.name}</a><!--<img src='${imagesURL}/16x16/help.png' ></img>--></td>
+			</tr>
+        </j:forEach>
+      </table>
+<!-- help
+<div tooltip="xxx_base_ACというTSVファイルは base_xxx.xlsファイルと差分をとったAC情報。
+xxx_base_EVというTSVファイルは base_xxx.xlsファイルと差分をとったEV情報。
+xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとった情報になります。
+複数の基準データ(base_xxx,base1_xxx)を使い分けることで、日ごとのデータや週ごとのデータを作成することが可能です。
+想定ではbase_xxxで日ごと、base1_xxxで週ごとのデータを作成します。
+"><a tabindex="9999"><img src='${imagesURL}/16x16/help.png'  alt="Help for feature: evm" ></img></a></div>
+-->
+<!-- help -->
+<table>
+<tr hashelp="true" class="optional-block-start " ref="cb6">
+ <td colspan="3"><label class="attach-previous">ファイルの説明</label></td>
+ <td><a helpurl="${resURL}/plugin/project-management/help/files.html" href="#" class="help-button" tabindex="9999"><img src='${imagesURL}/16x16/help.png'  alt="Help for feature: evm" ></img></a></td>
+</tr>
+<tr class="help-area">
+  <td></td>
+  <td colspan="2"><div class="help">ロード中</div></td>
+  <td></td>
+</tr>
+</table>
+    </t:summary>
 
 	  </j:if>
-    </t:summary>
+	  </j:if>
 </j:jelly>

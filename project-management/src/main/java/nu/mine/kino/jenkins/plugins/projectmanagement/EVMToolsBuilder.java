@@ -64,8 +64,7 @@ public class EVMToolsBuilder extends Builder {
     private final String name;
 
     private static final String[] PREFIX_ARRAY = new String[] {
-            PMConstants.BASE + "_", PMConstants.BASE + "1_",
-            PMConstants.BASE + "2_" };
+            PMConstants.BASE, PMConstants.BASE + "1", PMConstants.BASE + "2" };
 
     private final String addresses;
 
@@ -148,8 +147,14 @@ public class EVMToolsBuilder extends Builder {
             pmJSON.copyTo(previousNewestJsonFile);
         }
 
-        ProjectSummaryAction action = PMUtils.getProjectSummaryAction(build);
-        action.setFileName(pmJSON.getName());
+        // ProjectSummaryAction action = PMUtils.getProjectSummaryAction(build);
+        // action.setFileName(pmJSON.getName());
+        for (int i = 0; i < PREFIX_ARRAY.length; i++) {
+            ProjectSummaryAction action = new ProjectSummaryAction(build);
+            action.setFileName(pmJSON.getName());
+            action.setBasePrefix(PREFIX_ARRAY[i]);
+            build.addAction(action);
+        }
 
         File json = new File(build.getRootDir(), pmJSON.getName());
         // listener.getLogger().println(
@@ -336,7 +341,7 @@ public class EVMToolsBuilder extends Builder {
                 returnList.add(new FilePath(result));
                 for (String base_prefix : PREFIX_ARRAY) {
                     File base = new File(target.getParentFile(), base_prefix
-                            + target.getName());
+                            + "_" + target.getName());
                     if (base.exists() && createJsonFlag) { // 日替わりモードでないときは(baseがあるばあいは)昨日のファイルのJSON化を行う
                         FilePath result_base = new FilePath(
                                 ProjectWriter.write(base));
@@ -408,7 +413,7 @@ public class EVMToolsBuilder extends Builder {
                 throws ProjectException {
             List<FilePath> returnList = new ArrayList<FilePath>();
             for (String base_prefix : prefixArray) {
-                FilePath result = execute(target, base_prefix);
+                FilePath result = execute(target, base_prefix + "_");
                 returnList.add(result);
             }
             return returnList.toArray(new FilePath[returnList.size()]);
@@ -462,7 +467,7 @@ public class EVMToolsBuilder extends Builder {
                 throws ProjectException {
             List<FilePath> returnList = new ArrayList<FilePath>();
             for (String base_prefix : prefixArray) {
-                FilePath result = execute(target, base_prefix);
+                FilePath result = execute(target, base_prefix + "_");
                 returnList.add(result);
             }
             return returnList.toArray(new FilePath[returnList.size()]);
