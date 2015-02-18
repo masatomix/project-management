@@ -45,7 +45,7 @@
         </tr>
         <j:forEach var="file" items="${it.summaryFiles}">
           <tr>
-            <td class="pane"><a href="documents/${file.name}">${file.name}</a><!--<img src='${imagesURL}/16x16/help.png' ></img>--></td>
+            <td class="pane"><a href="${it.urlName}/documents/${file.name}">${file.name}</a><!--<img src='${imagesURL}/16x16/help.png' ></img>--></td>
 			</tr>
         </j:forEach>
       </table>

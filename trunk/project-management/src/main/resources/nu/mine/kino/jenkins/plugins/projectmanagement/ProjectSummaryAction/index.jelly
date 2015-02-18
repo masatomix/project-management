@@ -112,7 +112,8 @@
         </tr>
       </table>
 
-      <h1>直近(<i:formatDate value="${it.baseDate}"/>) その日の状況(PV/AC/EV)</h1>
+      <h1>直近(<i:formatDate value="${it.baseDate}"/>) までの状況(PV/AC/EV)</h1>
+	  <p>ベースの基準日から直近までの状況</p>
       <table class="pane sortable bigtable" >
         <tr>
           <th class="pane-header">#</th>
@@ -157,7 +158,8 @@
 
 
 
-      <h1>直近(<i:formatDate value="${it.baseDate}"/>) その日の成果(EV)</h1>
+      <h1>直近(<i:formatDate value="${it.baseDate}"/>) までの成果(EV)</h1>
+	  <p>ベースの基準日から直近までの状況</p>
       <table class="pane sortable bigtable" >		
         <tr>
           <th class="pane-header">#</th>
@@ -196,7 +198,8 @@
 
 
 
-      <h1>直近(<i:formatDate value="${it.baseDate}"/>) その日の実績(AC)</h1>
+      <h1>直近(<i:formatDate value="${it.baseDate}"/>) までの実績(AC)</h1>
+	  <p>ベースの基準日から直近までの状況</p>
       <table class="pane sortable bigtable" >
         <tr>
           <th class="pane-header">#</th>
