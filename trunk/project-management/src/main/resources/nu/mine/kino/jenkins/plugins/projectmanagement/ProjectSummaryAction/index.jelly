@@ -109,7 +109,7 @@
 
 
       <h1>直近(<i:formatDate value="${it.baseDate}"/>) までの状況(PV/AC/EV)</h1>
-	  <p>ベースの基準日から直近までの状況</p>
+	  <p>ベースの基準日から直近までの状況。ただし、PVだけは直近基準日のみの値となっている(期間の累積ではない)ため注意が必要(後日修正予定)。</p>
       <table class="pane sortable bigtable" >
         <tr>
           <th class="pane-header">#</th>

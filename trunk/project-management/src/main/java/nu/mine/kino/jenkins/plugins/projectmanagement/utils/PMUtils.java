@@ -22,7 +22,10 @@ import hudson.model.Hudson;
 import hudson.tasks.Mailer;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.List;
@@ -50,6 +53,14 @@ import nu.mine.kino.projects.utils.ViewUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Name;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.util.CellReference;
 
 /**
  * @author Masatomi KINO
@@ -239,6 +250,39 @@ public class PMUtils {
             return getBaseDate(new JSONProjectCreator(f));
         } catch (ProjectException e) {
             e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Date getBaseDateFromExcelWithPoi(File file) {
+        InputStream in = null;
+        try {
+            in = new FileInputStream(file);
+            Workbook workbook = WorkbookFactory.create(in);
+            Sheet sheet = workbook.getSheetAt(0);
+            Name name = workbook.getName("óãê¸äÓèÄì˙");
+            CellReference cellRef = new CellReference(name.getRefersToFormula());
+            Row row = sheet.getRow(cellRef.getRow());
+            Cell baseDateCell = row.getCell(cellRef.getCol());
+            // System.out.println("cellÇ™ì˙ïtÇ©:"
+            // + PoiUtil.isCellDateFormatted(baseDateCell));
+            Date baseDate = baseDateCell.getDateCellValue();
+            return baseDate;
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (InvalidFormatException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (in != null)
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
         }
         return null;
     }
