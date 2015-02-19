@@ -16,9 +16,6 @@ import nu.mine.kino.entity.EVMViewBean;
 import nu.mine.kino.jenkins.plugins.projectmanagement.utils.PMUtils;
 import nu.mine.kino.projects.utils.ReadUtils;
 
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
-
 public class ProjectSummaryProjectAction implements Action {
 
     private static final String seriesFileNameSuffix = PMConstants.SERIES_DAT_FILENAME;
@@ -101,71 +98,24 @@ public class ProjectSummaryProjectAction implements Action {
             String buildNumber = split[1];
             AbstractBuild<?, ?> record = project.getBuildByNumber(Integer
                     .parseInt(buildNumber));
-            actions.add(record.getAction(ProjectSummaryAction.class));
+
+            ProjectSummaryAction a = PMUtils.findActionByUrlEndsWith(record,
+                    ProjectSummaryAction.class, PMConstants.BASE);
+            if (a != null) {
+                actions.add(a);
+            }
         }
         return actions.toArray(new ProjectSummaryAction[actions.size()]);
     }
 
     public EVMViewBean getCurrentPVACEV() {
-        ProjectSummaryAction action = getMostRecentSummaryAction();
-        if (action != null) {
-            return action.getCurrentPVACEV();
-        }
-        return null;
-
-        // final AbstractBuild<?, ?> tb = project.getLastSuccessfulBuild();
-        // AbstractBuild<?, ?> b = project.getLastBuild();
-        // while (b != null) {
-        // ProjectSummaryAction a = PMUtils.getProjectSummaryAction(b);
-        // if (a != null)
-        // return a.getCurrentPVACEV();
-        // if (b == tb)
-        // // if even the last successful build didn't produce the test
-        // // result,
-        // // that means we just don't have any tests configured.
-        // return null;
-        // b = b.getPreviousBuild();
-        // }
-        // return null;
-    }
-
-    public Date getBaseDate() {
-        ProjectSummaryAction action = getMostRecentSummaryAction();
-        if (action != null) {
-            return action.getBaseDate();
-        }
-        return null;
-        // final AbstractBuild<?, ?> tb = project.getLastSuccessfulBuild();
-        // AbstractBuild<?, ?> b = project.getLastBuild();
-        // while (b != null) {
-        // ProjectSummaryAction a = PMUtils.getProjectSummaryAction(b);
-        // if (a != null)
-        // return a.getBaseDate();
-        // if (b == tb)
-        // // if even the last successful build didn't produce the test
-        // // result,
-        // // that means we just don't have any tests configured.
-        // return null;
-        // b = b.getPreviousBuild();
-        // }
-        // return null;
-    }
-
-    public int getBuildNumber() {
-        ProjectSummaryAction action = getMostRecentSummaryAction();
-        if (action != null) {
-            return action.getBuildNumber();
-        }
-        return 0;
-    }
-
-    public ProjectSummaryAction getMostRecentSummaryAction() {
         final AbstractBuild<?, ?> tb = project.getLastSuccessfulBuild();
         AbstractBuild<?, ?> b = project.getLastBuild();
         while (b != null) {
-            ProjectSummaryAction a = PMUtils.getProjectSummaryAction(b);
+            ProjectSummaryAction a = PMUtils.findActionByUrlEndsWith(b,
+                    ProjectSummaryAction.class, PMConstants.BASE);
             if (a != null)
-                return a;
+                return a.getCurrentPVACEV();
             if (b == tb)
                 // if even the last successful build didn't produce the test
                 // result,
@@ -174,6 +124,39 @@ public class ProjectSummaryProjectAction implements Action {
             b = b.getPreviousBuild();
         }
         return null;
+    }
+
+    public Date getBaseDate() {
+        final AbstractBuild<?, ?> tb = project.getLastSuccessfulBuild();
+        AbstractBuild<?, ?> b = project.getLastBuild();
+        while (b != null) {
+            ProjectSummaryAction a = null;
+            List<ProjectSummaryAction> actions = b
+                    .getActions(ProjectSummaryAction.class);
+            for (ProjectSummaryAction tmpA : actions) {
+                if (tmpA.getUrlName().endsWith(PMConstants.BASE)) {
+                    a = tmpA;
+                }
+            }
+            if (a != null)
+                return a.getBaseDate();
+            if (b == tb)
+                // if even the last successful build didn't produce the test
+                // result,
+                // that means we just don't have any tests configured.
+                return null;
+            b = b.getPreviousBuild();
+        }
+        return null;
+    }
+
+    public int getBuildNumber() {
+        ProjectSummaryAction action = PMUtils.getMostRecentSummaryAction(
+                project, PMConstants.BASE);
+        if (action != null) {
+            return action.getBuildNumber();
+        }
+        return 0;
     }
 
     // /**
