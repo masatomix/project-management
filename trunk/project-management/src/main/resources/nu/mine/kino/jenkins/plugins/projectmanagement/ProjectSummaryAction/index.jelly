@@ -18,6 +18,7 @@
           <th class="pane-header">AC</th>
           <th class="pane-header">SPI</th>
           <th class="pane-header">CPI</th>
+          <th class="pane-header">BAC</th>
         </tr>
           <tr>
             <td class="pane" style="text-align:center">${it.currentPVACEV.plannedValue!='NaN' ? it.currentPVACEV.plannedValue : "-"}</td>
@@ -25,6 +26,7 @@
             <td class="pane" style="text-align:center">${it.currentPVACEV.actualCost!='NaN' ? it.currentPVACEV.actualCost:"-"}</td>
             <td class="pane" style="text-align:center">${it.currentPVACEV.spi!='NaN' ? it.currentPVACEV.spi : "-"}</td>
             <td class="pane" style="text-align:center">${it.currentPVACEV.cpi!='NaN' ? it.currentPVACEV.cpi : "-"}</td>
+            <td class="pane" style="text-align:center">${it.currentPVACEV.bac!='NaN' ? it.currentPVACEV.bac : "-"}</td>
 	</tr>
       </table>
 <table>

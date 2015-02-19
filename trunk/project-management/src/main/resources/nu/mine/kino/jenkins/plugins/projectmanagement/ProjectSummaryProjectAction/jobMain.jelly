@@ -38,6 +38,7 @@
 	<h2>プロジェクト全体の、確定済み EVM要注目指数(base。たいてい日次)</h2>
       <table class="pane sortable bigtable" >
         <tr>
+          <th class="pane-header">No</th>
           <th class="pane-header">基準日</th>
           <th class="pane-header">BAC</th>
           <th class="pane-header">PV</th>
@@ -47,8 +48,9 @@
           <th class="pane-header">CPI</th>
           <th class="pane-header">ビルドNo</th>
         </tr>
-        <j:forEach var="bean" items="${it.seriesActions}">
+        <j:forEach var="bean" items="${it.seriesActions}" indexVar="count">
           <tr>
+            <td class="pane" style="text-align:center">${count+1}</td>
             <td class="pane" style="text-align:right"><i:formatDate value="${bean.baseDate}"/></td>
             <td class="pane" style="text-align:center">${bean.currentPVACEV.bac!='NaN' ? bean.currentPVACEV.bac : "-"}</td>
             <td class="pane" style="text-align:center">${bean.currentPVACEV.plannedValue!='NaN' ? bean.currentPVACEV.plannedValue : "-"}</td>
@@ -76,6 +78,7 @@
 	<h2>プロジェクト全体の、確定済み EVM要注目指数(base1。たいてい週次)</h2>
       <table class="pane sortable bigtable" >
         <tr>
+          <th class="pane-header">No</th>
           <th class="pane-header">基準日</th>
           <th class="pane-header">BAC</th>
           <th class="pane-header">PV</th>
@@ -85,8 +88,9 @@
           <th class="pane-header">CPI</th>
           <th class="pane-header">ビルドNo</th>
         </tr>
-        <j:forEach var="bean" items="${it.seriesActionsBase1}">
+        <j:forEach var="bean" items="${it.seriesActionsBase1}" indexVar="count">
           <tr>
+            <td class="pane" style="text-align:center">${count+1}</td>
             <td class="pane" style="text-align:right"><i:formatDate value="${bean.baseDate}"/></td>
             <td class="pane" style="text-align:center">${bean.currentPVACEV.bac!='NaN' ? bean.currentPVACEV.bac : "-"}</td>
             <td class="pane" style="text-align:center">${bean.currentPVACEV.plannedValue!='NaN' ? bean.currentPVACEV.plannedValue : "-"}</td>
@@ -115,6 +119,7 @@
 	<h2>プロジェクト全体の、確定済み EVM要注目指数(base2。たいてい月次)</h2>
       <table class="pane sortable bigtable" >
         <tr>
+          <th class="pane-header">No</th>
           <th class="pane-header">基準日</th>
           <th class="pane-header">BAC</th>
           <th class="pane-header">PV</th>
@@ -124,8 +129,9 @@
           <th class="pane-header">CPI</th>
           <th class="pane-header">ビルドNo</th>
         </tr>
-        <j:forEach var="bean" items="${it.seriesActionsBase2}">
+        <j:forEach var="bean" items="${it.seriesActionsBase2}" indexVar="count">
           <tr>
+            <td class="pane" style="text-align:center">${count+1}</td>
             <td class="pane" style="text-align:right"><i:formatDate value="${bean.baseDate}"/></td>
             <td class="pane" style="text-align:center">${bean.currentPVACEV.bac!='NaN' ? bean.currentPVACEV.bac : "-"}</td>
             <td class="pane" style="text-align:center">${bean.currentPVACEV.plannedValue!='NaN' ? bean.currentPVACEV.plannedValue : "-"}</td>
