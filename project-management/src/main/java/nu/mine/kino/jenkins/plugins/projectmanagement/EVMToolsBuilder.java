@@ -33,6 +33,7 @@ import nu.mine.kino.projects.JSONProjectCreator;
 import nu.mine.kino.projects.PVCreator;
 import nu.mine.kino.projects.ProjectException;
 import nu.mine.kino.projects.ProjectWriter;
+import nu.mine.kino.projects.utils.PoiUtils;
 import nu.mine.kino.projects.utils.ProjectUtils;
 import nu.mine.kino.projects.utils.ReadUtils;
 
@@ -121,19 +122,11 @@ public class EVMToolsBuilder extends Builder {
         listener.getLogger().println("[EVM Tools] 集計対象: " + name);
         FilePath root = build.getModuleRoot(); // ワークスペースのルート
 
-        StopWatch watch = new StopWatch();
-
-        watch.start();
         // 順番的に、日替わりチェックは、JSONファイルを作ってから行うようにした。
+        // 速度が許せば、またこの処理はあとに持っていくべきだ。
         FilePath buildRoot = new FilePath(build.getRootDir()); // このビルドのルート
-        listener.getLogger().println("[EVM Tools] JSONファイル作成開始");
-        FilePath pmJSON = executeAndCopies(root, buildRoot,
-                new ProjectWriterExecutor(name, !higawari));
-        listener.getLogger().println("[EVM Tools] 作成完了。ファイル名: " + pmJSON);
-        watch.stop();
-        System.out.printf("%s 作成時間:[%d] ms\n", pmJSON.getName(),
-                watch.getTime());
-        watch.reset();
+
+        StopWatch watch = new StopWatch();
 
         // 日替わり運用をちゃんと行うのであれば。
         boolean higawariOKFlag = false;
@@ -149,6 +142,16 @@ public class EVMToolsBuilder extends Builder {
                 throw new AbortException("日替わりチェックでエラーとなったため、ビルドを停止します。");
             }
         }
+
+        watch.start();
+        listener.getLogger().println("[EVM Tools] JSONファイル作成開始");
+        FilePath pmJSON = executeAndCopies(root, buildRoot,
+                new ProjectWriterExecutor(name, !higawari));
+        listener.getLogger().println("[EVM Tools] 作成完了。ファイル名: " + pmJSON);
+        watch.stop();
+        System.out.printf("%s 作成時間:[%d] ms\n", pmJSON.getName(),
+                watch.getTime());
+        watch.reset();
 
         watch.start();
         listener.getLogger().println("[EVM Tools] PVファイル作成開始");
@@ -197,7 +200,7 @@ public class EVMToolsBuilder extends Builder {
             System.out.println(base_json.getAbsolutePath());
 
             // if (base_json.exists() || i == 0) {
-            if (base_json.exists() ) {
+            if (base_json.exists()) {
                 watch.reset();
                 watch.start();
                 ProjectSummaryAction action = new ProjectSummaryAction(build);
@@ -253,7 +256,8 @@ public class EVMToolsBuilder extends Builder {
         PrintStream logger = listener.getLogger();
 
         FilePath targetFile = new FilePath(root,
-                ProjectUtils.findJSONFileName(fileName));
+                ProjectUtils.findJSONFileName(fileName)); // targetFile
+                                                          // が該当JSON.実は作成前の古いヤツ。(今は作っているが。)
         FilePath previousNewestFile = new FilePath(root, targetFile.getName()
                 + ".tmp"); // 前回取り込んだ最新ファイル(のJSONファイル)への参照
 
@@ -276,21 +280,37 @@ public class EVMToolsBuilder extends Builder {
         logger.println("[EVM Tools] 前回取り込んだファイルも日替わり基準日ファイルも存在します。");
         logger.println("[EVM Tools] 集計が正常終了したら前回ファイルは上書きしてしまうので、日付をチェックして上書きしてよいかを確認してから、集計処理を実施します。");
 
-        Date targetDate = root
-                .act(new DateGetter(targetFile.getName(), "json"));// 集計対象の日付
+        StopWatch watch = new StopWatch();
+        watch.start();
+        Date targetDateOld = root.act(new DateGetter(targetFile.getName(),
+                "json"));// 集計対象の日付。// この処理はいつかやめる。
+        watch.stop();
+        System.out.printf("json日付作成時間:[%d] ms\n", watch.getTime());
+        watch.reset();
+
+        watch.start();
+        Date targetDate = root.act(new DateGetter(fileName, "excel"));// 集計対象の日付
+        watch.stop();
+        System.out.printf("poi日付作成時間:[%d] ms\n", watch.getTime());
+        watch.reset();
+
         Date newestDate = root.act(new DateGetter(previousNewestFile.getName(),
                 "json"));// 今まで取り込んだ基準日
         Date shimeDate = root.act(new DateGetter(shimeFileName, "txt"));// 直近、シメた基準日
 
         logger.println("[EVM Tools] 対象ファイルの基準日:"
                 + DateFormatUtils.format(targetDate, "yyyyMMdd") + " : "
-                + targetFile.getName());
+                + fileName);
         logger.println("[EVM Tools] 前回取り込んだファイル基準日:"
                 + DateFormatUtils.format(newestDate, "yyyyMMdd") + " : "
                 + previousNewestFile.getName());
         logger.println("[EVM Tools] 日替わり基準日:"
                 + DateFormatUtils.format(shimeDate, "yyyyMMdd") + " : "
                 + shimeFileName);
+        // //// あとで消す
+        logger.println("[EVM Tools] 対象ファイルの基準日(参考):"
+                + DateFormatUtils.format(targetDateOld, "yyyyMMdd") + " : "
+                + targetFile.getName());
 
         if (targetDate.getTime() == newestDate.getTime()) {// 同じ基準日のデータの取込なので、OK
             logger.println("[EVM Tools] 同じ基準日のデータの取込なので問題ない");
@@ -326,7 +346,7 @@ public class EVMToolsBuilder extends Builder {
                 InterruptedException {
             File target = new File(f, fileName);
             if ("excel".equals(format)) {
-                return PMUtils.getBaseDateFromExcel(target);
+                return PMUtils.getBaseDateFromExcelWithPoi(target);
             } else if ("json".equals(format)) {
                 return PMUtils.getBaseDateFromJSON(target);
             } else {
