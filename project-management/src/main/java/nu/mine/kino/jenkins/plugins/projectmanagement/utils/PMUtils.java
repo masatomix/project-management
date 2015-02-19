@@ -279,6 +279,12 @@ public class PMUtils {
             if (type.isInstance(a) && a.getUrlName().endsWith(suffix)) {
                 ret = type.cast(a);
             }
+            // ProjectSummaryAction ÇæÇØÇÃì¡ï èàóùÅB
+            else if (a instanceof ProjectSummaryAction) {
+                if (a.getUrlName().endsWith("null")) {
+                    ret = type.cast(a);
+                }
+            }
         }
         return ret;
     }
