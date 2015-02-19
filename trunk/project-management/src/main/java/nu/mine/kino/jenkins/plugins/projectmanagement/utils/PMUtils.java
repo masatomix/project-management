@@ -14,6 +14,7 @@ package nu.mine.kino.jenkins.plugins.projectmanagement.utils;
 
 import static nu.mine.kino.projects.utils.Utils.round;
 import hudson.AbortException;
+import hudson.model.Action;
 import hudson.model.BuildListener;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
@@ -271,4 +272,40 @@ public class PMUtils {
         return null;
     }
 
+    public static <ACTION extends Action> ACTION findActionByUrlEndsWith(
+            AbstractBuild<?, ?> b, Class<ACTION> type, String suffix) {
+        ACTION ret = null;
+        for (Action a : b.getActions()) {
+            if (type.isInstance(a) && a.getUrlName().endsWith(suffix)) {
+                ret = type.cast(a);
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * 直近のURLがsuffixであるビルドのアクション。
+     * 
+     * @param project
+     * @param suffix
+     * @return 正常終了したビルドのうち、URLが baseで終わる ProjectSummaryAction
+     */
+    public static ProjectSummaryAction getMostRecentSummaryAction(
+            AbstractProject<?, ?> project, String suffix) {
+        final AbstractBuild<?, ?> tb = project.getLastSuccessfulBuild();
+        AbstractBuild<?, ?> b = project.getLastBuild();
+        while (b != null) {
+            ProjectSummaryAction a = findActionByUrlEndsWith(b,
+                    ProjectSummaryAction.class, suffix);
+            if (a != null)
+                return a;
+            if (b == tb)
+                // if even the last successful build didn't produce the test
+                // result,
+                // that means we just don't have any tests configured.
+                return null;
+            b = b.getPreviousBuild();
+        }
+        return null;
+    }
 }
