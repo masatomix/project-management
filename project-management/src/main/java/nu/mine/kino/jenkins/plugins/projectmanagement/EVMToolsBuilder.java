@@ -196,7 +196,8 @@ public class EVMToolsBuilder extends Builder {
                     ProjectUtils.findJSONFileName(PREFIX_ARRAY[i] + "_" + name));
             System.out.println(base_json.getAbsolutePath());
 
-            if (base_json.exists() || i == 0) {
+            // if (base_json.exists() || i == 0) {
+            if (base_json.exists() ) {
                 watch.reset();
                 watch.start();
                 ProjectSummaryAction action = new ProjectSummaryAction(build);
