@@ -109,7 +109,26 @@ public class ProjectSummaryAction implements Action {
 
     public EVMViewBean getCurrentPVACEV() {
         StopWatch watch = new StopWatch();
-        watch.start();
+        try {
+            watch.start();
+            if (delegate != null) {
+                return delegate;
+            }
+
+            return this.internalCreateCurrentEVM();
+        } finally {
+            watch.stop();
+            System.out.printf(
+                    "EVMViewBean getCurrentPVACEV() (EVM) 時間: [%d] ms\n",
+                    watch.getTime());
+            watch = null;
+        }
+    }
+
+    private EVMViewBean delegate = null;
+
+    private EVMViewBean internalCreateCurrentEVM() {
+        System.out.printf("EVMViewBean getCurrentPVACEV() 実際に作成開始\n");
         try {
             double pv = 0.0d;
             double ac = 0.0d;
@@ -181,15 +200,12 @@ public class ProjectSummaryAction implements Action {
             bean.setEac(round(eac, 2));
             bean.setVac(round(vac, 2));
 
+            delegate = bean;
+            System.out.printf("EVMViewBean getCurrentPVACEV() 実際の作成完了\n");
             return bean;
         } catch (ProjectException e) {
             // TODO 自動生成された catch ブロック
             e.printStackTrace();
-        } finally {
-            watch.stop();
-            System.out.printf("EVMViewBean getCurrentPVACEV() (EVM) 時間: [%d] ms\n",
-                    watch.getTime());
-            watch = null;
         }
         return null;
     }
@@ -430,8 +446,7 @@ public class ProjectSummaryAction implements Action {
             e.printStackTrace();
         } finally {
             watch.stop();
-            System.out.printf("getPVViews 時間: [%d] ms\n",
-                    watch.getTime());
+            System.out.printf("getPVViews 時間: [%d] ms\n", watch.getTime());
             watch = null;
         }
         return new PVViewBean[0];
@@ -474,7 +489,8 @@ public class ProjectSummaryAction implements Action {
             e.printStackTrace();
         } finally {
             watch.stop();
-            System.out.printf("PVACEVViewBean[] getPVACEVViews() 時間: [%d] ms\n",
+            System.out.printf(
+                    "PVACEVViewBean[] getPVACEVViews() 時間: [%d] ms\n",
                     watch.getTime());
             watch = null;
         }
