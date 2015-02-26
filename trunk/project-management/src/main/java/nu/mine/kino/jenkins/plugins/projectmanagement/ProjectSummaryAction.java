@@ -108,21 +108,17 @@ public class ProjectSummaryAction implements Action {
     }
 
     public EVMViewBean getCurrentPVACEV() {
-        StopWatch watch = new StopWatch();
-        try {
-            watch.start();
-            if (delegate != null) {
-                return delegate;
-            }
-
-            return this.internalCreateCurrentEVM();
-        } finally {
-            watch.stop();
-            System.out.printf(
-                    "EVMViewBean getCurrentPVACEV() (EVM) 時間: [%d] ms\n",
-                    watch.getTime());
-            watch = null;
+        if (delegate != null) {
+            return delegate;
         }
+        StopWatch watch = new StopWatch();
+        watch.start();
+        EVMViewBean ret = this.internalCreateCurrentEVM();
+        watch.stop();
+        System.out.printf("EVMViewBean getCurrentPVACEV() (EVM) 時間: [%d] ms\n",
+                watch.getTime());
+        watch = null;
+        return ret;
     }
 
     private EVMViewBean delegate = null;
@@ -159,6 +155,11 @@ public class ProjectSummaryAction implements Action {
                 // + info.getEV().getEarnedValue());
 
                 double bacPerTask = info.getTask().getNumberOfManDays();
+                // 予定開始日・終了日どちらかに値がない場合、このタスクはBAC(総工数)に計上しない考慮
+                if (info.getTask().getScheduledStartDate() == null
+                        || info.getTask().getScheduledEndDate() == null) {
+                    bacPerTask = Double.NaN;
+                }
                 bac += (Double.isNaN(bacPerTask) ? 0.0d : bacPerTask);
             }
             // System.out.println("------");
