@@ -358,4 +358,24 @@ public class PMUtils {
         }
         return null;
     }
+ 
+    /**
+     * 指数値 が0.98以上なら晴れ、0.92以上0.98未満なら曇り、0.92未満なら雨
+     * 
+     * @param d
+     *            指数値
+     * @return
+     */
+    public static String choiceWeatherIconFileName(double d) {
+        if (Double.isNaN(d)) {
+            return null;
+        }
+        if (d >= 0.98) {
+            return "/16x16/health-80plus.png";
+        } else if (d >= 0.92 && d < 0.98) {
+            return "/16x16/health-40to59.png";
+        } else {
+            return "/16x16/health-20to39.png";
+        }
+    }
 }

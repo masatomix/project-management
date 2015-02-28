@@ -18,8 +18,16 @@
             <td class="pane" style="text-align:center">${it.currentPVACEV.plannedValue!='NaN' ? it.currentPVACEV.plannedValue : "-"}</td>
             <td class="pane" style="text-align:center">${it.currentPVACEV.earnedValue!='NaN'? it.currentPVACEV.earnedValue: "-"}</td>
             <td class="pane" style="text-align:center">${it.currentPVACEV.actualCost!='NaN' ? it.currentPVACEV.actualCost:"-"}</td>
-            <td class="pane" style="text-align:center">${it.currentPVACEV.spi!='NaN' ? it.currentPVACEV.spi : "-"}</td>
-            <td class="pane" style="text-align:center">${it.currentPVACEV.cpi!='NaN' ? it.currentPVACEV.cpi : "-"}</td>
+            <td class="pane" style="text-align:center">${it.currentPVACEV.spi!='NaN' ? it.currentPVACEV.spi : "-"}
+			<j:if test="${it.currentPVACEV.spi!='NaN'}">
+				<img src='${imagesURL}${it.currentPVACEV.spiIconFileName}'></img>
+			</j:if>	
+			</td>
+            <td class="pane" style="text-align:center">${it.currentPVACEV.cpi!='NaN' ? it.currentPVACEV.cpi : "-"}
+			<j:if test="${it.currentPVACEV.cpi!='NaN'}">
+				<img src='${imagesURL}${it.currentPVACEV.cpiIconFileName}'></img>
+			</j:if>	
+			</td>
             <td class="pane" style="text-align:right"><a href="./${it.buildNumber}">#${it.buildNumber}</a></td>
 	</tr>
       </table>
@@ -56,8 +64,16 @@
             <td class="pane" style="text-align:center">${bean.currentPVACEV.plannedValue!='NaN' ? bean.currentPVACEV.plannedValue : "-"}</td>
             <td class="pane" style="text-align:center">${bean.currentPVACEV.earnedValue!='NaN'? bean.currentPVACEV.earnedValue : "-"}</td>
             <td class="pane" style="text-align:center">${bean.currentPVACEV.actualCost!='NaN' ? bean.currentPVACEV.actualCost : "-"}</td>
-            <td class="pane" style="text-align:center">${bean.currentPVACEV.spi!='NaN' ? bean.currentPVACEV.spi : "-"}</td>
-            <td class="pane" style="text-align:center">${bean.currentPVACEV.cpi!='NaN' ? bean.currentPVACEV.cpi : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.spi!='NaN' ? bean.currentPVACEV.spi : "-"}
+			<j:if test="${bean.currentPVACEV.spi!='NaN'}">
+				<img src='${imagesURL}${bean.currentPVACEV.spiIconFileName}'></img>
+			</j:if> 
+			</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.cpi!='NaN' ? bean.currentPVACEV.cpi : "-"}
+			<j:if test="${bean.currentPVACEV.cpi!='NaN'}">
+				<img src='${imagesURL}${bean.currentPVACEV.cpiIconFileName}'></img>
+			</j:if>
+			</td>
             <td class="pane" style="text-align:right"><a href="./${bean.buildNumber}">#${bean.buildNumber}</a></td>
 	</tr>
 	</j:forEach>
@@ -96,8 +112,16 @@
             <td class="pane" style="text-align:center">${bean.currentPVACEV.plannedValue!='NaN' ? bean.currentPVACEV.plannedValue : "-"}</td>
             <td class="pane" style="text-align:center">${bean.currentPVACEV.earnedValue!='NaN'? bean.currentPVACEV.earnedValue : "-"}</td>
             <td class="pane" style="text-align:center">${bean.currentPVACEV.actualCost!='NaN' ? bean.currentPVACEV.actualCost : "-"}</td>
-            <td class="pane" style="text-align:center">${bean.currentPVACEV.spi!='NaN' ? bean.currentPVACEV.spi : "-"}</td>
-            <td class="pane" style="text-align:center">${bean.currentPVACEV.cpi!='NaN' ? bean.currentPVACEV.cpi : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.spi!='NaN' ? bean.currentPVACEV.spi : "-"}
+			<j:if test="${it.currentPVACEV.spi!='NaN'}">
+				<img src='${imagesURL}${it.currentPVACEV.spiIconFileName}'></img>
+			</j:if>	
+			</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.cpi!='NaN' ? bean.currentPVACEV.cpi : "-"}
+			<j:if test="${bean.currentPVACEV.cpi!='NaN'}">
+				<img src='${imagesURL}${bean.currentPVACEV.cpiIconFileName}'></img>
+			</j:if>
+			</td>
             <td class="pane" style="text-align:right"><a href="./${bean.buildNumber}">#${bean.buildNumber}</a></td>
 	</tr>
 	</j:forEach>
@@ -137,8 +161,16 @@
             <td class="pane" style="text-align:center">${bean.currentPVACEV.plannedValue!='NaN' ? bean.currentPVACEV.plannedValue : "-"}</td>
             <td class="pane" style="text-align:center">${bean.currentPVACEV.earnedValue!='NaN'? bean.currentPVACEV.earnedValue : "-"}</td>
             <td class="pane" style="text-align:center">${bean.currentPVACEV.actualCost!='NaN' ? bean.currentPVACEV.actualCost : "-"}</td>
-            <td class="pane" style="text-align:center">${bean.currentPVACEV.spi!='NaN' ? bean.currentPVACEV.spi : "-"}</td>
-            <td class="pane" style="text-align:center">${bean.currentPVACEV.cpi!='NaN' ? bean.currentPVACEV.cpi : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.spi!='NaN' ? bean.currentPVACEV.spi : "-"}
+			<j:if test="${it.currentPVACEV.spi!='NaN'}">
+				<img src='${imagesURL}${it.currentPVACEV.spiIconFileName}'></img>
+			</j:if>	
+			</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.cpi!='NaN' ? bean.currentPVACEV.cpi : "-"}
+			<j:if test="${bean.currentPVACEV.cpi!='NaN'}">
+				<img src='${imagesURL}${bean.currentPVACEV.cpiIconFileName}'></img>
+			</j:if>
+			</td>
             <td class="pane" style="text-align:right"><a href="./${bean.buildNumber}">#${bean.buildNumber}</a></td>
 	</tr>
 	</j:forEach>

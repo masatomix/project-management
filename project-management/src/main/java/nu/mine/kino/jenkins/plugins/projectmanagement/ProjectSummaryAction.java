@@ -200,6 +200,8 @@ public class ProjectSummaryAction implements Action {
             bean.setEtc(round(etc, 2));
             bean.setEac(round(eac, 2));
             bean.setVac(round(vac, 2));
+            bean.setSpiIconFileName(PMUtils.choiceWeatherIconFileName(spi));
+            bean.setCpiIconFileName(PMUtils.choiceWeatherIconFileName(cpi));
 
             delegate = bean;
             System.out.printf("EVMViewBean getCurrentPVACEV() é¿ç€ÇÃçÏê¨äÆóπ\n");
