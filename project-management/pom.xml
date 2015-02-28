@@ -30,6 +30,11 @@
       <name>EVMTools Maven2 Repository</name>
       <url>http://www.masatom.in/repo/</url>
     </repository>
+    <repository>
+      <id>nu.mine.kino.snapshot</id>
+      <name>EVMTools Maven2 SNAPSHOT Repository</name>
+      <url>http://www.masatom.in/repo-snapshot/</url>
+    </repository>
   </repositories>
 
   <pluginRepositories>
@@ -98,9 +103,9 @@
       <url>ftp://masatomix@192.168.10.12/var/www/html/repo/</url>
 	</repository>
 	<snapshotRepository>
-      <id>nu.mine.kino</id>
+      <id>nu.mine.kino.ftp</id>
       <name>EVMTools Maven2 Repository</name>
-      <url>scp://masatomix@192.168.10.12/var/www/html/repo/</url>
+      <url>ftp://masatomix@192.168.10.12/var/www/html/repo-snapshot/</url>
 	</snapshotRepository>
   </distributionManagement>
   
