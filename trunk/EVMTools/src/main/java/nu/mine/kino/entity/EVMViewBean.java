@@ -16,6 +16,7 @@ package nu.mine.kino.entity;
  * @author Masatomi KINO and JavaBeans Creator Plug-in
  */
 public class EVMViewBean extends BaseEVMViewBean implements Validatable {
+
     /**
      * @param bean
      * @return
