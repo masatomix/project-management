@@ -85,6 +85,16 @@ public class BaseEVMViewBean {
     private java.util.Date baseDate;
 
     /**
+     * SPIの状況を表すアイコンのパス
+     */
+    private String spiIconFileName;
+
+    /**
+     * CPIの状況を表すアイコンのパス
+     */
+    private String cpiIconFileName;
+
+    /**
      * Planned Valueをセットする。
      * 
      * @param plannedValue
@@ -215,6 +225,26 @@ public class BaseEVMViewBean {
     }
 
     /**
+     * SPI Icon File Nameをセットする。
+     * 
+     * @param spiIconFileName
+     *            SPI Icon File Name
+     */
+    public void setSpiIconFileName(String spiIconFileName) {
+        this.spiIconFileName = spiIconFileName;
+    }
+
+    /**
+     * CPI Icon File Nameをセットする。
+     * 
+     * @param cpiIconFileName
+     *            CPI Icon File Name
+     */
+    public void setCpiIconFileName(String cpiIconFileName) {
+        this.cpiIconFileName = cpiIconFileName;
+    }
+
+    /**
      * Planned Valueを取得する。
      * 
      * @return Planned Value
@@ -331,6 +361,24 @@ public class BaseEVMViewBean {
         return baseDate;
     }
 
+    /**
+     * SPI Icon File Nameを取得する。
+     * 
+     * @return SPI Icon File Name
+     */
+    public String getSpiIconFileName() {
+        return spiIconFileName;
+    }
+
+    /**
+     * CPI Icon File Nameを取得する。
+     * 
+     * @return CPI Icon File Name
+     */
+    public String getCpiIconFileName() {
+        return cpiIconFileName;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this).append("Planned Value", plannedValue)
@@ -344,6 +392,8 @@ public class BaseEVMViewBean {
                 .append("ETC(Estimate To Completion)", etc)
                 .append("EAC(Estimate At Completion)", eac)
                 .append("VAC(Variance At Completion)", vac)
-                .append("基準日", baseDate).toString();
+                .append("基準日", baseDate)
+                .append("SPI Icon File Name", spiIconFileName)
+                .append("CPI Icon File Name", cpiIconFileName).toString();
     }
 }
