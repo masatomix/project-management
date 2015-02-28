@@ -77,7 +77,7 @@
       <url>http://www.masatom.in/repo/</url>
     </repository>
     <repository>
-      <id>nu.mine.kino</id>
+      <id>nu.mine.kino.snapshot</id>
       <name>EVMTools Maven2 SNAPSHOT Repository</name>
       <url>http://www.masatom.in/repo-snapshot/</url>
     </repository>
