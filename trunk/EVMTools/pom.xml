@@ -151,7 +151,7 @@
 	<snapshotRepository>
       <id>nu.mine.kino.ftp</id>
       <name>EVMTools Maven2 Repository</name>
-      <url>ftp://masatomix@192.168.10.12/var/www/html/reposnap/</url>
+      <url>ftp://masatomix@192.168.10.12/var/www/html/repo-snapshot/</url>
 	</snapshotRepository>
   </distributionManagement>
   
