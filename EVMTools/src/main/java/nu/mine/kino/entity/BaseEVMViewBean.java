@@ -224,25 +224,25 @@ public class BaseEVMViewBean {
         this.baseDate = baseDate;
     }
 
-    /**
-     * SPI Icon File Nameをセットする。
-     * 
-     * @param spiIconFileName
-     *            SPI Icon File Name
-     */
-    public void setSpiIconFileName(String spiIconFileName) {
-        this.spiIconFileName = spiIconFileName;
-    }
-
-    /**
-     * CPI Icon File Nameをセットする。
-     * 
-     * @param cpiIconFileName
-     *            CPI Icon File Name
-     */
-    public void setCpiIconFileName(String cpiIconFileName) {
-        this.cpiIconFileName = cpiIconFileName;
-    }
+//    /**
+//     * SPI Icon File Nameをセットする。
+//     * 
+//     * @param spiIconFileName
+//     *            SPI Icon File Name
+//     */
+//    public void setSpiIconFileName(String spiIconFileName) {
+//        this.spiIconFileName = spiIconFileName;
+//    }
+//
+//    /**
+//     * CPI Icon File Nameをセットする。
+//     * 
+//     * @param cpiIconFileName
+//     *            CPI Icon File Name
+//     */
+//    public void setCpiIconFileName(String cpiIconFileName) {
+//        this.cpiIconFileName = cpiIconFileName;
+//    }
 
     /**
      * Planned Valueを取得する。
