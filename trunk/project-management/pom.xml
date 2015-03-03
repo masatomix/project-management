@@ -24,20 +24,18 @@
     <repository>
       <id>repo.jenkins-ci.org</id>
       <url>http://repo.jenkins-ci.org/public/</url>
-      <releases><enabled>true</enabled><updatePolicy>always</updatePolicy></releases>
-      <snapshots><enabled>true</enabled><updatePolicy>always</updatePolicy></snapshots>
     </repository>
     <repository>
       <id>nu.mine.kino</id>
       <name>EVMTools Maven2 Repository</name>
       <url>http://www.masatom.in/repo/</url>
-      <releases><enabled>true</enabled><updatePolicy>always</updatePolicy></releases>
-      <snapshots><enabled>true</enabled><updatePolicy>always</updatePolicy></snapshots>
     </repository>
     <repository>
       <id>nu.mine.kino.snapshot</id>
       <name>EVMTools Maven2 SNAPSHOT Repository</name>
       <url>http://www.masatom.in/repo-snapshot/</url>
+	  <!-- localリポジトリに存在しても、snapshotは毎回サーバに取りに行く設定。 --> 
+	  <!-- 自前で開発しているプロジェクトが別サーバで分散ビルドされた場合、ローカルのSNAPSHOTが古いVerだったことがあったので。 --> 
       <releases><enabled>true</enabled><updatePolicy>always</updatePolicy></releases>
       <snapshots><enabled>true</enabled><updatePolicy>always</updatePolicy></snapshots>
     </repository>
