@@ -25,8 +25,10 @@ bac[${count}] = ${bean.currentPVACEV.bac!='NaN' ? bean.currentPVACEV.bac : ""} ;
 pv[${count}]  = ${bean.currentPVACEV.plannedValue!='NaN' ? bean.currentPVACEV.plannedValue : ""} ;
 ev[${count}]  = ${bean.currentPVACEV.earnedValue!='NaN'? bean.currentPVACEV.earnedValue : ""} ;
 ac[${count}]  = ${bean.currentPVACEV.actualCost!='NaN' ? bean.currentPVACEV.actualCost : ""} ;
+<j:if test="${bean.currentPVACEV.spi!='NaN' and bean.currentPVACEV.spi!='NaN'}">
 spi[${count}] = ${bean.currentPVACEV.spi!='NaN' ? bean.currentPVACEV.spi : ""}
 cpi[${count}] = ${bean.currentPVACEV.cpi!='NaN' ? bean.currentPVACEV.cpi : ""}
+</j:if>
 </j:forEach>
 	
 //<![CDATA[
