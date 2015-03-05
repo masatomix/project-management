@@ -2,6 +2,162 @@
     <table style="margin-top: 1em; margin-left:1em;">
         <t:summary icon="clipboard.png">
 	<j:if test="${it.baseDate!=null}">
+		
+<script type='text/javascript' src='${resURL}/plugin/project-management/js/jquery-2.1.0.js'></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script type='text/javascript'>
+var date= [];
+var bac = [];
+var pv  = [];
+var ev  = []; 
+var ac  = [];
+//var date= ['2015/1/28','2015/1/29','2015/1/30','2015/2/2','2015/2/3','2015/2/4','2015/2/5','2015/2/6','2015/2/9','2015/2/10','2015/2/12','2015/2/13','2015/2/16','2015/2/17','2015/2/18','2015/2/19','2015/2/20','2015/2/23','2015/2/24','2015/2/25','2015/2/26','2015/2/27',];
+//var bac = [82.18,82.53,92.87,93.45,95.48,93.02,93.63,95.06,95.42,95.8,99.2,107.41,111.06,111.06,111.48,116.84,116.84,113.87,114.53,114.73,113.78,113.78,];
+//var pv  = [78.07,80.53,85.03,87.71,88.36,88.82,89.86,90.47,92.32,93.51,94.11,96.31,99.12,100.42,102.5,108.09,108.69,107.24,108.98,111.33,112.77,113.78,];
+//var ev  = [77.42,79.92,84.28,85.67,86.76,87.47,89.56,90.78,92.21,93.6,94.1,95.82,97.63,99.32,99.92,102.11,103,103.8,107,107.48,111.19,113.28,];
+//var ac  = [98.64,101.74,105.51,107.31,108.89,110.36,111.9,113.42,115.17,116.75,117.25,119.32,120.9,122.59,123.67,126.64,126.64,128.34,131.28,132.53,135.72,137.48,];
+var spi  = []; 
+var cpi  = [];
+
+<j:forEach var="bean" items="${it.seriesActions}" indexVar="count">
+date[${count}]= '<i:formatDate value="${bean.baseDate}" />';
+bac[${count}] = ${bean.currentPVACEV.bac!='NaN' ? bean.currentPVACEV.bac : ""} ;
+pv[${count}]  = ${bean.currentPVACEV.plannedValue!='NaN' ? bean.currentPVACEV.plannedValue : ""} ;
+ev[${count}]  = ${bean.currentPVACEV.earnedValue!='NaN'? bean.currentPVACEV.earnedValue : ""} ;
+ac[${count}]  = ${bean.currentPVACEV.actualCost!='NaN' ? bean.currentPVACEV.actualCost : ""} ;
+spi[${count}] = ${bean.currentPVACEV.spi!='NaN' ? bean.currentPVACEV.spi : ""}
+cpi[${count}] = ${bean.currentPVACEV.cpi!='NaN' ? bean.currentPVACEV.cpi : ""}
+</j:forEach>
+	
+//<![CDATA[
+var spi_cpi=[];
+    for (i = 0; i < spi.length; i++) {
+        spi_cpi.push([
+        spi[i],// ev[i]/pv[i], //x 
+        cpi[i] // ev[i]/ac[i]// y 
+        ]);
+    };
+
+$(function () {
+    $('#container1').highcharts({
+        chart: {
+            type: 'line'
+        },
+        title: {
+            text: 'EVM 状況(PV/EV/AC)'
+        },
+        subtitle: {
+//            text: 'Source: 基準日: yyyymmdd'
+        },
+        xAxis: {
+		  categories: date
+        },
+        yAxis: {
+            title: {
+                text: 'EVM (MD)'
+            }
+        },
+        plotOptions: {
+            line: {
+                dataLabels: {
+                    enabled: true
+                },
+                enableMouseTracking: true
+            }
+        },
+        series: [{
+            name: 'BAC',
+            data:bac
+        }, {
+            name: 'PV',
+            data: pv
+        }, {
+            name: 'EV',
+            data:ev
+
+        }, {
+            name: 'AC',
+            data:ac
+        }]
+    });
+});
+
+$(function () {
+    $('#container2').highcharts({
+        chart: {
+            type: 'scatter',
+            zoomType: 'xy'
+        },
+        title: {
+            text:  'EVM 状況(SPI/CPI)'
+        },
+        subtitle: {
+//            text: 'Source: 基準日: yyyymmdd'
+        },
+        xAxis: {
+            title: {
+                enabled: true,
+                text: 'SPI'
+            },
+            startOnTick: true,
+            endOnTick: true,
+            showLastLabel: true
+        },
+        yAxis: {
+            title: {
+                text: 'CPI'
+            }
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'left',
+            verticalAlign: 'top',
+            x: 100,
+            y: 70,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF',
+            borderWidth: 1
+        },
+        plotOptions: {
+            scatter: {
+                marker: {
+                    radius: 5,
+                    states: {
+                        hover: {
+                            enabled: true,
+                            lineColor: 'rgb(100,100,100)'
+                        }
+                    }
+                },
+                states: {
+                    hover: {
+                        marker: {
+                            enabled: false
+                        }
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<b>{series.name}</b><br>',
+                    pointFormat: '{point.x} , {point.y} '
+                }
+            }
+        },
+        series: [{
+            name: 'SPI/CPI',
+            color: 'rgba(223, 83, 83, .5)',
+            data: spi_cpi
+        }]
+    });
+});
+
+//]]>  
+
+</script>
+
+<h2>直近(<i:formatDate value="${it.baseDate}"/>) 時点のプロジェクト全体のEVM グラフ</h2>
+<div id="container1" style="height: 600px"></div>
+<div id="container2" style="height: 600px"></div>
+
 	<h2>直近(<i:formatDate value="${it.baseDate}"/>) 時点のプロジェクト全体のEVM指数</h2>
       <table class="pane bigtable" >
         <tr>
