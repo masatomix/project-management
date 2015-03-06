@@ -30,13 +30,21 @@ spi[${count}] = ${bean.currentPVACEV.spi!='NaN' ? bean.currentPVACEV.spi : ""}
 cpi[${count}] = ${bean.currentPVACEV.cpi!='NaN' ? bean.currentPVACEV.cpi : ""}
 </j:if>
 </j:forEach>
-	
+
+date.reverse();
+bac.reverse();
+pv.reverse();
+ev.reverse();
+ac.reverse();
+spi.reverse();
+cpi.reverse();
+
 //<![CDATA[
 var spi_cpi=[];
     for (i = 0; i < spi.length; i++) {
         spi_cpi.push([
-        spi[i],// ev[i]/pv[i], //x 
-        cpi[i] // ev[i]/ac[i]// y 
+        cpi[i],// x 
+        spi[i] // y 
         ]);
     };
 
@@ -99,16 +107,24 @@ $(function () {
         xAxis: {
             title: {
                 enabled: true,
-                text: 'SPI'
+                text: 'CPI'
             },
             startOnTick: true,
             endOnTick: true,
-            showLastLabel: true
+            showLastLabel: true,
+            gridLineWidth: 1,
+            max: 2,
+            min:0,
+            tickInterval: 1
         },
         yAxis: {
             title: {
-                text: 'CPI'
+                text: 'SPI'
             }
+            gridLineWidth: 1,
+            max: 2,
+            min:0,
+            tickInterval: 1
         },
         legend: {
             layout: 'vertical',
