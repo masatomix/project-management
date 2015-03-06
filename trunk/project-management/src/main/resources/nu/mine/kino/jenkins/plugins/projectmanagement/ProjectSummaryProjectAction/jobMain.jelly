@@ -26,8 +26,8 @@ pv[${count}]  = ${bean.currentPVACEV.plannedValue!='NaN' ? bean.currentPVACEV.pl
 ev[${count}]  = ${bean.currentPVACEV.earnedValue!='NaN'? bean.currentPVACEV.earnedValue : ""} ;
 ac[${count}]  = ${bean.currentPVACEV.actualCost!='NaN' ? bean.currentPVACEV.actualCost : ""} ;
 <j:if test="${bean.currentPVACEV.spi!='NaN' and bean.currentPVACEV.spi!='NaN'}">
-spi[${count}] = ${bean.currentPVACEV.spi!='NaN' ? bean.currentPVACEV.spi : ""}
-cpi[${count}] = ${bean.currentPVACEV.cpi!='NaN' ? bean.currentPVACEV.cpi : ""}
+spi[${count}] = ${bean.currentPVACEV.spi!='NaN' ? bean.currentPVACEV.spi : ""};
+cpi[${count}] = ${bean.currentPVACEV.cpi!='NaN' ? bean.currentPVACEV.cpi : ""};
 </j:if>
 </j:forEach>
 
@@ -99,7 +99,7 @@ $(function () {
             zoomType: 'xy'
         },
         title: {
-            text:  'EVM 状況(SPI/CPI)'
+            text:  'EVM 状況(CPI & SPI)'
         },
         subtitle: {
 //            text: 'Source: 基準日: yyyymmdd'
@@ -115,16 +115,16 @@ $(function () {
             gridLineWidth: 1,
             max: 2,
             min:0,
-            tickInterval: 1
+            tickInterval: 0.5
         },
         yAxis: {
             title: {
                 text: 'SPI'
-            }
+            },
             gridLineWidth: 1,
             max: 2,
             min:0,
-            tickInterval: 1
+            tickInterval: 0.5
         },
         legend: {
             layout: 'vertical',
@@ -161,7 +161,7 @@ $(function () {
             }
         },
         series: [{
-            name: 'SPI/CPI',
+            name: 'CPI & SPI',
             color: 'rgba(223, 83, 83, .5)',
             data: spi_cpi
         }]
