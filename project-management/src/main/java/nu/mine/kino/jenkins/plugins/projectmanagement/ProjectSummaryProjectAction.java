@@ -22,6 +22,8 @@ public class ProjectSummaryProjectAction implements Action {
 
     private final AbstractProject<?, ?> project;
 
+    private FORMAT format;
+
     public ProjectSummaryProjectAction(AbstractProject<?, ?> project) {
         this.project = project;
     }
@@ -36,17 +38,16 @@ public class ProjectSummaryProjectAction implements Action {
     }
 
     public String getDisplayName() {
-        return "プロジェクトサマリー(時系列詳細)";
-        // return Messages.SampleProjectAction_DisplayName();
+        return String.format("プロジェクトサマリー(%s)", format.getName());
     }
 
     public String getUrlName() {
-        return "project-summary";
+        return "project-summary" +"-"+ format.getUrlSuffix();
     }
 
-    // public String getData() {
-    // return "Sample Project Action!!";
-    // }
+    public void setFormat(FORMAT format) {
+        this.format = format;
+    }
 
     public ProjectSummaryAction[] getSeriesActions() throws IOException {
         // List<ProjectSummaryAction> actions = new
