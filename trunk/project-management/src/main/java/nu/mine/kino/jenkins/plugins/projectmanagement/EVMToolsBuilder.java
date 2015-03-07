@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -583,6 +584,23 @@ public class EVMToolsBuilder extends Builder {
     @Override
     public Action getProjectAction(AbstractProject<?, ?> project) {
         return new ProjectSummaryProjectAction(project);
+    }
+
+    @Override
+    public Collection<? extends Action> getProjectActions(
+            AbstractProject<?, ?> project) {
+        Collection<Action> ret = new ArrayList<Action>();
+
+        ProjectSummaryProjectAction action = null;
+        action = new ProjectSummaryProjectAction(project);
+        action.setFormat(FORMAT.GRAPH);
+        ret.add(action);
+
+        action = new ProjectSummaryProjectAction(project);
+        action.setFormat(FORMAT.LIST);
+        ret.add(action);
+
+        return ret;
     }
 
     // Overridden for better type safety.
