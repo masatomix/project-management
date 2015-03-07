@@ -4,8 +4,7 @@
          xmlns:t="/lib/hudson"
          xmlns:f="/lib/form"
          xmlns:i="jelly:fmt">
-	<j:if test="${it.baseDate!=null}">
-	<j:if test="${it.urlName=='project-summary_base'}">
+	<j:if test="${it.baseDate!=null and it.urlName=='project-summary_base'}">
     <t:summary icon="document.gif">
 
 
@@ -73,6 +72,5 @@ xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとっ�
 </table>
     </t:summary>
 
-	  </j:if>
 	  </j:if>
 </j:jelly>
