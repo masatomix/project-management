@@ -167,7 +167,8 @@
 <j:if test="${it.baseDate!=null}">
 		
 <script type='text/javascript' src='${resURL}/plugin/project-management/js/jquery-2.1.0.js'></script>
-<script src="${resURL}/plugin/project-management/js/highcharts.js"></script>
+<script src="${resURL}/plugin/project-management/js/stock/highstock.js"></script>
+<script src="${resURL}/plugin/project-management/js/stock/modules/exporting.js"></script>
 <script type='text/javascript'>
 var date= [];
 var bac = [];
@@ -179,12 +180,15 @@ var spi  = [];
 var cpi  = [];
 
 <j:forEach var="bean" items="${it.seriesActions}" indexVar="count">
-date[${count}]= '<i:formatDate value="${bean.baseDate}" />';
-// <i:formatDate value="${bean.baseDate}" />
-bac[${count}] = ${bean.currentPVACEV.bac!='NaN' ? bean.currentPVACEV.bac : ""} ;
-pv[${count}]  = ${bean.currentPVACEV.plannedValue!='NaN' ? bean.currentPVACEV.plannedValue : ""} ;
-ev[${count}]  = ${bean.currentPVACEV.earnedValue!='NaN'? bean.currentPVACEV.earnedValue : ""} ;
-ac[${count}]  = ${bean.currentPVACEV.actualCost!='NaN' ? bean.currentPVACEV.actualCost : ""} ;
+//date[${count}]= '<i:formatDate value="${bean.baseDate}" />';
+ date[${count}] = Date.UTC(
+	<i:formatDate value="${bean.baseDate}" pattern="yyyy"/>,
+	<i:formatDate value="${bean.baseDate}" pattern="M"/> -1, 
+	<i:formatDate value="${bean.baseDate}" pattern="dd"/>),
+bac[${count}] = [date[${count}],${bean.currentPVACEV.bac!='NaN' ? bean.currentPVACEV.bac : ""} ];
+pv[${count}]  =[date[${count}], ${bean.currentPVACEV.plannedValue!='NaN' ? bean.currentPVACEV.plannedValue : ""}] ;
+ev[${count}]  = [date[${count}],${bean.currentPVACEV.earnedValue!='NaN'? bean.currentPVACEV.earnedValue : ""} ];
+ac[${count}]  = [date[${count}],${bean.currentPVACEV.actualCost!='NaN' ? bean.currentPVACEV.actualCost : ""}] ;
 <j:if test="${bean.currentPVACEV.spi!='NaN' and bean.currentPVACEV.spi!='NaN'}">
 spi[${count}] = ${bean.currentPVACEV.spi!='NaN' ? bean.currentPVACEV.spi : ""};
 cpi[${count}] = ${bean.currentPVACEV.cpi!='NaN' ? bean.currentPVACEV.cpi : ""};
@@ -208,8 +212,28 @@ var spi_cpi=[];
         ]);
     };
 
+    Highcharts.setOptions({
+      lang: {  // 言語設定
+        rangeSelectorZoom: '表示範囲',
+        resetZoom: '表示期間をリセット',
+        resetZoomTitle: '表示期間をリセット',
+        rangeSelectorFrom: '表示期間',
+        rangeSelectorTo: '〜',
+        printButtonTitle: 'チャートを印刷',
+        exportButtonTitle: '画像としてダウンロード',
+        downloadJPEG: 'JPEG画像でダウンロード',
+        downloadPDF: 'PDF文書でダウンロード',
+        downloadPNG: 'PNG画像でダウンロード',
+        downloadSVG: 'SVG形式でダウンロード',
+        months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+        weekdays: ['日', '月', '火', '水', '木', '金', '土'],
+        numericSymbols: null   // 1000を1kと表示しない
+      }
+    });
+	
 $(function () {
-    $('#container1').highcharts({
+//    $('#container1').highcharts({
+    $('#container1').highcharts('StockChart', {
         chart: {
             type: 'line',
 			zoomType: "xy"
@@ -217,12 +241,22 @@ $(function () {
         title: {
             text: 'EVM 状況(PV/EV/AC)'
         },
-        subtitle: {
-//            text: 'Source: 基準日: yyyymmdd'
-        },
         xAxis: {
-		  categories: date
+            type: 'datetime',
+            dateTimeLabelFormats: { 
+second: '%H:%M:%S',
+minute: '%H:%M',
+hour: '%m/%e %H:%M',
+day: '%y/%m/%e',
+week: '%y/%m/%e',
+month: '%Y/%m',
+year: '(%Y)'
+            },
+            title: {
+                text: 'Date'
+            }
         },
+
         yAxis: {
             title: {
                 text: 'EVM (MD)'
@@ -247,6 +281,28 @@ $(function () {
                 enableMouseTracking: true
             }
         },
+      rangeSelector: { // 表示幅選択ボタン
+        selected : 1,
+        inputDateFormat: '%Y/%m/%d',
+        inputEditDateFormat: '%Y/%m/%d',
+        buttons : [{
+          type : 'day', 
+          count : 5,     
+          text : '5日間'     
+        }, {
+          type : 'day', 
+          count : 30,   
+          text : '1ヶ月'    
+        }, {
+          type : 'day',
+          count : 90,     
+          text : '3ヶ月'   
+        },{
+          type : 'all', 
+          count : 1,
+          text : 'All'
+        }]
+      },
         series: [{
             name: 'BAC',
             data:bac
@@ -272,9 +328,6 @@ $(function () {
         },
         title: {
             text:  'EVM 状況(CPI & SPI)'
-        },
-        subtitle: {
-//            text: 'Source: 基準日: yyyymmdd'
         },
         xAxis: {
             title: {
