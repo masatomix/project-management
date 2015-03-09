@@ -32,21 +32,21 @@ public class PVTotalBean2PVBean {
         return dest;
     }
 
-    // /**
-    // * 第一引数から第二引数へプロパティをコピーするメソッド。
-    // *
-    // * @param source
-    // * @param dest
-    // */
-    // public static void convert(PVTotalBean source, PVBean dest) {
-    // // 必要に応じて特殊な載せ替え処理 開始
-    // ((PVBean) dest).setId(source.getId());
-    // ((PVBean) dest).setTaskId(source.getTaskId());
-    // ((PVBean) dest).setBaseDate(source.getBaseDate());
-    // ((PVBean) dest).setActualCost(source.getActualCost());
-    //
-    // // 特殊な載せ替え処理 終了
-    //
-    // }
+    /**
+     * 第一引数から第二引数へプロパティをコピーするメソッド。
+     * 
+     * @param source
+     * @param dest
+     */
+    public static void convert(PVTotalBean source, PVBean dest) {
+        // 必要に応じて特殊な載せ替え処理 開始
+        ((PVBean) dest).setId(source.getId());
+        ((PVBean) dest).setTaskId(source.getTaskId());
+        ((PVBean) dest).setBaseDate(source.getBaseDate());
+        ((PVBean) dest).setPlannedValue(source.getPlannedValue());
+
+        // 特殊な載せ替え処理 終了
+
+    }
 
 }
