@@ -406,6 +406,19 @@ public class ProjectSummaryAction implements Action {
         return null;
     }
 
+    public Date getBaseBaseDate() {
+        try {
+            Project baseProject = getProject(basePrefix + "_" + name);
+            if (baseProject != null) {
+                return baseProject.getBaseDate();
+            }
+        } catch (ProjectException e) {
+            // TODO 自動生成された catch ブロック
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     /**
      * 直近のタスク(PV)画面のためのデータを返す。
      * 
