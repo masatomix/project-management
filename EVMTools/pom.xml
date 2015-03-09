@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>nu.mine.kino.project</groupId>
   <artifactId>EVMTools</artifactId>
-  <version>0.9.10</version><!--SNAPSHOTをつけている限り、デプロイは  snapshotRepository が使われるぽい。--> 
+  <version>0.9.11-SNAPSHOT</version><!--SNAPSHOTをつけている限り、デプロイは  snapshotRepository が使われるぽい。--> 
   
   <build>
 	<extensions>
