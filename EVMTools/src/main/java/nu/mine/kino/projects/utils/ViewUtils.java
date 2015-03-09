@@ -121,7 +121,8 @@ public class ViewUtils {
         Task task = todayTaskInfo.getTask();
         Task2PVACEVViewBean.convert(task, bean);
 
-        PVBean pvBean = ProjectUtils.getPVBean(todayTaskInfo, targetDate);
+        // PVBean pvBean = ProjectUtils.getPVBean(todayTaskInfo, targetDate);
+        PVBean pvBean = ProjectUtils.getPVBean(todayTaskInfo, baseTaskInfo);
         ACBean acBean = ProjectUtils.getACBean(todayTaskInfo, baseTaskInfo);
         EVBean evBean = ProjectUtils.getEVBean(todayTaskInfo, baseTaskInfo);
 
