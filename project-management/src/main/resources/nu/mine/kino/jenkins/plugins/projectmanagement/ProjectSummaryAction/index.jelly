@@ -43,6 +43,7 @@
 
 
       <h1>直近(<i:formatDate value="${it.baseDate}"/>) のメンバー別サマリー</h1>
+	  <p>ベースの基準日(<i:formatDate value="${it.baseBaseDate}"/>)から直近までの状況。ただし、PV+1は、その日のみの値(累積値ではない)。</p>
       <table class="pane sortable bigtable" >
         <tr>
           <th class="pane-header">ユーザID</th>
@@ -109,7 +110,7 @@
 
 
       <h1>直近(<i:formatDate value="${it.baseDate}"/>) までの状況(PV/AC/EV)</h1>
-	  <p>ベースの基準日から直近までの状況。ただし、PVだけは直近基準日のみの値となっている(期間の累積ではない)ため注意が必要(後日修正予定)。</p>
+	  <p>ベースの基準日(<i:formatDate value="${it.baseBaseDate}"/>)から直近までの状況。ただし、PV+1は、その日のみの値(累積値ではない)。</p>
       <table class="pane sortable bigtable" >
         <tr>
           <th class="pane-header">#</th>
@@ -155,7 +156,7 @@
 
 
       <h1>直近(<i:formatDate value="${it.baseDate}"/>) までの成果(EV)</h1>
-	  <p>ベースの基準日から直近までの状況</p>
+	  <p>ベースの基準日(<i:formatDate value="${it.baseBaseDate}"/>)から直近までの状況</p>
       <table class="pane sortable bigtable" >		
         <tr>
           <th class="pane-header">#</th>
@@ -188,7 +189,7 @@
 
 
       <h1>直近(<i:formatDate value="${it.baseDate}"/>) までの実績(AC)</h1>
-	  <p>ベースの基準日から直近までの状況</p>
+	  <p>ベースの基準日(<i:formatDate value="${it.baseBaseDate}"/>)から直近までの状況</p>
       <table class="pane sortable bigtable" >
         <tr>
           <th class="pane-header">#</th>
@@ -216,7 +217,6 @@
         </j:forEach>
 		</table>
 		<hr />
-<div style="text-align:right" >ベースとなる基準日:<i:formatDate value="${it.baseBaseDate}"/></div>
 		
 <!--
       <h1>直近(<i:formatDate value="${it.baseDate}"/>) の集計資料</h1>

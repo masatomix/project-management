@@ -25,6 +25,8 @@ import nu.mine.kino.entity.EVBean;
 import nu.mine.kino.entity.EVTotalBean;
 import nu.mine.kino.entity.EVTotalBean2EVBean;
 import nu.mine.kino.entity.PVBean;
+import nu.mine.kino.entity.PVTotalBean;
+import nu.mine.kino.entity.PVTotalBean2PVBean;
 import nu.mine.kino.entity.Project;
 import nu.mine.kino.entity.Task;
 import nu.mine.kino.entity.TaskInformation;
@@ -206,6 +208,28 @@ public class ProjectUtils {
         bean.setBaseDate(targetDate);
         bean.setPlannedValue(ProjectUtils.calculatePV(task, targetDate));
         return bean;
+    }
+
+    // 丸め誤差対応として、とりあえずRound処理を入れたが、本来ちゃんと対応すべきか。
+    public static PVBean getPVBean(TaskInformation todayInfo,
+            TaskInformation baseInfo) {
+        PVTotalBean beanT = todayInfo.getPV();
+        PVBean pvbean = PVTotalBean2PVBean.convert(beanT);
+        if (baseInfo != null) {
+            PVTotalBean beanB = baseInfo.getPV();
+
+            // PVについては、第二項がNaNである可能性があるので、NaNでないときだけ減算
+            double actualCost = beanT.getPlannedValue();
+            if (!Double.isNaN(beanB.getPlannedValue())) {
+                actualCost = beanT.getPlannedValue() - beanB.getPlannedValue();
+                // とりあえず処理
+                actualCost = round(actualCost);
+                // とりあえず処理
+            }
+            pvbean.setPlannedValue(actualCost);
+            return pvbean;
+        }
+        return pvbean;
     }
 
     // 丸め誤差対応として、とりあえずRound処理を入れたが、本来ちゃんと対応すべきか。
