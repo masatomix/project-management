@@ -38,6 +38,14 @@ import org.apache.commons.lang.time.DateUtils;
 public class WriteUtils {
     private static final String delimiter = "\t";
 
+    /**
+     * インプットのファイルについて./[subDir]/ファイル名[suffix]をつけたファイルへの参照を返す。
+     * 
+     * @param input
+     * @param subDir
+     * @param suffix
+     * @return
+     */
     public static File input2Output(File input, String subDir, String suffix) {
         File baseDir = input.getParentFile();
         String outputStr = input.getName() + suffix;
@@ -62,10 +70,21 @@ public class WriteUtils {
         Date targetDate = projectStartDate;
         while (!targetDate.equals(projectEndDate)) {
             String data = String.format("%s" + delimiter,
-                    Utils.date2Str(targetDate, "MM/dd"));
+                    Utils.date2Str(targetDate, "yyyy/MM/dd"));
             buf.append(data);
             targetDate = DateUtils.addDays(targetDate, 1);
         }
+        return new String(buf);
+    }
+
+    private static String getPVHeaderForPivot(Project project) {
+        StringBuffer buf = new StringBuffer();
+        buf.append("#" + delimiter);
+        buf.append("タスクID" + delimiter);
+        buf.append("タスク名" + delimiter);
+        buf.append("担当者" + delimiter);
+        buf.append("日付" + delimiter);
+        buf.append("PV");
         return new String(buf);
     }
 
@@ -88,6 +107,32 @@ public class WriteUtils {
                 buf.append(pv);
             }
             buf.append(delimiter);
+            targetDate = DateUtils.addDays(targetDate, 1);
+        }
+        return new String(buf);
+    }
+
+    public static String getPvForPivot(Project project, TaskInformation taskInfo) {
+
+        StringBuffer buf = new StringBuffer();
+        Date projectStartDate = project.getProjectStartDate();
+        Date projectEndDate = project.getProjectEndDate();
+        Task task = taskInfo.getTask();
+
+        Date targetDate = projectStartDate;
+        while (!targetDate.equals(projectEndDate)) {
+            double pv = ProjectUtils.calculatePV(task, targetDate);
+            if (Utils.isNonZeroNumeric(pv)) {
+                buf.append(task.getTaskSharp() + delimiter);
+                buf.append(task.getTaskId() + delimiter);
+                buf.append(task.getTaskName() + delimiter);
+                buf.append(task.getPersonInCharge() + delimiter);
+                String data = String.format("%s" + delimiter,
+                        Utils.date2Str(targetDate, "yyyy/MM/dd"));
+                buf.append(data + delimiter);
+                buf.append(pv);
+                buf.append("\n");
+            }
             targetDate = DateUtils.addDays(targetDate, 1);
         }
         return new String(buf);
@@ -268,5 +313,43 @@ public class WriteUtils {
             }
 
         }
+    }
+
+    public static void writePVForPivot(Project project, File file)
+            throws ProjectException {
+
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(file), "MS932"));
+
+            String header = getPVHeaderForPivot(project);
+            // System.out.println(header);
+            writer.write(header, 0, header.length());
+            writer.newLine();
+
+            TaskInformation[] informations = project.getTaskInformations();
+            for (TaskInformation taskInfo : informations) {
+                String pvForPrint = getPvForPivot(project, taskInfo);
+                // System.out.println(pvForPrint);
+
+                writer.write(pvForPrint, 0, pvForPrint.length());
+                // writer.newLine();
+            }
+        } catch (FileNotFoundException e) {
+            throw new ProjectException(e);
+        } catch (IOException e) {
+            throw new ProjectException(e);
+        } finally {
+            try {
+                if (writer != null) {
+                    writer.flush();
+                    writer.close();
+                }
+            } catch (Exception e) {
+                throw new ProjectException(e);
+            }
+        }
+
     }
 }
