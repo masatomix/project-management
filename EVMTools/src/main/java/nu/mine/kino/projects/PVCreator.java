@@ -73,4 +73,33 @@ public class PVCreator {
         return internalCreate(input, new JSONProjectCreator(input), "_PVj.tsv");
     }
 
+    private static File internalCreateForPivot(File input,
+            ProjectCreator creator, String suffix) throws ProjectException {
+
+        Project project = creator.createProject();
+        Date baseDate = project.getBaseDate();
+
+        String baseDateStr = new SimpleDateFormat("yyyyMMdd").format(baseDate);
+        File outputFile = WriteUtils.input2Output(input, baseDateStr, suffix);
+
+        WriteUtils.writePVForPivot(project, outputFile);
+        return outputFile;
+
+    }
+
+    // /**
+    // * JSONテキストファイルを引数に、{@link Project}を生成し、PVを生成して出力する。
+    // * アウトプットファイル名は「インプットファイル名+_PVj.tsv 」。
+    // * ディレクトリは、インプットファイルのあるファイルの場所にプロジェクトの基準日のディレクトリを掘って格納する。
+    // *
+    // * @param input
+    // * @return アウトプットファイルのパス
+    // * @throws ProjectException
+    // */
+    public static File createForPivotFromJSON(File input)
+            throws ProjectException {
+        return internalCreateForPivot(input, new JSONProjectCreator(input),
+                "_PVjPivot.tsv");
+    }
+
 }
