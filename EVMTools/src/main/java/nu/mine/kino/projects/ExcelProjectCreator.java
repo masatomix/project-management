@@ -12,7 +12,6 @@
 
 package nu.mine.kino.projects;
 
-import static nu.mine.kino.projects.utils.PoiUtils.getDate;
 import static nu.mine.kino.projects.utils.PoiUtils.getTaskId;
 
 import java.io.File;
@@ -20,7 +19,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -38,23 +36,22 @@ import nu.mine.kino.entity.ExcelScheduleBean2PVTotalBean;
 import nu.mine.kino.entity.ExcelScheduleBean2Task;
 import nu.mine.kino.entity.ExcelScheduleBean2TaskInformation;
 import nu.mine.kino.entity.ExcelScheduleBeanSheet2Project;
+import nu.mine.kino.entity.Holiday;
 import nu.mine.kino.entity.PVTotalBean;
 import nu.mine.kino.entity.Project;
 import nu.mine.kino.entity.Row2ExcelPOIScheduleBean;
 import nu.mine.kino.entity.Task;
 import nu.mine.kino.entity.TaskInformation;
 import nu.mine.kino.projects.utils.PoiUtils;
-import nu.mine.kino.projects.utils.Utils;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.StringUtils;
-import org.apache.poi.POIDocument;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.bbreak.excella.core.util.PoiUtil;
 
 /**
  * @author Masatomi KINO
@@ -82,6 +79,7 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
     public Project createProjectFromStream() throws ProjectException {
 
         Map<String, ExcelPOIScheduleBean> poiMap = new HashMap<String, ExcelPOIScheduleBean>();
+        Holiday[] holidays = null;
         FileInputStream in = null;
         try {
             in = new FileInputStream(file);
@@ -105,7 +103,10 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
                 poiMap.put(taskId, createPOIBean(row));
             }
 
-//            createHolidays(workbook);
+            holidays = createHolidays(workbook);
+            // for (Holiday holiday : holidays) {
+            // System.out.println(holiday);
+            // }
 
         } catch (InvalidFormatException e) {
             throw new ProjectException(e);
@@ -177,6 +178,7 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
 
             ExcelScheduleBeanSheet2Project.convert(sheet, project);
 
+            project.setHolidays(holidays);
             // System.out.println("---");
             // System.out.println(project.getProjectStartDate());
             // System.out.println(project.getProjectEndDate());
@@ -195,26 +197,45 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
         }
     }
 
-//    private void createHolidays(Workbook workbook) {
-//        Sheet sheet = workbook.getSheet("休日テーブル");
-//        Iterator<Row> e = sheet.rowIterator();
-//        int index = 0;
-//        int dataIndex = PoiUtils.getDataFirstRowNum(sheet);
-//        while (e.hasNext()) {
-//            // ヘッダが終わるまで飛ばす。
-//            if (index < dataIndex) {
-//                e.next();
-//                index++;
-//                continue;
-//            }
-//            // データ部の処理
-//            Row row = e.next();
-//            Cell taskIdCell = row.getCell(1);
-//            String taskId = getTaskId(taskIdCell);
-//            poiMap.put(taskId, createPOIBean(row));
-//        }
-//
-//    }
+    private Holiday[] createHolidays(Workbook workbook) {
+        Sheet sheet = workbook.getSheet("休日テーブル");
+
+        List<Holiday> arrayList = new ArrayList<Holiday>();
+        Iterator<Row> e = sheet.rowIterator();
+        while (e.hasNext()) {
+            Row row = e.next();
+            Holiday holiday = new Holiday();
+
+            Cell dateCell = row.getCell(0);
+            if (dateCell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                if (PoiUtil.isCellDateFormatted(dateCell)) {
+                    holiday.setDate(dateCell.getDateCellValue());
+                }
+                arrayList.add(holiday);
+            }
+
+            // Cell cell1 = row.getCell(1);
+            // if (cell1 != null && cell1.getCellType() ==
+            // Cell.CELL_TYPE_FORMULA) {
+            // holiday.setDayOfWeek((String) PoiUtils.getCellValue(cell1,
+            // String.class));
+            // }
+            Cell cell2 = row.getCell(2);
+            if (cell2 != null && cell2.getCellType() == Cell.CELL_TYPE_STRING) {
+                holiday.setName(cell2.getStringCellValue());
+            }
+            Cell cell3 = row.getCell(3);
+            if (cell3 != null && cell3.getCellType() == Cell.CELL_TYPE_STRING) {
+                holiday.setRule(cell3.getStringCellValue());
+            }
+            Cell cell4 = row.getCell(4);
+            if (cell4 != null && cell4.getCellType() == Cell.CELL_TYPE_STRING) {
+                holiday.setHurikae(cell4.getStringCellValue());
+            }
+
+        }
+        return arrayList.toArray(new Holiday[arrayList.size()]);
+    }
 
     private void setTask(ExcelPOIScheduleBean source, Task dest) {
         if (source.getScheduledEndDate() != null) {

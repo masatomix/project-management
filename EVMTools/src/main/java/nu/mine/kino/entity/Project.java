@@ -39,6 +39,11 @@ public class Project {
     private java.util.Date baseDate;
 
     /**
+     * 休日カレンダー
+     */
+    private nu.mine.kino.entity.Holiday[] holidays;
+
+    /**
      * タスク情報をセットする。
      * 
      * @param taskInformations
@@ -80,6 +85,16 @@ public class Project {
     }
 
     /**
+     * 休日カレンダーをセットする。
+     * 
+     * @param holidays
+     *            休日カレンダー
+     */
+    public void setHolidays(nu.mine.kino.entity.Holiday[] holidays) {
+        this.holidays = holidays;
+    }
+
+    /**
      * タスク情報を取得する。
      * 
      * @return タスク情報
@@ -115,11 +130,20 @@ public class Project {
         return baseDate;
     }
 
+    /**
+     * 休日カレンダーを取得する。
+     * 
+     * @return 休日カレンダー
+     */
+    public nu.mine.kino.entity.Holiday[] getHolidays() {
+        return holidays;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this).append("タスク情報", taskInformations)
                 .append("プロジェクト開始日", projectStartDate)
                 .append("プロジェクト終了日", projectEndDate).append("基準日", baseDate)
-                .toString();
+                .append("休日カレンダー", holidays).toString();
     }
 }
