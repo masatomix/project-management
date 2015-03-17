@@ -156,7 +156,7 @@ public class EVMToolsBuilder extends Builder {
 
         watch.start();
         listener.getLogger().println("[EVM Tools] PVファイル作成開始");
-        executeAndCopy(root, buildRoot, new PVCreatorExecutor(name));
+        executeAndCopies(root, buildRoot, new PVCreatorExecutor(name));
         watch.stop();
         System.out.printf("PV作成時間:[%d] ms\n", watch.getTime());
         watch.reset();
@@ -302,32 +302,38 @@ public class EVMToolsBuilder extends Builder {
         logger.println("[EVM Tools] 対象ファイルの基準日:"
                 + DateFormatUtils.format(targetDate, "yyyyMMdd") + " : "
                 + fileName);
-        logger.println("[EVM Tools] 前回取り込んだファイル基準日:"
+        logger.println("[EVM Tools] 前回取り込んだファイル基準日(前回基準日):"
                 + DateFormatUtils.format(newestDate, "yyyyMMdd") + " : "
                 + previousNewestFile.getName());
         logger.println("[EVM Tools] 日替わり基準日:"
                 + DateFormatUtils.format(shimeDate, "yyyyMMdd") + " : "
                 + shimeFileName);
         // //// あとで消す
-        logger.println("[EVM Tools] 対象ファイルの基準日(参考):"
-                + DateFormatUtils.format(targetDateOld, "yyyyMMdd") + " : "
-                + targetFile.getName());
+        // logger.println("[EVM Tools] 対象ファイルの基準日(参考):"
+        // + DateFormatUtils.format(targetDateOld, "yyyyMMdd") + " : "
+        // + targetFile.getName());
+
+        if (targetDate.getTime() <= shimeDate.getTime()) { // シメたら、それより過去は取り込まない
+            logger.println("[EVM Tools] 対象ファイルの基準日が、日替わり基準日と同じか過去。日替わりのあとに、それまでの基準日のデータを取り込もうとしている。");
+            return false;
+        }
 
         if (targetDate.getTime() == newestDate.getTime()) {// 同じ基準日のデータの取込なので、OK
-            logger.println("[EVM Tools] 同じ基準日のデータの取込なので問題ない");
+            logger.println("[EVM Tools] 対象ファイルの基準日が、日替わり基準日より未来かつ、前回基準日と同じ基準日のデータなので問題ない");
             return true;
         }
 
         if (newestDate.getTime() == shimeDate.getTime()) {// シメ直後など。次はどんな基準日が来るか分からないので、OK。
-            logger.println("[EVM Tools] 前回基準日と日替わり基準日が同じなので、対象ファイルは様々な基準日があり得るので問題ない");
+            logger.println("[EVM Tools] 対象ファイルの基準日が、日替わり基準日より未来かつ、前回基準日と日替わり基準日が同じなので、対象ファイルは様々な基準日があり得るので問題ない");
             return true;
         } else {
-            if (targetDate.getTime() > newestDate.getTime()) {
-                logger.println("[EVM Tools] 前回基準日と日替わり基準日が異なるが、対象ファイルの基準日が、前回基準日より大きい。日替わりが行われていない可能性が高い");
-                return false;
-            } else {
-                logger.println("[EVM Tools] 前回基準日と日替わり基準日が異なるが、対象ファイルの基準日が、前回基準日より以下なので問題ない");
+
+            if (targetDate.getTime() == newestDate.getTime()) {
+                logger.println("[EVM Tools] 前回基準日と日替わり基準日が異なり(つまり前回基準日で更新中)、そして対象ファイルの基準日は前回基準日とおなじなので問題ない");
                 return true;
+            } else {
+                logger.println("[EVM Tools] 前回基準日と日替わり基準日が異なり(つまり前回基準日で更新中)、そして対象ファイルの基準日が前回基準日と異なる。すなわち、日替わりが行われていない可能性が高い");
+                return false;
             }
         }
     }
@@ -448,14 +454,14 @@ public class EVMToolsBuilder extends Builder {
 
     }
 
-    private static class PVCreatorExecutor implements FileCallable<FilePath> {
+    private static class PVCreatorExecutor implements FileCallable<FilePath[]> {
         private final String fileName;
 
         public PVCreatorExecutor(String fileName) {
             this.fileName = fileName;
         }
 
-        public FilePath invoke(File f, VirtualChannel channel)
+        public FilePath[] invoke(File f, VirtualChannel channel)
                 throws IOException, InterruptedException {
             File target = new File(f, fileName);
             try {
@@ -463,10 +469,15 @@ public class EVMToolsBuilder extends Builder {
                         ProjectUtils.findJSONFileName(target.getName()));
                 if (jsonFile.exists()) {
                     File result = PVCreator.createFromJSON(jsonFile);
-                    return new FilePath(result);
+                    File resultForPivot = PVCreator
+                            .createForPivotFromJSON(jsonFile);
+                    return new FilePath[] { new FilePath(result),
+                            new FilePath(resultForPivot) };
                 }
                 File result = PVCreator.create(target);
-                return new FilePath(result);
+                File resultForPivot = PVCreator.createForPivot(target);
+                return new FilePath[] { new FilePath(result),
+                        new FilePath(resultForPivot) };
 
             } catch (ProjectException e) {
                 throw new IOException(e);
