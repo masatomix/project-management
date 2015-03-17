@@ -70,6 +70,7 @@ public class ProjectWriterHandler extends AbstractExecutorHandler {
                     try {
                         jsonFile = ProjectWriter.write(target);
                         PVCreator.createFromJSON(jsonFile);
+                        PVCreator.createForPivotFromJSON(jsonFile);
                     } catch (ProjectException e) {
                         logger.error("run(IProgressMonitor)", e);
                         logger.error("¡“ú•ª‚©‚çJSON‚à‚µ‚­‚Í‚»‚Ì‚ ‚Æ‚ÌPV‚ğì¬‚·‚é‚Æ‚«‚ÉƒGƒ‰[B");
