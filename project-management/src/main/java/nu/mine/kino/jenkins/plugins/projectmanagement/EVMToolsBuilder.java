@@ -212,6 +212,11 @@ public class EVMToolsBuilder extends Builder {
                 System.out.printf("%s ’Ç‰ÁŽžŠÔ:[%d] ms\n", action, watch.getTime());
             }
         }
+        
+
+        HolidayCalendarAction action = new HolidayCalendarAction(build);
+        action.setFileName(pmJSON.getName());
+        build.addAction(action);
 
         File json = new File(build.getRootDir(), pmJSON.getName());
         // listener.getLogger().println(

@@ -43,6 +43,7 @@ import nu.mine.kino.entity.EVBean;
 import nu.mine.kino.entity.EVBean2EVViewBean;
 import nu.mine.kino.entity.EVMViewBean;
 import nu.mine.kino.entity.EVViewBean;
+import nu.mine.kino.entity.Holiday;
 import nu.mine.kino.entity.PVACEVViewBean;
 import nu.mine.kino.entity.PVViewBean;
 import nu.mine.kino.entity.Project;
@@ -633,6 +634,28 @@ public class ProjectSummaryAction implements Action {
 
     public int getBuildNumber() {
         return owner.getNumber();
+    }
+
+    public Holiday[] getHolidays() {
+
+        StopWatch watch = new StopWatch();
+        watch.start();
+        if (StringUtils.isEmpty(name)) {
+            return new Holiday[0];
+        }
+        try {
+            Project targetProject = getProject(name);
+            return targetProject.getHolidays();
+
+        } catch (ProjectException e) {
+            // TODO é©ìÆê∂ê¨Ç≥ÇÍÇΩ catch ÉuÉçÉbÉN
+            e.printStackTrace();
+        } finally {
+            watch.stop();
+            System.out.printf("getHolidays éûä‘: [%d] ms\n", watch.getTime());
+            watch = null;
+        }
+        return null;
     }
 
 }
