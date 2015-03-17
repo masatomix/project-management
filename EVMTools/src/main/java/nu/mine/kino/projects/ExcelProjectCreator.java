@@ -104,6 +104,9 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
                 String taskId = getTaskId(taskIdCell);
                 poiMap.put(taskId, createPOIBean(row));
             }
+
+//            createHolidays(workbook);
+
         } catch (InvalidFormatException e) {
             throw new ProjectException(e);
         } catch (FileNotFoundException e) {
@@ -191,6 +194,27 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
             // }
         }
     }
+
+//    private void createHolidays(Workbook workbook) {
+//        Sheet sheet = workbook.getSheet("休日テーブル");
+//        Iterator<Row> e = sheet.rowIterator();
+//        int index = 0;
+//        int dataIndex = PoiUtils.getDataFirstRowNum(sheet);
+//        while (e.hasNext()) {
+//            // ヘッダが終わるまで飛ばす。
+//            if (index < dataIndex) {
+//                e.next();
+//                index++;
+//                continue;
+//            }
+//            // データ部の処理
+//            Row row = e.next();
+//            Cell taskIdCell = row.getCell(1);
+//            String taskId = getTaskId(taskIdCell);
+//            poiMap.put(taskId, createPOIBean(row));
+//        }
+//
+//    }
 
     private void setTask(ExcelPOIScheduleBean source, Task dest) {
         if (source.getScheduledEndDate() != null) {
