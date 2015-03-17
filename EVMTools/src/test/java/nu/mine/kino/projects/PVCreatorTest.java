@@ -17,7 +17,9 @@ import java.io.FileNotFoundException;
 import java.util.List;
 
 import nu.mine.kino.entity.ACBean;
+import nu.mine.kino.entity.Project;
 import nu.mine.kino.projects.utils.ProjectUtils;
+import nu.mine.kino.projects.utils.WriteUtils;
 
 import org.apache.commons.lang.time.StopWatch;
 import org.junit.Test;
@@ -27,22 +29,21 @@ import org.junit.Test;
  * @version $Revision$
  */
 public class PVCreatorTest {
-
     @Test
     public void test() throws FileNotFoundException, ProjectException {
 
         File input = new File("project_management_tools.xls");
-        File input_base = new File("base_project_management_tools.xls");
         System.out.println(input.getAbsolutePath());
 
+        // File create = PVCreator.create(input);
+        // System.out.println(create.getAbsolutePath());
+
+        Project project = new ExcelProjectCreator(input).createProject();
         StopWatch watch = new StopWatch();
         watch.start();
-
-        List<ACBean> createACList = ACCreator.createACList(input, input_base);
+        WriteUtils.writePVForPivot(project, new File(input.getParent(),
+                "hogehoge.tsv"));
         watch.stop();
-        for (ACBean acBean : createACList) {
-            System.out.println(acBean);
-        }
         System.out.println(watch.getTime() + " ms.");
         watch.reset();
 
