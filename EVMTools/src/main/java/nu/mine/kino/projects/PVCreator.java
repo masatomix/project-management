@@ -87,15 +87,29 @@ public class PVCreator {
 
     }
 
-    // /**
-    // * JSONテキストファイルを引数に、{@link Project}を生成し、PVを生成して出力する。
-    // * アウトプットファイル名は「インプットファイル名+_PVj.tsv 」。
-    // * ディレクトリは、インプットファイルのあるファイルの場所にプロジェクトの基準日のディレクトリを掘って格納する。
-    // *
-    // * @param input
-    // * @return アウトプットファイルのパス
-    // * @throws ProjectException
-    // */
+    /**
+     * Excelファイルを引数に、{@link Project}を生成し、PVを生成してPivotに適したフォーマットで出力する。
+     * アウトプットファイル名は「インプットファイル名+_PVPivot.tsv 」。
+     * ディレクトリは、インプットファイルのあるファイルの場所にプロジェクトの基準日のディレクトリを掘って格納する。
+     * 
+     * @param input
+     * @return アウトプットファイルのパス
+     * @throws ProjectException
+     */
+    public static File createForPivot(File input) throws ProjectException {
+        return internalCreateForPivot(input, new ExcelProjectCreator(input),
+                "_PVPivot.tsv");
+    }
+
+    /**
+     * JSONテキストファイルを引数に、{@link Project}を生成し、PVを生成してPivotに適したフォーマットで出力する。
+     * アウトプットファイル名は「インプットファイル名+_PVjPivot.tsv 」。
+     * ディレクトリは、インプットファイルのあるファイルの場所にプロジェクトの基準日のディレクトリを掘って格納する。
+     * 
+     * @param input
+     * @return アウトプットファイルのパス
+     * @throws ProjectException
+     */
     public static File createForPivotFromJSON(File input)
             throws ProjectException {
         return internalCreateForPivot(input, new JSONProjectCreator(input),
