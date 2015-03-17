@@ -129,7 +129,7 @@ public class WriteUtils {
                 buf.append(task.getPersonInCharge() + delimiter);
                 String data = String.format("%s" + delimiter,
                         Utils.date2Str(targetDate, "yyyy/MM/dd"));
-                buf.append(data + delimiter);
+                buf.append(data);
                 buf.append(pv);
                 buf.append("\n");
             }
