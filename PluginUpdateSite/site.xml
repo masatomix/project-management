@@ -42,19 +42,13 @@
    <feature url="features/nu.mine.kino.plugin.beangenerator_0.6.4.201411131610.jar" id="nu.mine.kino.plugin.beangenerator" version="0.6.4.201411131610">
       <category name="beancreator"/>
    </feature>
-   <feature url="features/nu.mine.kino.plugin.projectmanagement_0.8.5.201411271519.jar" id="nu.mine.kino.plugin.projectmanagement" version="0.8.5.201411271519">
-      <category name="projectmanagement"/>
-   </feature>
    <feature url="features/nu.mine.kino.plugin.jenkins.heartbeat_0.0.1.201412181349.jar" id="nu.mine.kino.plugin.jenkins.heartbeat" version="0.0.1.201412181349">
       <category name="jenkins"/>
-   </feature>
-   <feature url="features/nu.mine.kino.plugin.projectmanagement_0.8.8.201501060140.jar" id="nu.mine.kino.plugin.projectmanagement" version="0.8.8.201501060140">
-      <category name="projectmanagement"/>
    </feature>
    <feature url="features/nu.mine.kino.plugin.projectmanagement_0.9.5.201502120734.jar" id="nu.mine.kino.plugin.projectmanagement" version="0.9.5.201502120734">
       <category name="projectmanagement"/>
    </feature>
-   <feature url="features/nu.mine.kino.plugin.projectmanagement_0.9.11.201503171744.jar" id="nu.mine.kino.plugin.projectmanagement" version="0.9.11.201503171744">
+   <feature url="features/nu.mine.kino.plugin.projectmanagement_0.9.11.201503171842.jar" id="nu.mine.kino.plugin.projectmanagement" version="0.9.11.201503171842">
       <category name="projectmanagement"/>
    </feature>
    <category-def name="google" label="Google Plugin"/>
