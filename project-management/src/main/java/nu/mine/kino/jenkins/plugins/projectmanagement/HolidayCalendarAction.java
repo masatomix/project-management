@@ -45,8 +45,7 @@ public class HolidayCalendarAction implements Action {
 
     @Override
     public String getIconFileName() {
-        // return "user.png";
-        return "/plugin/project-management/images/24x24/user_suit.png";
+        return "/plugin/project-management/images/24x24/calendar_view_month.png";
     }
 
     @Override

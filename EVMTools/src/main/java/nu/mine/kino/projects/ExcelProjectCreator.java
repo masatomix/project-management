@@ -19,6 +19,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -209,7 +211,8 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
             Cell dateCell = row.getCell(0);
             if (dateCell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
                 if (PoiUtil.isCellDateFormatted(dateCell)) {
-                    holiday.setDate(dateCell.getDateCellValue());
+                    Date dateCellValue = dateCell.getDateCellValue();
+                    holiday.setDate(dateCellValue);
                 }
                 arrayList.add(holiday);
             }
@@ -220,6 +223,7 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
             // holiday.setDayOfWeek((String) PoiUtils.getCellValue(cell1,
             // String.class));
             // }
+
             Cell cell2 = row.getCell(2);
             if (cell2 != null && cell2.getCellType() == Cell.CELL_TYPE_STRING) {
                 holiday.setName(cell2.getStringCellValue());
