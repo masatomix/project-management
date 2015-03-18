@@ -10,138 +10,39 @@
 
 package nu.mine.kino.entity;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * 
  * @author Masatomi KINO and JavaBeans Creator Plug-in
  */
-public class Holiday {
-
-    /**
-     * 日付
-     */
-    private java.util.Date date;
-
-    /**
-     * 曜日
-     */
-    private String dayOfWeek;
-
-    /**
-     * 祝日
-     */
-    private String name;
-
-    /**
-     * 祝日定義ルール
-     */
-    private String rule;
-
-    /**
-     * 振替
-     */
-    private String hurikae;
-
-    /**
-     * 日付をセットする。
-     * 
-     * @param date
-     *            日付
-     */
-    public void setDate(java.util.Date date) {
-        this.date = date;
-    }
-
-    /**
-     * 曜日をセットする。
-     * 
-     * @param dayOfWeek
-     *            曜日
-     */
-    public void setDayOfWeek(String dayOfWeek) {
-        this.dayOfWeek = dayOfWeek;
-    }
-
-    /**
-     * 祝日をセットする。
-     * 
-     * @param name
-     *            祝日
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * 祝日定義ルールをセットする。
-     * 
-     * @param rule
-     *            祝日定義ルール
-     */
-    public void setRule(String rule) {
-        this.rule = rule;
-    }
-
-    /**
-     * 振替をセットする。
-     * 
-     * @param hurikae
-     *            振替
-     */
-    public void setHurikae(String hurikae) {
-        this.hurikae = hurikae;
-    }
-
-    /**
-     * 日付を取得する。
-     * 
-     * @return 日付
-     */
-    public java.util.Date getDate() {
-        return date;
-    }
-
-    /**
-     * 曜日を取得する。
-     * 
-     * @return 曜日
-     */
-    public String getDayOfWeek() {
-        return dayOfWeek;
-    }
-
-    /**
-     * 祝日を取得する。
-     * 
-     * @return 祝日
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * 祝日定義ルールを取得する。
-     * 
-     * @return 祝日定義ルール
-     */
-    public String getRule() {
-        return rule;
-    }
-
-    /**
-     * 振替を取得する。
-     * 
-     * @return 振替
-     */
-    public String getHurikae() {
-        return hurikae;
-    }
-
+public class Holiday extends BaseHoliday {
     @Override
-    public String toString() {
-        return new ToStringBuilder(this).append("日付", date)
-                .append("曜日", dayOfWeek).append("祝日", name)
-                .append("祝日定義ルール", rule).append("振替", hurikae).toString();
+    public void setDate(Date date) {
+        super.setDate(date);
+        setDayOfWeek(this.getDayOfWeek(date));
+    }
+
+    private String getDayOfWeek(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        switch (calendar.get(Calendar.DAY_OF_WEEK)) {
+        case Calendar.SUNDAY:
+            return "日";
+        case Calendar.MONDAY:
+            return "月";
+        case Calendar.TUESDAY:
+            return "火";
+        case Calendar.WEDNESDAY:
+            return "水";
+        case Calendar.THURSDAY:
+            return "木";
+        case Calendar.FRIDAY:
+            return "金";
+        case Calendar.SATURDAY:
+            return "土";
+        }
+        return null;
     }
 }
