@@ -107,7 +107,13 @@
           </tr>
         </j:forEach>
       </table>
-
+      <table class="pane" >
+        <tr>
+		<j:if test="${it.pvfileExists}" >
+          <th style='text-align:right'><a href="documents/${it.fileName}_PVjPivot.tsv">もっとみる</a></th>
+		</j:if> 
+        </tr>
+      </table>
 
       <h1>直近(<i:formatDate value="${it.baseDate}"/>) までの状況(PV/AC/EV)</h1>
 	  <p>ベースの基準日(<i:formatDate value="${it.baseBaseDate}"/>)から直近までの状況。ただし、PV+1は、その日のみの値(累積値ではない)。</p>
@@ -147,7 +153,7 @@
           </tr>
         </j:forEach>
       </table>
-<div style="text-align:right" tooltip="「要注意」列は、すでに完了していなければいけないものに○をつけています。"><a tabindex="9999"><img src='${imagesURL}/16x16/help.png'  alt="Help for feature: evm" ></img></a></div>
+<div style="text-align:right" tooltip="「要注意」列は、本日終了時点ですでに完了していなければいけないものに○をつけています。"><a tabindex="9999"><img src='${imagesURL}/16x16/help.png'  alt="Help for feature: evm" ></img></a></div>
 
 
 
