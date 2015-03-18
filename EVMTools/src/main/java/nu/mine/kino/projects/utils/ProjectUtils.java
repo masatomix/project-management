@@ -15,6 +15,7 @@ import static nu.mine.kino.projects.utils.Utils.round;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -24,6 +25,7 @@ import nu.mine.kino.entity.ACTotalBean2ACBean;
 import nu.mine.kino.entity.EVBean;
 import nu.mine.kino.entity.EVTotalBean;
 import nu.mine.kino.entity.EVTotalBean2EVBean;
+import nu.mine.kino.entity.Holiday;
 import nu.mine.kino.entity.PVBean;
 import nu.mine.kino.entity.PVTotalBean;
 import nu.mine.kino.entity.PVTotalBean2PVBean;
@@ -350,5 +352,31 @@ public class ProjectUtils {
 
     public static String findJSONFileName(String input) {
         return new String(new StringBuffer().append(input).append(".json"));
+    }
+
+    /**
+     * そのプロジェクト上、土日祝日であるかどうかをチェックする
+     * 
+     * @param project
+     * @param targetDate
+     * @return
+     */
+    public static boolean isHoliday(Project project, Date targetDate) {
+        Holiday[] holidays = project.getHolidays();
+        for (Holiday holiday : holidays) {
+            if (holiday.getDate().getTime() == targetDate.getTime()) {
+                return true;
+            }
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(targetDate);
+        switch (calendar.get(Calendar.DAY_OF_WEEK)) {
+        case Calendar.SATURDAY:
+        case Calendar.SUNDAY:
+            return true;
+        default:
+            return false;
+        }
     }
 }

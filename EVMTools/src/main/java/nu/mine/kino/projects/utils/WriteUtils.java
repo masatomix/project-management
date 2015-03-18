@@ -131,6 +131,9 @@ public class WriteUtils {
                         Utils.date2Str(targetDate, "yyyy/MM/dd"));
                 buf.append(data);
                 buf.append(pv);
+                if (ProjectUtils.isHoliday(project, targetDate)) {
+                    buf.append(delimiter + "‹x“ú");
+                }
                 buf.append("\n");
             }
             targetDate = DateUtils.addDays(targetDate, 1);
