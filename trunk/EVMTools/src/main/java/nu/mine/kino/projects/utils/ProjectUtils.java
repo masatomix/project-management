@@ -59,6 +59,23 @@ public class ProjectUtils {
     }
 
     /**
+     * 指定した日付までのプロジェクトのトータルPV
+     * 
+     * @param project
+     * @param baseDate
+     */
+    public static double calculateTotalPVOfProject(Project project,
+            Date baseDate) {
+        double totalPV = 0.0d;
+        TaskInformation[] taskInformations = project.getTaskInformations();
+        for (TaskInformation info : taskInformations) {
+            double tmp = calculatePVs(info, baseDate);
+            totalPV += (Double.isNaN(tmp) ? 0.0 : tmp);
+        }
+        return round(totalPV, 1);
+    }
+
+    /**
      * 基準日までの累積PVを返す。 タスクが始まっていなかったら0. なんらかの理由で、稼働予定日数=Nanとか0の場合Double.NaN
      * なんらかの理由で、予定工数がNaNの場合も、Double.NaN。
      * 
@@ -190,6 +207,14 @@ public class ProjectUtils {
         return (List<PVBean>[]) retList.toArray();
     }
 
+    /**
+     * 指定した日付その日のみのPVの配列を取得する。
+     * 
+     * @param project
+     * @param targetDate
+     * @return
+     * @throws ProjectException
+     */
     public static List<PVBean> getPVListByDay(Project project, Date targetDate)
             throws ProjectException {
         List<PVBean> retList = new ArrayList<PVBean>();
@@ -202,6 +227,13 @@ public class ProjectUtils {
     }
 
     // 丸め誤差対応として、とりあえずRound処理を入れたが、本来ちゃんと対応すべきか。
+    /**
+     * 指定したタスク、日付の、その日のみのPVを算出。 その日にタスクがなければPVはゼロ。
+     * 
+     * @param taskInfo
+     * @param targetDate
+     * @return
+     */
     public static PVBean getPVBean(TaskInformation taskInfo, Date targetDate) {
         Task task = taskInfo.getTask();
         PVBean bean = new PVBean();
