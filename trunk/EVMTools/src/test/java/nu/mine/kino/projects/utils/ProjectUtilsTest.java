@@ -30,6 +30,7 @@ import nu.mine.kino.projects.PVCreator;
 import nu.mine.kino.projects.ProjectException;
 import nu.mine.kino.projects.ProjectWriter;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.junit.Test;
 
@@ -99,6 +100,17 @@ public class ProjectUtilsTest {
         List<PVBean> list = PVCreator.createCurrentList(projectOrg);
         for (PVBean pvBean : list) {
             System.out.println(pvBean);
+        }
+
+        Date startDate = projectOrg.getProjectStartDate();
+        Date endDate = projectOrg.getProjectEndDate();
+        Date cursor = startDate;
+        while (cursor.getTime() <= endDate.getTime()) {
+            // System.out.println(cursor);
+            System.out.println(ProjectUtils.calculateTotalPVOfProject(
+                    projectOrg, cursor));
+            cursor = DateUtils.addDays(cursor, 1);
+
         }
     }
 
