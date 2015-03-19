@@ -179,7 +179,7 @@ var ac  = [];
 var spi  = []; 
 var cpi  = [];
 
-<j:forEach var="bean" items="${it.seriesActions}" indexVar="count">
+<j:forEach var="bean" items="${it.graphSeriesActions}" indexVar="count">
 //date[${count}]= '<i:formatDate value="${bean.baseDate}" />';
  date[${count}] = Date.UTC(
 	<i:formatDate value="${bean.baseDate}" pattern="yyyy"/>,
@@ -195,13 +195,13 @@ cpi[${count}] = ${bean.currentPVACEV.cpi!='NaN' ? bean.currentPVACEV.cpi : ""};
 </j:if>
 </j:forEach>
 
-date.reverse();
-bac.reverse();
-pv.reverse();
-ev.reverse();
-ac.reverse();
-spi.reverse();
-cpi.reverse();
+//date.reverse();
+//bac.reverse();
+//pv.reverse();
+//ev.reverse();
+//ac.reverse();
+//spi.reverse();
+//cpi.reverse();
 
 //<![CDATA[
 var spi_cpi=[];
