@@ -333,10 +333,10 @@ public class WriteUtils {
 
             TaskInformation[] informations = project.getTaskInformations();
             for (TaskInformation taskInfo : informations) {
-                String pvForPrint = getPvForPivot(project, taskInfo);
+                String pvForPivot = getPvForPivot(project, taskInfo);
                 // System.out.println(pvForPrint);
 
-                writer.write(pvForPrint, 0, pvForPrint.length());
+                writer.write(pvForPivot, 0, pvForPivot.length());
                 // writer.newLine();
             }
         } catch (FileNotFoundException e) {
