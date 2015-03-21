@@ -17,7 +17,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import nu.mine.kino.entity.ACBean;
 import nu.mine.kino.entity.ACTotalBean;
@@ -34,6 +36,8 @@ import nu.mine.kino.entity.Task;
 import nu.mine.kino.entity.TaskInformation;
 import nu.mine.kino.entity.Validatable;
 import nu.mine.kino.projects.ProjectException;
+
+import org.apache.commons.lang.time.DateUtils;
 
 /**
  * Project系の様々なUtilityメソッド
@@ -56,6 +60,28 @@ public class ProjectUtils {
             }
         }
         return null;
+    }
+
+    /**
+     * プロジェクトの開始日付から終了日付までのPV
+     * 
+     * @param project
+     * @return
+     */
+    public static Map<Date, Double> calculateTotalPVOfProject(Project project) {
+        Map<Date, Double> map = new HashMap<Date, Double>();
+        Date startDate = project.getProjectStartDate();
+        Date endDate = project.getProjectEndDate();
+        Date cursor = startDate;
+        while (cursor.getTime() <= endDate.getTime()) {
+            System.out.println(cursor);
+            double value = ProjectUtils.calculateTotalPVOfProject(project,
+                    cursor);
+            System.out.println(value);
+            map.put(cursor, value);
+            cursor = DateUtils.addDays(cursor, 1);
+        }
+        return map;
     }
 
     /**
