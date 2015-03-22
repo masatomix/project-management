@@ -179,19 +179,21 @@ var ac  = [];
 var spi  = []; 
 var cpi  = [];
 
-<j:forEach var="bean" items="${it.graphSeriesActions}" indexVar="count">
+<j:forEach var="bean" items="${it.EVMViewBeans}" indexVar="count">
 //date[${count}]= '<i:formatDate value="${bean.baseDate}" />';
  date[${count}] = Date.UTC(
 	<i:formatDate value="${bean.baseDate}" pattern="yyyy"/>,
 	<i:formatDate value="${bean.baseDate}" pattern="M"/> -1, 
 	<i:formatDate value="${bean.baseDate}" pattern="dd"/>),
-bac[${count}] = [date[${count}],${bean.currentPVACEV.bac!='NaN' ? bean.currentPVACEV.bac : ""} ];
-pv[${count}]  =[date[${count}], ${bean.currentPVACEV.plannedValue!='NaN' ? bean.currentPVACEV.plannedValue : ""}] ;
-ev[${count}]  = [date[${count}],${bean.currentPVACEV.earnedValue!='NaN'? bean.currentPVACEV.earnedValue : ""} ];
-ac[${count}]  = [date[${count}],${bean.currentPVACEV.actualCost!='NaN' ? bean.currentPVACEV.actualCost : ""}] ;
-<j:if test="${bean.currentPVACEV.spi!='NaN' and bean.currentPVACEV.spi!='NaN'}">
-spi[${count}] = ${bean.currentPVACEV.spi!='NaN' ? bean.currentPVACEV.spi : ""};
-cpi[${count}] = ${bean.currentPVACEV.cpi!='NaN' ? bean.currentPVACEV.cpi : ""};
+bac[${count}] = [date[${count}],${bean.bac!='NaN' ? bean.bac : "null"} ];
+pv[${count}]  =[date[${count}], ${bean.plannedValue!='NaN' ? bean.plannedValue : "null"}] ;
+
+ev[${count}]  = [date[${count}],${bean.earnedValue!='NaN'? bean.earnedValue :"null"} ];
+ac[${count}]  = [date[${count}],${bean.actualCost!='NaN' ? bean.actualCost : "null"}] ;
+
+<j:if test="${bean.spi!='NaN' and bean.spi!='NaN'}">
+spi[${count}] = ${bean.spi!='NaN' ? bean.spi : "null"};
+cpi[${count}] = ${bean.cpi!='NaN' ? bean.cpi : "null"};
 </j:if>
 </j:forEach>
 
