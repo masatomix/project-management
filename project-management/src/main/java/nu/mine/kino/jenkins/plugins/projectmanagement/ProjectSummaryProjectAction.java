@@ -181,7 +181,7 @@ public class ProjectSummaryProjectAction implements Action {
             // すでにある基準日のデータは上書きしない。
             if (!actionsMap.containsKey(evmViewBean.getBaseDate())) {
                 // かつ、休日でデータなしの場合も追加しない。
-                if (ProjectUtils.isHoliday(
+                if (!ProjectUtils.isHoliday(
                         getProject(project, PMConstants.BASE),
                         evmViewBean.getBaseDate())) {
                     actionsMap.put(evmViewBean.getBaseDate(), evmViewBean);
