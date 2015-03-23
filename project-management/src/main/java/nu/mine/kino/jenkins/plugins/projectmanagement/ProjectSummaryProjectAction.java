@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -138,12 +139,14 @@ public class ProjectSummaryProjectAction implements Action {
 
     public EVMViewBean[] getGraphSeriesActionsWithPrefix(String prefix)
             throws IOException {
-        List<EVMViewBean> actions = new ArrayList<EVMViewBean>();
+        Map<Date, EVMViewBean> actionsMap = new HashMap<Date, EVMViewBean>();
         String file = prefix + "_" + seriesFileNameSuffix;
         AbstractBuild<?, ?> build = PMUtils.findBuild(project, file);
         if (build == null) {
             return new EVMViewBean[0];
         }
+
+        // まずは、実データを取得して、リスト(Map)へセット。
         String data = ReadUtils.readFile(new File(build.getRootDir(), file));
         BufferedReader reader = new BufferedReader(new StringReader(data));
         Double bac = Double.NaN;
@@ -158,7 +161,7 @@ public class ProjectSummaryProjectAction implements Action {
                     ProjectSummaryAction.class, PMConstants.BASE);
             if (a != null) {
                 EVMViewBean currentPVACEV = a.getCurrentPVACEV();
-                actions.add(currentPVACEV);
+                actionsMap.put(currentPVACEV.getBaseDate(), currentPVACEV);
 
                 if (Double.isNaN(bac)) {
                     bac = currentPVACEV.getBac();
@@ -166,16 +169,28 @@ public class ProjectSummaryProjectAction implements Action {
 
             }
         }
+        // まずは、実データを取得して、リスト(Map)へセット。 以上
 
+        // つづいて、PVとBACなどの計算値を、リスト(Map)へセット。
         Map<Date, Double> pvMap = calculateTotalPVOfProject(project,
                 PMConstants.BASE);
         Set<Date> keySet = pvMap.keySet();
         for (Date date : keySet) {
             EVMViewBean evmViewBean = createEVMViewBean(pvMap.get(date), bac,
                     date);
-            actions.add(evmViewBean);
+            // すでにある基準日のデータは上書きしない。
+            if (!actionsMap.containsKey(evmViewBean.getBaseDate())) {
+                // かつ、休日でデータなしの場合も追加しない。
+                if (ProjectUtils.isHoliday(
+                        getProject(project, PMConstants.BASE),
+                        evmViewBean.getBaseDate())) {
+                    actionsMap.put(evmViewBean.getBaseDate(), evmViewBean);
+                }
+            }
         }
 
+        List<EVMViewBean> actions = new ArrayList<EVMViewBean>(
+                actionsMap.values());
         // sort
         Collections.sort(actions, new Comparator<EVMViewBean>() {
             /**
@@ -202,12 +217,22 @@ public class ProjectSummaryProjectAction implements Action {
         evmViewBean.setBac(bac);
         evmViewBean.setActualCost(Double.NaN);
         evmViewBean.setEarnedValue(Double.NaN);
+        evmViewBean.setCpi(Double.NaN);
+        evmViewBean.setSpi(Double.NaN);
         return evmViewBean;
     }
 
     private Map<Date, Double> calculateTotalPVOfProject(
             AbstractProject<?, ?> jenkinsProject, String suffix)
             throws IOException {
+        Project targetProject = getProject(jenkinsProject, suffix);
+        Map<Date, Double> pvMap = ProjectUtils
+                .calculateTotalPVOfProject(targetProject);
+        return pvMap;
+    }
+
+    private Project getProject(AbstractProject<?, ?> jenkinsProject,
+            String suffix) throws IOException {
         AbstractBuild<?, ?> record = jenkinsProject
                 .getBuildByNumber(getBuildNumber());
         ProjectSummaryAction a = PMUtils.findActionByUrlEndsWith(record,
@@ -215,9 +240,7 @@ public class ProjectSummaryProjectAction implements Action {
         String fileName = a.getFileName();
         try {
             Project targetProject = a.getProject(fileName);
-            Map<Date, Double> pvMap = ProjectUtils
-                    .calculateTotalPVOfProject(targetProject);
-            return pvMap;
+            return targetProject;
         } catch (ProjectException e) {
             throw new IOException(e);
         }
