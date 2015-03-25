@@ -421,9 +421,11 @@ public class ProjectUtils {
      */
     public static boolean isHoliday(Project project, Date targetDate) {
         Holiday[] holidays = project.getHolidays();
-        for (Holiday holiday : holidays) {
-            if (holiday.getDate().getTime() == targetDate.getTime()) {
-                return true;
+        if (holidays != null) {//
+            for (Holiday holiday : holidays) {
+                if (holiday.getDate().getTime() == targetDate.getTime()) {
+                    return true;
+                }
             }
         }
 
