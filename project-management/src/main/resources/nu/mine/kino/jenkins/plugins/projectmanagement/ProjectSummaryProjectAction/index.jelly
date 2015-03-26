@@ -208,9 +208,11 @@ cpi[${count}] = ${bean.cpi!='NaN' ? bean.cpi : "null"};
 //<![CDATA[
 var spi_cpi=[];
     for (i = 0; i < spi.length; i++) {
+		if(spi[i]!=null){
         spi_cpi.push([
         cpi[i],// x 
         spi[i] // y 
+		}
         ]);
     };
 
