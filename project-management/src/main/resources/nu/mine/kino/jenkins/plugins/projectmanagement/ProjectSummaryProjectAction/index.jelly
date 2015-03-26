@@ -366,7 +366,7 @@ $(function () {
         plotOptions: {
             scatter: {
                 marker: {
-                    radius: 5,
+                    radius: 3,
                     states: {
                         hover: {
                             enabled: true,
@@ -381,15 +381,15 @@ $(function () {
                         }
                     }
                 },
-                showCheckbox: true,
+                showCheckbox: false,
                 tooltip: {
                     headerFormat: '<b>{series.name}</b><br>',
-                    pointFormat: '{point.x} , {point.y} '
+                    pointFormat: 'index[{point.index}], {point.x} , {point.y} '
                 }
             }
         },
         series: [{
-            type: 'line',
+            type: 'scatter',
             name: 'CPI & SPI',
             color: 'rgba(223, 83, 83, .5)',
             data: spi_cpi
