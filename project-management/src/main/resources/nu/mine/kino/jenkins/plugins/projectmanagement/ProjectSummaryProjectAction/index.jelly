@@ -212,8 +212,9 @@ var spi_cpi=[];
         spi_cpi.push([
         cpi[i],// x 
         spi[i] // y 
-		}
         ]);
+		}
+
     };
 
     Highcharts.setOptions({
