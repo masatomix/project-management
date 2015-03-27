@@ -385,6 +385,7 @@ $(function () {
                     }
                 },
                 showCheckbox: false,
+                lineWidth: 1,
                 tooltip: {
                     headerFormat: '<b>{series.name}</b><br>',
                     pointFormat: 'index[{point.index}], {point.x} , {point.y} '
