@@ -137,9 +137,20 @@ public class ProjectSummaryProjectAction implements Action {
         return actions.toArray(new ProjectSummaryAction[actions.size()]);
     }
 
+    /**
+     * EVMチャート用の時系列データを返す。期間は、プロジェクトのファイルの開始日から終了日。
+     * 時系列データのうち、EV/ACについてはプロジェクト上の実データ(締め時点データ)、
+     * PVについては実データがある日付はそのデータ、実データがない場合は計算から算出されるデータ BACについては現状では、
+     * 実データがある日付はそのデータ、ない場合は直近のBACを補完している。
+     * 
+     * @param prefix
+     * @return
+     * @throws IOException
+     */
     public EVMViewBean[] getGraphSeriesActionsWithPrefix(String prefix)
             throws IOException {
         Map<Date, EVMViewBean> actionsMap = new HashMap<Date, EVMViewBean>();
+
         String file = prefix + "_" + seriesFileNameSuffix;
         AbstractBuild<?, ?> build = PMUtils.findBuild(project, file);
         if (build == null) {
@@ -174,10 +185,16 @@ public class ProjectSummaryProjectAction implements Action {
         // つづいて、PVとBACなどの計算値を、リスト(Map)へセット。
         Map<Date, Double> pvMap = calculateTotalPVOfProject(project,
                 PMConstants.BASE);
+
+        // つづいて、PVとBACなどの計算値を、リスト(Map)へセット。
+        Map<Date, Double> bacMap = new HashMap<Date, Double>();
+        bacMap = calculateBACOfProject(project, actionsMap, PMConstants.BASE);
+
         Set<Date> keySet = pvMap.keySet();
         for (Date date : keySet) {
-            EVMViewBean evmViewBean = createEVMViewBean(pvMap.get(date), bac,
-                    date);
+            // なんちゃってBeanつくる。
+            EVMViewBean evmViewBean = createEVMViewBean(pvMap.get(date),
+                    bacMap.get(date), date);
             // すでにある基準日のデータは上書きしない。
             if (!actionsMap.containsKey(evmViewBean.getBaseDate())) {
                 // かつ、休日でデータなしの場合も追加しない。
@@ -229,6 +246,17 @@ public class ProjectSummaryProjectAction implements Action {
         Map<Date, Double> pvMap = ProjectUtils
                 .calculateTotalPVOfProject(targetProject);
         return pvMap;
+    }
+
+    private Map<Date, Double> calculateBACOfProject(
+            AbstractProject<?, ?> jenkinsProject,
+            Map<Date, EVMViewBean> actionsMap, String suffix)
+            throws IOException {
+        Project targetProject = getProject(jenkinsProject, suffix);
+
+        Map<Date, Double> bacMap = ProjectUtils.calculateBACOfProject(
+                targetProject, actionsMap);
+        return bacMap;
     }
 
     private Project getProject(AbstractProject<?, ?> jenkinsProject,
