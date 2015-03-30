@@ -127,11 +127,6 @@ public class ProjectSummaryAction implements Action {
     private EVMViewBean internalCreateCurrentEVM() {
         System.out.printf("EVMViewBean getCurrentPVACEV() 実際に作成開始\n");
         try {
-            double pv = 0.0d;
-            double ac = 0.0d;
-            double ev = 0.0d;
-            double bac = 0.0d;
-
             Project project = null;
             if (!StringUtils.isEmpty(name)) {
                 project = getProject(name);
@@ -140,69 +135,13 @@ public class ProjectSummaryAction implements Action {
             }
 
             Date baseDate = project.getBaseDate();
-            TaskInformation[] taskInformations = project.getTaskInformations();
+            EVMViewBean bean = ProjectUtils
+                    .createEVMViewBean(project, baseDate);
 
-            // System.out.println("------");
-            for (TaskInformation info : taskInformations) {
-                double calculatePVs = ProjectUtils.calculatePVs(info, baseDate);
-                pv += (Double.isNaN(calculatePVs) ? 0.0d : calculatePVs);
-                ac += (Double.isNaN(info.getAC().getActualCost()) ? 0.0d : info
-                        .getAC().getActualCost());
-                ev += (Double.isNaN(info.getEV().getEarnedValue()) ? 0.0d
-                        : info.getEV().getEarnedValue());
-
-                // System.out.println(info.getTaskId() + "\t" + calculatePVs
-                // + "\t" + info.getAC().getActualCost() + "\t"
-                // + info.getEV().getEarnedValue());
-
-                double bacPerTask = info.getTask().getNumberOfManDays();
-                // 予定開始日・終了日どちらかに値がない場合、このタスクはBAC(総工数)に計上しない考慮
-                if (info.getTask().getScheduledStartDate() == null
-                        || info.getTask().getScheduledEndDate() == null) {
-                    bacPerTask = Double.NaN;
-                }
-                bac += (Double.isNaN(bacPerTask) ? 0.0d : bacPerTask);
-            }
-            // System.out.println("------");
-
-            EVMViewBean bean = new EVMViewBean();
-
-            bean.setPlannedValue(round(pv, 2));
-            bean.setActualCost(round(ac, 2));
-            bean.setEarnedValue(round(ev, 2));
-            bean.setBac(round(bac, 2));
-            bean.setBaseDate(baseDate);
-
-            double sv = Double.NaN;
-            double cv = Double.NaN;
-            double spi = Double.NaN;
-            double cpi = Double.NaN;
-            double etc = Double.NaN;
-            double eac = Double.NaN;
-            double vac = Double.NaN;
-
-            if (isNonZeroNumeric(pv) && isNonZeroNumeric(ac)
-                    && isNonZeroNumeric(ev)) {
-                sv = ev - pv;
-                cv = ev - ac;
-                spi = ev / pv;
-                cpi = ev / ac;
-                etc = (bac - ev) / cpi;
-                eac = ac + etc;
-                vac = bac - eac;
-            }
-
-            bean.setSv(round(sv, 2));
-            bean.setCv(round(cv, 2));
-
-            bean.setSpi(round(spi, 3));
-            bean.setCpi(round(cpi, 3));
-
-            bean.setEtc(round(etc, 2));
-            bean.setEac(round(eac, 2));
-            bean.setVac(round(vac, 2));
-            bean.setSpiIconFileName(PMUtils.choiceWeatherIconFileName(spi));
-            bean.setCpiIconFileName(PMUtils.choiceWeatherIconFileName(cpi));
+            bean.setSpiIconFileName(PMUtils.choiceWeatherIconFileName(bean
+                    .getSpi()));
+            bean.setCpiIconFileName(PMUtils.choiceWeatherIconFileName(bean
+                    .getCpi()));
 
             delegate = bean;
             System.out.printf("EVMViewBean getCurrentPVACEV() 実際の作成完了\n");
