@@ -11,6 +11,7 @@
 //作成日: 2014/09/17
 package nu.mine.kino.projects.utils;
 
+import static nu.mine.kino.projects.utils.Utils.isNonZeroNumeric;
 import static nu.mine.kino.projects.utils.Utils.round;
 
 import java.io.File;
@@ -20,11 +21,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import nu.mine.kino.entity.ACBean;
 import nu.mine.kino.entity.ACTotalBean;
 import nu.mine.kino.entity.ACTotalBean2ACBean;
 import nu.mine.kino.entity.EVBean;
+import nu.mine.kino.entity.EVMViewBean;
 import nu.mine.kino.entity.EVTotalBean;
 import nu.mine.kino.entity.EVTotalBean2EVBean;
 import nu.mine.kino.entity.Holiday;
@@ -37,6 +40,7 @@ import nu.mine.kino.entity.TaskInformation;
 import nu.mine.kino.entity.Validatable;
 import nu.mine.kino.projects.ProjectException;
 
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
 
 /**
@@ -74,10 +78,36 @@ public class ProjectUtils {
         Date endDate = project.getProjectEndDate();
         Date cursor = startDate;
         while (cursor.getTime() <= endDate.getTime()) {
-            System.out.println(cursor);
+            // System.out.println(cursor);
             double value = ProjectUtils.calculateTotalPVOfProject(project,
                     cursor);
-            System.out.println(value);
+            // System.out.println(value);
+            map.put(cursor, value);
+            cursor = DateUtils.addDays(cursor, 1);
+        }
+        return map;
+    }
+
+    /**
+     * プロジェクトの開始日付から終了日付までのPV
+     * 
+     * @param project
+     * @return
+     */
+    public static Map<Date, Double> calculateBACOfProject(Project project,
+            Map<Date, EVMViewBean> actionsMap) {
+
+        Map<Date, Double> map = new HashMap<Date, Double>();
+        Date startDate = project.getProjectStartDate();
+        Date endDate = project.getProjectEndDate();
+        Date cursor = startDate;
+        // ぐるぐる進んで、
+        while (cursor.getTime() <= endDate.getTime()) {
+            // System.out.println(cursor);
+            // ココを書き換え
+            double value = ProjectUtils.calculateTotalBACOfProject(project,
+                    cursor, actionsMap);
+            // System.out.println(value);
             map.put(cursor, value);
             cursor = DateUtils.addDays(cursor, 1);
         }
@@ -99,6 +129,45 @@ public class ProjectUtils {
             totalPV += (Double.isNaN(tmp) ? 0.0 : tmp);
         }
         return round(totalPV, 1);
+    }
+
+    /**
+     * 渡されたプロジェクトについて、ある基準日時点のBACを返す。基準日より未来で、{@link EVMViewBean}
+     * の中で一番近いオブジェクトのBACを返すようにする。基準日より未来のオブジェクトがない場合はプロジェクトのBACでよい
+     * 
+     * @param project
+     * @param baseDate
+     * @param actionsMap
+     */
+    public static double calculateTotalBACOfProject(Project project,
+            Date baseDate, Map<Date, EVMViewBean> actionsMap) {
+        String msg = "基準日 %s はプロジェクト最終日の値を使う %f\n";
+
+        // ある基準日において、一番直近の未来のactionsMapの値を取る。
+        Set<Date> keySet = actionsMap.keySet();
+        Date ans = project.getProjectEndDate();// はじめは端っこから
+        for (Date mapDate : keySet) {
+            if (baseDate.getTime() < mapDate.getTime()) {
+                ans = mapDate; // 自分(baseDate)より大きい実績値があったら採用。
+                msg = "基準日 %s は直近基準日のプロジェクトの値を使う %f\n";
+                break;
+            }
+            if (baseDate.getTime() == mapDate.getTime()) {
+                ans = mapDate; // 自分(baseDate)より大きい実績値があったら採用。
+                msg = "基準日 %s はその日基準日のプロジェクトの値を使う %f\n";
+                break;
+            }
+        }
+        EVMViewBean bean = null;
+        if (actionsMap.containsKey(ans)) {
+            bean = actionsMap.get(ans);
+        } else {
+            bean = ProjectUtils.createEVMViewBean(project, ans);
+        }
+        System.out.printf(msg, DateFormatUtils.format(baseDate, "yyyy/MM/dd"),
+                bean.getBac());
+        return bean.getBac();
+
     }
 
     /**
@@ -349,6 +418,82 @@ public class ProjectUtils {
             return evbean;
         }
         return evbean;
+    }
+
+    /**
+     * その基準日時点の{@link EVMViewBean} を返す。 ライブラリの都合上、icon名はセットしていない。
+     * 
+     * @param project
+     * @param baseDate
+     * @return
+     */
+    public static EVMViewBean createEVMViewBean(Project project, Date baseDate) {
+        System.out.printf("EVMViewBean getCurrentPVACEV() 実際に作成開始\n");
+        double pv = 0.0d;
+        double ac = 0.0d;
+        double ev = 0.0d;
+        double bac = 0.0d;
+
+        TaskInformation[] taskInformations = project.getTaskInformations();
+
+        for (TaskInformation info : taskInformations) {
+            double calculatePVs = ProjectUtils.calculatePVs(info, baseDate);
+            pv += (Double.isNaN(calculatePVs) ? 0.0d : calculatePVs);
+            ac += (Double.isNaN(info.getAC().getActualCost()) ? 0.0d : info
+                    .getAC().getActualCost());
+            ev += (Double.isNaN(info.getEV().getEarnedValue()) ? 0.0d : info
+                    .getEV().getEarnedValue());
+            double bacPerTask = info.getTask().getNumberOfManDays();
+            // 予定開始日・終了日どちらかに値がない場合、このタスクはBAC(総工数)に計上しない考慮
+            if (info.getTask().getScheduledStartDate() == null
+                    || info.getTask().getScheduledEndDate() == null) {
+                bacPerTask = Double.NaN;
+            }
+            bac += (Double.isNaN(bacPerTask) ? 0.0d : bacPerTask);
+        }
+        // System.out.println("------");
+
+        EVMViewBean bean = new EVMViewBean();
+
+        bean.setPlannedValue(round(pv, 2));
+        bean.setActualCost(round(ac, 2));
+        bean.setEarnedValue(round(ev, 2));
+        bean.setBac(round(bac, 2));
+        bean.setBaseDate(baseDate);
+
+        double sv = Double.NaN;
+        double cv = Double.NaN;
+        double spi = Double.NaN;
+        double cpi = Double.NaN;
+        double etc = Double.NaN;
+        double eac = Double.NaN;
+        double vac = Double.NaN;
+
+        if (isNonZeroNumeric(pv) && isNonZeroNumeric(ac)
+                && isNonZeroNumeric(ev)) {
+            sv = ev - pv;
+            cv = ev - ac;
+            spi = ev / pv;
+            cpi = ev / ac;
+            etc = (bac - ev) / cpi;
+            eac = ac + etc;
+            vac = bac - eac;
+        }
+
+        bean.setSv(round(sv, 2));
+        bean.setCv(round(cv, 2));
+
+        bean.setSpi(round(spi, 3));
+        bean.setCpi(round(cpi, 3));
+
+        bean.setEtc(round(etc, 2));
+        bean.setEac(round(eac, 2));
+        bean.setVac(round(vac, 2));
+        // bean.setSpiIconFileName(PMUtils.choiceWeatherIconFileName(spi));
+        // bean.setCpiIconFileName(PMUtils.choiceWeatherIconFileName(cpi));
+
+        System.out.printf("EVMViewBean getCurrentPVACEV() 実際の作成完了\n");
+        return bean;
     }
 
     // /**
