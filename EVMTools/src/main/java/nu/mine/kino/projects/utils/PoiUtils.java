@@ -63,6 +63,11 @@ public class PoiUtils {
         while (e.hasNext()) {
             Row row = e.next();
             Cell cell = row.getCell(0);
+
+            // ‚½‚Ü‚ÉIterator‚ªnull‚ÌCell‚ð•Ô‚·‘Î‰ž
+            if (cell == null) {
+                break;
+            }
             if (cell.getCellType() != Cell.CELL_TYPE_STRING) {
             } else {
                 if ("#".equals(cell.getStringCellValue())) {
