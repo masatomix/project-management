@@ -45,10 +45,7 @@
    <feature url="features/nu.mine.kino.plugin.jenkins.heartbeat_0.0.1.201412181349.jar" id="nu.mine.kino.plugin.jenkins.heartbeat" version="0.0.1.201412181349">
       <category name="jenkins"/>
    </feature>
-   <feature url="features/nu.mine.kino.plugin.projectmanagement_0.9.5.201502120734.jar" id="nu.mine.kino.plugin.projectmanagement" version="0.9.5.201502120734">
-      <category name="projectmanagement"/>
-   </feature>
-   <feature url="features/nu.mine.kino.plugin.projectmanagement_0.9.11.201503181453.jar" id="nu.mine.kino.plugin.projectmanagement" version="0.9.11.201503181453">
+   <feature url="features/nu.mine.kino.plugin.projectmanagement_0.9.11.201505211045.jar" id="nu.mine.kino.plugin.projectmanagement" version="0.9.11.201505211045">
       <category name="projectmanagement"/>
    </feature>
    <category-def name="google" label="Google Plugin"/>
