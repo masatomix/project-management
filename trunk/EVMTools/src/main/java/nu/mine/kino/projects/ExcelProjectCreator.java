@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -130,6 +131,11 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
             List<TaskInformation> taskInfoList = new ArrayList<TaskInformation>();
             ExcelScheduleBeanSheet sheet = new XLSBeans().load(
                     getInputStream(), ExcelScheduleBeanSheet.class);
+            // Ç±ÇÍÇæÇØÇ≈ÅA
+            // sheet.setExcelScheduleBean(
+            // List<ExcelScheduleBean> instanceList);
+            // sheet.setBaseDate(String date) ;
+            // Ç™åƒÇŒÇÍÇƒÇ¢ÇÈÇ∆åæÇ§Ç±Ç∆ÅB
             java.util.List<ExcelScheduleBean> instanceList = sheet
                     .getExcelScheduleBean();
 
@@ -251,18 +257,15 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
         if (source.getNumberOfDays() != null) {
             dest.setNumberOfDays(source.getNumberOfDays());
         }
-        if (source.getNumberOfManDays() != null) {
-            dest.setNumberOfManDays(source.getNumberOfManDays());
-        }
+        dest.setNumberOfManDays(source.getNumberOfManDays() == null ? Double.NaN
+                : source.getNumberOfManDays());
     }
 
     private void setEV(ExcelPOIScheduleBean source, EVTotalBean dest) {
-        if (source.getEarnedValue() != null) {
-            dest.setEarnedValue(source.getEarnedValue());
-        }
-        if (source.getProgressRate() != null) {
-            dest.setProgressRate(source.getProgressRate());
-        }
+        dest.setEarnedValue(source.getEarnedValue() == null ? Double.NaN
+                : source.getEarnedValue());
+        dest.setProgressRate(source.getProgressRate() == null ? Double.NaN
+                : source.getProgressRate());
         if (source.getEndDate() != null) {
             dest.setEndDate(source.getEndDate());
         }
@@ -272,15 +275,13 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
     }
 
     private void setAC(ExcelPOIScheduleBean source, ACTotalBean dest) {
-        if (source.getActualCost() != null) {
-            dest.setActualCost(source.getActualCost());
-        }
+        dest.setActualCost(source.getActualCost() == null ? Double.NaN : source
+                .getActualCost());
     }
 
     private void setPV(ExcelPOIScheduleBean source, PVTotalBean dest) {
-        if (source.getPlannedValue() != null) {
-            dest.setPlannedValue(source.getPlannedValue());
-        }
+        dest.setPlannedValue(source.getPlannedValue() == null ? Double.NaN
+                : source.getPlannedValue());
     }
 
     private ExcelPOIScheduleBean createPOIBean(Row row) {

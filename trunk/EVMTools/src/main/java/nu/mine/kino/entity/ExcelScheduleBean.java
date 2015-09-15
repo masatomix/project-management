@@ -603,95 +603,95 @@ public class ExcelScheduleBean {
         return status;
     }
 
-    /**
-     * 予定工数を取得する。
-     * 
-     * @return 予定工数
-     */
-    public String getNumberOfManDays() {
-        return numberOfManDays;
-    }
-
-    /**
-     * 予定開始日を取得する。
-     * 
-     * @return 予定開始日
-     */
-    public String getScheduledStartDate() {
-        return scheduledStartDate;
-    }
-
-    /**
-     * 予定終了日を取得する。
-     * 
-     * @return 予定終了日
-     */
-    public String getScheduledEndDate() {
-        return scheduledEndDate;
-    }
-
-    /**
-     * 実績開始日を取得する。
-     * 
-     * @return 実績開始日
-     */
-    public String getStartDate() {
-        return startDate;
-    }
-
-    /**
-     * 実績終了日を取得する。
-     * 
-     * @return 実績終了日
-     */
-    public String getEndDate() {
-        return endDate;
-    }
-
-    /**
-     * 進捗率を取得する。
-     * 
-     * @return 進捗率
-     */
-    public String getProgressRate() {
-        return progressRate;
-    }
-
-    /**
-     * 稼動予定日数を取得する。
-     * 
-     * @return 稼動予定日数
-     */
-    public String getNumberOfDays() {
-        return numberOfDays;
-    }
-
-    /**
-     * Planned Valueを取得する。
-     * 
-     * @return Planned Value
-     */
-    public String getPlannedValue() {
-        return plannedValue;
-    }
-
-    /**
-     * Earned Valueを取得する。
-     * 
-     * @return Earned Value
-     */
-    public String getEarnedValue() {
-        return earnedValue;
-    }
-
-    /**
-     * Actual Costを取得する。
-     * 
-     * @return Actual Cost
-     */
-    public String getActualCost() {
-        return actualCost;
-    }
+    // /**
+    // * 予定工数を取得する。
+    // *
+    // * @return 予定工数
+    // */
+    // public String getNumberOfManDays() {
+    // return numberOfManDays;
+    // }
+    //
+    // /**
+    // * 予定開始日を取得する。
+    // *
+    // * @return 予定開始日
+    // */
+    // public String getScheduledStartDate() {
+    // return scheduledStartDate;
+    // }
+    //
+    // /**
+    // * 予定終了日を取得する。
+    // *
+    // * @return 予定終了日
+    // */
+    // public String getScheduledEndDate() {
+    // return scheduledEndDate;
+    // }
+    //
+    // /**
+    // * 実績開始日を取得する。
+    // *
+    // * @return 実績開始日
+    // */
+    // public String getStartDate() {
+    // return startDate;
+    // }
+    //
+    // /**
+    // * 実績終了日を取得する。
+    // *
+    // * @return 実績終了日
+    // */
+    // public String getEndDate() {
+    // return endDate;
+    // }
+    //
+    // /**
+    // * 進捗率を取得する。
+    // *
+    // * @return 進捗率
+    // */
+    // public String getProgressRate() {
+    // return progressRate;
+    // }
+    //
+    // /**
+    // * 稼動予定日数を取得する。
+    // *
+    // * @return 稼動予定日数
+    // */
+    // public String getNumberOfDays() {
+    // return numberOfDays;
+    // }
+    //
+    // /**
+    // * Planned Valueを取得する。
+    // *
+    // * @return Planned Value
+    // */
+    // public String getPlannedValue() {
+    // return plannedValue;
+    // }
+    //
+    // /**
+    // * Earned Valueを取得する。
+    // *
+    // * @return Earned Value
+    // */
+    // public String getEarnedValue() {
+    // return earnedValue;
+    // }
+    //
+    // /**
+    // * Actual Costを取得する。
+    // *
+    // * @return Actual Cost
+    // */
+    // public String getActualCost() {
+    // return actualCost;
+    // }
 
     /**
      * 備考を取得する。
