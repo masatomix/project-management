@@ -24,8 +24,6 @@ public class ExcelScheduleBean2ACTotalBean {
         // 必要に応じて特殊な載せ替え処理 開始
         ((ACTotalBean) dest).setId(source.getId());
         ((ACTotalBean) dest).setTaskId(source.getTaskId());
-//        ((ACTotalBean) dest).setActualCost(nu.mine.kino.projects.utils.Utils
-//                .convert2Double(source.getActualCost()));
         ((ACTotalBean) dest).setBaseDate(source.getBaseDate());
 
         // 特殊な載せ替え処理 終了
@@ -43,8 +41,6 @@ public class ExcelScheduleBean2ACTotalBean {
         // 必要に応じて特殊な載せ替え処理 開始
         ((ACTotalBean) dest).setId(source.getId());
         ((ACTotalBean) dest).setTaskId(source.getTaskId());
-//        ((ACTotalBean) dest).setActualCost(nu.mine.kino.projects.utils.Utils
-//                .convert2Double(source.getActualCost()));
         ((ACTotalBean) dest).setBaseDate(source.getBaseDate());
 
         // 特殊な載せ替え処理 終了

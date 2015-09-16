@@ -24,8 +24,6 @@ public class ExcelScheduleBean2PVTotalBean {
         // 必要に応じて特殊な載せ替え処理 開始
         ((PVTotalBean) dest).setId(source.getId());
         ((PVTotalBean) dest).setTaskId(source.getTaskId());
-//        ((PVTotalBean) dest).setPlannedValue(nu.mine.kino.projects.utils.Utils
-//                .convert2Double(source.getPlannedValue()));
         ((PVTotalBean) dest).setBaseDate(source.getBaseDate());
 
         // 特殊な載せ替え処理 終了
@@ -43,8 +41,6 @@ public class ExcelScheduleBean2PVTotalBean {
         // 必要に応じて特殊な載せ替え処理 開始
         ((PVTotalBean) dest).setId(source.getId());
         ((PVTotalBean) dest).setTaskId(source.getTaskId());
-//        ((PVTotalBean) dest).setPlannedValue(nu.mine.kino.projects.utils.Utils
-//                .convert2Double(source.getPlannedValue()));
         ((PVTotalBean) dest).setBaseDate(source.getBaseDate());
 
         // 特殊な載せ替え処理 終了
