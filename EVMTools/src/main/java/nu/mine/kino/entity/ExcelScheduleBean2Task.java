@@ -33,8 +33,6 @@ public class ExcelScheduleBean2Task {
         ((Task) dest).setSenkoTaskId(source.getSenkoTaskId());
         ((Task) dest).setPersonInCharge(source.getPersonInCharge());
         ((Task) dest).setTaskAbstract(source.getTaskAbstract());
-//        ((Task) dest).setNumberOfManDays(nu.mine.kino.projects.utils.Utils
-//                .convert2Double(source.getNumberOfManDays()));
         ((Task) dest)
                 .setScheduledStartDate(nu.mine.kino.projects.utils.BaseDataUtils
                         .calculateMinDate(source));
@@ -69,8 +67,6 @@ public class ExcelScheduleBean2Task {
         ((Task) dest).setSenkoTaskId(source.getSenkoTaskId());
         ((Task) dest).setPersonInCharge(source.getPersonInCharge());
         ((Task) dest).setTaskAbstract(source.getTaskAbstract());
-//        ((Task) dest).setNumberOfManDays(nu.mine.kino.projects.utils.Utils
-//                .convert2Double(source.getNumberOfManDays()));
         ((Task) dest)
                 .setScheduledStartDate(nu.mine.kino.projects.utils.BaseDataUtils
                         .calculateMinDate(source));

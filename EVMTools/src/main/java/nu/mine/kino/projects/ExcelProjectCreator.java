@@ -50,10 +50,12 @@ import nu.mine.kino.projects.utils.PoiUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.util.CellReference;
 import org.bbreak.excella.core.util.PoiUtil;
 
 /**
@@ -89,6 +91,14 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
             Workbook workbook = null;
             workbook = WorkbookFactory.create(in);
             Sheet sheet = workbook.getSheetAt(0);
+
+            Name name = workbook.getName("óãê¸äÓèÄì˙");
+            CellReference cellReference = new CellReference(
+                    name.getRefersToFormula());
+            Cell baseDateCell = sheet.getRow(cellReference.getRow()).getCell(
+                    cellReference.getCol());
+            System.out.println(PoiUtils.getDate(baseDateCell));
+
             Iterator<Row> e = sheet.rowIterator();
             int index = 0;
             int dataIndex = PoiUtils.getDataFirstRowNum(sheet);

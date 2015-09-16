@@ -24,14 +24,6 @@ public class ExcelScheduleBean2EVTotalBean {
         // 必要に応じて特殊な載せ替え処理 開始
         ((EVTotalBean) dest).setId(source.getId());
         ((EVTotalBean) dest).setTaskId(source.getTaskId());
-//        ((EVTotalBean) dest).setStartDate(nu.mine.kino.projects.utils.Utils
-//                .str2Date(source.getStartDate(), "MM/dd"));
-//        ((EVTotalBean) dest).setEndDate(nu.mine.kino.projects.utils.Utils
-//                .str2Date(source.getEndDate(), "MM/dd"));
-//        ((EVTotalBean) dest).setProgressRate(nu.mine.kino.projects.utils.Utils
-//                .convetPercentStr2Double(source.getProgressRate()));
-//        ((EVTotalBean) dest).setEarnedValue(nu.mine.kino.projects.utils.Utils
-//                .convert2Double(source.getEarnedValue()));
         ((EVTotalBean) dest).setBaseDate(source.getBaseDate());
 
         // 特殊な載せ替え処理 終了
@@ -49,14 +41,6 @@ public class ExcelScheduleBean2EVTotalBean {
         // 必要に応じて特殊な載せ替え処理 開始
         ((EVTotalBean) dest).setId(source.getId());
         ((EVTotalBean) dest).setTaskId(source.getTaskId());
-//        ((EVTotalBean) dest).setStartDate(nu.mine.kino.projects.utils.Utils
-//                .str2Date(source.getStartDate(), "MM/dd"));
-//        ((EVTotalBean) dest).setEndDate(nu.mine.kino.projects.utils.Utils
-//                .str2Date(source.getEndDate(), "MM/dd"));
-//        ((EVTotalBean) dest).setProgressRate(nu.mine.kino.projects.utils.Utils
-//                .convetPercentStr2Double(source.getProgressRate()));
-//        ((EVTotalBean) dest).setEarnedValue(nu.mine.kino.projects.utils.Utils
-//                .convert2Double(source.getEarnedValue()));
         ((EVTotalBean) dest).setBaseDate(source.getBaseDate());
 
         // 特殊な載せ替え処理 終了
