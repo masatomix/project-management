@@ -1,11 +1,12 @@
 /******************************************************************************
- * Copyright (c) 2008-2014 Masatomi KINO and others. 
+ * Copyright (c) 2008-2009 Masatomi KINO and others. 
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * Contributors:
  *      Masatomi KINO - initial API and implementation
+ * $Id$
  ******************************************************************************/
 
 package nu.mine.kino.entity;
@@ -18,6 +19,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 /**
  * 
  * @author Masatomi KINO and JavaBeans Creator Plug-in
+ * @version $Revision$
  */
 public class ExcelScheduleBean {
 
@@ -95,56 +97,6 @@ public class ExcelScheduleBean {
      * 状況
      */
     private String status;
-
-    /**
-     * 予定工数
-     */
-    private String numberOfManDays;
-
-    /**
-     * 予定開始日
-     */
-    private String scheduledStartDate;
-
-    /**
-     * 予定終了日
-     */
-    private String scheduledEndDate;
-
-    /**
-     * 実績開始日
-     */
-    private String startDate;
-
-    /**
-     * 実績終了日
-     */
-    private String endDate;
-
-    /**
-     * 進捗率
-     */
-    private String progressRate;
-
-    /**
-     * 稼動予定日数
-     */
-    private String numberOfDays;
-
-    /**
-     * Planned Value
-     */
-    private String plannedValue;
-
-    /**
-     * Earned Value
-     */
-    private String earnedValue;
-
-    /**
-     * Actual Cost
-     */
-    private String actualCost;
 
     /**
      * 備考
@@ -327,116 +279,6 @@ public class ExcelScheduleBean {
     }
 
     /**
-     * 予定工数をセットする。
-     * 
-     * @param numberOfManDays
-     *            予定工数
-     */
-    @Column(columnName = "予定工数")//$NON-NLS-1$
-    public void setNumberOfManDays(String numberOfManDays) {
-        this.numberOfManDays = numberOfManDays;
-    }
-
-    /**
-     * 予定開始日をセットする。
-     * 
-     * @param scheduledStartDate
-     *            予定開始日
-     */
-    @Column(columnName = "予定")//$NON-NLS-1$
-    public void setScheduledStartDate(String scheduledStartDate) {
-        this.scheduledStartDate = scheduledStartDate;
-    }
-
-    /**
-     * 予定終了日をセットする。
-     * 
-     * @param scheduledEndDate
-     *            予定終了日
-     */
-    @Column(columnName = "e")//$NON-NLS-1$
-    public void setScheduledEndDate(String scheduledEndDate) {
-        this.scheduledEndDate = scheduledEndDate;
-    }
-
-    /**
-     * 実績開始日をセットする。
-     * 
-     * @param startDate
-     *            実績開始日
-     */
-    @Column(columnName = "実績")//$NON-NLS-1$
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
-
-    /**
-     * 実績終了日をセットする。
-     * 
-     * @param endDate
-     *            実績終了日
-     */
-    @Column(columnName = "f")//$NON-NLS-1$
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
-    }
-
-    /**
-     * 進捗率をセットする。
-     * 
-     * @param progressRate
-     *            進捗率
-     */
-    @Column(columnName = "進捗率")//$NON-NLS-1$
-    public void setProgressRate(String progressRate) {
-        this.progressRate = progressRate;
-    }
-
-    /**
-     * 稼動予定日数をセットする。
-     * 
-     * @param numberOfDays
-     *            稼動予定日数
-     */
-    @Column(columnName = "稼動予定日数")//$NON-NLS-1$
-    public void setNumberOfDays(String numberOfDays) {
-        this.numberOfDays = numberOfDays;
-    }
-
-    /**
-     * Planned Valueをセットする。
-     * 
-     * @param plannedValue
-     *            Planned Value
-     */
-    @Column(columnName = "PV")//$NON-NLS-1$
-    public void setPlannedValue(String plannedValue) {
-        this.plannedValue = plannedValue;
-    }
-
-    /**
-     * Earned Valueをセットする。
-     * 
-     * @param earnedValue
-     *            Earned Value
-     */
-    @Column(columnName = "EV")//$NON-NLS-1$
-    public void setEarnedValue(String earnedValue) {
-        this.earnedValue = earnedValue;
-    }
-
-    /**
-     * Actual Costをセットする。
-     * 
-     * @param actualCost
-     *            Actual Cost
-     */
-    @Column(columnName = "AC")//$NON-NLS-1$
-    public void setActualCost(String actualCost) {
-        this.actualCost = actualCost;
-    }
-
-    /**
      * 備考をセットする。
      * 
      * @param remarks
@@ -603,96 +445,6 @@ public class ExcelScheduleBean {
         return status;
     }
 
-    // /**
-    // * 予定工数を取得する。
-    // *
-    // * @return 予定工数
-    // */
-    // public String getNumberOfManDays() {
-    // return numberOfManDays;
-    // }
-    //
-    // /**
-    // * 予定開始日を取得する。
-    // *
-    // * @return 予定開始日
-    // */
-    // public String getScheduledStartDate() {
-    // return scheduledStartDate;
-    // }
-    //
-    // /**
-    // * 予定終了日を取得する。
-    // *
-    // * @return 予定終了日
-    // */
-    // public String getScheduledEndDate() {
-    // return scheduledEndDate;
-    // }
-    //
-    // /**
-    // * 実績開始日を取得する。
-    // *
-    // * @return 実績開始日
-    // */
-    // public String getStartDate() {
-    // return startDate;
-    // }
-    //
-    // /**
-    // * 実績終了日を取得する。
-    // *
-    // * @return 実績終了日
-    // */
-    // public String getEndDate() {
-    // return endDate;
-    // }
-    //
-    // /**
-    // * 進捗率を取得する。
-    // *
-    // * @return 進捗率
-    // */
-    // public String getProgressRate() {
-    // return progressRate;
-    // }
-    //
-    // /**
-    // * 稼動予定日数を取得する。
-    // *
-    // * @return 稼動予定日数
-    // */
-    // public String getNumberOfDays() {
-    // return numberOfDays;
-    // }
-    //
-    // /**
-    // * Planned Valueを取得する。
-    // *
-    // * @return Planned Value
-    // */
-    // public String getPlannedValue() {
-    // return plannedValue;
-    // }
-    //
-    // /**
-    // * Earned Valueを取得する。
-    // *
-    // * @return Earned Value
-    // */
-    // public String getEarnedValue() {
-    // return earnedValue;
-    // }
-    //
-    // /**
-    // * Actual Costを取得する。
-    // *
-    // * @return Actual Cost
-    // */
-    // public String getActualCost() {
-    // return actualCost;
-    // }
-
     /**
      * 備考を取得する。
      * 
@@ -732,15 +484,7 @@ public class ExcelScheduleBean {
                 .append("タスク概要", taskAbstract).append("主要アウトプット", output)
                 .append("先週の活動実績報告", reportOfLastWeek)
                 .append("今週の活動予定", reportOfThisWeek).append("状況", status)
-                .append("予定工数", numberOfManDays)
-                .append("予定開始日", scheduledStartDate)
-                .append("予定終了日", scheduledEndDate).append("実績開始日", startDate)
-                .append("実績終了日", endDate).append("進捗率", progressRate)
-                .append("稼動予定日数", numberOfDays)
-                .append("Planned Value", plannedValue)
-                .append("Earned Value", earnedValue)
-                .append("Actual Cost", actualCost).append("備考", remarks)
-                .append("基準日", baseDate).append("ガントチャート", plotDataMap)
-                .toString();
+                .append("備考", remarks).append("基準日", baseDate)
+                .append("ガントチャート", plotDataMap).toString();
     }
 }
