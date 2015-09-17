@@ -11,6 +11,7 @@
 //作成日: 2014/09/17
 package nu.mine.kino.projects.utils;
 
+import static nu.mine.kino.projects.utils.PoiUtils.getTaskId;
 import static nu.mine.kino.projects.utils.Utils.isNonZeroNumeric;
 import static nu.mine.kino.projects.utils.Utils.round;
 
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,11 +32,13 @@ import nu.mine.kino.entity.EVBean;
 import nu.mine.kino.entity.EVMViewBean;
 import nu.mine.kino.entity.EVTotalBean;
 import nu.mine.kino.entity.EVTotalBean2EVBean;
+import nu.mine.kino.entity.ExcelPOIScheduleBean;
 import nu.mine.kino.entity.Holiday;
 import nu.mine.kino.entity.PVBean;
 import nu.mine.kino.entity.PVTotalBean;
 import nu.mine.kino.entity.PVTotalBean2PVBean;
 import nu.mine.kino.entity.Project;
+import nu.mine.kino.entity.Row2ExcelPOIScheduleBean;
 import nu.mine.kino.entity.Task;
 import nu.mine.kino.entity.TaskInformation;
 import nu.mine.kino.entity.Validatable;
@@ -42,6 +46,13 @@ import nu.mine.kino.projects.ProjectException;
 
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Name;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellReference;
+import org.bbreak.excella.core.util.PoiUtil;
 
 /**
  * Project系の様々なUtilityメソッド
@@ -584,4 +595,128 @@ public class ProjectUtils {
             return false;
         }
     }
+
+    public static Map<String, ExcelPOIScheduleBean> createExcelPOIScheduleBeanMap(
+            Workbook workbook, Date baseDate) {
+        Map<String, ExcelPOIScheduleBean> poiMap = new HashMap<String, ExcelPOIScheduleBean>();
+        Sheet sheet = workbook.getSheetAt(0);
+
+        Iterator<Row> e = sheet.rowIterator();
+        int index = 0;
+        int dataIndex = PoiUtils.getDataFirstRowNum(sheet);
+        while (e.hasNext()) {
+            // ヘッダが終わるまで飛ばす。
+            if (index < dataIndex) {
+                e.next();
+                index++;
+                continue;
+            }
+            // データ部の処理
+            Row row = e.next();
+            Cell taskIdCell = row.getCell(1);
+            String taskId = getTaskId(taskIdCell);
+            ExcelPOIScheduleBean poiBean = createPOIBean(row);
+            poiBean.setBaseDate(baseDate);
+            poiMap.put(taskId, poiBean);
+
+        }
+        return poiMap;
+    }
+
+    public static Date createBaseDate(Workbook workbook, Sheet sheet) {
+        Date baseDate;
+        Name name = workbook.getName("雷線基準日");
+        CellReference cellReference = new CellReference(
+                name.getRefersToFormula());
+        Cell baseDateCell = sheet.getRow(cellReference.getRow()).getCell(
+                cellReference.getCol());
+        baseDate = PoiUtils.getDate(baseDateCell);
+        return baseDate;
+    }
+
+    public static Holiday[] createHolidays(Workbook workbook) {
+        Sheet sheet = workbook.getSheet("休日テーブル");
+
+        List<Holiday> arrayList = new ArrayList<Holiday>();
+        Iterator<Row> e = sheet.rowIterator();
+        while (e.hasNext()) {
+            Row row = e.next();
+            Holiday holiday = new Holiday();
+
+            Cell dateCell = row.getCell(0);
+            if (dateCell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                if (PoiUtil.isCellDateFormatted(dateCell)) {
+                    Date dateCellValue = dateCell.getDateCellValue();
+                    holiday.setDate(dateCellValue);
+                }
+                arrayList.add(holiday);
+            }
+
+            // Cell cell1 = row.getCell(1);
+            // if (cell1 != null && cell1.getCellType() ==
+            // Cell.CELL_TYPE_FORMULA) {
+            // holiday.setDayOfWeek((String) PoiUtils.getCellValue(cell1,
+            // String.class));
+            // }
+
+            Cell cell2 = row.getCell(2);
+            if (cell2 != null && cell2.getCellType() == Cell.CELL_TYPE_STRING) {
+                holiday.setName(cell2.getStringCellValue());
+            }
+            Cell cell3 = row.getCell(3);
+            if (cell3 != null && cell3.getCellType() == Cell.CELL_TYPE_STRING) {
+                holiday.setRule(cell3.getStringCellValue());
+            }
+            Cell cell4 = row.getCell(4);
+            if (cell4 != null && cell4.getCellType() == Cell.CELL_TYPE_STRING) {
+                holiday.setHurikae(cell4.getStringCellValue());
+            }
+
+        }
+        return arrayList.toArray(new Holiday[arrayList.size()]);
+    }
+
+    private static ExcelPOIScheduleBean createPOIBean(Row row) {
+        // Cell taskIdCell = row.getCell(1);
+        // String taskId = getTaskId(taskIdCell);
+        // // 15 予定工数
+        // // 20 進捗率 0.8とかそういう値が取れる
+        // // 21 稼働予定日数
+        // // 22 PV
+        // // 23 EV
+        // // 24 AC
+        // // PoiUtils.getCellValue(row.getCell(15), Double.class);
+        // // PoiUtils.getCellValue(row.getCell(20), Double.class);
+        // // PoiUtils.getCellValue(row.getCell(22), Double.class);
+        // // PoiUtils.getCellValue(row.getCell(23), Double.class);
+        // // PoiUtils.getCellValue(row.getCell(24), Double.class);
+        // System.out.printf("[%s],[%s],[%s],[%s],[%s],[%s],", taskId,
+        // PoiUtils.getCellValue(row.getCell(15), Double.class),
+        // PoiUtils.getCellValue(row.getCell(20), Double.class),
+        // PoiUtils.getCellValue(row.getCell(21), Integer.class),
+        // PoiUtils.getCellValue(row.getCell(22), Double.class),
+        // PoiUtils.getCellValue(row.getCell(23), Double.class),
+        // PoiUtils.getCellValue(row.getCell(24), Double.class));
+        // // row.getCell(15), row.getCell(20), row.getCell(22),
+        // // row.getCell(23), row.getCell(24));
+        //
+        // // 16 予定開始日
+        // // 17 予定終了日
+        // // 18 実績開始日
+        // // 19 実績終了日
+        // Date sDate = getDate(row.getCell(16));
+        // Date eDate = getDate(row.getCell(17));
+        // Date asDate = getDate(row.getCell(18));
+        // Date aeDate = getDate(row.getCell(19));
+        //
+        // String pattern = "yyyy/MM/dd";
+        // System.out.printf("[%s],[%s],[%s],[%s],[%s]\n", taskId,
+        // Utils.date2Str(sDate, pattern), Utils.date2Str(eDate, pattern),
+        // Utils.date2Str(asDate, pattern),
+        // Utils.date2Str(aeDate, pattern));
+        ExcelPOIScheduleBean bean = Row2ExcelPOIScheduleBean.convert(row);
+
+        return bean;
+    }
+
 }

@@ -12,15 +12,19 @@
 
 package nu.mine.kino.projects.utils;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import net.java.amateras.xlsbeans.XLSBeans;
 import net.java.amateras.xlsbeans.XLSBeansException;
+import nu.mine.kino.entity.ExcelPOIScheduleBean;
 import nu.mine.kino.entity.ExcelScheduleBean;
 import nu.mine.kino.entity.ExcelScheduleBean2Task;
 import nu.mine.kino.entity.Task;
@@ -30,6 +34,10 @@ import nu.mine.kino.projects.ProjectException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.junit.Test;
 
 /**
@@ -42,23 +50,27 @@ public class BaseDataUtilsTest {
     public void test() throws ParseException {
         java.io.InputStream in = null;
         try {
+            Workbook workbook = WorkbookFactory.create(new FileInputStream(
+                    new File("project_management_tools.xls")));
+            Sheet poiSheet = workbook.getSheetAt(0);
+            Date baseDate = ProjectUtils.createBaseDate(workbook, poiSheet);
+            Map<String, ExcelPOIScheduleBean> poiMap = ProjectUtils
+                    .createExcelPOIScheduleBeanMap(workbook, baseDate);
+
             List<TaskInformation> taskInfoList = new ArrayList<TaskInformation>();
-
+            
             in = new java.io.FileInputStream("project_management_tools.xls");
-
             ExcelScheduleBeanSheet sheet = new XLSBeans().load(in,
                     ExcelScheduleBeanSheet.class);
             java.util.List<ExcelScheduleBean> instanceList = sheet
                     .getExcelScheduleBean();
 
             for (ExcelScheduleBean instance : instanceList) {
-                if (!StringUtils.isEmpty(instance.getId())) {
-                    instance.setBaseDate(sheet.getBaseDate());
+                if (!StringUtils.isEmpty(instance.getTaskId())) {
                     Task task = ExcelScheduleBean2Task.convert(instance);
-
                     print(task);
-
                 }
+
             }
             System.out.println(instanceList.size());
             System.out.println(sheet.getBaseDate());
@@ -67,6 +79,12 @@ public class BaseDataUtilsTest {
             // TODO 自動生成された catch ブロック
             e.printStackTrace();
         } catch (XLSBeansException e) {
+            // TODO 自動生成された catch ブロック
+            e.printStackTrace();
+        } catch (InvalidFormatException e) {
+            // TODO 自動生成された catch ブロック
+            e.printStackTrace();
+        } catch (IOException e) {
             // TODO 自動生成された catch ブロック
             e.printStackTrace();
         } finally {

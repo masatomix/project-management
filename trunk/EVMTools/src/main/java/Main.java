@@ -9,6 +9,8 @@
  * $Id$
  ******************************************************************************/
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
@@ -22,6 +24,7 @@ import net.java.amateras.xlsbeans.XLSBeans;
 import net.java.amateras.xlsbeans.XLSBeansException;
 import nu.mine.kino.entity.ACTotalBean;
 import nu.mine.kino.entity.EVTotalBean;
+import nu.mine.kino.entity.ExcelPOIScheduleBean;
 import nu.mine.kino.entity.ExcelPOIScheduleBean2ACTotalBean;
 import nu.mine.kino.entity.ExcelPOIScheduleBean2EVTotalBean;
 import nu.mine.kino.entity.ExcelPOIScheduleBean2PVTotalBean;
@@ -35,7 +38,12 @@ import nu.mine.kino.entity.TaskInformation;
 import nu.mine.kino.projects.ExcelScheduleBeanSheet;
 import nu.mine.kino.projects.utils.ProjectUtils;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 /**
  * 
@@ -46,6 +54,13 @@ public class Main {
     public static void main(String[] args) throws ParseException {
         java.io.InputStream in = null;
         try {
+            Workbook workbook = WorkbookFactory.create(new FileInputStream(
+                    new File("project_management_tools.xls")));
+            Sheet poiSheet = workbook.getSheetAt(0);
+            Date baseDate = ProjectUtils.createBaseDate(workbook, poiSheet);
+            Map<String, ExcelPOIScheduleBean> poiMap = ProjectUtils
+                    .createExcelPOIScheduleBeanMap(workbook, baseDate);
+
             List<TaskInformation> taskInfoList = new ArrayList<TaskInformation>();
 
             in = new java.io.FileInputStream("project_management_tools.xls");
@@ -56,32 +71,34 @@ public class Main {
                     .getExcelScheduleBean();
 
             for (ExcelScheduleBean instance : instanceList) {
-                if (!instance.getId().equals("")) {
-                    instance.setBaseDate(sheet.getBaseDate());
+                if (!StringUtils.isEmpty(instance.getTaskId())) {
+
                     Task task = ExcelScheduleBean2Task.convert(instance);
 
-                    double pvs = ProjectUtils.calculatePVs(task,
-                            instance.getBaseDate());
+                    double pvs = ProjectUtils.calculatePVs(task, baseDate);
 
-                    Date baseDate = DateUtils.parseDate("20140925",
+                    baseDate = DateUtils.parseDate("20140925",
                             new String[] { "yyyyMMdd" });
                     Map<String, String> plotDataMap = task.getPlotDataMap();
                     // Set<String>[] split = ProjectUtils.split(baseDate,
                     // plotDataMap);
                     // Utils.print(split);
 
+                    ExcelPOIScheduleBean bean = poiMap
+                            .get(instance.getTaskId());
+
                     double pv = ProjectUtils.calculatePV(task, baseDate);
                     System.out.println(baseDate + "のPV:" + pv);
 
                     PVTotalBean pvTotalBean = ExcelPOIScheduleBean2PVTotalBean
-                            .convert(instance);
+                            .convert(bean);
                     ACTotalBean acTotalBean = ExcelPOIScheduleBean2ACTotalBean
-                            .convert(instance);
+                            .convert(bean);
                     EVTotalBean evTotalBean = ExcelPOIScheduleBean2EVTotalBean
-                            .convert(instance);
+                            .convert(bean);
 
                     TaskInformation taskInfo = ExcelPOIScheduleBean2TaskInformation
-                            .convert(instance);
+                            .convert(bean);
 
                     taskInfo.setTask(task);
                     taskInfo.setPV(pvTotalBean);
@@ -111,6 +128,12 @@ public class Main {
             // TODO 自動生成された catch ブロック
             e.printStackTrace();
         } catch (XLSBeansException e) {
+            // TODO 自動生成された catch ブロック
+            e.printStackTrace();
+        } catch (InvalidFormatException e) {
+            // TODO 自動生成された catch ブロック
+            e.printStackTrace();
+        } catch (IOException e) {
             // TODO 自動生成された catch ブロック
             e.printStackTrace();
         } finally {
