@@ -56,11 +56,12 @@ public class ExcelScheduleBeanSheet {
         return instanceList;
     }
 
-    // 場所決め打ちで、基準日を取得する。
-    @Cell(row = 0, column = 25)
-    public void setBaseDate(String date) throws ParseException {
-        this.baseDate = DateUtils.parseDate(date, new String[] { "yy/MM/dd" });
-    }
+//    // 場所決め打ちで、基準日を取得する。
+//    @Cell(row = 0, column = 25)
+//    public void setBaseDate(String date) throws ParseException {
+//        this.baseDate = DateUtils.parseDate(date, new String[] { "yy/MM/dd" });
+//    }
+    
 
     public Date getBaseDate() {
         return baseDate;
@@ -72,6 +73,10 @@ public class ExcelScheduleBeanSheet {
 
     public Date getProjectEndDate() {
         return projectEndDate;
+    }
+
+    public void setBaseDate(Date baseDate) {
+        this.baseDate = baseDate;
     }
 
 }
