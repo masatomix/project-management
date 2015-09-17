@@ -22,17 +22,17 @@ public class ExcelPOIScheduleBean2Task {
         Task dest = new Task();
 
         // 必要に応じて特殊な載せ替え処理 開始
-        ((Task) dest).setId(source.getId());
-        ((Task) dest).setTaskId(source.getTaskId());
-        ((Task) dest).setType(source.getType());
-        ((Task) dest).setTaskSharp(source.getTaskSharp());
-        ((Task) dest).setTaskName(source.getTaskName());
-        ((Task) dest).setTaskName1(source.getTaskName1());
-        ((Task) dest).setTaskName2(source.getTaskName2());
-        ((Task) dest).setTaskName3(source.getTaskName3());
-        ((Task) dest).setSenkoTaskId(source.getSenkoTaskId());
-        ((Task) dest).setPersonInCharge(source.getPersonInCharge());
-        ((Task) dest).setTaskAbstract(source.getTaskAbstract());
+        ((Task) dest).setId(null2Empty(source.getId()));
+        ((Task) dest).setTaskId(null2Empty(source.getTaskId()));
+        ((Task) dest).setType(null2Empty(source.getType()));
+        ((Task) dest).setTaskSharp(null2Empty(source.getTaskSharp()));
+        ((Task) dest).setTaskName(null2Empty(source.getTaskName()));
+        ((Task) dest).setTaskName1(null2Empty(source.getTaskName1()));
+        ((Task) dest).setTaskName2(null2Empty(source.getTaskName2()));
+        ((Task) dest).setTaskName3(null2Empty(source.getTaskName3()));
+        ((Task) dest).setSenkoTaskId(null2Empty(source.getSenkoTaskId()));
+        ((Task) dest).setPersonInCharge(null2Empty(source.getPersonInCharge()));
+        ((Task) dest).setTaskAbstract(null2Empty(source.getTaskAbstract()));
         ((Task) dest).setScheduledEndDate(scheduledEndDate(source, dest));
         ((Task) dest).setScheduledStartDate(scheduledStartDate(source, dest));
         ((Task) dest).setNumberOfDays(source.getNumberOfDays() == null ? 0
@@ -54,17 +54,17 @@ public class ExcelPOIScheduleBean2Task {
      */
     public static void convert(ExcelPOIScheduleBean source, Task dest) {
         // 必要に応じて特殊な載せ替え処理 開始
-        ((Task) dest).setId(source.getId());
-        ((Task) dest).setTaskId(source.getTaskId());
-        ((Task) dest).setType(source.getType());
-        ((Task) dest).setTaskSharp(source.getTaskSharp());
-        ((Task) dest).setTaskName(source.getTaskName());
-        ((Task) dest).setTaskName1(source.getTaskName1());
-        ((Task) dest).setTaskName2(source.getTaskName2());
-        ((Task) dest).setTaskName3(source.getTaskName3());
-        ((Task) dest).setSenkoTaskId(source.getSenkoTaskId());
-        ((Task) dest).setPersonInCharge(source.getPersonInCharge());
-        ((Task) dest).setTaskAbstract(source.getTaskAbstract());
+        ((Task) dest).setId(null2Empty(source.getId()));
+        ((Task) dest).setTaskId(null2Empty(source.getTaskId()));
+        ((Task) dest).setType(null2Empty(source.getType()));
+        ((Task) dest).setTaskSharp(null2Empty(source.getTaskSharp()));
+        ((Task) dest).setTaskName(null2Empty(source.getTaskName()));
+        ((Task) dest).setTaskName1(null2Empty(source.getTaskName1()));
+        ((Task) dest).setTaskName2(null2Empty(source.getTaskName2()));
+        ((Task) dest).setTaskName3(null2Empty(source.getTaskName3()));
+        ((Task) dest).setSenkoTaskId(null2Empty(source.getSenkoTaskId()));
+        ((Task) dest).setPersonInCharge(null2Empty(source.getPersonInCharge()));
+        ((Task) dest).setTaskAbstract(null2Empty(source.getTaskAbstract()));
         ((Task) dest).setScheduledEndDate(scheduledEndDate(source, dest));
         ((Task) dest).setScheduledStartDate(scheduledStartDate(source, dest));
         ((Task) dest).setNumberOfDays(source.getNumberOfDays() == null ? 0
@@ -85,12 +85,16 @@ public class ExcelPOIScheduleBean2Task {
         return dest.getScheduledEndDate();
     }
 
-    private static java.util.Date scheduledStartDate(ExcelPOIScheduleBean source,
-            Task dest) {
+    private static java.util.Date scheduledStartDate(
+            ExcelPOIScheduleBean source, Task dest) {
         if (source.getScheduledStartDate() != null) {
             return source.getScheduledStartDate();
         }
         return dest.getScheduledStartDate();
+    }
+
+    private static String null2Empty(String target) {
+        return target == null ? "" : target;
     }
 
 }
