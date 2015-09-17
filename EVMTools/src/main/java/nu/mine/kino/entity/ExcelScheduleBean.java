@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  * 
  * @author Masatomi KINO and JavaBeans Creator Plug-in
  */
-public class ExcelScheduleBean extends ExcelPOIScheduleBean {
+public class ExcelScheduleBean {
 
     /**
      * À½¸ID
