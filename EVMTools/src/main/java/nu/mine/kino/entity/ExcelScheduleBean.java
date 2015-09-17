@@ -10,6 +10,7 @@
 
 package nu.mine.kino.entity;
 
+import net.java.amateras.xlsbeans.annotation.Column;
 import net.java.amateras.xlsbeans.annotation.MapColumns;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -23,9 +24,25 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class ExcelScheduleBean extends ExcelPOIScheduleBean {
 
     /**
+     * ﾀｽｸID
+     */
+    private String taskId;
+
+    /**
      * プロットされた□のデータ
      */
     private java.util.Map<String, String> plotDataMap;
+
+    /**
+     * ﾀｽｸIDをセットする。
+     * 
+     * @param taskId
+     *            ﾀｽｸID
+     */
+    @Column(columnName = "ﾀｽｸID")//$NON-NLS-1$
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
 
     /**
      * ガントチャートをセットする。
@@ -39,6 +56,15 @@ public class ExcelScheduleBean extends ExcelPOIScheduleBean {
     }
 
     /**
+     * ﾀｽｸIDを取得する。
+     * 
+     * @return ﾀｽｸID
+     */
+    public String getTaskId() {
+        return taskId;
+    }
+
+    /**
      * ガントチャートを取得する。
      * 
      * @return ガントチャート
@@ -49,7 +75,7 @@ public class ExcelScheduleBean extends ExcelPOIScheduleBean {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("ガントチャート", plotDataMap)
-                .toString();
+        return new ToStringBuilder(this).append("ﾀｽｸID", taskId)
+                .append("ガントチャート", plotDataMap).toString();
     }
 }
