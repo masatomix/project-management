@@ -32,6 +32,7 @@ import net.java.amateras.xlsbeans.XLSBeansException;
 import nu.mine.kino.entity.ACTotalBean;
 import nu.mine.kino.entity.EVTotalBean;
 import nu.mine.kino.entity.ExcelPOIScheduleBean;
+import nu.mine.kino.entity.ExcelPOIScheduleBean2ExcelScheduleBean;
 import nu.mine.kino.entity.ExcelScheduleBean;
 import nu.mine.kino.entity.ExcelScheduleBean2ACTotalBean;
 import nu.mine.kino.entity.ExcelScheduleBean2EVTotalBean;
@@ -84,6 +85,7 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
     public Project createProjectFromStream() throws ProjectException {
 
         Map<String, ExcelPOIScheduleBean> poiMap = new HashMap<String, ExcelPOIScheduleBean>();
+        Date baseDate = null;
         Holiday[] holidays = null;
         FileInputStream in = null;
         try {
@@ -97,8 +99,8 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
                     name.getRefersToFormula());
             Cell baseDateCell = sheet.getRow(cellReference.getRow()).getCell(
                     cellReference.getCol());
-            System.out.println(PoiUtils.getDate(baseDateCell));
-
+            baseDate = PoiUtils.getDate(baseDateCell);
+            
             Iterator<Row> e = sheet.rowIterator();
             int index = 0;
             int dataIndex = PoiUtils.getDataFirstRowNum(sheet);
@@ -113,7 +115,10 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
                 Row row = e.next();
                 Cell taskIdCell = row.getCell(1);
                 String taskId = getTaskId(taskIdCell);
-                poiMap.put(taskId, createPOIBean(row));
+                ExcelPOIScheduleBean poiBean = createPOIBean(row);
+                poiBean.setBaseDate(baseDate);
+                poiMap.put(taskId, poiBean);
+
             }
 
             holidays = createHolidays(workbook);
@@ -141,6 +146,7 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
             List<TaskInformation> taskInfoList = new ArrayList<TaskInformation>();
             ExcelScheduleBeanSheet sheet = new XLSBeans().load(
                     getInputStream(), ExcelScheduleBeanSheet.class);
+            sheet.setBaseDate(baseDate);
             // これだけで、
             // sheet.setExcelScheduleBean(
             // List<ExcelScheduleBean> instanceList);
@@ -150,8 +156,14 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
                     .getExcelScheduleBean();
 
             for (ExcelScheduleBean instance : instanceList) {
-                if (!instance.getId().equals("")) {
-                    instance.setBaseDate(sheet.getBaseDate());
+
+                // poiBeanからJavaBeansへコピー。
+                ExcelPOIScheduleBean poiBean = poiMap.get(instance.getTaskId());
+                ExcelPOIScheduleBean2ExcelScheduleBean.convert(poiBean,
+                        instance);
+
+                if (!StringUtils.isEmpty(instance.getId())) {
+                    // instance.setBaseDate(sheet.getBaseDate());
                     Task task = ExcelScheduleBean2Task.convert(instance);
                     if (StringUtils.isEmpty(task.getTaskId())) {
                         String message = String.format(
@@ -174,8 +186,8 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
                     taskInfo.setEV(evTotalBean);
                     taskInfoList.add(taskInfo);
 
-                    ExcelPOIScheduleBean poiBean = poiMap.get(instance
-                            .getTaskId());
+                    // ExcelPOIScheduleBean poiBean = poiMap.get(instance
+                    // .getTaskId());
                     // System.out.print("poi: ");
                     // System.out.println(poiBean);
 
@@ -265,7 +277,8 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
             dest.setScheduledStartDate(source.getScheduledStartDate());
         }
         if (source.getNumberOfDays() != null) {
-            dest.setNumberOfDays(source.getNumberOfDays());
+            dest.setNumberOfDays(source.getNumberOfDays() == null ? 0 : source
+                    .getNumberOfDays());
         }
         dest.setNumberOfManDays(source.getNumberOfManDays() == null ? Double.NaN
                 : source.getNumberOfManDays());
@@ -333,6 +346,7 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
         // Utils.date2Str(asDate, pattern),
         // Utils.date2Str(aeDate, pattern));
         ExcelPOIScheduleBean bean = Row2ExcelPOIScheduleBean.convert(row);
+
         return bean;
     }
 }
