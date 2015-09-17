@@ -11,25 +11,23 @@
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.arnx.jsonic.JSON;
 import net.java.amateras.xlsbeans.XLSBeans;
 import net.java.amateras.xlsbeans.XLSBeansException;
 import nu.mine.kino.entity.ACTotalBean;
 import nu.mine.kino.entity.EVTotalBean;
+import nu.mine.kino.entity.ExcelPOIScheduleBean2ACTotalBean;
+import nu.mine.kino.entity.ExcelPOIScheduleBean2EVTotalBean;
+import nu.mine.kino.entity.ExcelPOIScheduleBean2PVTotalBean;
+import nu.mine.kino.entity.ExcelPOIScheduleBean2TaskInformation;
 import nu.mine.kino.entity.ExcelScheduleBean;
-import nu.mine.kino.entity.ExcelScheduleBean2ACTotalBean;
-import nu.mine.kino.entity.ExcelScheduleBean2EVTotalBean;
-import nu.mine.kino.entity.ExcelScheduleBean2PVTotalBean;
 import nu.mine.kino.entity.ExcelScheduleBean2Task;
-import nu.mine.kino.entity.ExcelScheduleBean2TaskInformation;
 import nu.mine.kino.entity.PVTotalBean;
 import nu.mine.kino.entity.Project;
 import nu.mine.kino.entity.Task;
@@ -68,26 +66,27 @@ public class Main {
                     Date baseDate = DateUtils.parseDate("20140925",
                             new String[] { "yyyyMMdd" });
                     Map<String, String> plotDataMap = task.getPlotDataMap();
-//                    Set<String>[] split = ProjectUtils.split(baseDate, plotDataMap);
-//                    Utils.print(split);
+                    // Set<String>[] split = ProjectUtils.split(baseDate,
+                    // plotDataMap);
+                    // Utils.print(split);
 
                     double pv = ProjectUtils.calculatePV(task, baseDate);
                     System.out.println(baseDate + "ÇÃPV:" + pv);
 
-                    PVTotalBean pvTotalBean = ExcelScheduleBean2PVTotalBean
+                    PVTotalBean pvTotalBean = ExcelPOIScheduleBean2PVTotalBean
                             .convert(instance);
-                    ACTotalBean acTotalBean = ExcelScheduleBean2ACTotalBean
+                    ACTotalBean acTotalBean = ExcelPOIScheduleBean2ACTotalBean
                             .convert(instance);
-                    EVTotalBean evTotalBean = ExcelScheduleBean2EVTotalBean
+                    EVTotalBean evTotalBean = ExcelPOIScheduleBean2EVTotalBean
                             .convert(instance);
 
-                    TaskInformation taskInfo = ExcelScheduleBean2TaskInformation
+                    TaskInformation taskInfo = ExcelPOIScheduleBean2TaskInformation
                             .convert(instance);
 
                     taskInfo.setTask(task);
-                    taskInfo.setPV( pvTotalBean );
-                    taskInfo.setAC( acTotalBean );
-                    taskInfo.setEV( evTotalBean );
+                    taskInfo.setPV(pvTotalBean);
+                    taskInfo.setAC(acTotalBean);
+                    taskInfo.setEV(evTotalBean);
                     taskInfoList.add(taskInfo);
 
                     // System.out.println(instance);
@@ -106,7 +105,7 @@ public class Main {
             JSON json = new JSON();
             json.setPrettyPrint(true);
             String jsonStr = json.format(project);
-            // System.out.println(jsonStr);
+            System.out.println(jsonStr);
 
         } catch (FileNotFoundException e) {
             // TODO é©ìÆê∂ê¨Ç≥ÇÍÇΩ catch ÉuÉçÉbÉN

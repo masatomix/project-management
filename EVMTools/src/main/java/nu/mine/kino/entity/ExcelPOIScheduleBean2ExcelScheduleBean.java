@@ -22,25 +22,32 @@ public class ExcelPOIScheduleBean2ExcelScheduleBean {
         ExcelScheduleBean dest = new ExcelScheduleBean();
 
         // 必要に応じて特殊な載せ替え処理 開始
-        ((ExcelScheduleBean) dest).setTaskId(source.getTaskId());
-        ((ExcelScheduleBean) dest).setId(source.getId());
-        ((ExcelScheduleBean) dest).setType(source.getType());
-        ((ExcelScheduleBean) dest).setTaskSharp(source.getTaskSharp());
-        ((ExcelScheduleBean) dest).setTaskName(source.getTaskName());
-        ((ExcelScheduleBean) dest).setTaskName1(source.getTaskName1());
-        ((ExcelScheduleBean) dest).setTaskName2(source.getTaskName2());
-        ((ExcelScheduleBean) dest).setTaskName3(source.getTaskName3());
-        ((ExcelScheduleBean) dest).setSenkoTaskId(source.getSenkoTaskId());
+        ((ExcelScheduleBean) dest).setTaskId(null2Empty(source.getTaskId()));
+        ((ExcelScheduleBean) dest).setId(null2Empty(source.getId()));
+        ((ExcelScheduleBean) dest).setType(null2Empty(source.getType()));
+        ((ExcelScheduleBean) dest).setTaskSharp(null2Empty(source
+                .getTaskSharp()));
         ((ExcelScheduleBean) dest)
-                .setPersonInCharge(source.getPersonInCharge());
-        ((ExcelScheduleBean) dest).setTaskAbstract(source.getTaskAbstract());
-        ((ExcelScheduleBean) dest).setOutput(source.getOutput());
-        ((ExcelScheduleBean) dest).setReportOfLastWeek(source
-                .getReportOfLastWeek());
-        ((ExcelScheduleBean) dest).setReportOfThisWeek(source
-                .getReportOfThisWeek());
-        ((ExcelScheduleBean) dest).setStatus(source.getStatus());
-        ((ExcelScheduleBean) dest).setRemarks(source.getRemarks());
+                .setTaskName(null2Empty(source.getTaskName()));
+        ((ExcelScheduleBean) dest).setTaskName1(null2Empty(source
+                .getTaskName1()));
+        ((ExcelScheduleBean) dest).setTaskName2(null2Empty(source
+                .getTaskName2()));
+        ((ExcelScheduleBean) dest).setTaskName3(null2Empty(source
+                .getTaskName3()));
+        ((ExcelScheduleBean) dest).setSenkoTaskId(null2Empty(source
+                .getSenkoTaskId()));
+        ((ExcelScheduleBean) dest).setPersonInCharge(null2Empty(source
+                .getPersonInCharge()));
+        ((ExcelScheduleBean) dest).setTaskAbstract(null2Empty(source
+                .getTaskAbstract()));
+        ((ExcelScheduleBean) dest).setOutput(null2Empty(source.getOutput()));
+        ((ExcelScheduleBean) dest).setReportOfLastWeek(null2Empty(source
+                .getReportOfLastWeek()));
+        ((ExcelScheduleBean) dest).setReportOfThisWeek(null2Empty(source
+                .getReportOfThisWeek()));
+        ((ExcelScheduleBean) dest).setStatus(null2Empty(source.getStatus()));
+        ((ExcelScheduleBean) dest).setRemarks(null2Empty(source.getRemarks()));
         ((ExcelScheduleBean) dest).setBaseDate(source.getBaseDate());
 
         // 特殊な載せ替え処理 終了
@@ -57,29 +64,40 @@ public class ExcelPOIScheduleBean2ExcelScheduleBean {
     public static void convert(ExcelPOIScheduleBean source,
             ExcelScheduleBean dest) {
         // 必要に応じて特殊な載せ替え処理 開始
-        ((ExcelScheduleBean) dest).setTaskId(source.getTaskId());
-        ((ExcelScheduleBean) dest).setId(source.getId());
-        ((ExcelScheduleBean) dest).setType(source.getType());
-        ((ExcelScheduleBean) dest).setTaskSharp(source.getTaskSharp());
-        ((ExcelScheduleBean) dest).setTaskName(source.getTaskName());
-        ((ExcelScheduleBean) dest).setTaskName1(source.getTaskName1());
-        ((ExcelScheduleBean) dest).setTaskName2(source.getTaskName2());
-        ((ExcelScheduleBean) dest).setTaskName3(source.getTaskName3());
-        ((ExcelScheduleBean) dest).setSenkoTaskId(source.getSenkoTaskId());
+        ((ExcelScheduleBean) dest).setTaskId(null2Empty(source.getTaskId()));
+        ((ExcelScheduleBean) dest).setId(null2Empty(source.getId()));
+        ((ExcelScheduleBean) dest).setType(null2Empty(source.getType()));
+        ((ExcelScheduleBean) dest).setTaskSharp(null2Empty(source
+                .getTaskSharp()));
         ((ExcelScheduleBean) dest)
-                .setPersonInCharge(source.getPersonInCharge());
-        ((ExcelScheduleBean) dest).setTaskAbstract(source.getTaskAbstract());
-        ((ExcelScheduleBean) dest).setOutput(source.getOutput());
-        ((ExcelScheduleBean) dest).setReportOfLastWeek(source
-                .getReportOfLastWeek());
-        ((ExcelScheduleBean) dest).setReportOfThisWeek(source
-                .getReportOfThisWeek());
-        ((ExcelScheduleBean) dest).setStatus(source.getStatus());
-        ((ExcelScheduleBean) dest).setRemarks(source.getRemarks());
+                .setTaskName(null2Empty(source.getTaskName()));
+        ((ExcelScheduleBean) dest).setTaskName1(null2Empty(source
+                .getTaskName1()));
+        ((ExcelScheduleBean) dest).setTaskName2(null2Empty(source
+                .getTaskName2()));
+        ((ExcelScheduleBean) dest).setTaskName3(null2Empty(source
+                .getTaskName3()));
+        ((ExcelScheduleBean) dest).setSenkoTaskId(null2Empty(source
+                .getSenkoTaskId()));
+        ((ExcelScheduleBean) dest).setPersonInCharge(null2Empty(source
+                .getPersonInCharge()));
+        ((ExcelScheduleBean) dest).setTaskAbstract(null2Empty(source
+                .getTaskAbstract()));
+        ((ExcelScheduleBean) dest).setOutput(null2Empty(source.getOutput()));
+        ((ExcelScheduleBean) dest).setReportOfLastWeek(null2Empty(source
+                .getReportOfLastWeek()));
+        ((ExcelScheduleBean) dest).setReportOfThisWeek(null2Empty(source
+                .getReportOfThisWeek()));
+        ((ExcelScheduleBean) dest).setStatus(null2Empty(source.getStatus()));
+        ((ExcelScheduleBean) dest).setRemarks(null2Empty(source.getRemarks()));
         ((ExcelScheduleBean) dest).setBaseDate(source.getBaseDate());
 
         // 特殊な載せ替え処理 終了
 
+    }
+
+    private static String null2Empty(String target) {
+        return target == null ? "" : target;
     }
 
 }
