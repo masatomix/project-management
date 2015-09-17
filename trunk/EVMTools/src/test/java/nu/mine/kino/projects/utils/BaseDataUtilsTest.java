@@ -28,6 +28,7 @@ import nu.mine.kino.entity.TaskInformation;
 import nu.mine.kino.projects.ExcelScheduleBeanSheet;
 import nu.mine.kino.projects.ProjectException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.Test;
 
@@ -51,7 +52,7 @@ public class BaseDataUtilsTest {
                     .getExcelScheduleBean();
 
             for (ExcelScheduleBean instance : instanceList) {
-                if (!instance.getId().equals("")) {
+                if (!StringUtils.isEmpty(instance.getId())) {
                     instance.setBaseDate(sheet.getBaseDate());
                     Task task = ExcelScheduleBean2Task.convert(instance);
 
