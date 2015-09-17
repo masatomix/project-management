@@ -11,6 +11,7 @@
 package nu.mine.kino.entity;
 
 import org.apache.poi.ss.usermodel.Row;
+import org.bbreak.excella.core.util.PoiUtil;
 
 public class Row2ExcelPOIScheduleBean {
 
@@ -28,23 +29,23 @@ public class Row2ExcelPOIScheduleBean {
                 .setTaskId(nu.mine.kino.projects.utils.PoiUtils
                         .getTaskId(source.getCell(1)));
         ((ExcelPOIScheduleBean) dest)
-                .setNumberOfManDays(nu.mine.kino.projects.utils.Utils.round((Double) nu.mine.kino.projects.utils.PoiUtils
-                        .getCellValue(source.getCell(15), Double.class)));
+                .setNumberOfManDays((Double) nu.mine.kino.projects.utils.PoiUtils
+                        .getCellValue(source.getCell(15), Double.class));
         ((ExcelPOIScheduleBean) dest)
-                .setProgressRate(nu.mine.kino.projects.utils.Utils.round((Double) nu.mine.kino.projects.utils.PoiUtils
-                        .getCellValue(source.getCell(20), Double.class)));
+                .setProgressRate((Double) nu.mine.kino.projects.utils.PoiUtils
+                        .getCellValue(source.getCell(20), Double.class));
         ((ExcelPOIScheduleBean) dest)
                 .setNumberOfDays((Integer) nu.mine.kino.projects.utils.PoiUtils
                         .getCellValue(source.getCell(21), Integer.class));
         ((ExcelPOIScheduleBean) dest)
-                .setPlannedValue(nu.mine.kino.projects.utils.Utils.round((Double) nu.mine.kino.projects.utils.PoiUtils
-                        .getCellValue(source.getCell(22), Double.class)));
+                .setPlannedValue((Double) nu.mine.kino.projects.utils.PoiUtils
+                        .getCellValue(source.getCell(22), Double.class));
         ((ExcelPOIScheduleBean) dest)
-                .setEarnedValue(nu.mine.kino.projects.utils.Utils.round((Double) nu.mine.kino.projects.utils.PoiUtils
-                        .getCellValue(source.getCell(23), Double.class)));
+                .setEarnedValue((Double) nu.mine.kino.projects.utils.PoiUtils
+                        .getCellValue(source.getCell(23), Double.class));
         ((ExcelPOIScheduleBean) dest)
-                .setActualCost(nu.mine.kino.projects.utils.Utils.round((Double) nu.mine.kino.projects.utils.PoiUtils
-                        .getCellValue(source.getCell(24), Double.class)));
+                .setActualCost((Double) nu.mine.kino.projects.utils.PoiUtils
+                        .getCellValue(source.getCell(24), Double.class));
         ((ExcelPOIScheduleBean) dest)
                 .setScheduledStartDate(nu.mine.kino.projects.utils.PoiUtils
                         .getDate(source.getCell(16)));
@@ -57,6 +58,36 @@ public class Row2ExcelPOIScheduleBean {
         ((ExcelPOIScheduleBean) dest)
                 .setEndDate(nu.mine.kino.projects.utils.PoiUtils.getDate(source
                         .getCell(19)));
+        ((ExcelPOIScheduleBean) dest).setId((String) PoiUtil.getCellValue(
+                source.getCell(0), String.class));
+        ((ExcelPOIScheduleBean) dest).setType((String) PoiUtil.getCellValue(
+                source.getCell(2), String.class));
+        ((ExcelPOIScheduleBean) dest).setTaskSharp((String) PoiUtil
+                .getCellValue(source.getCell(3), String.class));
+        ((ExcelPOIScheduleBean) dest).setTaskName((String) PoiUtil
+                .getCellValue(source.getCell(4), String.class));
+        ((ExcelPOIScheduleBean) dest).setTaskName1((String) PoiUtil
+                .getCellValue(source.getCell(5), String.class));
+        ((ExcelPOIScheduleBean) dest).setTaskName2((String) PoiUtil
+                .getCellValue(source.getCell(6), String.class));
+        ((ExcelPOIScheduleBean) dest).setTaskName3((String) PoiUtil
+                .getCellValue(source.getCell(7), String.class));
+        ((ExcelPOIScheduleBean) dest).setSenkoTaskId((String) PoiUtil
+                .getCellValue(source.getCell(8), String.class));
+        ((ExcelPOIScheduleBean) dest).setPersonInCharge((String) PoiUtil
+                .getCellValue(source.getCell(9), String.class));
+        ((ExcelPOIScheduleBean) dest).setTaskAbstract((String) PoiUtil
+                .getCellValue(source.getCell(10), String.class));
+        ((ExcelPOIScheduleBean) dest).setOutput((String) PoiUtil.getCellValue(
+                source.getCell(11), String.class));
+        ((ExcelPOIScheduleBean) dest).setReportOfLastWeek((String) PoiUtil
+                .getCellValue(source.getCell(12), String.class));
+        ((ExcelPOIScheduleBean) dest).setReportOfThisWeek((String) PoiUtil
+                .getCellValue(source.getCell(13), String.class));
+        ((ExcelPOIScheduleBean) dest).setStatus((String) PoiUtil.getCellValue(
+                source.getCell(14), String.class));
+        ((ExcelPOIScheduleBean) dest).setRemarks((String) PoiUtil.getCellValue(
+                source.getCell(25), String.class));
 
         // ì¡éÍÇ»ç⁄Çπë÷Ç¶èàóù èIóπ
 
@@ -75,23 +106,23 @@ public class Row2ExcelPOIScheduleBean {
                 .setTaskId(nu.mine.kino.projects.utils.PoiUtils
                         .getTaskId(source.getCell(1)));
         ((ExcelPOIScheduleBean) dest)
-                .setNumberOfManDays(nu.mine.kino.projects.utils.Utils.round((Double) nu.mine.kino.projects.utils.PoiUtils
-                        .getCellValue(source.getCell(15), Double.class)));
+                .setNumberOfManDays((Double) nu.mine.kino.projects.utils.PoiUtils
+                        .getCellValue(source.getCell(15), Double.class));
         ((ExcelPOIScheduleBean) dest)
-                .setProgressRate(nu.mine.kino.projects.utils.Utils.round((Double) nu.mine.kino.projects.utils.PoiUtils
-                        .getCellValue(source.getCell(20), Double.class)));
+                .setProgressRate((Double) nu.mine.kino.projects.utils.PoiUtils
+                        .getCellValue(source.getCell(20), Double.class));
         ((ExcelPOIScheduleBean) dest)
                 .setNumberOfDays((Integer) nu.mine.kino.projects.utils.PoiUtils
                         .getCellValue(source.getCell(21), Integer.class));
         ((ExcelPOIScheduleBean) dest)
-                .setPlannedValue(nu.mine.kino.projects.utils.Utils.round((Double) nu.mine.kino.projects.utils.PoiUtils
-                        .getCellValue(source.getCell(22), Double.class)));
+                .setPlannedValue((Double) nu.mine.kino.projects.utils.PoiUtils
+                        .getCellValue(source.getCell(22), Double.class));
         ((ExcelPOIScheduleBean) dest)
-                .setEarnedValue(nu.mine.kino.projects.utils.Utils.round((Double) nu.mine.kino.projects.utils.PoiUtils
-                        .getCellValue(source.getCell(23), Double.class)));
+                .setEarnedValue((Double) nu.mine.kino.projects.utils.PoiUtils
+                        .getCellValue(source.getCell(23), Double.class));
         ((ExcelPOIScheduleBean) dest)
-                .setActualCost(nu.mine.kino.projects.utils.Utils.round((Double) nu.mine.kino.projects.utils.PoiUtils
-                        .getCellValue(source.getCell(24), Double.class)));
+                .setActualCost((Double) nu.mine.kino.projects.utils.PoiUtils
+                        .getCellValue(source.getCell(24), Double.class));
         ((ExcelPOIScheduleBean) dest)
                 .setScheduledStartDate(nu.mine.kino.projects.utils.PoiUtils
                         .getDate(source.getCell(16)));
@@ -104,6 +135,36 @@ public class Row2ExcelPOIScheduleBean {
         ((ExcelPOIScheduleBean) dest)
                 .setEndDate(nu.mine.kino.projects.utils.PoiUtils.getDate(source
                         .getCell(19)));
+        ((ExcelPOIScheduleBean) dest).setId((String) PoiUtil.getCellValue(
+                source.getCell(0), String.class));
+        ((ExcelPOIScheduleBean) dest).setType((String) PoiUtil.getCellValue(
+                source.getCell(2), String.class));
+        ((ExcelPOIScheduleBean) dest).setTaskSharp((String) PoiUtil
+                .getCellValue(source.getCell(3), String.class));
+        ((ExcelPOIScheduleBean) dest).setTaskName((String) PoiUtil
+                .getCellValue(source.getCell(4), String.class));
+        ((ExcelPOIScheduleBean) dest).setTaskName1((String) PoiUtil
+                .getCellValue(source.getCell(5), String.class));
+        ((ExcelPOIScheduleBean) dest).setTaskName2((String) PoiUtil
+                .getCellValue(source.getCell(6), String.class));
+        ((ExcelPOIScheduleBean) dest).setTaskName3((String) PoiUtil
+                .getCellValue(source.getCell(7), String.class));
+        ((ExcelPOIScheduleBean) dest).setSenkoTaskId((String) PoiUtil
+                .getCellValue(source.getCell(8), String.class));
+        ((ExcelPOIScheduleBean) dest).setPersonInCharge((String) PoiUtil
+                .getCellValue(source.getCell(9), String.class));
+        ((ExcelPOIScheduleBean) dest).setTaskAbstract((String) PoiUtil
+                .getCellValue(source.getCell(10), String.class));
+        ((ExcelPOIScheduleBean) dest).setOutput((String) PoiUtil.getCellValue(
+                source.getCell(11), String.class));
+        ((ExcelPOIScheduleBean) dest).setReportOfLastWeek((String) PoiUtil
+                .getCellValue(source.getCell(12), String.class));
+        ((ExcelPOIScheduleBean) dest).setReportOfThisWeek((String) PoiUtil
+                .getCellValue(source.getCell(13), String.class));
+        ((ExcelPOIScheduleBean) dest).setStatus((String) PoiUtil.getCellValue(
+                source.getCell(14), String.class));
+        ((ExcelPOIScheduleBean) dest).setRemarks((String) PoiUtil.getCellValue(
+                source.getCell(25), String.class));
 
         // ì¡éÍÇ»ç⁄Çπë÷Ç¶èàóù èIóπ
 
