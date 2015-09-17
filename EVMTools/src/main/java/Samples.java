@@ -68,9 +68,9 @@ public class Samples {
         for (ExcelScheduleBean instance : instanceList) {
             Task task = ExcelScheduleBean2Task.convert(instance);
 
-            if (!instance.getId().equals("")) {
-                System.out.println(instance);
-            }
+            // if (!instance.getId().equals("")) {
+            // System.out.println(instance);
+            // }
         }
         System.out.println(instanceList.size());
         System.out.println(sheet.getBaseDate());
