@@ -100,7 +100,7 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
             Cell baseDateCell = sheet.getRow(cellReference.getRow()).getCell(
                     cellReference.getCol());
             baseDate = PoiUtils.getDate(baseDateCell);
-            
+
             Iterator<Row> e = sheet.rowIterator();
             int index = 0;
             int dataIndex = PoiUtils.getDataFirstRowNum(sheet);
@@ -159,8 +159,11 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
 
                 // poiBeanからJavaBeansへコピー。
                 ExcelPOIScheduleBean poiBean = poiMap.get(instance.getTaskId());
-                ExcelPOIScheduleBean2ExcelScheduleBean.convert(poiBean,
-                        instance);
+
+                if (poiBean != null) {
+                    ExcelPOIScheduleBean2ExcelScheduleBean.convert(poiBean,
+                            instance);
+                }
 
                 if (!StringUtils.isEmpty(instance.getId())) {
                     // instance.setBaseDate(sheet.getBaseDate());
