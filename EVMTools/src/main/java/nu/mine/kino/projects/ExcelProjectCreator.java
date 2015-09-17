@@ -12,17 +12,13 @@
 
 package nu.mine.kino.projects;
 
-import static nu.mine.kino.projects.utils.PoiUtils.getTaskId;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -42,22 +38,15 @@ import nu.mine.kino.entity.ExcelScheduleBeanSheet2Project;
 import nu.mine.kino.entity.Holiday;
 import nu.mine.kino.entity.PVTotalBean;
 import nu.mine.kino.entity.Project;
-import nu.mine.kino.entity.Row2ExcelPOIScheduleBean;
 import nu.mine.kino.entity.Task;
 import nu.mine.kino.entity.TaskInformation;
-import nu.mine.kino.projects.utils.PoiUtils;
 import nu.mine.kino.projects.utils.ProjectUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Name;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.ss.util.CellReference;
-import org.bbreak.excella.core.util.PoiUtil;
 
 /**
  * @author Masatomi KINO
@@ -125,18 +114,10 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
 
                 // poiBeanからJavaBeansへコピー。
                 ExcelPOIScheduleBean poiBean = poiMap.get(instance.getTaskId());
-
-                // if (poiBean != null) {
-                // ExcelPOIScheduleBean2ExcelScheduleBean.convert(poiBean,
-                // instance);
-                // }
-
                 if (poiBean != null && !StringUtils.isEmpty(poiBean.getId())) {
-                    // instance.setBaseDate(sheet.getBaseDate());
-                    Task task = ExcelScheduleBean2Task.convert(instance);
-                    // if (poiBean != null) {
+                    Task task = ExcelScheduleBean2Task.convert(instance); // この処理だけは、Mapをもっているinstanceが行う。
+
                     ExcelPOIScheduleBean2Task.convert(poiBean, task);
-                    // }
                     if (StringUtils.isEmpty(poiBean.getTaskId())) {
                         String message = String.format(
                                 "id: %s のタスクIDが未記載です。必須項目のためエラーとして処理を終了します。",
@@ -167,48 +148,36 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
             ExcelScheduleBeanSheet2Project.convert(sheet, project);
 
             project.setHolidays(holidays);
-            // System.out.println("---");
-            // System.out.println(project.getProjectStartDate());
-            // System.out.println(project.getProjectEndDate());
-            // System.out.println("---");
             return project;
         } catch (XLSBeansException e) {
             throw new ProjectException(e);
-            // } finally {
-            // if (in != null) {
-            // try {
-            // in.close();
-            // } catch (IOException e) {
-            // throw new ProjectException(e);
-            // }
-            // }
         }
     }
 
-    private void setTask(ExcelPOIScheduleBean source, Task dest) {
-        dest.setScheduledEndDate(scheduledEndDate(source, dest));
-        dest.setScheduledStartDate(scheduledStartDate(source, dest));
-        dest.setNumberOfDays(source.getNumberOfDays() == null ? 0 : source
-                .getNumberOfDays());
-        dest.setNumberOfManDays(source.getNumberOfManDays() == null ? Double.NaN
-                : source.getNumberOfManDays());
-    }
-
-    private java.util.Date scheduledEndDate(ExcelPOIScheduleBean source,
-            Task dest) {
-        if (source.getScheduledEndDate() != null) {
-            return source.getScheduledEndDate();
-        }
-        return dest.getScheduledEndDate();
-    }
-
-    private java.util.Date scheduledStartDate(ExcelPOIScheduleBean source,
-            Task dest) {
-        if (source.getScheduledStartDate() != null) {
-            return source.getScheduledStartDate();
-        }
-        return dest.getScheduledStartDate();
-    }
+    // private void setTask(ExcelPOIScheduleBean source, Task dest) {
+    // dest.setScheduledEndDate(scheduledEndDate(source, dest));
+    // dest.setScheduledStartDate(scheduledStartDate(source, dest));
+    // dest.setNumberOfDays(source.getNumberOfDays() == null ? 0 : source
+    // .getNumberOfDays());
+    // dest.setNumberOfManDays(source.getNumberOfManDays() == null ? Double.NaN
+    // : source.getNumberOfManDays());
+    // }
+    //
+    // private java.util.Date scheduledEndDate(ExcelPOIScheduleBean source,
+    // Task dest) {
+    // if (source.getScheduledEndDate() != null) {
+    // return source.getScheduledEndDate();
+    // }
+    // return dest.getScheduledEndDate();
+    // }
+    //
+    // private java.util.Date scheduledStartDate(ExcelPOIScheduleBean source,
+    // Task dest) {
+    // if (source.getScheduledStartDate() != null) {
+    // return source.getScheduledStartDate();
+    // }
+    // return dest.getScheduledStartDate();
+    // }
 
     // private void setEV(ExcelPOIScheduleBean source, EVTotalBean dest) {
     // dest.setEarnedValue(source.getEarnedValue() == null ? Double.NaN
