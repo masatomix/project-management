@@ -10,7 +10,7 @@
 
 package nu.mine.kino.entity;
 
-public class ExcelScheduleBean2EVTotalBean {
+public class ExcelPOIScheduleBean2ACTotalBean {
 
     /**
      * 引数のオブジェクトのプロパティからデータをコピーして戻り値のオブジェクトを生成して返すメソッド。
@@ -18,13 +18,16 @@ public class ExcelScheduleBean2EVTotalBean {
      * @param source
      * @return
      */
-    public static EVTotalBean convert(ExcelScheduleBean source) {
-        EVTotalBean dest = new EVTotalBean();
+    public static ACTotalBean convert(ExcelPOIScheduleBean source) {
+        ACTotalBean dest = new ACTotalBean();
 
         // 必要に応じて特殊な載せ替え処理 開始
-        ((EVTotalBean) dest).setId(source.getId());
-        ((EVTotalBean) dest).setTaskId(source.getTaskId());
-        ((EVTotalBean) dest).setBaseDate(source.getBaseDate());
+        ((ACTotalBean) dest).setId(source.getId());
+        ((ACTotalBean) dest).setTaskId(source.getTaskId());
+        ((ACTotalBean) dest).setBaseDate(source.getBaseDate());
+        ((ACTotalBean) dest)
+                .setActualCost(source.getActualCost() == null ? Double.NaN
+                        : source.getActualCost());
 
         // 特殊な載せ替え処理 終了
 
@@ -37,11 +40,14 @@ public class ExcelScheduleBean2EVTotalBean {
      * @param source
      * @param dest
      */
-    public static void convert(ExcelScheduleBean source, EVTotalBean dest) {
+    public static void convert(ExcelPOIScheduleBean source, ACTotalBean dest) {
         // 必要に応じて特殊な載せ替え処理 開始
-        ((EVTotalBean) dest).setId(source.getId());
-        ((EVTotalBean) dest).setTaskId(source.getTaskId());
-        ((EVTotalBean) dest).setBaseDate(source.getBaseDate());
+        ((ACTotalBean) dest).setId(source.getId());
+        ((ACTotalBean) dest).setTaskId(source.getTaskId());
+        ((ACTotalBean) dest).setBaseDate(source.getBaseDate());
+        ((ACTotalBean) dest)
+                .setActualCost(source.getActualCost() == null ? Double.NaN
+                        : source.getActualCost());
 
         // 特殊な載せ替え処理 終了
 
