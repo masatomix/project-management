@@ -20,6 +20,8 @@ import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import net.arnx.jsonic.JSON;
 import nu.mine.kino.entity.PVBean;
 import nu.mine.kino.entity.Project;
@@ -39,6 +41,52 @@ import org.junit.Test;
  * @version $Revision$
  */
 public class ProjectUtilsTest {
+
+    @Test
+    public void test0() throws FileNotFoundException, ProjectException {
+        test0("project_management_tools");
+    }
+
+    public void test0(String fileName) throws FileNotFoundException,
+            ProjectException {
+        File baseDir = new File("./");
+        // String fileName = "project_management_tools";
+        String input = fileName + "." + "xls";
+
+        // java.io.InputStream in = null;
+        File target = new File(baseDir, input);
+        // in = new java.io.FileInputStream(target);
+
+        StopWatch watch = new StopWatch();
+        watch.start();
+        Project projectOrg = new ExcelProjectCreator(target).createProject();
+        watch.stop();
+        System.out.println(watch.getTime() + " ms.");
+        watch.reset();
+        // fail("Not yet implemented");
+        File output = ProjectWriter
+                .write(projectOrg, new File(input + ".json"));
+        System.out.println(output.getAbsolutePath());
+
+        watch.start();
+        // Project projectJ = new JSONProjectCreator(new
+        // FileInputStream(output))
+        // .createProject();
+        // watch.stop();
+        // System.out.println(watch.getTime() + " ms.");
+        //
+        // // projectJ.getProjectStartDate().setTime(new Date().getTime());
+        //
+        // String expected = JSON.encode(projectOrg);
+        // String actual = JSON.encode(projectJ);
+        //
+        // System.out.println("---------------");
+        // System.out.println(expected);
+        // System.out.println(actual);
+        // System.out.println("---------------");
+        // assertEquals(expected, actual);
+
+    }
 
     @Test
     public void test() throws FileNotFoundException, ProjectException {
