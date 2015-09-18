@@ -118,13 +118,6 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
                     Task task = ExcelScheduleBean2Task.convert(instance); // この処理だけは、Mapをもっているinstanceが行う。
 
                     ExcelPOIScheduleBean2Task.convert(poiBean, task);
-                    if (StringUtils.isEmpty(poiBean.getTaskId())) {
-                        String message = String.format(
-                                "id: %s のタスクIDが未記載です。必須項目のためエラーとして処理を終了します。",
-                                poiBean.getId());
-                        throw new ProjectException(message);
-                    }
-
                     PVTotalBean pvTotalBean = ExcelPOIScheduleBean2PVTotalBean
                             .convert(poiBean);
                     ACTotalBean acTotalBean = ExcelPOIScheduleBean2ACTotalBean

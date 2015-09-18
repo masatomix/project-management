@@ -44,6 +44,7 @@ import nu.mine.kino.entity.TaskInformation;
 import nu.mine.kino.entity.Validatable;
 import nu.mine.kino.projects.ProjectException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -597,7 +598,7 @@ public class ProjectUtils {
     }
 
     public static Map<String, ExcelPOIScheduleBean> createExcelPOIScheduleBeanMap(
-            Workbook workbook, Date baseDate) {
+            Workbook workbook, Date baseDate) throws ProjectException {
         Map<String, ExcelPOIScheduleBean> poiMap = new HashMap<String, ExcelPOIScheduleBean>();
         Sheet sheet = workbook.getSheetAt(0);
 
@@ -676,7 +677,8 @@ public class ProjectUtils {
         return arrayList.toArray(new Holiday[arrayList.size()]);
     }
 
-    private static ExcelPOIScheduleBean createPOIBean(Row row) {
+    private static ExcelPOIScheduleBean createPOIBean(Row row)
+            throws ProjectException {
         // Cell taskIdCell = row.getCell(1);
         // String taskId = getTaskId(taskIdCell);
         // // 15 予定工数
@@ -715,7 +717,13 @@ public class ProjectUtils {
         // Utils.date2Str(asDate, pattern),
         // Utils.date2Str(aeDate, pattern));
         ExcelPOIScheduleBean bean = Row2ExcelPOIScheduleBean.convert(row);
-
+        // Idが入っているのに、taskIdが空だったら、NG
+        if (!StringUtils.isEmpty(bean.getId())
+                && StringUtils.isEmpty(bean.getTaskId())) {
+            String message = String.format(
+                    "id: %s のタスクIDが未記載です。必須項目のためエラーとして処理を終了します。", bean.getId());
+            throw new ProjectException(message);
+        }
         return bean;
     }
 

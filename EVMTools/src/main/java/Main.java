@@ -36,6 +36,7 @@ import nu.mine.kino.entity.Project;
 import nu.mine.kino.entity.Task;
 import nu.mine.kino.entity.TaskInformation;
 import nu.mine.kino.projects.ExcelScheduleBeanSheet;
+import nu.mine.kino.projects.ProjectException;
 import nu.mine.kino.projects.utils.ProjectUtils;
 
 import org.apache.commons.lang.StringUtils;
@@ -51,7 +52,8 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
  * @version $Revision$
  */
 public class Main {
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) throws ParseException,
+            ProjectException {
         java.io.InputStream in = null;
         try {
             Workbook workbook = WorkbookFactory.create(new FileInputStream(

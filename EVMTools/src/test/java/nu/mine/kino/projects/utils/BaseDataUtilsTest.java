@@ -47,7 +47,7 @@ import org.junit.Test;
 public class BaseDataUtilsTest {
 
     @Test
-    public void test() throws ParseException {
+    public void test() throws ParseException, ProjectException {
         java.io.InputStream in = null;
         try {
             Workbook workbook = WorkbookFactory.create(new FileInputStream(
