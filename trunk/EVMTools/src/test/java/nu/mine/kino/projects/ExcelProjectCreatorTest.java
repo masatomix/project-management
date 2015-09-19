@@ -45,10 +45,51 @@ public class ExcelProjectCreatorTest {
         TaskInformation[] infos = project.getTaskInformations();
         System.out.println(infos.length);
         checkPV(infos);
+        checkAC(infos);
+        checkEV(infos);
+
+    }
+
+    private void checkAC(TaskInformation[] infos) {
+        System.out.println("--- check AC ----");
+        for (TaskInformation info : infos) {
+            System.out.printf("%s:%s\n", info.getTaskId(), info.getAC()
+                    .getActualCost());
+        }
+
+        TaskInformation target = null;
+        target = infos[0];
+        Assert.assertEquals(Double.NaN, target.getAC().getActualCost());
+        target = infos[6];
+        Assert.assertEquals(0.1, target.getAC().getActualCost());// 0.4
+        target = infos[2];
+        Assert.assertEquals(0.6, target.getAC().getActualCost());// 0.5
+        target = infos[3];
+        Assert.assertEquals(Double.NaN, target.getAC().getActualCost());// 0.0
+
+    }
+
+    private void checkEV(TaskInformation[] infos) {
+        System.out.println("--- check EV ----");
+        for (TaskInformation info : infos) {
+            System.out.printf("%s:%s\n", info.getTaskId(), info.getEV()
+                    .getEarnedValue());
+        }
+
+        TaskInformation target = null;
+        target = infos[0];
+        Assert.assertEquals(Double.NaN, target.getEV().getEarnedValue());
+        target = infos[6];
+        Assert.assertEquals(0.5 * 0.8, target.getEV().getEarnedValue());// 0.4
+        target = infos[2];
+        Assert.assertEquals(1.0 * 0.5, target.getEV().getEarnedValue());// 0.5
+        target = infos[3];
+        Assert.assertEquals(0.0, target.getEV().getEarnedValue());// 0.0
 
     }
 
     private void checkPV(TaskInformation[] infos) {
+        System.out.println("--- check PV ----");
 
         for (TaskInformation info : infos) {
             System.out.printf("%s:%s\n", info.getTaskId(), info.getPV()
