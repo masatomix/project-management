@@ -44,9 +44,34 @@ public class ExcelProjectCreatorTest {
 
         TaskInformation[] infos = project.getTaskInformations();
         System.out.println(infos.length);
-        checkPV(infos);
-        checkAC(infos);
-        checkEV(infos);
+         checkPV(infos);
+         checkAC(infos);
+         checkEV(infos);
+        checkNumberOfDays(infos);
+
+    }
+
+    /**
+     * â“ì≠ó\íËì˙êîÇÃämîFÅB
+     * 
+     * @param infos
+     */
+    private void checkNumberOfDays(TaskInformation[] infos) {
+        System.out.println("--- check NumberOfDays ----");
+        for (TaskInformation info : infos) {
+            System.out.printf("%s:%s\n", info.getTaskId(), info.getTask()
+                    .getNumberOfDays());
+        }
+
+        TaskInformation target = null;
+        target = infos[0];
+        Assert.assertEquals(0, target.getTask().getNumberOfDays());
+        target = infos[6];
+        Assert.assertEquals(9, target.getTask().getNumberOfDays());// 0.4
+        target = infos[2];
+        Assert.assertEquals(2, target.getTask().getNumberOfDays());// 0.5
+        target = infos[3];
+        Assert.assertEquals(2, target.getTask().getNumberOfDays());// 0.0
 
     }
 
