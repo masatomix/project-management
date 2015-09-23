@@ -15,9 +15,9 @@ package nu.mine.kino.projects;
 import java.io.File;
 
 import junit.framework.Assert;
-
 import nu.mine.kino.entity.Project;
 import nu.mine.kino.entity.TaskInformation;
+import nu.mine.kino.projects.utils.Utils;
 
 import org.apache.commons.lang.time.StopWatch;
 import org.junit.Test;
@@ -44,9 +44,9 @@ public class ExcelProjectCreatorTest {
 
         TaskInformation[] infos = project.getTaskInformations();
         System.out.println(infos.length);
-         checkPV(infos);
-         checkAC(infos);
-         checkEV(infos);
+        checkPV(infos);
+        checkAC(infos);
+        checkEV(infos);
         checkNumberOfDays(infos);
 
     }
@@ -102,14 +102,50 @@ public class ExcelProjectCreatorTest {
         }
 
         TaskInformation target = null;
+        double progressRate = Double.NaN;
+
+        // #は入ってて有効で、行にデータなしのケース
         target = infos[0];
         Assert.assertEquals(Double.NaN, target.getEV().getEarnedValue());
+        Assert.assertEquals(Double.NaN, target.getEV().getProgressRate());
+        Assert.assertNull(target.getEV().getStartDate());
+        Assert.assertNull(target.getEV().getEndDate());
+
+        // 通常ケース
         target = infos[6];
-        Assert.assertEquals(0.5 * 0.8, target.getEV().getEarnedValue());// 0.4
+        progressRate = 0.8;
+        Assert.assertEquals(0.5 * progressRate, target.getEV().getEarnedValue());// 0.4
+        Assert.assertEquals(progressRate, target.getEV().getProgressRate());
+        Assert.assertEquals(Utils.str2Date("2014/11/04"), target.getEV()
+                .getStartDate());
+        Assert.assertNull("getEndDateがnullでない", target.getEV().getEndDate());
+
+        // 通常ケース
         target = infos[2];
-        Assert.assertEquals(1.0 * 0.5, target.getEV().getEarnedValue());// 0.5
+        progressRate = 0.5;
+        Assert.assertEquals(1.0 * progressRate, target.getEV().getEarnedValue());// 0.5
+        Assert.assertEquals(progressRate, target.getEV().getProgressRate());
+        Assert.assertEquals(Utils.str2Date("2014/11/04"), target.getEV()
+                .getStartDate());
+        Assert.assertNull("getEndDateがnullでない", target.getEV().getEndDate());
+
+        // 通常ケース まだ進捗が開始されていないケース
         target = infos[3];
-        Assert.assertEquals(0.0, target.getEV().getEarnedValue());// 0.0
+        progressRate = 0.0;
+        Assert.assertEquals(0.5 * progressRate, target.getEV().getEarnedValue());// 0.0
+        Assert.assertEquals(Double.NaN, target.getEV().getProgressRate()); // NaN
+        Assert.assertNull("getStartDateがnullでない", target.getEV().getStartDate());
+        Assert.assertNull("getEndDateがnullでない", target.getEV().getEndDate());
+
+        // 通常ケース
+        target = infos[7];
+        progressRate = 1.0;
+        Assert.assertEquals(0.5 * progressRate, target.getEV().getEarnedValue());// 0.4
+        Assert.assertEquals(progressRate, target.getEV().getProgressRate());
+        Assert.assertEquals(Utils.str2Date("2014/11/04"), target.getEV()
+                .getStartDate());
+        Assert.assertEquals(Utils.str2Date("2014/11/04"), target.getEV()
+                .getEndDate());
 
     }
 
