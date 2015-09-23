@@ -47,7 +47,7 @@ public class Utils {
     }
 
     /**
-     * 日付を作る。MM/dd形式の場合、仕方がないので年には今年をセットする。
+     * // * 日付を作る。MM/dd形式の場合、仕方がないので年には今年をセットする。
      * 
      * @param dateStr
      * @return
@@ -57,25 +57,36 @@ public class Utils {
             return null;
         }
 
-        // 今年を取得
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        int year = calendar.get(Calendar.YEAR);
+        // // 今年を取得
+        // Calendar calendar = Calendar.getInstance();
+        // calendar.setTime(new Date());
+        // int year = calendar.get(Calendar.YEAR);
+        //
+        // try {
+        // // String[] parsePatterns = new String[] { "MM/dd" };
+        // Date dataDate = null;
+        // DateUtils.parseDate(dateStr, parsePatterns);
+        // if (parsePatterns == null || parsePatterns.length == 0) {
+        // dataDate = DateUtils.parseDate(dateStr,
+        // new String[] { "yyyy/MM/dd" });
+        // }
+        // dataDate = DateUtils.parseDate(dateStr, parsePatterns);
+        // Calendar retCalendar = Calendar.getInstance();
+        // retCalendar.setTime(dataDate);
+        // retCalendar.set(Calendar.YEAR, year);
+        // // System.out.println(retCalendar.getTime());
+        // return retCalendar.getTime();
+        // } catch (ParseException e) {
+        // e.printStackTrace();
+        // return null;
+        // }
+        String[] tmpParsePatterns = parsePatterns;
+        if (parsePatterns.length == 0) {
+            tmpParsePatterns = new String[] { "yyyyMMdd", "yyyy/MM/dd" };
+        }
 
         try {
-            // String[] parsePatterns = new String[] { "MM/dd" };
-            Date dataDate = null;
-            DateUtils.parseDate(dateStr, parsePatterns);
-            if (parsePatterns == null || parsePatterns.length == 0) {
-                dataDate = DateUtils.parseDate(dateStr,
-                        new String[] { "yyyy/MM/dd" });
-            }
-            dataDate = DateUtils.parseDate(dateStr, parsePatterns);
-            Calendar retCalendar = Calendar.getInstance();
-            retCalendar.setTime(dataDate);
-            retCalendar.set(Calendar.YEAR, year);
-            // System.out.println(retCalendar.getTime());
-            return retCalendar.getTime();
+            return DateUtils.parseDate(dateStr, tmpParsePatterns);
         } catch (ParseException e) {
             e.printStackTrace();
             return null;
