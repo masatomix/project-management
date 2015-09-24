@@ -41,6 +41,7 @@ import nu.mine.kino.projects.utils.ReadUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.lang.time.StopWatch;
+import org.jenkinsci.remoting.RoleChecker;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -372,6 +373,12 @@ public class EVMToolsBuilder extends Builder {
             }
             return null;
         }
+
+        @Override
+        public void checkRoles(RoleChecker checker) throws SecurityException {
+            // TODO 自動生成されたメソッド・スタブ
+
+        }
     }
 
     /**
@@ -456,6 +463,12 @@ public class EVMToolsBuilder extends Builder {
             }
         }
 
+        @Override
+        public void checkRoles(RoleChecker checker) throws SecurityException {
+            // TODO 自動生成されたメソッド・スタブ
+
+        }
+
     }
 
     private static class PVCreatorExecutor implements FileCallable<FilePath[]> {
@@ -486,6 +499,12 @@ public class EVMToolsBuilder extends Builder {
             } catch (ProjectException e) {
                 throw new IOException(e);
             }
+        }
+
+        @Override
+        public void checkRoles(RoleChecker checker) throws SecurityException {
+            // TODO 自動生成されたメソッド・スタブ
+
         }
     }
 
@@ -541,6 +560,12 @@ public class EVMToolsBuilder extends Builder {
             }
             return null;
         }
+
+        @Override
+        public void checkRoles(RoleChecker checker) throws SecurityException {
+            // TODO 自動生成されたメソッド・スタブ
+
+        }
     }
 
     private static class EVCreatorExecutor implements FileCallable<FilePath[]> {
@@ -593,6 +618,12 @@ public class EVMToolsBuilder extends Builder {
                 return new FilePath(result);
             }
             return null;
+        }
+
+        @Override
+        public void checkRoles(RoleChecker checker) throws SecurityException {
+            // TODO 自動生成されたメソッド・スタブ
+
         }
     }
 

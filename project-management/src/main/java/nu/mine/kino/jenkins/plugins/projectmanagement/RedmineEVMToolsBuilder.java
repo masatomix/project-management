@@ -37,6 +37,7 @@ import nu.mine.kino.projects.utils.Utils;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jenkinsci.remoting.RoleChecker;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -312,6 +313,11 @@ public class RedmineEVMToolsBuilder extends Builder {
             }
         }
 
+        @Override
+        public void checkRoles(RoleChecker checker) throws SecurityException {
+            // TODO 自動生成されたメソッド・スタブ
+
+        }
     }
 
     private static class PVCreatorExecutor implements FileCallable<FilePath> {
@@ -339,6 +345,12 @@ public class RedmineEVMToolsBuilder extends Builder {
             } catch (ProjectException e) {
                 throw new IOException(e);
             }
+        }
+
+        @Override
+        public void checkRoles(RoleChecker checker) throws SecurityException {
+            // TODO 自動生成されたメソッド・スタブ
+
         }
     }
 
@@ -394,6 +406,12 @@ public class RedmineEVMToolsBuilder extends Builder {
             }
             return null;
         }
+
+        @Override
+        public void checkRoles(RoleChecker checker) throws SecurityException {
+            // TODO 自動生成されたメソッド・スタブ
+
+        }
     }
 
     private static class EVCreatorExecutor implements FileCallable<FilePath[]> {
@@ -446,6 +464,12 @@ public class RedmineEVMToolsBuilder extends Builder {
                 return new FilePath(result);
             }
             return null;
+        }
+
+        @Override
+        public void checkRoles(RoleChecker checker) throws SecurityException {
+            // TODO 自動生成されたメソッド・スタブ
+
         }
     }
 
