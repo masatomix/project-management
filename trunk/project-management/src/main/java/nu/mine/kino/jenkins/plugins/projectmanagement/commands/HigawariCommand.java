@@ -32,6 +32,7 @@ import nu.mine.kino.projects.utils.WriteUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
+import org.jenkinsci.remoting.RoleChecker;
 import org.kohsuke.args4j.Argument;
 
 /**
@@ -143,6 +144,12 @@ public class HigawariCommand extends CLICommand {
                 return baseDateStr;
             }
             return null;
+        }
+
+        @Override
+        public void checkRoles(RoleChecker checker) throws SecurityException {
+            // TODO 自動生成されたメソッド・スタブ
+            
         }
 
     }
