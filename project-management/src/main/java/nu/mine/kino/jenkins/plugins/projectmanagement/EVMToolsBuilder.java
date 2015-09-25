@@ -34,7 +34,6 @@ import nu.mine.kino.projects.JSONProjectCreator;
 import nu.mine.kino.projects.PVCreator;
 import nu.mine.kino.projects.ProjectException;
 import nu.mine.kino.projects.ProjectWriter;
-import nu.mine.kino.projects.utils.PoiUtils;
 import nu.mine.kino.projects.utils.ProjectUtils;
 import nu.mine.kino.projects.utils.ReadUtils;
 
@@ -144,6 +143,8 @@ public class EVMToolsBuilder extends Builder {
                 throw new AbortException("日替わりチェックでエラーとなったため、ビルドを停止します。");
             }
         }
+
+        executeAndCopies(root, buildRoot, new AllCallable(name, !higawari));
 
         watch.start();
         listener.getLogger().println("[EVM Tools] JSONファイル作成開始");
@@ -422,6 +423,38 @@ public class EVMToolsBuilder extends Builder {
         // return returnPath;
     }
 
+    private static class AllCallable implements FileCallable<FilePath[]> {
+
+        /**
+         * <code>serialVersionUID</code> のコメント
+         */
+        private static final long serialVersionUID = 5800408421981026754L;
+
+        private final String fileName;
+
+        private final boolean createJsonFlag;
+
+        public AllCallable(String fileName, boolean createJsonFlag) {
+            this.fileName = fileName;
+            this.createJsonFlag = createJsonFlag;
+        }
+
+        @Override
+        public FilePath[] invoke(File f, VirtualChannel channel)
+                throws IOException, InterruptedException {
+            FilePath[] doProjectWriter = doProjectWriter(f, fileName,
+                    createJsonFlag);
+            return doProjectWriter;
+        }
+
+        @Override
+        public void checkRoles(RoleChecker checker) throws SecurityException {
+            // TODO 自動生成されたメソッド・スタブ
+
+        }
+
+    }
+
     private static class ProjectWriterExecutor implements
             FileCallable<FilePath[]> {
         private final String fileName;
@@ -435,32 +468,7 @@ public class EVMToolsBuilder extends Builder {
 
         public FilePath[] invoke(File f, VirtualChannel channel)
                 throws IOException, InterruptedException {
-            File target = new File(f, fileName);
-            try {
-                List<FilePath> returnList = new ArrayList<FilePath>();
-                File result = ProjectWriter.write(target);
-                returnList.add(new FilePath(result));
-                for (String base_prefix : PREFIX_ARRAY) {
-                    File base = new File(target.getParentFile(), base_prefix
-                            + "_" + target.getName());
-                    if (base.exists() && createJsonFlag) { // 日替わりモードでないときは(baseがあるばあいは)昨日のファイルのJSON化を行う
-                        FilePath result_base = new FilePath(
-                                ProjectWriter.write(base));
-                        returnList.add(result_base);
-                    }
-                    if (!createJsonFlag) { // 日替わりモードの場合は、base_xx.jsonを(ある場合は)そのまま使う
-                        FilePath result_base = new FilePath(new File(
-                                base.getParentFile(),
-                                ProjectUtils.findJSONFileName(base.getName())));
-                        if (result_base.exists()) {
-                            returnList.add(result_base);
-                        }
-                    }
-                }
-                return returnList.toArray(new FilePath[returnList.size()]);
-            } catch (ProjectException e) {
-                throw new IOException(e);
-            }
+            return doProjectWriter(f, fileName, createJsonFlag);
         }
 
         @Override
@@ -469,6 +477,36 @@ public class EVMToolsBuilder extends Builder {
 
         }
 
+    }
+
+    private static FilePath[] doProjectWriter(File f, String fileName,
+            boolean createJsonFlag) throws IOException, InterruptedException {
+        File target = new File(f, fileName);
+        try {
+            List<FilePath> returnList = new ArrayList<FilePath>();
+            File result = ProjectWriter.write(target);
+            returnList.add(new FilePath(result));
+            for (String base_prefix : PREFIX_ARRAY) {
+                File base = new File(target.getParentFile(), base_prefix + "_"
+                        + target.getName());
+                if (base.exists() && createJsonFlag) { // 日替わりモードでないときは(baseがあるばあいは)昨日のファイルのJSON化を行う
+                    FilePath result_base = new FilePath(
+                            ProjectWriter.write(base));
+                    returnList.add(result_base);
+                }
+                if (!createJsonFlag) { // 日替わりモードの場合は、base_xx.jsonを(ある場合は)そのまま使う
+                    FilePath result_base = new FilePath(new File(
+                            base.getParentFile(),
+                            ProjectUtils.findJSONFileName(base.getName())));
+                    if (result_base.exists()) {
+                        returnList.add(result_base);
+                    }
+                }
+            }
+            return returnList.toArray(new FilePath[returnList.size()]);
+        } catch (ProjectException e) {
+            throw new IOException(e);
+        }
     }
 
     private static class PVCreatorExecutor implements FileCallable<FilePath[]> {
@@ -480,31 +518,36 @@ public class EVMToolsBuilder extends Builder {
 
         public FilePath[] invoke(File f, VirtualChannel channel)
                 throws IOException, InterruptedException {
-            File target = new File(f, fileName);
-            try {
-                File jsonFile = new File(target.getParentFile(),
-                        ProjectUtils.findJSONFileName(target.getName()));
-                if (jsonFile.exists()) {
-                    File result = PVCreator.createFromJSON(jsonFile);
-                    File resultForPivot = PVCreator
-                            .createForPivotFromJSON(jsonFile);
-                    return new FilePath[] { new FilePath(result),
-                            new FilePath(resultForPivot) };
-                }
-                File result = PVCreator.create(target);
-                File resultForPivot = PVCreator.createForPivot(target);
-                return new FilePath[] { new FilePath(result),
-                        new FilePath(resultForPivot) };
-
-            } catch (ProjectException e) {
-                throw new IOException(e);
-            }
+            return doPVCreatorExecutor(f, fileName);
         }
 
         @Override
         public void checkRoles(RoleChecker checker) throws SecurityException {
             // TODO 自動生成されたメソッド・スタブ
 
+        }
+    }
+
+    private static FilePath[] doPVCreatorExecutor(File f, String fileName)
+            throws IOException {
+        File target = new File(f, fileName);
+        try {
+            File jsonFile = new File(target.getParentFile(),
+                    ProjectUtils.findJSONFileName(target.getName()));
+            if (jsonFile.exists()) {
+                File result = PVCreator.createFromJSON(jsonFile);
+                File resultForPivot = PVCreator
+                        .createForPivotFromJSON(jsonFile);
+                return new FilePath[] { new FilePath(result),
+                        new FilePath(resultForPivot) };
+            }
+            File result = PVCreator.create(target);
+            File resultForPivot = PVCreator.createForPivot(target);
+            return new FilePath[] { new FilePath(result),
+                    new FilePath(resultForPivot) };
+
+        } catch (ProjectException e) {
+            throw new IOException(e);
         }
     }
 
@@ -518,47 +561,7 @@ public class EVMToolsBuilder extends Builder {
 
         public FilePath[] invoke(File f, VirtualChannel channel)
                 throws IOException, InterruptedException {
-            File target = new File(f, fileName);
-            try {
-                FilePath[] results = executes(target, PREFIX_ARRAY);
-                return results;
-            } catch (ProjectException e) {
-                throw new IOException(e);
-            }
-        }
-
-        private FilePath[] executes(File target, String[] prefixArray)
-                throws ProjectException {
-            List<FilePath> returnList = new ArrayList<FilePath>();
-            for (String base_prefix : prefixArray) {
-                FilePath result = execute(target, base_prefix + "_");
-                returnList.add(result);
-            }
-            return returnList.toArray(new FilePath[returnList.size()]);
-        }
-
-        private FilePath execute(File target, String base_prefix)
-                throws ProjectException {
-
-            File jsonFile = new File(target.getParentFile(),
-                    ProjectUtils.findJSONFileName(target.getName()));
-            File jsonFile_base = new File(target.getParentFile(),
-                    ProjectUtils.findJSONFileName(base_prefix
-                            + target.getName()));
-            if (jsonFile_base.exists()) {
-                File result = ACCreator.createFromJSON(jsonFile, jsonFile_base,
-                        base_prefix);
-                return new FilePath(result);
-            }
-
-            File base = new File(target.getParentFile(), base_prefix
-                    + target.getName()); // file名にPrefix: base_をつけた
-
-            if (base.exists()) {
-                File result = ACCreator.create(target, base, base_prefix);
-                return new FilePath(result);
-            }
-            return null;
+            return doACCreatorExecutor(f, fileName);
         }
 
         @Override
@@ -566,6 +569,50 @@ public class EVMToolsBuilder extends Builder {
             // TODO 自動生成されたメソッド・スタブ
 
         }
+    }
+
+    private static FilePath[] doACCreatorExecutor(File f, String fileName)
+            throws IOException {
+        File target = new File(f, fileName);
+        try {
+            FilePath[] results = executesAC(target, PREFIX_ARRAY);
+            return results;
+        } catch (ProjectException e) {
+            throw new IOException(e);
+        }
+    }
+
+    private static FilePath[] executesAC(File target, String[] prefixArray)
+            throws ProjectException {
+        List<FilePath> returnList = new ArrayList<FilePath>();
+        for (String base_prefix : prefixArray) {
+            FilePath result = executeAC(target, base_prefix + "_");
+            returnList.add(result);
+        }
+        return returnList.toArray(new FilePath[returnList.size()]);
+    }
+
+    private static FilePath executeAC(File target, String base_prefix)
+            throws ProjectException {
+
+        File jsonFile = new File(target.getParentFile(),
+                ProjectUtils.findJSONFileName(target.getName()));
+        File jsonFile_base = new File(target.getParentFile(),
+                ProjectUtils.findJSONFileName(base_prefix + target.getName()));
+        if (jsonFile_base.exists()) {
+            File result = ACCreator.createFromJSON(jsonFile, jsonFile_base,
+                    base_prefix);
+            return new FilePath(result);
+        }
+
+        File base = new File(target.getParentFile(), base_prefix
+                + target.getName()); // file名にPrefix: base_をつけた
+
+        if (base.exists()) {
+            File result = ACCreator.create(target, base, base_prefix);
+            return new FilePath(result);
+        }
+        return null;
     }
 
     private static class EVCreatorExecutor implements FileCallable<FilePath[]> {
@@ -577,47 +624,7 @@ public class EVMToolsBuilder extends Builder {
 
         public FilePath[] invoke(File f, VirtualChannel channel)
                 throws IOException, InterruptedException {
-            File target = new File(f, fileName);
-            try {
-                FilePath[] results = executes(target, PREFIX_ARRAY);
-                return results;
-                // return execute(target, base_prefix);
-            } catch (ProjectException e) {
-                throw new IOException(e);
-            }
-        }
-
-        private FilePath[] executes(File target, String[] prefixArray)
-                throws ProjectException {
-            List<FilePath> returnList = new ArrayList<FilePath>();
-            for (String base_prefix : prefixArray) {
-                FilePath result = execute(target, base_prefix + "_");
-                returnList.add(result);
-            }
-            return returnList.toArray(new FilePath[returnList.size()]);
-        }
-
-        private FilePath execute(File target, String base_prefix)
-                throws ProjectException {
-
-            File jsonFile = new File(target.getParentFile(),
-                    ProjectUtils.findJSONFileName(target.getName()));
-            File jsonFile_base = new File(target.getParentFile(),
-                    ProjectUtils.findJSONFileName(base_prefix
-                            + target.getName()));
-            if (jsonFile_base.exists()) {
-                File result = EVCreator.createFromJSON(jsonFile, jsonFile_base,
-                        base_prefix);
-                return new FilePath(result);
-            }
-
-            File base = new File(target.getParentFile(), base_prefix
-                    + target.getName()); // file名にPrefix: base_をつけた
-            if (base.exists()) {
-                File result = EVCreator.create(target, base, base_prefix);
-                return new FilePath(result);
-            }
-            return null;
+            return doEVCreatorExecutor(f, fileName);
         }
 
         @Override
@@ -625,6 +632,50 @@ public class EVMToolsBuilder extends Builder {
             // TODO 自動生成されたメソッド・スタブ
 
         }
+    }
+
+    private static FilePath[] doEVCreatorExecutor(File f, String fileName)
+            throws IOException {
+        File target = new File(f, fileName);
+        try {
+            FilePath[] results = executesEV(target, PREFIX_ARRAY);
+            return results;
+            // return execute(target, base_prefix);
+        } catch (ProjectException e) {
+            throw new IOException(e);
+        }
+    }
+
+    private static FilePath[] executesEV(File target, String[] prefixArray)
+            throws ProjectException {
+        List<FilePath> returnList = new ArrayList<FilePath>();
+        for (String base_prefix : prefixArray) {
+            FilePath result = executeEV(target, base_prefix + "_");
+            returnList.add(result);
+        }
+        return returnList.toArray(new FilePath[returnList.size()]);
+    }
+
+    private static FilePath executeEV(File target, String base_prefix)
+            throws ProjectException {
+
+        File jsonFile = new File(target.getParentFile(),
+                ProjectUtils.findJSONFileName(target.getName()));
+        File jsonFile_base = new File(target.getParentFile(),
+                ProjectUtils.findJSONFileName(base_prefix + target.getName()));
+        if (jsonFile_base.exists()) {
+            File result = EVCreator.createFromJSON(jsonFile, jsonFile_base,
+                    base_prefix);
+            return new FilePath(result);
+        }
+
+        File base = new File(target.getParentFile(), base_prefix
+                + target.getName()); // file名にPrefix: base_をつけた
+        if (base.exists()) {
+            File result = EVCreator.create(target, base, base_prefix);
+            return new FilePath(result);
+        }
+        return null;
     }
 
     @Override
