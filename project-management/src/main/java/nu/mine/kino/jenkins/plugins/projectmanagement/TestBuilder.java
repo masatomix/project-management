@@ -2,20 +2,24 @@ package nu.mine.kino.jenkins.plugins.projectmanagement;
 
 import hudson.Extension;
 import hudson.FilePath;
+import hudson.FilePath.FileCallable;
 import hudson.Launcher;
 import hudson.model.BuildListener;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
+import hudson.remoting.VirtualChannel;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
 
 import net.sf.json.JSONObject;
 
+import org.jenkinsci.remoting.RoleChecker;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -60,400 +64,40 @@ public class TestBuilder extends Builder {
     public boolean perform(AbstractBuild build, Launcher launcher,
             BuildListener listener) throws InterruptedException, IOException {
 
-        FilePath root = build.getModuleRoot(); // ワークスペースのルート
+        System.out.println(build);
+        FilePath root = build.getModuleRoot(); // ワークスペースのルート.スレーブでビルドが動くと、他サーバのディレクトリだったりする。
+        root.act(new Hoge(listener));
 
-        // 順番的に、日替わりチェックは、JSONファイルを作ってから行うようにした。
-        // 速度が許せば、またこの処理はあとに持っていくべきだ。
-        FilePath buildRoot = new FilePath(build.getRootDir()); // このビルドのルート
-
-        FilePath fromFile = new FilePath(root, "from.txt");
-        System.out.println(fromFile);
-
-        FilePath toFile = new FilePath(new FilePath(build.getRootDir()),
-                "to.txt");
-        System.out.println(toFile);
-        fromFile.copyTo(toFile);
         return true;
     }
 
-    //
-    // /**
-    // * @param root
-    // * ワークスペースのルート
-    // * @param fileName
-    // * 集計対象Excelファイル
-    // * @param listener
-    // * @throws IOException
-    // * @throws InterruptedException
-    // */
-    // private boolean checkHigawari(FilePath root, String fileName,
-    // BuildListener listener) throws IOException, InterruptedException {
-    // // 元々あったファイルと、date.datの日付を見比べる必要あり。
-    // PrintStream logger = listener.getLogger();
-    //
-    // FilePath targetFile = new FilePath(root,
-    // ProjectUtils.findJSONFileName(fileName)); // targetFile
-    // // が該当JSON.実は作成前の古いヤツ。(今は作っているが。)
-    // FilePath previousNewestFile = new FilePath(root, targetFile.getName()
-    // + ".tmp"); // 前回取り込んだ最新ファイル(のJSONファイル)への参照
-    //
-    // String shimeFileName = PMConstants.DATE_DAT_FILENAME;
-    // FilePath shimeFile = new FilePath(root, shimeFileName); // 基準日ファイル
-    //
-    // logger.println("[EVM Tools] 前回取り込んだ最新ファイル(JSONファイル): "
-    // + previousNewestFile.getName());
-    // if (!previousNewestFile.exists()) {
-    // logger.println("[EVM Tools] 前回取り込んだファイルが存在しないのでこのまま集計処理を実施します。");
-    // return true;
-    // }
-    //
-    // logger.println("[EVM Tools] 日替わり基準日ファイル: " + shimeFile.getName());
-    // if (!shimeFile.exists()) {
-    // logger.println("[EVM Tools] 日替わり基準日ファイルが存在しないのでこのまま集計処理を実施します。");
-    // return true;
-    // }
-    //
-    // logger.println("[EVM Tools] 前回取り込んだファイルも日替わり基準日ファイルも存在します。");
-    // logger.println("[EVM Tools] 集計が正常終了したら前回ファイルは上書きしてしまうので、日付をチェックして上書きしてよいかを確認してから、集計処理を実施します。");
-    //
-    // StopWatch watch = new StopWatch();
-    // watch.start();
-    // Date targetDateOld = root.act(new DateGetter(targetFile.getName(),
-    // "json"));// 集計対象の日付。// この処理はいつかやめる。
-    // watch.stop();
-    // System.out.printf("json日付作成時間:[%d] ms\n", watch.getTime());
-    // watch.reset();
-    //
-    // watch.start();
-    // Date targetDate = root.act(new DateGetter(fileName, "excel"));// 集計対象の日付
-    // watch.stop();
-    // System.out.printf("poi日付作成時間:[%d] ms\n", watch.getTime());
-    // watch.reset();
-    //
-    // Date newestDate = root.act(new DateGetter(previousNewestFile.getName(),
-    // "json"));// 今まで取り込んだ基準日
-    // Date shimeDate = root.act(new DateGetter(shimeFileName, "txt"));//
-    // 直近、シメた基準日
-    //
-    // logger.println("[EVM Tools] 対象ファイルの基準日:"
-    // + DateFormatUtils.format(targetDate, "yyyyMMdd") + " : "
-    // + fileName);
-    // logger.println("[EVM Tools] 前回取り込んだファイル基準日(前回基準日):"
-    // + DateFormatUtils.format(newestDate, "yyyyMMdd") + " : "
-    // + previousNewestFile.getName());
-    // logger.println("[EVM Tools] 日替わり基準日:"
-    // + DateFormatUtils.format(shimeDate, "yyyyMMdd") + " : "
-    // + shimeFileName);
-    // // //// あとで消す
-    // // logger.println("[EVM Tools] 対象ファイルの基準日(参考):"
-    // // + DateFormatUtils.format(targetDateOld, "yyyyMMdd") + " : "
-    // // + targetFile.getName());
-    //
-    // if (targetDate.getTime() <= shimeDate.getTime()) { // シメたら、それより過去は取り込まない
-    // logger.println("[EVM Tools] 対象ファイルの基準日が、日替わり基準日と同じか過去。日替わりのあとに、それまでの基準日のデータを取り込もうとしている。");
-    // return false;
-    // }
-    //
-    // if (targetDate.getTime() == newestDate.getTime()) {// 同じ基準日のデータの取込なので、OK
-    // logger.println("[EVM Tools] 対象ファイルの基準日が、日替わり基準日より未来かつ、前回基準日と同じ基準日のデータなので問題ない");
-    // return true;
-    // }
-    //
-    // if (newestDate.getTime() == shimeDate.getTime()) {//
-    // シメ直後など。次はどんな基準日が来るか分からないので、OK。
-    // logger.println("[EVM Tools] 対象ファイルの基準日が、日替わり基準日より未来かつ、前回基準日と日替わり基準日が同じなので、対象ファイルは様々な基準日があり得るので問題ない");
-    // return true;
-    // } else {
-    //
-    // if (targetDate.getTime() == newestDate.getTime()) {
-    // logger.println("[EVM Tools] 前回基準日と日替わり基準日が異なり(つまり前回基準日で更新中)、そして対象ファイルの基準日は前回基準日とおなじなので問題ない");
-    // return true;
-    // } else {
-    // logger.println("[EVM Tools] 前回基準日と日替わり基準日が異なり(つまり前回基準日で更新中)、そして対象ファイルの基準日が前回基準日と異なる。すなわち、日替わりが行われていない可能性が高い");
-    // return false;
-    // }
-    // }
-    // }
-    //
-    // private static class DateGetter implements FileCallable<Date> {
-    // private final String fileName;
-    //
-    // private final String format;
-    //
-    // public DateGetter(String name, String format) {
-    // this.fileName = name;
-    // this.format = format;
-    // }
-    //
-    // @Override
-    // public Date invoke(File f, VirtualChannel channel) throws IOException,
-    // InterruptedException {
-    // File target = new File(f, fileName);
-    // if ("excel".equals(format)) {
-    // return PMUtils.getBaseDateFromExcelWithPoi(target);
-    // } else if ("json".equals(format)) {
-    // return PMUtils.getBaseDateFromJSON(target);
-    // } else {
-    // String string = ReadUtils.readFile(target);
-    // try {
-    // Date parseDate = DateUtils.parseDate(string,
-    // new String[] { "yyyyMMdd" });
-    // return parseDate;
-    // } catch (ParseException e) {
-    // e.printStackTrace();
-    // }
-    // }
-    // return null;
-    // }
-    // }
-    //
-    // /**
-    // * rootに対してcallableな処理を実行し、結果ファイルをbuildRootの下に配置する。
-    // * FilePath[]のデータを取得しローカルにコピー。 先頭のポインタ(FilePath)だけ後続の処理で使うので、呼び元に返却。
-    // *
-    // * @param root
-    // * @param buildRoot
-    // * @param callable
-    // * @throws IOException
-    // * @throws InterruptedException
-    // */
-    // private FilePath executeAndCopies(FilePath root, FilePath buildRoot,
-    // FileCallable<FilePath[]> callable) throws IOException,
-    // InterruptedException {
-    // FilePath[] resultPaths = root.act(callable);
-    //
-    // for (FilePath resultPath : resultPaths) {
-    // if (resultPath != null) {
-    // FilePath targetPath = new FilePath(buildRoot,
-    // resultPath.getName());
-    // resultPath.copyTo(targetPath); // remoteファイルを、ローカルにコピー。。
-    // }
-    // }
-    // return resultPaths[0];
-    // }
-    //
-    // private void executeAndCopy(FilePath root, FilePath buildRoot,
-    // FileCallable<FilePath> callable) throws IOException,
-    // InterruptedException {
-    // FilePath resultPath = root.act(callable);
-    //
-    // // FilePath returnPath = null;
-    // // for (FilePath resultPath : resultPaths) {
-    // FilePath targetPath = new FilePath(buildRoot, resultPath.getName());
-    // resultPath.copyTo(targetPath); // remoteファイルを、ローカルにコピー。。
-    // // if (returnPath == null) {
-    // // returnPath = targetPath;
-    // // }
-    // // }
-    // // return returnPath;
-    // }
-    //
-    // private static class ProjectWriterExecutor implements
-    // FileCallable<FilePath[]> {
-    // private final String fileName;
-    //
-    // private final boolean createJsonFlag;
-    //
-    // public ProjectWriterExecutor(String fileName, boolean createJsonFlag) {
-    // this.fileName = fileName;
-    // this.createJsonFlag = createJsonFlag;
-    // }
-    //
-    // public FilePath[] invoke(File f, VirtualChannel channel)
-    // throws IOException, InterruptedException {
-    // File target = new File(f, fileName);
-    // try {
-    // List<FilePath> returnList = new ArrayList<FilePath>();
-    // File result = ProjectWriter.write(target);
-    // returnList.add(new FilePath(result));
-    // for (String base_prefix : PREFIX_ARRAY) {
-    // File base = new File(target.getParentFile(), base_prefix
-    // + "_" + target.getName());
-    // if (base.exists() && createJsonFlag) { //
-    // 日替わりモードでないときは(baseがあるばあいは)昨日のファイルのJSON化を行う
-    // FilePath result_base = new FilePath(
-    // ProjectWriter.write(base));
-    // returnList.add(result_base);
-    // }
-    // if (!createJsonFlag) { // 日替わりモードの場合は、base_xx.jsonを(ある場合は)そのまま使う
-    // FilePath result_base = new FilePath(new File(
-    // base.getParentFile(),
-    // ProjectUtils.findJSONFileName(base.getName())));
-    // if (result_base.exists()) {
-    // returnList.add(result_base);
-    // }
-    // }
-    // }
-    // return returnList.toArray(new FilePath[returnList.size()]);
-    // } catch (ProjectException e) {
-    // throw new IOException(e);
-    // }
-    // }
-    //
-    // }
-    //
-    // private static class PVCreatorExecutor implements
-    // FileCallable<FilePath[]> {
-    // private final String fileName;
-    //
-    // public PVCreatorExecutor(String fileName) {
-    // this.fileName = fileName;
-    // }
-    //
-    // public FilePath[] invoke(File f, VirtualChannel channel)
-    // throws IOException, InterruptedException {
-    // File target = new File(f, fileName);
-    // try {
-    // File jsonFile = new File(target.getParentFile(),
-    // ProjectUtils.findJSONFileName(target.getName()));
-    // if (jsonFile.exists()) {
-    // File result = PVCreator.createFromJSON(jsonFile);
-    // File resultForPivot = PVCreator
-    // .createForPivotFromJSON(jsonFile);
-    // return new FilePath[] { new FilePath(result),
-    // new FilePath(resultForPivot) };
-    // }
-    // File result = PVCreator.create(target);
-    // File resultForPivot = PVCreator.createForPivot(target);
-    // return new FilePath[] { new FilePath(result),
-    // new FilePath(resultForPivot) };
-    //
-    // } catch (ProjectException e) {
-    // throw new IOException(e);
-    // }
-    // }
-    // }
-    //
-    // private static class ACCreatorExecutor implements
-    // FileCallable<FilePath[]> {
-    //
-    // private final String fileName;
-    //
-    // public ACCreatorExecutor(String fileName) {
-    // this.fileName = fileName;
-    // }
-    //
-    // public FilePath[] invoke(File f, VirtualChannel channel)
-    // throws IOException, InterruptedException {
-    // File target = new File(f, fileName);
-    // try {
-    // FilePath[] results = executes(target, PREFIX_ARRAY);
-    // return results;
-    // } catch (ProjectException e) {
-    // throw new IOException(e);
-    // }
-    // }
-    //
-    // private FilePath[] executes(File target, String[] prefixArray)
-    // throws ProjectException {
-    // List<FilePath> returnList = new ArrayList<FilePath>();
-    // for (String base_prefix : prefixArray) {
-    // FilePath result = execute(target, base_prefix + "_");
-    // returnList.add(result);
-    // }
-    // return returnList.toArray(new FilePath[returnList.size()]);
-    // }
-    //
-    // private FilePath execute(File target, String base_prefix)
-    // throws ProjectException {
-    //
-    // File jsonFile = new File(target.getParentFile(),
-    // ProjectUtils.findJSONFileName(target.getName()));
-    // File jsonFile_base = new File(target.getParentFile(),
-    // ProjectUtils.findJSONFileName(base_prefix
-    // + target.getName()));
-    // if (jsonFile_base.exists()) {
-    // File result = ACCreator.createFromJSON(jsonFile, jsonFile_base,
-    // base_prefix);
-    // return new FilePath(result);
-    // }
-    //
-    // File base = new File(target.getParentFile(), base_prefix
-    // + target.getName()); // file名にPrefix: base_をつけた
-    //
-    // if (base.exists()) {
-    // File result = ACCreator.create(target, base, base_prefix);
-    // return new FilePath(result);
-    // }
-    // return null;
-    // }
-    // }
-    //
-    // private static class EVCreatorExecutor implements
-    // FileCallable<FilePath[]> {
-    // private final String fileName;
-    //
-    // public EVCreatorExecutor(String fileName) {
-    // this.fileName = fileName;
-    // }
-    //
-    // public FilePath[] invoke(File f, VirtualChannel channel)
-    // throws IOException, InterruptedException {
-    // File target = new File(f, fileName);
-    // try {
-    // FilePath[] results = executes(target, PREFIX_ARRAY);
-    // return results;
-    // // return execute(target, base_prefix);
-    // } catch (ProjectException e) {
-    // throw new IOException(e);
-    // }
-    // }
-    //
-    // private FilePath[] executes(File target, String[] prefixArray)
-    // throws ProjectException {
-    // List<FilePath> returnList = new ArrayList<FilePath>();
-    // for (String base_prefix : prefixArray) {
-    // FilePath result = execute(target, base_prefix + "_");
-    // returnList.add(result);
-    // }
-    // return returnList.toArray(new FilePath[returnList.size()]);
-    // }
-    //
-    // private FilePath execute(File target, String base_prefix)
-    // throws ProjectException {
-    //
-    // File jsonFile = new File(target.getParentFile(),
-    // ProjectUtils.findJSONFileName(target.getName()));
-    // File jsonFile_base = new File(target.getParentFile(),
-    // ProjectUtils.findJSONFileName(base_prefix
-    // + target.getName()));
-    // if (jsonFile_base.exists()) {
-    // File result = EVCreator.createFromJSON(jsonFile, jsonFile_base,
-    // base_prefix);
-    // return new FilePath(result);
-    // }
-    //
-    // File base = new File(target.getParentFile(), base_prefix
-    // + target.getName()); // file名にPrefix: base_をつけた
-    // if (base.exists()) {
-    // File result = EVCreator.create(target, base, base_prefix);
-    // return new FilePath(result);
-    // }
-    // return null;
-    // }
-    // }
-    //
-    // @Override
-    // public Action getProjectAction(AbstractProject<?, ?> project) {
-    // return new ProjectSummaryProjectAction(project);
-    // }
-    //
-    // @Override
-    // public Collection<? extends Action> getProjectActions(
-    // AbstractProject<?, ?> project) {
-    // Collection<Action> ret = new ArrayList<Action>();
-    //
-    // ProjectSummaryProjectAction action = null;
-    // action = new ProjectSummaryProjectAction(project);
-    // action.setFormat(FORMAT.GRAPH);
-    // ret.add(action);
-    //
-    // action = new ProjectSummaryProjectAction(project);
-    // action.setFormat(FORMAT.LIST);
-    // ret.add(action);
-    //
-    // return ret;
-    // }
+    private static class Hoge implements FileCallable<Void> {
+
+        /**
+         * <code>serialVersionUID</code> のコメント
+         */
+        private static final long serialVersionUID = 8984513401663215528L;
+
+        private final BuildListener listener;
+
+        public Hoge(BuildListener listener) {
+            this.listener = listener;
+        }
+
+        @Override
+        public void checkRoles(RoleChecker checker) throws SecurityException {
+            // TODO 自動生成されたメソッド・スタブ
+
+        }
+
+        @Override
+        public Void invoke(File f, VirtualChannel channel) throws IOException,
+                InterruptedException {
+            listener.getLogger().print(f.toString());
+            System.out.println(f);
+            return null;
+        }
+    };
 
     // Overridden for better type safety.
     // If your plugin doesn't really define any property on Descriptor,
