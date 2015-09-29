@@ -144,7 +144,7 @@ public class EVMToolsBuilder extends Builder {
             }
         }
 
-        executeAndCopies(root, buildRoot, new AllCallable(name, !higawari));
+//        executeAndCopies(root, buildRoot, new AllCallable(name, !higawari));
 
         watch.start();
         listener.getLogger().println("[EVM Tools] JSONファイル作成開始");
