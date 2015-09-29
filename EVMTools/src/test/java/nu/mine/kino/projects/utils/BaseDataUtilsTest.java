@@ -22,8 +22,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import net.java.amateras.xlsbeans.XLSBeans;
-import net.java.amateras.xlsbeans.XLSBeansException;
 import nu.mine.kino.entity.ExcelPOIScheduleBean;
 import nu.mine.kino.entity.ExcelScheduleBean;
 import nu.mine.kino.entity.ExcelScheduleBean2Task;
@@ -58,10 +56,13 @@ public class BaseDataUtilsTest {
                     .createExcelPOIScheduleBeanMap(workbook, baseDate);
 
             List<TaskInformation> taskInfoList = new ArrayList<TaskInformation>();
-            
+
             in = new java.io.FileInputStream("project_management_tools.xls");
-            ExcelScheduleBeanSheet sheet = new XLSBeans().load(in,
-                    ExcelScheduleBeanSheet.class);
+            ExcelScheduleBeanSheet sheet = new ExcelScheduleBeanSheet();
+            // ExcelScheduleBeanSheet sheet = new XLSBeans().load(in,
+            // ExcelScheduleBeanSheet.class);
+            sheet.init(workbook);
+
             java.util.List<ExcelScheduleBean> instanceList = sheet
                     .getExcelScheduleBean();
 
@@ -78,9 +79,9 @@ public class BaseDataUtilsTest {
         } catch (FileNotFoundException e) {
             // TODO 自動生成された catch ブロック
             e.printStackTrace();
-        } catch (XLSBeansException e) {
-            // TODO 自動生成された catch ブロック
-            e.printStackTrace();
+            // } catch (XLSBeansException e) {
+            // // TODO 自動生成された catch ブロック
+            // e.printStackTrace();
         } catch (InvalidFormatException e) {
             // TODO 自動生成された catch ブロック
             e.printStackTrace();
