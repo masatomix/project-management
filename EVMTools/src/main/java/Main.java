@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.arnx.jsonic.JSON;
-import net.java.amateras.xlsbeans.XLSBeans;
-import net.java.amateras.xlsbeans.XLSBeansException;
 import nu.mine.kino.entity.ACTotalBean;
 import nu.mine.kino.entity.EVTotalBean;
 import nu.mine.kino.entity.ExcelPOIScheduleBean;
@@ -67,8 +65,10 @@ public class Main {
 
             in = new java.io.FileInputStream("project_management_tools.xls");
 
-            ExcelScheduleBeanSheet sheet = new XLSBeans().load(in,
-                    ExcelScheduleBeanSheet.class);
+            ExcelScheduleBeanSheet sheet = new ExcelScheduleBeanSheet();
+            sheet.init(workbook);
+            // ExcelScheduleBeanSheet sheet = new XLSBeans().load(in,
+            // ExcelScheduleBeanSheet.class);
             java.util.List<ExcelScheduleBean> instanceList = sheet
                     .getExcelScheduleBean();
 
@@ -129,9 +129,9 @@ public class Main {
         } catch (FileNotFoundException e) {
             // TODO 自動生成された catch ブロック
             e.printStackTrace();
-        } catch (XLSBeansException e) {
+            // } catch (XLSBeansException e) {
             // TODO 自動生成された catch ブロック
-            e.printStackTrace();
+            // e.printStackTrace();
         } catch (InvalidFormatException e) {
             // TODO 自動生成された catch ブロック
             e.printStackTrace();

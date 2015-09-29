@@ -100,12 +100,14 @@ public class Utils {
         return new Date(ans.longValue());
     }
 
-    private static BigDecimal date2excelSerialValue(Date date) {
-        BigDecimal dec = new BigDecimal(date.getTime()).divide(new BigDecimal(
-                "86400000"));
-        dec.add(new BigDecimal("25569")).add(new BigDecimal("0.375"));
-        return dec;
-    }
+    // private static String date2excelSerialValue(Date date) {
+    // long time = date.getTime();
+    // BigDecimal dec = new BigDecimal(time)
+    // .divide(new BigDecimal("86400000"));
+    // BigDecimal ans = dec.add(new BigDecimal("25569")).add(
+    // new BigDecimal("0.375"));
+    // return ans.toString();
+    // }
 
     /**
      * baseDate‚ªstartDate/endDate‚ÉŠÜ‚Ü‚ê‚Ä‚¢‚é‚©‚Ç‚¤‚©Bboolean‚Ìˆø”‚ÍA“¯“ú‚àOK‚ÆŒ©‚È‚·‚©B‚¢‚¸‚ê‚©‚ª

@@ -10,8 +10,8 @@
 
 package nu.mine.kino.entity;
 
-import net.java.amateras.xlsbeans.annotation.Column;
-import net.java.amateras.xlsbeans.annotation.MapColumns;
+//import net.java.amateras.xlsbeans.annotation.Column;
+//import net.java.amateras.xlsbeans.annotation.MapColumns;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
@@ -39,7 +39,7 @@ public class ExcelScheduleBean {
      * @param taskId
      *            ﾀｽｸID
      */
-    @Column(columnName = "ﾀｽｸID")//$NON-NLS-1$
+    //    @Column(columnName = "ﾀｽｸID")//$NON-NLS-1$
     public void setTaskId(String taskId) {
         this.taskId = taskId;
     }
@@ -50,7 +50,7 @@ public class ExcelScheduleBean {
      * @param plotDataMap
      *            ガントチャート
      */
-    @MapColumns(previousColumnName = "備考")
+    // @MapColumns(previousColumnName = "備考")
     public void setPlotDataMap(java.util.Map<String, String> plotDataMap) {
         this.plotDataMap = plotDataMap;
     }
