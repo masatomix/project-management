@@ -49,6 +49,17 @@ public class ExcelProjectCreatorTest {
         checkEV(infos);
         checkNumberOfDays(infos);
 
+        checkProjectInfo(project);
+
+    }
+
+    private void checkProjectInfo(Project project) {
+        Assert.assertEquals(Utils.str2Date("2014/11/04"), project.getBaseDate());
+        Assert.assertEquals(Utils.str2Date("2014/10/26"),
+                project.getProjectStartDate());
+        Assert.assertEquals(Utils.str2Date("2014/12/31"),
+                project.getProjectEndDate());
+        Assert.assertEquals(23, project.getTaskInformations().length);
     }
 
     /**
