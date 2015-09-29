@@ -109,11 +109,11 @@ public class ExcelScheduleBeanSheet {
             if (index == headerIndex) {
                 headerRow = e.next();
                 dateFirstCellnum = findDateFirstCellnum(headerRow);
-                dateLastCellNum = headerRow.getLastCellNum() - 1; // 日付が入っているセルのレンジ。最後は空白なのでマイナス1
+                dateLastCellNum = findDateLastCellnum(headerRow);
                 projectStartDate = (Date) PoiUtil.getCellValue(headerRow
                         .getCell(dateFirstCellnum));
                 projectEndDate = (Date) PoiUtil.getCellValue(headerRow
-                        .getCell(dateLastCellNum - 1));
+                        .getCell(dateLastCellNum));
 
                 index++;
                 continue;
@@ -139,9 +139,29 @@ public class ExcelScheduleBeanSheet {
         }
     }
 
+    /**
+     * POIが返す、データが入ってる最終列を使っても、たまに以外に大きな値が返ってきてしまうため、
+     * 
+     * @param headerRow
+     * @return
+     */
+    private int findDateLastCellnum(Row headerRow) {
+        int initNumber = headerRow.getLastCellNum();
+        int ans = initNumber;
+        for (int tmpNum = initNumber; tmpNum >= 0; tmpNum--) {
+            Object cellValue = PoiUtil.getCellValue(headerRow
+                    .getCell(tmpNum));
+            if (cellValue != null) {
+                ans = tmpNum;
+                break;
+            }
+        }
+        return ans;
+    }
+
     private Map<String, String> createPlotMap(Row headerRow, Row dataRow) {
         Map<String, String> returnMap = new HashMap<String, String>();
-        for (int columNum = dateFirstCellnum; columNum < dateLastCellNum; columNum++) {
+        for (int columNum = dateFirstCellnum; columNum <= dateLastCellNum; columNum++) {
             Date keyDate = (Date) PoiUtil.getCellValue(headerRow
                     .getCell(columNum));
             String key = date2excelSerialValue(keyDate);
