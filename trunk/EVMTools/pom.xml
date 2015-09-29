@@ -66,11 +66,11 @@
     </plugins>
   </build>
   <repositories>
-    <repository>
+<!--    <repository>
       <id>amateras</id>
       <name>Project Amateras Maven2 Repository</name>
       <url>http://amateras.sourceforge.jp/mvn/</url>
-    </repository>
+    </repository>-->
     <repository>
       <id>nu.mine.kino</id>
       <name>EVMTools Maven2 Repository</name>
@@ -87,11 +87,11 @@
     </repository>
   </repositories>
   <dependencies>
-    <dependency>
+<!--    <dependency>
       <groupId>jp.sf.amateras.xlsbeans</groupId>
       <artifactId>xlsbeans</artifactId>
       <version>1.2.5</version>
-    </dependency>
+    </dependency>-->
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
@@ -108,6 +108,24 @@
       <version>4.1</version>
 	  <scope>test</scope>
     </dependency>
+
+
+<dependency>
+	<groupId>org.apache.poi</groupId>
+	<artifactId>poi</artifactId>
+	<version>3.13</version>
+</dependency>
+<dependency>
+	<groupId>org.apache.poi</groupId>
+	<artifactId>poi-ooxml</artifactId>
+	<version>3.13</version>
+</dependency>
+<dependency>
+	<groupId>org.apache.poi</groupId>
+	<artifactId>poi-ooxml-schemas</artifactId>
+	<version>3.13</version>
+</dependency>
+
 
 <dependency>
 	<groupId>com.sun.jersey</groupId>

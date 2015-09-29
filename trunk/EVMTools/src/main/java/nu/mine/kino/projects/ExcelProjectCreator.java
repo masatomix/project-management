@@ -22,8 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.java.amateras.xlsbeans.XLSBeans;
-import net.java.amateras.xlsbeans.XLSBeansException;
 import nu.mine.kino.entity.ACTotalBean;
 import nu.mine.kino.entity.EVTotalBean;
 import nu.mine.kino.entity.ExcelPOIScheduleBean;
@@ -104,9 +102,12 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
 
         try {
             List<TaskInformation> taskInfoList = new ArrayList<TaskInformation>();
-            ExcelScheduleBeanSheet sheet = new XLSBeans().load(
-                    getInputStream(), ExcelScheduleBeanSheet.class);
+            ExcelScheduleBeanSheet sheet = new ExcelScheduleBeanSheet();
+            // getInputStream(), ExcelScheduleBeanSheet.class);
+            // ExcelScheduleBeanSheet sheet = new XLSBeans().load(
+            // getInputStream(), ExcelScheduleBeanSheet.class);
             sheet.setBaseDate(baseDate);
+            plus(sheet);
             java.util.List<ExcelScheduleBean> instanceList = sheet
                     .getExcelScheduleBean();
 
@@ -142,9 +143,37 @@ public class ExcelProjectCreator extends InputStreamProjectCreator {
 
             project.setHolidays(holidays);
             return project;
-        } catch (XLSBeansException e) {
-            throw new ProjectException(e);
+            // } catch (XLSBeansException e) {
+            // throw new ProjectException(e);
+            // }
+        } finally {
+
         }
+    }
+
+    private void plus(ExcelScheduleBeanSheet excelBeanSheet)
+            throws ProjectException {
+        FileInputStream in = null;
+        try {
+            in = new FileInputStream(file);
+            Workbook workbook = WorkbookFactory.create(in);
+            excelBeanSheet.init(workbook);
+        } catch (InvalidFormatException e) {
+            throw new ProjectException(e);
+        } catch (FileNotFoundException e) {
+            throw new ProjectException(e);
+        } catch (IOException e) {
+            throw new ProjectException(e);
+        } finally {
+            if (in != null)
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    // TODO é©ìÆê∂ê¨Ç≥ÇÍÇΩ catch ÉuÉçÉbÉN
+                    e.printStackTrace();
+                }
+        }
+
     }
 
     // private void setTask(ExcelPOIScheduleBean source, Task dest) {
