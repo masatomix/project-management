@@ -60,6 +60,9 @@ public class ExcelProjectCreatorTest {
         Assert.assertEquals(Utils.str2Date("2014/12/31"),
                 project.getProjectEndDate());
         Assert.assertEquals(23, project.getTaskInformations().length);
+        Assert.assertEquals(93, project.getTaskInformations()[0].getTask()
+                .getPlotDataMap().size() + 26); //ヘッダの数は、固定の26コ + 日付データ67コ。
+
     }
 
     /**
