@@ -18,15 +18,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-//import net.java.amateras.xlsbeans.annotation.HorizontalRecords;
-//import net.java.amateras.xlsbeans.annotation.RecordTerminal;
-//import net.java.amateras.xlsbeans.annotation.Sheet;
 import nu.mine.kino.entity.ExcelScheduleBean;
 import nu.mine.kino.projects.utils.PoiUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.bbreak.excella.core.util.PoiUtil;
 
@@ -52,16 +50,16 @@ public class ExcelScheduleBeanSheet {
     private int dateLastCellNum;
 
     //    @HorizontalRecords(tableLabel = "#Gantt", recordClass = ExcelScheduleBean.class, terminal = RecordTerminal.Border)//$NON-NLS-1$
-    public void setExcelScheduleBean(
-            java.util.List<ExcelScheduleBean> instanceList) {
-        this.instanceList = instanceList;
-        instanceList.remove(0);// 一行目はタイトルの邪魔なので、除外。
-        // if (!instanceList.isEmpty()) {
-        // Date[] range = BaseDataUtils.getProjectRange(instanceList);
-        // projectStartDate = range[0];
-        // projectEndDate = range[1];
-        // }
-    }
+    // public void setExcelScheduleBean(
+    // java.util.List<ExcelScheduleBean> instanceList) {
+    // this.instanceList = instanceList;
+    // instanceList.remove(0);// 一行目はタイトルの邪魔なので、除外。
+    // // if (!instanceList.isEmpty()) {
+    // // Date[] range = BaseDataUtils.getProjectRange(instanceList);
+    // // projectStartDate = range[0];
+    // // projectEndDate = range[1];
+    // // }
+    // }
 
     public java.util.List<ExcelScheduleBean> getExcelScheduleBean() {
         return instanceList;
@@ -89,9 +87,9 @@ public class ExcelScheduleBeanSheet {
         this.baseDate = baseDate;
     }
 
-    public void init(Workbook workbook) {
+    public void init(Workbook workbook) throws ProjectException {
         instanceList = new ArrayList<ExcelScheduleBean>();
-        org.apache.poi.ss.usermodel.Sheet sheet = workbook.getSheetAt(0);
+        Sheet sheet = workbook.getSheetAt(0);
         Iterator<Row> e = sheet.rowIterator();
         int index = 0;
         int dataIndex = PoiUtils.getDataFirstRowNum(sheet);
@@ -114,7 +112,12 @@ public class ExcelScheduleBeanSheet {
                         .getCell(dateFirstCellnum));
                 projectEndDate = (Date) PoiUtil.getCellValue(headerRow
                         .getCell(dateLastCellNum));
-
+                if (projectStartDate.getTime() > projectEndDate.getTime()) {
+                    String msg = String.format(
+                            "プロジェクト開始日>プロジェクト終了日となっています。[%s][%s]",
+                            projectStartDate, projectEndDate);
+                    throw new ProjectException(msg);
+                }
                 index++;
                 continue;
             }
@@ -149,8 +152,7 @@ public class ExcelScheduleBeanSheet {
         int initNumber = headerRow.getLastCellNum();
         int ans = initNumber;
         for (int tmpNum = initNumber; tmpNum >= 0; tmpNum--) {
-            Object cellValue = PoiUtil.getCellValue(headerRow
-                    .getCell(tmpNum));
+            Object cellValue = PoiUtil.getCellValue(headerRow.getCell(tmpNum));
             if (cellValue != null) {
                 ans = tmpNum;
                 break;
