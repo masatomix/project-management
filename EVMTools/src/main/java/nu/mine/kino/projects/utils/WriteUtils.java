@@ -67,8 +67,12 @@ public class WriteUtils {
         Date projectStartDate = project.getProjectStartDate();
         Date projectEndDate = project.getProjectEndDate();
 
+        System.out.printf("プロジェクト開始日:%s\n", projectStartDate);
+        System.out.printf("プロジェクト終了日:%s\n", projectEndDate);
+
         Date targetDate = projectStartDate;
         while (!targetDate.equals(projectEndDate)) {
+            System.out.printf("target日:%s\n", targetDate);
             String data = String.format("%s" + delimiter,
                     Utils.date2Str(targetDate, "yyyy/MM/dd"));
             buf.append(data);
