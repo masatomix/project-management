@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -40,6 +41,7 @@ import nu.mine.kino.projects.utils.ReadUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.lang.time.StopWatch;
+import org.apache.maven.model.profile.activation.FileProfileActivator;
 import org.jenkinsci.remoting.RoleChecker;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
@@ -144,7 +146,9 @@ public class EVMToolsBuilder extends Builder {
             }
         }
 
-//        executeAndCopies(root, buildRoot, new AllCallable(name, !higawari));
+        // FilePath pmJSON =
+        // executeAndCopies(root, buildRoot, new AllCallable(name, !higawari,
+        // listener));
 
         watch.start();
         listener.getLogger().println("[EVM Tools] JSONファイル作成開始");
@@ -434,17 +438,59 @@ public class EVMToolsBuilder extends Builder {
 
         private final boolean createJsonFlag;
 
-        public AllCallable(String fileName, boolean createJsonFlag) {
+        private final BuildListener listener;
+
+        public AllCallable(String fileName, boolean createJsonFlag,
+                BuildListener listener) {
             this.fileName = fileName;
             this.createJsonFlag = createJsonFlag;
+            this.listener = listener;
         }
 
         @Override
         public FilePath[] invoke(File f, VirtualChannel channel)
                 throws IOException, InterruptedException {
+            List<FilePath> returnList = new ArrayList<FilePath>();
+
+            StopWatch watch = new StopWatch();
+            watch.start();
+            listener.getLogger().println("[EVM Tools] JSONファイル作成開始");
             FilePath[] doProjectWriter = doProjectWriter(f, fileName,
                     createJsonFlag);
-            return doProjectWriter;
+            listener.getLogger().println(
+                    "[EVM Tools] 作成完了。ファイル名: " + doProjectWriter[0]);
+            watch.stop();
+            System.out.printf("%s 作成時間:[%d] ms\n",
+                    doProjectWriter[0].getName(), watch.getTime());
+            watch.reset();
+
+            watch.start();
+            listener.getLogger().println("[EVM Tools] PVファイル作成開始");
+            FilePath[] doPVCreatorExecutor = doPVCreatorExecutor(f, fileName);
+            watch.stop();
+            System.out.printf("PV作成時間:[%d] ms\n", watch.getTime());
+            watch.reset();
+
+            watch.start();
+            listener.getLogger().println("[EVM Tools] ACファイル作成開始");
+            FilePath[] doACCreatorExecutor = doACCreatorExecutor(f, fileName);
+            watch.stop();
+            System.out.printf("AC作成時間:[%d] ms\n", watch.getTime());
+            watch.reset();
+
+            watch.start();
+            listener.getLogger().println("[EVM Tools] EVファイル作成開始");
+            FilePath[] doEVCreatorExecutor = doEVCreatorExecutor(f, fileName);
+            watch.stop();
+            System.out.printf("EV作成時間:[%d] ms\n", watch.getTime());
+            watch.reset();
+
+            returnList.addAll(Arrays.asList(doProjectWriter));
+            returnList.addAll(Arrays.asList(doPVCreatorExecutor));
+            returnList.addAll(Arrays.asList(doACCreatorExecutor));
+            returnList.addAll(Arrays.asList(doEVCreatorExecutor));
+
+            return returnList.toArray(new FilePath[returnList.size()]);
         }
 
         @Override
@@ -457,6 +503,11 @@ public class EVMToolsBuilder extends Builder {
 
     private static class ProjectWriterExecutor implements
             FileCallable<FilePath[]> {
+        /**
+         * <code>serialVersionUID</code> のコメント
+         */
+        private static final long serialVersionUID = -1909120435783640612L;
+
         private final String fileName;
 
         private final boolean createJsonFlag;
@@ -510,6 +561,11 @@ public class EVMToolsBuilder extends Builder {
     }
 
     private static class PVCreatorExecutor implements FileCallable<FilePath[]> {
+        /**
+         * <code>serialVersionUID</code> のコメント
+         */
+        private static final long serialVersionUID = 7813882644092331480L;
+
         private final String fileName;
 
         public PVCreatorExecutor(String fileName) {
@@ -552,6 +608,11 @@ public class EVMToolsBuilder extends Builder {
     }
 
     private static class ACCreatorExecutor implements FileCallable<FilePath[]> {
+
+        /**
+         * <code>serialVersionUID</code> のコメント
+         */
+        private static final long serialVersionUID = 6430118387402281875L;
 
         private final String fileName;
 
@@ -616,6 +677,11 @@ public class EVMToolsBuilder extends Builder {
     }
 
     private static class EVCreatorExecutor implements FileCallable<FilePath[]> {
+        /**
+         * <code>serialVersionUID</code> のコメント
+         */
+        private static final long serialVersionUID = 6168445192827009758L;
+
         private final String fileName;
 
         public EVCreatorExecutor(String fileName) {
