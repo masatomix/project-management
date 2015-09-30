@@ -68,7 +68,65 @@ public class TestBuilder extends Builder {
         FilePath root = build.getModuleRoot(); // ワークスペースのルート.スレーブでビルドが動くと、他サーバのディレクトリだったりする。
         root.act(new Hoge(listener));
 
+        FilePath moduleRoot = build.getModuleRoot();
+        File rootDir = build.getRootDir();
+        FilePath rootDirPath = new FilePath(rootDir);
+        FilePath workspace = build.getWorkspace();
+        File artifactsDir = build.getArtifactsDir();
+        FilePath artifactsDirPath = new FilePath(artifactsDir);
+
+        listener.getLogger().println(moduleRoot);
+        listener.getLogger().println(rootDir);
+        listener.getLogger().println(rootDirPath);
+        listener.getLogger().println(workspace);
+        listener.getLogger().println(artifactsDir);
+        listener.getLogger().println(artifactsDirPath);
+
+        try {
+            // Fileを返すメソッドなので、マスターのディレクトリと予測
+            File file = new File(build.getRootDir(), "buildDir.txt");
+            listener.getLogger().println(file.getAbsolutePath());
+            file.createNewFile();
+
+            // おなじくFileを操作しているので、マスターのディレクトリと予測
+            File file2 = new File("/tmp/fullpath.txt");
+            listener.getLogger().println(file2.getAbsolutePath());
+            file2.createNewFile();
+
+            moduleRoot = build.getModuleRoot();
+            String[] result = moduleRoot.act(new F());
+            listener.getLogger().println(result[0]);
+            listener.getLogger().println(result[1]);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         return true;
+    }
+
+    private static class F implements FileCallable<String[]> {
+        private static final long serialVersionUID = 1L;
+
+        public String[] invoke(File f, VirtualChannel channel)
+                throws IOException, InterruptedException {
+            File file = new File(f, "root.txt"); // f
+                                                 // はFilePathから生成されるので場合によってスレーブのパスとなると予測
+            file.createNewFile();
+
+            File file2 = new File("/tmp/fullpath2.txt"); // このメソッド内はスレーブのパスになると予測
+            file2.createNewFile();
+
+            return new String[] { file.getAbsolutePath(),
+                    file2.getAbsolutePath() };
+        }
+
+        @Override
+        public void checkRoles(RoleChecker checker) throws SecurityException {
+            // TODO 自動生成されたメソッド・スタブ
+            
+        }
     }
 
     private static class Hoge implements FileCallable<Void> {
