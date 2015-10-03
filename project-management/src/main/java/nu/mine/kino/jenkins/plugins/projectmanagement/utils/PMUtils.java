@@ -319,6 +319,25 @@ public class PMUtils {
      * @param build
      * @throws IOException
      */
+    public static File findBaseDateFile(AbstractProject project)
+            throws IOException {
+        String shimeFileName = PMConstants.DATE_DAT_FILENAME;
+        AbstractBuild<?, ?> prevBuild = PMUtils.findBuild(project,
+                shimeFileName);
+
+        if (prevBuild != null) {
+            File target = new File(prevBuild.getRootDir(), shimeFileName);
+            return target;
+        }
+        return null;
+    }
+
+    /**
+     * そのビルドを含むプロジェクトの基準日ファイルをさがし、基準日を取得する。
+     * 
+     * @param build
+     * @throws IOException
+     */
     public static File findBaseDateFile(AbstractBuild build) throws IOException {
         AbstractProject project = build.getProject();
         String shimeFileName = PMConstants.DATE_DAT_FILENAME;
