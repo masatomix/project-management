@@ -86,11 +86,14 @@ public class HigawariCommand extends CLICommand {
             stdout.println("[" + jsonSource.getName() + "] -> ["
                     + dest.getName() + "] コピー完了");
 
-            String baseDateStr = jsonSource.act(new DateFileCopyExecutor());
+            final AbstractBuild<?, ?> shimeBuild = job.getLastSuccessfulBuild();
+
+            String baseDateStr = jsonSource.act(new DateFileExecutor());
+            writeBaseDateFile(baseDateStr, shimeBuild);
+
             stdout.println("基準日: " + baseDateStr + " を締めました。日替わり処理が正常終了しました。");
 
             // Prefix引数ナシの時だけ、時系列ファイルを書き込む
-            final AbstractBuild<?, ?> shimeBuild = job.getLastSuccessfulBuild();
             String seriesFileName = tmpPrefix + "_" + seriesFileNameSuffix;
             writeSeriesFile(baseDateStr, seriesFileName, shimeBuild);
 
@@ -128,19 +131,52 @@ public class HigawariCommand extends CLICommand {
                 shimeBuild.getNumber());
     }
 
-    private static class DateFileCopyExecutor implements FileCallable<String> {
+    private void writeBaseDateFile(String baseDateStr,
+            final AbstractBuild<?, ?> shimeBuild) {
+        WriteUtils
+                .writeFile(baseDateStr.getBytes(), new File(shimeBuild
+                        .getRootDir().getAbsolutePath(),
+                        PMConstants.DATE_DAT_FILENAME));
+        stdout.printf("基準日ファイル(%s)をビルド #%s に書き込みました。\n",
+                PMConstants.DATE_DAT_FILENAME, shimeBuild.getNumber());
+    }
+
+    // private static class DateFileCopyExecutor implements FileCallable<String>
+    // {
+    //
+    // @Override
+    // public String invoke(File jsonFile, VirtualChannel channel)
+    // throws IOException, InterruptedException {
+    // Date baseDate = PMUtils.getBaseDateFromJSON(jsonFile);
+    // // Date baseDate = PMUtils.getBaseDateFromExcel(f);
+    // if (baseDate != null) {
+    // String baseDateStr = DateFormatUtils.format(baseDate,
+    // "yyyyMMdd");
+    // WriteUtils.writeFile(baseDateStr.getBytes(),
+    // new File(jsonFile.getParentFile(),
+    // PMConstants.DATE_DAT_FILENAME));
+    // return baseDateStr;
+    // }
+    // return null;
+    // }
+    //
+    // @Override
+    // public void checkRoles(RoleChecker checker) throws SecurityException {
+    // // TODO 自動生成されたメソッド・スタブ
+    //
+    // }
+    //
+    // }
+
+    private static class DateFileExecutor implements FileCallable<String> {
 
         @Override
         public String invoke(File jsonFile, VirtualChannel channel)
                 throws IOException, InterruptedException {
             Date baseDate = PMUtils.getBaseDateFromJSON(jsonFile);
-            // Date baseDate = PMUtils.getBaseDateFromExcel(f);
             if (baseDate != null) {
                 String baseDateStr = DateFormatUtils.format(baseDate,
                         "yyyyMMdd");
-                WriteUtils.writeFile(baseDateStr.getBytes(),
-                        new File(jsonFile.getParentFile(),
-                                PMConstants.DATE_DAT_FILENAME));
                 return baseDateStr;
             }
             return null;
@@ -149,7 +185,7 @@ public class HigawariCommand extends CLICommand {
         @Override
         public void checkRoles(RoleChecker checker) throws SecurityException {
             // TODO 自動生成されたメソッド・スタブ
-            
+
         }
 
     }

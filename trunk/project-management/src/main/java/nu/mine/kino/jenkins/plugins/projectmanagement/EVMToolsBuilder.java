@@ -136,7 +136,7 @@ public class EVMToolsBuilder extends Builder {
             listener.getLogger()
                     .println("[EVM Tools] Jenkins日替わり管理バージョンで稼働します");
             watch.start();
-            higawariOKFlag = checkHigawari(root, name, listener);
+            higawariOKFlag = checkHigawari(build, name, listener);
             watch.stop();
             System.out.printf("日替わりチェック時間:[%d] ms\n", watch.getTime());
             watch.reset();
@@ -252,6 +252,7 @@ public class EVMToolsBuilder extends Builder {
     }
 
     /**
+     * @param build
      * @param root
      *            ワークスペースのルート
      * @param fileName
@@ -260,8 +261,11 @@ public class EVMToolsBuilder extends Builder {
      * @throws IOException
      * @throws InterruptedException
      */
-    private boolean checkHigawari(FilePath root, String fileName,
+    private boolean checkHigawari(AbstractBuild build, String fileName,
             BuildListener listener) throws IOException, InterruptedException {
+
+        FilePath root = build.getModuleRoot();
+
         // 元々あったファイルと、date.datの日付を見比べる必要あり。
         PrintStream logger = listener.getLogger();
 
@@ -272,7 +276,10 @@ public class EVMToolsBuilder extends Builder {
                 + ".tmp"); // 前回取り込んだ最新ファイル(のJSONファイル)への参照
 
         String shimeFileName = PMConstants.DATE_DAT_FILENAME;
-        FilePath shimeFile = new FilePath(root, shimeFileName); // 基準日ファイル
+
+        FilePath shimeFile = PMUtils.findBaseDateFile1(build); // この行は、旧基準日ファイルを参照するプロジェクトがなくなったら、コメントアウト。
+        // FilePath shimeFile = new FilePath(root, shimeFileName); // 基準日ファイル
+        File shimeFile2 = PMUtils.findBaseDateFile(build);
 
         logger.println("[EVM Tools] 前回取り込んだ最新ファイル(JSONファイル): "
                 + previousNewestFile.getName());
@@ -280,11 +287,20 @@ public class EVMToolsBuilder extends Builder {
             logger.println("[EVM Tools] 前回取り込んだファイルが存在しないのでこのまま集計処理を実施します。");
             return true;
         }
+        if (shimeFile2 == null) {
+            logger.println("[EVM Tools] 日替わり基準日ファイルが存在しないので旧バージョンの基準日ファイルで処理を続けます。"); // この行は、旧基準日ファイルを参照するプロジェクトがなくなったら、コメントアウト。
+            logger.println("[EVM Tools] 日替わり基準日ファイル: " + shimeFile.getName());// この行は、旧基準日ファイルを参照するプロジェクトがなくなったら、コメントアウト。
+            if (!shimeFile.exists()) {// この行は、旧基準日ファイルを参照するプロジェクトがなくなったら、コメントアウト。
+                logger.println("[EVM Tools] 旧日替わり基準日ファイルが存在しないのでこのまま集計処理を実施します。");// この行は、旧基準日ファイルを参照するプロジェクトがなくなったら、コメントアウト。
+                return true;// この行は、旧基準日ファイルを参照するプロジェクトがなくなったら、コメントアウト。
+            }// この行は、旧基準日ファイルを参照するプロジェクトがなくなったら、コメントアウト。
 
-        logger.println("[EVM Tools] 日替わり基準日ファイル: " + shimeFile.getName());
-        if (!shimeFile.exists()) {
-            logger.println("[EVM Tools] 日替わり基準日ファイルが存在しないのでこのまま集計処理を実施します。");
-            return true;
+            // 下の二行は、旧基準日ファイルを参照するプロジェクトがなくなったら、アンコメント。
+            // logger.println("[EVM Tools] 日替わり基準日ファイルが存在しないのでこのまま集計処理を実施します。");
+            // return true;
+        } else {
+            logger.println("[EVM Tools] 日替わり基準日ファイル: "
+                    + shimeFile2.getAbsolutePath());
         }
 
         logger.println("[EVM Tools] 前回取り込んだファイルも日替わり基準日ファイルも存在します。");
@@ -306,7 +322,16 @@ public class EVMToolsBuilder extends Builder {
 
         Date newestDate = root.act(new DateGetter(previousNewestFile.getName(),
                 "json"));// 今まで取り込んだ基準日
-        Date shimeDate = root.act(new DateGetter(shimeFileName, "txt"));// 直近、シメた基準日
+
+        Date shimeDate = null;
+        if (shimeFile2 == null) {// この行は、旧基準日ファイルを参照するプロジェクトがなくなったら、コメントアウト。
+            shimeDate = root.act(new DateGetter(shimeFileName, "txt")); // この行は、旧基準日ファイルを参照するプロジェクトがなくなったら、コメントアウト。
+        } else {// この行は、旧基準日ファイルを参照するプロジェクトがなくなったら、コメントアウト。
+            shimeDate = PMUtils.getBaseDateFromBaseDateFile(shimeFile2); // この行は、旧基準日ファイルを参照するプロジェクトがなくなったら、コメントアウト。
+        }// この行は、旧基準日ファイルを参照するプロジェクトがなくなったら、コメントアウト。
+
+        // 下の行は、旧基準日ファイルを参照するプロジェクトがなくなったら、アンコメント。
+        // shimeDate = PMUtils.getBaseDateFromBaseDateFile(shimeFile2);
 
         logger.println("[EVM Tools] 対象ファイルの基準日:"
                 + DateFormatUtils.format(targetDate, "yyyyMMdd") + " : "
@@ -317,10 +342,6 @@ public class EVMToolsBuilder extends Builder {
         logger.println("[EVM Tools] 日替わり基準日:"
                 + DateFormatUtils.format(shimeDate, "yyyyMMdd") + " : "
                 + shimeFileName);
-        // //// あとで消す
-        // logger.println("[EVM Tools] 対象ファイルの基準日(参考):"
-        // + DateFormatUtils.format(targetDateOld, "yyyyMMdd") + " : "
-        // + targetFile.getName());
 
         if (targetDate.getTime() <= shimeDate.getTime()) { // シメたら、それより過去は取り込まない
             logger.println("[EVM Tools] 対象ファイルの基準日が、日替わり基準日と同じか過去。日替わりのあとに、それまでの基準日のデータを取り込もうとしている。");
@@ -346,6 +367,8 @@ public class EVMToolsBuilder extends Builder {
             }
         }
     }
+
+
 
     private static class DateGetter implements FileCallable<Date> {
         private final String fileName;
