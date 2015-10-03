@@ -14,6 +14,7 @@ package nu.mine.kino.jenkins.plugins.projectmanagement.utils;
 
 import static nu.mine.kino.projects.utils.Utils.round;
 import hudson.AbortException;
+import hudson.FilePath;
 import hudson.model.Action;
 import hudson.model.BuildListener;
 import hudson.model.AbstractBuild;
@@ -27,6 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -42,17 +44,20 @@ import nu.mine.kino.entity.Project;
 import nu.mine.kino.entity.ProjectUser;
 import nu.mine.kino.jenkins.plugins.projectmanagement.EVMToolsBuilder;
 import nu.mine.kino.jenkins.plugins.projectmanagement.EVMToolsBuilder.DescriptorImpl;
+import nu.mine.kino.jenkins.plugins.projectmanagement.PMConstants;
 import nu.mine.kino.jenkins.plugins.projectmanagement.ProjectSummaryAction;
 import nu.mine.kino.jenkins.plugins.projectmanagement.RedmineEVMToolsBuilder;
 import nu.mine.kino.projects.ExcelProjectCreator;
 import nu.mine.kino.projects.JSONProjectCreator;
 import nu.mine.kino.projects.ProjectCreator;
 import nu.mine.kino.projects.ProjectException;
+import nu.mine.kino.projects.utils.ReadUtils;
 import nu.mine.kino.projects.utils.Utils;
 import nu.mine.kino.projects.utils.ViewUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Name;
@@ -296,6 +301,53 @@ public class PMUtils {
         return null;
     }
 
+    public static Date getBaseDateFromBaseDateFile(File file) {
+        try {
+            String string = ReadUtils.readFile(file);
+            return DateUtils.parseDate(string, new String[] { "yyyyMMdd" });
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * そのビルドを含むプロジェクトの基準日ファイルをさがし、基準日を取得する。
+     * 
+     * @param build
+     * @throws IOException
+     */
+    public static File findBaseDateFile(AbstractBuild build) throws IOException {
+        AbstractProject project = build.getProject();
+        String shimeFileName = PMConstants.DATE_DAT_FILENAME;
+        AbstractBuild<?, ?> prevBuild = PMUtils.findBuild(project,
+                shimeFileName);
+
+        if (prevBuild != null) {
+            File target = new File(prevBuild.getRootDir(), shimeFileName);
+            return target;
+        }
+        return null;
+    }
+
+    /**
+     * ワークスペースにある基準日ファイルを探すメソッド。
+     * 
+     * @param build
+     * @return
+     * @throws IOException
+     * @Deprecated
+     */
+    public static FilePath findBaseDateFile1(AbstractBuild build)
+            throws IOException {
+        String shimeFileName = PMConstants.DATE_DAT_FILENAME;
+        FilePath root = build.getModuleRoot(); // ワークスペースのルート
+        FilePath shimeFile = new FilePath(root, shimeFileName); // 基準日ファイル
+        return shimeFile;
+    }
+
     /**
      * このプロジェクトが持つビルドの中で、該当するファイル名がルートディレクトリに存在する、最新のビルドを返します。
      * 
@@ -358,7 +410,7 @@ public class PMUtils {
         }
         return null;
     }
- 
+
     /**
      * 指数値 が0.98以上なら晴れ、0.92以上0.98未満なら曇り、0.92未満なら雨
      * 
