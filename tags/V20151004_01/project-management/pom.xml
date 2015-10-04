@@ -1,0 +1,118 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.jenkins-ci.plugins</groupId>
+    <artifactId>plugin</artifactId>
+    <version>1.580.1</version><!-- which version of Jenkins is this plugin built against? Users must have at least this Jenkins version to use this plugin. -->
+  </parent>
+
+  <groupId>nu.mine.kino.jenkins.plugins</groupId>
+  <artifactId>project-management</artifactId>
+  <name>Project Management Plugin</name>
+  <version>0.9.12-SNAPSHOT</version>
+  <packaging>hpi</packaging>
+
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>http://opensource.org/licenses/MIT</url>
+    </license>
+  </licenses>
+
+  <!-- get every artifact through repo.jenkins-ci.org, which proxies all the artifacts that we need -->
+  <repositories>
+    <repository>
+      <id>repo.jenkins-ci.org</id>
+      <url>http://repo.jenkins-ci.org/public/</url>
+    </repository>
+    <repository>
+      <id>nu.mine.kino</id>
+      <name>EVMTools Maven2 Repository</name>
+      <url>http://www.masatom.in/repo/</url>
+    </repository>
+    <repository>
+      <id>nu.mine.kino.snapshot</id>
+      <name>EVMTools Maven2 SNAPSHOT Repository</name>
+      <url>http://www.masatom.in/repo-snapshot/</url>
+	  <!-- localリポジトリに存在しても、snapshotは毎回サーバに取りに行く設定。 --> 
+	  <!-- 自前で開発しているプロジェクトが別サーバで分散ビルドされた場合、ローカルのSNAPSHOTが古いVerだったことがあったので。 --> 
+      <releases><enabled>true</enabled><updatePolicy>always</updatePolicy></releases>
+      <snapshots><enabled>true</enabled><updatePolicy>always</updatePolicy></snapshots>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>repo.jenkins-ci.org</id>
+      <url>http://repo.jenkins-ci.org/public/</url>
+      <releases><enabled>true</enabled><updatePolicy>always</updatePolicy></releases>
+      <snapshots><enabled>true</enabled><updatePolicy>always</updatePolicy></snapshots>
+    </pluginRepository>
+  </pluginRepositories>
+
+	<build>
+	<extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh</artifactId>
+        <version>2.8</version>
+      </extension>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+         <artifactId>wagon-ftp</artifactId>
+         <version>2.8</version>
+      </extension>
+	</extensions>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<encoding>Windows-31J</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+	<dependency>
+		<groupId>nu.mine.kino.project</groupId>
+		<artifactId>EVMTools</artifactId>
+		<version>0.9.12-SNAPSHOT</version>
+	</dependency>
+  	<dependency>
+		<groupId>org.jenkins-ci.plugins</groupId>
+			<artifactId>mailer</artifactId>
+				<version>1.5</version>
+	</dependency>
+	</dependencies>
+   <distributionManagement>
+	<repository>
+      <id>nu.mine.kino.ftp</id>
+      <name>EVMTools Maven2 Repository</name>
+      <url>ftp://masatomix@192.168.10.12/var/www/html/repo/</url>
+	</repository>
+	<snapshotRepository>
+      <id>nu.mine.kino.ftp</id>
+      <name>EVMTools Maven2 Repository</name>
+      <url>ftp://masatomix@192.168.10.12/var/www/html/repo-snapshot/</url>
+	</snapshotRepository>
+  </distributionManagement>
+  
+</project>
