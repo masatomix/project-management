@@ -101,6 +101,10 @@ public class Higawari2Command extends CLICommand {
             String baseDateStr = jsonSource.act(new DateFileExecutor());
             writeBaseDateFile(baseDateStr, shimeBuild);
 
+            // FilePath dest2 = new FilePath(
+            // new FilePath(shimeBuild.getRootDir()), destFileName);
+            // jsonSource.copyTo(dest2);
+
             stdout.println("基準日: " + baseDateStr + " を締めました。日替わり処理が正常終了しました。");
 
             // Prefix引数ナシの時だけ、時系列ファイルを書き込む
