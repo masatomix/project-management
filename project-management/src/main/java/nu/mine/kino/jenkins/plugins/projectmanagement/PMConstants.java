@@ -23,4 +23,6 @@ public interface PMConstants {
 
     public static final String SERIES_DAT_FILENAME = "series.dat";
 
+    public static final String TMP_EXT = "tmp";
+
 }
