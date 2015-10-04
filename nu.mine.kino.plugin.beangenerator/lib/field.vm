@@ -1,8 +1,0 @@
-#if(${field.description}!="")
-  /**
-   * ${field.description}
-   */
-#end
-  private  ${field.fieldType} ${field.fieldName};
-
- 
