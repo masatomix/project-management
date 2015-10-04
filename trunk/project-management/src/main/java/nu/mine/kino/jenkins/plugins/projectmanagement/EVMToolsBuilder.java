@@ -185,12 +185,12 @@ public class EVMToolsBuilder extends Builder {
                     "[EVM Tools] 集計も完了したので、前回取り込んだファイルを上書き保存します");
             // FilePath targetFile = new FilePath(root, name);
             // FilePath previousNewestFile = new FilePath(root,
-            // targetFile.getName() + ".tmp"); // 前回取り込んだ最新ファイルへの参照
+            // targetFile.getName() + "."+PMConstants.TMP_EXT); // 前回取り込んだ最新ファイルへの参照
             // targetFile.copyTo(previousNewestFile); // 上書き。
 
             watch.start();
             FilePath previousNewestJsonFile = new FilePath(root,
-                    pmJSON.getName() + ".tmp"); // 前回取り込んだ最新ファイルへの参照
+                    pmJSON.getName() + "." + PMConstants.TMP_EXT); // 前回取り込んだ最新ファイルへの参照
             pmJSON.copyTo(previousNewestJsonFile);
             watch.stop();
             System.out.printf("%s 作成時間:[%d] ms\n",
@@ -273,7 +273,7 @@ public class EVMToolsBuilder extends Builder {
                 ProjectUtils.findJSONFileName(fileName)); // targetFile
                                                           // が該当JSON.実は作成前の古いヤツ。(今は作っているが。)
         FilePath previousNewestFile = new FilePath(root, targetFile.getName()
-                + ".tmp"); // 前回取り込んだ最新ファイル(のJSONファイル)への参照
+                + "." + PMConstants.TMP_EXT); // 前回取り込んだ最新ファイル(のJSONファイル)への参照
 
         String shimeFileName = PMConstants.DATE_DAT_FILENAME;
 

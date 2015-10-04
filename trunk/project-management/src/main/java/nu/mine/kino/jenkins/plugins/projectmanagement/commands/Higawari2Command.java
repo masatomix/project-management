@@ -75,9 +75,10 @@ public class Higawari2Command extends CLICommand {
         FilePath someWorkspace = job.getSomeWorkspace();
         FilePath org = new FilePath(someWorkspace, fileName);
         // FilePath excelSource = new FilePath(someWorkspace, fileName +
-        // ".tmp");
+        // "."+PMConstants.TMP_EXT);
         FilePath jsonSource = new FilePath(someWorkspace,
-                ProjectUtils.findJSONFileName(fileName) + ".tmp");
+                ProjectUtils.findJSONFileName(fileName) + "."
+                        + PMConstants.TMP_EXT);
         stdout.println(org);
         stdout.println("このファイルの日替わり処理を行います。");
         if (jsonSource.exists()) { //
