@@ -185,13 +185,16 @@ public class EVMToolsBuilder extends Builder {
                     "[EVM Tools] 集計も完了したので、前回取り込んだファイルを上書き保存します");
             // FilePath targetFile = new FilePath(root, name);
             // FilePath previousNewestFile = new FilePath(root,
-            // targetFile.getName() + "."+PMConstants.TMP_EXT); // 前回取り込んだ最新ファイルへの参照
+            // targetFile.getName() + "."+PMConstants.TMP_EXT); //
+            // 前回取り込んだ最新ファイルへの参照
             // targetFile.copyTo(previousNewestFile); // 上書き。
 
             watch.start();
-            FilePath previousNewestJsonFile = new FilePath(root,
-                    pmJSON.getName() + "." + PMConstants.TMP_EXT); // 前回取り込んだ最新ファイルへの参照
-            pmJSON.copyTo(previousNewestJsonFile);
+            String tmpFile = pmJSON.getName() + "." + PMConstants.TMP_EXT;
+            FilePath previousNewestJsonFile = new FilePath(root, tmpFile); // 前回取り込んだ最新ファイルへの参照
+            FilePath previousNewestJsonFile2 = new FilePath(buildRoot, tmpFile);
+            pmJSON.copyTo(previousNewestJsonFile); // そのうちディスコン
+            pmJSON.copyTo(previousNewestJsonFile2);
             watch.stop();
             System.out.printf("%s 作成時間:[%d] ms\n",
                     previousNewestJsonFile.getName(), watch.getTime());
@@ -367,8 +370,6 @@ public class EVMToolsBuilder extends Builder {
             }
         }
     }
-
-
 
     private static class DateGetter implements FileCallable<Date> {
         private final String fileName;
