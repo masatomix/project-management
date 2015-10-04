@@ -1,0 +1,29 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
+
+  <l:layout>
+    <st:include it="${it.owner}" page="sidepanel.jelly" />
+    <l:main-panel>
+      <h1>プロジェクトで定義された休日(土日は除く)</h1>
+      <table class="pane sortable bigtable" >
+        <tr>
+          <th class="pane-header">日付</th>
+          <th class="pane-header">曜日</th>
+          <th class="pane-header">祝日名</th>
+          <th class="pane-header">祝日定義ルール</th>
+          <th class="pane-header">振替</th>
+        </tr>
+        <j:forEach var="holiday" items="${it.Holidays}">
+          <tr>
+            <td class="pane"><i:formatDate value="${holiday.date}"/></td>
+            <td class="pane">${holiday.dayOfWeek}</td>
+            <td class="pane">${holiday.name}</td>
+            <td class="pane">${holiday.rule}</td>
+            <td class="pane">${holiday.hurikae}</td>
+          </tr>
+        </j:forEach>
+		</table>
+
+    </l:main-panel>
+  </l:layout>
+
+</j:jelly>

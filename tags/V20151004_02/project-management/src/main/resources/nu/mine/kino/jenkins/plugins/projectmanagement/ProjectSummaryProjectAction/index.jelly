@@ -1,0 +1,503 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"  xmlns:i="jelly:fmt">
+    <l:layout>
+        <st:include it="${it.project}" page="sidepanel.jelly" />
+        <l:main-panel>
+			
+<j:if test="${it.urlName=='project-summary-list'}">
+<!-- listのケース -->
+	  <h2>プロジェクト全体の、確定済み EVM指数(全指数)</h2>
+      <table class="pane sortable bigtable" >
+        <tr>
+          <th class="pane-header">No</th>
+          <th class="pane-header">基準日</th>
+          <th class="pane-header">BAC</th>
+          <th class="pane-header">PV</th>
+          <th class="pane-header">EV</th>
+          <th class="pane-header">AC</th>
+          <th class="pane-header">SV</th>
+          <th class="pane-header">CV</th>
+          <th class="pane-header">SPI</th>
+          <th class="pane-header">CPI</th>
+          <th class="pane-header">ETC</th>
+          <th class="pane-header">EAC</th>
+          <th class="pane-header">VAC</th>
+          <th class="pane-header">ビルドNo</th>
+        </tr>
+        <j:forEach var="bean" items="${it.seriesActions}" indexVar="count">
+          <tr>
+            <td class="pane" style="text-align:center">${count+1}</td>
+            <td class="pane" style="text-align:right"><i:formatDate value="${bean.baseDate}"/></td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.bac!='NaN' ? bean.currentPVACEV.bac : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.plannedValue!='NaN' ? bean.currentPVACEV.plannedValue : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.earnedValue!='NaN'? bean.currentPVACEV.earnedValue : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.actualCost!='NaN' ? bean.currentPVACEV.actualCost : "-"}</td>
+			<td class="pane" style="text-align:center">${bean.currentPVACEV.sv!='NaN' ? bean.currentPVACEV.sv : "-"}</td>
+			<td class="pane" style="text-align:center">${bean.currentPVACEV.cv!='NaN' ? bean.currentPVACEV.cv : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.spi!='NaN' ? bean.currentPVACEV.spi : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.cpi!='NaN' ? bean.currentPVACEV.cpi : "-"}</td>
+			<td class="pane" style="text-align:center">${bean.currentPVACEV.etc!='NaN' ? bean.currentPVACEV.etc : "-"}</td>
+			<td class="pane" style="text-align:center">${bean.currentPVACEV.eac!='NaN' ? bean.currentPVACEV.eac : "-"}</td>
+			<td class="pane" style="text-align:center">${bean.currentPVACEV.vac!='NaN' ? bean.currentPVACEV.vac : "-"}</td>
+            <td class="pane" style="text-align:right"><a href="../${bean.buildNumber}">#${bean.buildNumber}</a></td>
+	</tr>
+	</j:forEach>
+      </table>
+<table>
+<tr hashelp="true" class="optional-block-start " ref="cb6">
+ <td colspan="3"><label class="attach-previous">EVM用語の説明</label></td>
+ <td><a helpurl="${resURL}/plugin/project-management/help/evm.html" href="#" class="help-button" tabindex="9999"><img src='${imagesURL}/16x16/help.png'  alt="Help for feature: evm" ></img></a></td>
+</tr>
+<tr class="help-area">
+  <td></td>
+  <td colspan="2"><div class="help">ロード中</div></td>
+  <td></td>
+</tr>
+</table>
+
+	  <h2>プロジェクト全体の、確定済み EVM指数(全指数)(base1。たいてい週次)</h2>
+      <table class="pane sortable bigtable" >
+        <tr>
+          <th class="pane-header">No</th>
+          <th class="pane-header">基準日</th>
+          <th class="pane-header">BAC</th>
+          <th class="pane-header">PV</th>
+          <th class="pane-header">EV</th>
+          <th class="pane-header">AC</th>
+          <th class="pane-header">SV</th>
+          <th class="pane-header">CV</th>
+          <th class="pane-header">SPI</th>
+          <th class="pane-header">CPI</th>
+          <th class="pane-header">ETC</th>
+          <th class="pane-header">EAC</th>
+          <th class="pane-header">VAC</th>
+          <th class="pane-header">ビルドNo</th>
+        </tr>
+        <j:forEach var="bean" items="${it.seriesActionsBase1}" indexVar="count">
+          <tr>
+            <td class="pane" style="text-align:center">${count+1}</td>
+            <td class="pane" style="text-align:right"><i:formatDate value="${bean.baseDate}"/></td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.bac!='NaN' ? bean.currentPVACEV.bac : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.plannedValue!='NaN' ? bean.currentPVACEV.plannedValue : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.earnedValue!='NaN'? bean.currentPVACEV.earnedValue : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.actualCost!='NaN' ? bean.currentPVACEV.actualCost : "-"}</td>
+			<td class="pane" style="text-align:center">${bean.currentPVACEV.sv!='NaN' ? bean.currentPVACEV.sv : "-"}</td>
+			<td class="pane" style="text-align:center">${bean.currentPVACEV.cv!='NaN' ? bean.currentPVACEV.cv : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.spi!='NaN' ? bean.currentPVACEV.spi : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.cpi!='NaN' ? bean.currentPVACEV.cpi : "-"}</td>
+			<td class="pane" style="text-align:center">${bean.currentPVACEV.etc!='NaN' ? bean.currentPVACEV.etc : "-"}</td>
+			<td class="pane" style="text-align:center">${bean.currentPVACEV.eac!='NaN' ? bean.currentPVACEV.eac : "-"}</td>
+			<td class="pane" style="text-align:center">${bean.currentPVACEV.vac!='NaN' ? bean.currentPVACEV.vac : "-"}</td>
+            <td class="pane" style="text-align:right"><a href="../${bean.buildNumber}">#${bean.buildNumber}</a></td>
+	</tr>
+	</j:forEach>
+      </table>
+<table>
+<tr hashelp="true" class="optional-block-start " ref="cb6">
+ <td colspan="3"><label class="attach-previous">EVM用語の説明</label></td>
+ <td><a helpurl="${resURL}/plugin/project-management/help/evm.html" href="#" class="help-button" tabindex="9999"><img src='${imagesURL}/16x16/help.png'  alt="Help for feature: evm" ></img></a></td>
+</tr>
+<tr class="help-area">
+  <td></td>
+  <td colspan="2"><div class="help">ロード中</div></td>
+  <td></td>
+</tr>
+</table>
+
+	  <h2>プロジェクト全体の、確定済み EVM指数(全指数)(base2。たいてい月次)</h2>
+      <table class="pane sortable bigtable" >
+        <tr>
+          <th class="pane-header">No</th>
+          <th class="pane-header">基準日</th>
+          <th class="pane-header">BAC</th>
+          <th class="pane-header">PV</th>
+          <th class="pane-header">EV</th>
+          <th class="pane-header">AC</th>
+          <th class="pane-header">SV</th>
+          <th class="pane-header">CV</th>
+          <th class="pane-header">SPI</th>
+          <th class="pane-header">CPI</th>
+          <th class="pane-header">ETC</th>
+          <th class="pane-header">EAC</th>
+          <th class="pane-header">VAC</th>
+          <th class="pane-header">ビルドNo</th>
+        </tr>
+        <j:forEach var="bean" items="${it.seriesActionsBase2}" indexVar="count">
+          <tr>
+            <td class="pane" style="text-align:center">${count+1}</td>
+            <td class="pane" style="text-align:right"><i:formatDate value="${bean.baseDate}"/></td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.bac!='NaN' ? bean.currentPVACEV.bac : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.plannedValue!='NaN' ? bean.currentPVACEV.plannedValue : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.earnedValue!='NaN'? bean.currentPVACEV.earnedValue : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.actualCost!='NaN' ? bean.currentPVACEV.actualCost : "-"}</td>
+			<td class="pane" style="text-align:center">${bean.currentPVACEV.sv!='NaN' ? bean.currentPVACEV.sv : "-"}</td>
+			<td class="pane" style="text-align:center">${bean.currentPVACEV.cv!='NaN' ? bean.currentPVACEV.cv : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.spi!='NaN' ? bean.currentPVACEV.spi : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.cpi!='NaN' ? bean.currentPVACEV.cpi : "-"}</td>
+			<td class="pane" style="text-align:center">${bean.currentPVACEV.etc!='NaN' ? bean.currentPVACEV.etc : "-"}</td>
+			<td class="pane" style="text-align:center">${bean.currentPVACEV.eac!='NaN' ? bean.currentPVACEV.eac : "-"}</td>
+			<td class="pane" style="text-align:center">${bean.currentPVACEV.vac!='NaN' ? bean.currentPVACEV.vac : "-"}</td>
+            <td class="pane" style="text-align:right"><a href="../${bean.buildNumber}">#${bean.buildNumber}</a></td>
+	</tr>
+	</j:forEach>
+      </table>
+<table>
+<tr hashelp="true" class="optional-block-start " ref="cb6">
+ <td colspan="3"><label class="attach-previous">EVM用語の説明</label></td>
+ <td><a helpurl="${resURL}/plugin/project-management/help/evm.html" href="#" class="help-button" tabindex="9999"><img src='${imagesURL}/16x16/help.png'  alt="Help for feature: evm" ></img></a></td>
+</tr>
+<tr class="help-area">
+  <td></td>
+  <td colspan="2"><div class="help">ロード中</div></td>
+  <td></td>
+</tr>
+</table>
+
+今後追加要件: 週ごと、月ごとのPV/AC/EV を表示
+
+<!-- listのケース以上 -->
+</j:if>
+
+
+
+
+
+<j:if test="${it.urlName=='project-summary-graph'}">
+<!-- Graphのケース -->
+
+<j:if test="${it.baseDate!=null}">
+	
+	  <h2>プロジェクト全体の、確定済み EVM指数(全指数)</h2>
+      <table class="pane sortable bigtable" >
+        <tr>
+          <th class="pane-header">基準日</th>
+          <th class="pane-header">BAC</th>
+          <th class="pane-header">PV</th>
+          <th class="pane-header">EV</th>
+          <th class="pane-header">AC</th>
+          <th class="pane-header">SV</th>
+          <th class="pane-header">CV</th>
+          <th class="pane-header">SPI</th>
+          <th class="pane-header">CPI</th>
+          <th class="pane-header">ETC</th>
+          <th class="pane-header">EAC</th>
+          <th class="pane-header">VAC</th>
+          <th class="pane-header">ビルドNo</th>
+        </tr>
+        <j:forEach var="bean" items="${it.seriesActions}" indexVar="count" begin="0" end="0" >
+          <tr>
+            <td class="pane" style="text-align:right"><i:formatDate value="${bean.baseDate}"/></td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.bac!='NaN' ? bean.currentPVACEV.bac : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.plannedValue!='NaN' ? bean.currentPVACEV.plannedValue : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.earnedValue!='NaN'? bean.currentPVACEV.earnedValue : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.actualCost!='NaN' ? bean.currentPVACEV.actualCost : "-"}</td>
+			<td class="pane" style="text-align:center">${bean.currentPVACEV.sv!='NaN' ? bean.currentPVACEV.sv : "-"}</td>
+			<td class="pane" style="text-align:center">${bean.currentPVACEV.cv!='NaN' ? bean.currentPVACEV.cv : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.spi!='NaN' ? bean.currentPVACEV.spi : "-"}</td>
+            <td class="pane" style="text-align:center">${bean.currentPVACEV.cpi!='NaN' ? bean.currentPVACEV.cpi : "-"}</td>
+			<td class="pane" style="text-align:center">${bean.currentPVACEV.etc!='NaN' ? bean.currentPVACEV.etc : "-"}</td>
+			<td class="pane" style="text-align:center">${bean.currentPVACEV.eac!='NaN' ? bean.currentPVACEV.eac : "-"}</td>
+			<td class="pane" style="text-align:center">${bean.currentPVACEV.vac!='NaN' ? bean.currentPVACEV.vac : "-"}</td>
+            <td class="pane" style="text-align:right"><a href="../${bean.buildNumber}">#${bean.buildNumber}</a></td>
+	</tr>
+	</j:forEach>
+      </table>
+<table>
+<tr hashelp="true" class="optional-block-start " ref="cb6">
+ <td colspan="3"><label class="attach-previous">EVM用語の説明</label></td>
+ <td><a helpurl="${resURL}/plugin/project-management/help/evm.html" href="#" class="help-button" tabindex="9999"><img src='${imagesURL}/16x16/help.png'  alt="Help for feature: evm" ></img></a></td>
+</tr>
+<tr class="help-area">
+  <td></td>
+  <td colspan="2"><div class="help">ロード中</div></td>
+  <td></td>
+</tr>
+</table>
+
+
+		
+<script type='text/javascript' src='${resURL}/plugin/project-management/js/jquery-2.1.0.js'></script>
+<script src="${resURL}/plugin/project-management/js/stock/highstock.js"></script>
+<script src="${resURL}/plugin/project-management/js/stock/modules/exporting.js"></script>
+<script type='text/javascript'>
+var date= [];
+var bac = [];
+var pv  = [];
+var ev  = []; 
+var ac  = [];
+
+var spi  = []; 
+var cpi  = [];
+
+<j:forEach var="bean" items="${it.EVMViewBeans}" indexVar="count">
+//date[${count}]= '<i:formatDate value="${bean.baseDate}" />';
+ date[${count}] = Date.UTC(
+	<i:formatDate value="${bean.baseDate}" pattern="yyyy"/>,
+	<i:formatDate value="${bean.baseDate}" pattern="M"/> -1, 
+	<i:formatDate value="${bean.baseDate}" pattern="dd"/>),
+bac[${count}] = [date[${count}],${bean.bac!='NaN' ? bean.bac : "null"} ];
+pv[${count}]  =[date[${count}], ${bean.plannedValue!='NaN' ? bean.plannedValue : "null"}] ;
+
+ev[${count}]  = [date[${count}],${bean.earnedValue!='NaN'? bean.earnedValue :"null"} ];
+ac[${count}]  = [date[${count}],${bean.actualCost!='NaN' ? bean.actualCost : "null"}] ;
+
+<j:if test="${bean.spi!='NaN' and bean.spi!='NaN'}">
+spi[${count}] = ${bean.spi!='NaN' ? bean.spi : "null"};
+cpi[${count}] = ${bean.cpi!='NaN' ? bean.cpi : "null"};
+</j:if>
+</j:forEach>
+
+//date.reverse();
+//bac.reverse();
+//pv.reverse();
+//ev.reverse();
+//ac.reverse();
+//spi.reverse();
+//cpi.reverse();
+
+//<![CDATA[
+var spi_cpi=[];
+    for (i = 0; i < spi.length; i++) {
+		if(spi[i]!=null){
+        spi_cpi.push([
+        cpi[i],// x 
+        spi[i] // y 
+        ]);
+		}
+
+    };
+
+    Highcharts.setOptions({
+      lang: {  // 言語設定
+        rangeSelectorZoom: '表示範囲',
+        resetZoom: '表示期間をリセット',
+        resetZoomTitle: '表示期間をリセット',
+        rangeSelectorFrom: '表示期間',
+        rangeSelectorTo: '〜',
+        printButtonTitle: 'チャートを印刷',
+        exportButtonTitle: '画像としてダウンロード',
+        downloadJPEG: 'JPEG画像でダウンロード',
+        downloadPDF: 'PDF文書でダウンロード',
+        downloadPNG: 'PNG画像でダウンロード',
+        downloadSVG: 'SVG形式でダウンロード',
+        months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+        weekdays: ['日', '月', '火', '水', '木', '金', '土'],
+        numericSymbols: null   // 1000を1kと表示しない
+      }
+    });
+	
+$(function () {
+//    $('#container1').highcharts({
+    $('#container1').highcharts('StockChart', {
+        chart: {
+            type: 'line',
+			zoomType: "xy"
+        },
+        title: {
+            text: 'EVM 状況(PV/EV/AC)'
+        },
+        xAxis: {
+            type: 'datetime',
+            dateTimeLabelFormats: { 
+second: '%H:%M:%S',
+minute: '%H:%M',
+hour: '%m/%e %H:%M',
+day: '%y/%m/%e',
+week: '%y/%m/%e',
+month: '%Y/%m',
+year: '(%Y)'
+            },
+            title: {
+                text: 'Date'
+            }
+        },
+
+        yAxis: {
+            title: {
+                text: 'EVM (MD)'
+            }
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'left',
+            verticalAlign: 'top',
+            x: 100,
+            y: 70,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF',
+            borderWidth: 1
+        },
+        plotOptions: {
+            line: {
+                dataLabels: {
+                    enabled: true
+                },
+                showCheckbox: true,
+                enableMouseTracking: true
+            }
+        },
+      rangeSelector: { // 表示幅選択ボタン
+        selected : 1,
+        inputDateFormat: '%Y/%m/%d',
+        inputEditDateFormat: '%Y/%m/%d',
+        buttons : [{
+          type : 'day', 
+          count : 5,     
+          text : '5日間'     
+        }, {
+          type : 'day', 
+          count : 30,   
+          text : '1ヶ月'    
+        }, {
+          type : 'day',
+          count : 90,     
+          text : '3ヶ月'   
+        },{
+          type : 'all', 
+          count : 1,
+          text : 'All'
+        }]
+      },
+        series: [{
+            name: 'BAC',
+            data:bac
+        }, {
+            name: 'PV',
+            data: pv
+        }, {
+            name: 'EV',
+            data:ev
+
+        }, {
+            name: 'AC',
+            data:ac
+        }]
+    });
+});
+
+$(function () {
+    $('#container2').highcharts({
+        chart: {
+            type: 'scatter',
+            zoomType: 'xy'
+        },
+        title: {
+            text:  'EVM 状況(CPI & SPI)'
+        },
+        xAxis: {
+            title: {
+                enabled: true,
+                text: 'CPI'
+            },
+            startOnTick: true,
+            endOnTick: true,
+            showLastLabel: true,
+            gridLineWidth: 1,
+            max: 2.0,
+            min:0.0,
+			tickInterval: 0.2
+        },
+        yAxis: {
+            title: {
+                text: 'SPI'
+            },
+            gridLineWidth: 1,
+            max: 2.0,
+            min:0.0,
+			tickInterval: 0.2
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'left',
+            verticalAlign: 'top',
+            x: 100,
+            y: 70,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF',
+            borderWidth: 1
+        },
+        plotOptions: {
+            scatter: {
+                marker: {
+                    radius: 3,
+                    states: {
+                        hover: {
+                            enabled: true,
+                            lineColor: 'rgb(100,100,100)'
+                        }
+                    }
+                },
+                states: {
+                    hover: {
+                        marker: {
+                            enabled: false
+                        }
+                    }
+                },
+                showCheckbox: false,
+                lineWidth: 1,
+                tooltip: {
+                    headerFormat: '<b>{series.name}</b><br>',
+                    pointFormat: 'index[{point.index}], {point.x} , {point.y} '
+                }
+            }
+        },
+        series: [{
+            type: 'scatter',
+            name: 'CPI & SPI',
+            color: 'rgba(223, 83, 83, .5)',
+            data: spi_cpi
+        },{
+            type: 'line',
+            name: '安全エリア(0.98〜)',
+            data: [[0.98,2.0],[0.98,0.98], [2.0,0.98]],
+            marker: {
+                enabled: false
+            },
+            states: {
+                hover: {
+                    lineWidth: 0
+                }
+            },
+            enableMouseTracking: false
+        },{
+            type: 'line',
+            name: '要注意エリア(0.92〜0.98)',
+            data: [[0.92,2.0],[0.92,0.92], [2.0,0.92]],
+            marker: {
+                enabled: false
+            },
+            states: {
+                hover: {
+                    lineWidth: 0
+                }
+            },
+            enableMouseTracking: false
+        }
+		]
+    });
+});
+
+//]]>  
+
+</script>
+
+<h2>直近(<i:formatDate value="${it.baseDate}"/>) 時点のプロジェクト全体のEVM グラフ</h2>
+<div id="container1" style="height: 600px"></div>
+<div id="container2" style="height: 600px"></div>
+</j:if>
+
+
+今後追加要件: 週ごと、月ごとのPV/AC/EV を表示
+
+
+
+
+<!-- Graphのケース 以上-->
+</j:if>
+
+
+
+
+        </l:main-panel>
+    </l:layout>
+</j:jelly>
