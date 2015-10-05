@@ -33,15 +33,7 @@ import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
 /**
- * Sample {@link Builder}.
- * 
- * <p>
- * When the user configures the project and enables this builder,
- * {@link DescriptorImpl#newInstance(StaplerRequest)} is invoked and a new
- * {@link HigawariCheckBuilder} is created. The created instance is persisted to
- * the project configuration XML by using XStream, so this allows you to use
- * instance fields (like {@link #name}) to remember the configuration.
- * 
+ * {@link EVMToolsBuilder} がセットされたジョブを探し、現在の日替わり基準日を探してくる。
  * <p>
  * When a build is performed, the
  * {@link #perform(AbstractBuild, Launcher, BuildListener)} method will be
@@ -58,15 +50,6 @@ public class HigawariCheckBuilder extends Builder {
     }
 
     /**
-     * ワークスペース上の該当ファイルから、JSONファイルを作成。また存在するなら該当ファイル(base,base1,base2)
-     * ExcelからJSONファイルを作成。 またPV/AC/EVのtsvファイルも作成。
-     * 作成された諸々のファイル群はビルドディレクトリ(中央にある)にコピーされ、Actionから参照可能となる。
-     * 
-     * ただし、tsvファイル群はダウンロード時使用するのでコピー必須だが、
-     * jsonファイルはProject情報としてシリアライズされていれば不要かもしれない。 どちらが速いか要確認であるが。
-     * 
-     * @see hudson.tasks.BuildStepCompatibilityLayer#perform(hudson.model.AbstractBuild,
-     *      hudson.Launcher, hudson.model.BuildListener)
      */
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher,
@@ -75,38 +58,41 @@ public class HigawariCheckBuilder extends Builder {
         for (TopLevelItem item : items) {
             if (item instanceof FreeStyleProject) {
                 FreeStyleProject project = (FreeStyleProject) item;
-                DescribableList<Builder, Descriptor<Builder>> buildersList = project
-                        .getBuildersList();
-                EVMToolsBuilder builder = buildersList
-                        .get(EVMToolsBuilder.class);
-                if (builder != null) {
-                    File newBaseDateFile = PMUtils.findBaseDateFile(project); // buildDirの新しいファイル
-                    if (newBaseDateFile != null) {
-                        Date baseDateFromBaseDateFile = PMUtils
-                                .getBaseDateFromBaseDateFile(newBaseDateFile);
-                        String dateStr = DateFormatUtils.format(
-                                baseDateFromBaseDateFile, "yyyyMMdd");
+                if (!project.isDisabled()) {
+                    DescribableList<Builder, Descriptor<Builder>> buildersList = project
+                            .getBuildersList();
+                    EVMToolsBuilder builder = buildersList
+                            .get(EVMToolsBuilder.class);
+                    if (builder != null) {
+                        File newBaseDateFile = PMUtils
+                                .findBaseDateFile(project); // buildDirの新しいファイル
+                        if (newBaseDateFile != null) {
+                            Date baseDateFromBaseDateFile = PMUtils
+                                    .getBaseDateFromBaseDateFile(newBaseDateFile);
+                            String dateStr = DateFormatUtils.format(
+                                    baseDateFromBaseDateFile, "yyyyMMdd");
 
-                        String msg = String.format("%s\t%s", project.getName(),
-                                dateStr);
-                        listener.getLogger().println(msg);
+                            String msg = String.format("%s\t%s",
+                                    project.getName(), dateStr);
+                            listener.getLogger().println(msg);
 
-                    } else {
-                        String msg = String
-                                .format("%s は基準日ファイルが見つかりませんでした。日替わりを実行していないか、"
-                                        + "ワークスペースに存在する旧バージョンの日替わりファイルしかないようです。"
-                                        + "日替わり処理を行うことで日替わりファイルが見つかるようになります。",
-                                        project.getName());
-                        listener.getLogger().println(msg);
+                        } else {
+                            String msg = String.format("%s\t日替処理が未実施か、"
+                                    + "ワークスペースに存在する旧バージョンの日替ファイルしか存在しない。"
+                                    + "日替処理を実施後、ファイルが見つかるようになります。",
+                                    project.getName());
+                            listener.getLogger().println(msg);
+                        }
+
+                        // AbstractBuild<?, ?> b = ((FreeStyleProject) item)
+                        // .getLastSuccessfulBuild();
+                        // if (b != null) {
+                        // FilePath oldBaseDateFile =
+                        // PMUtils.findBaseDateFile1(b);
+                        // // workspaceの古いファイル。
+                        // }
+
                     }
-
-                    // AbstractBuild<?, ?> b = ((FreeStyleProject) item)
-                    // .getLastSuccessfulBuild();
-                    // if (b != null) {
-                    // FilePath oldBaseDateFile = PMUtils.findBaseDateFile1(b);
-                    // // workspaceの古いファイル。
-                    // }
-
                 }
             }
         }
