@@ -123,6 +123,8 @@ public class EVMToolsBuilder extends Builder {
 
         listener.getLogger().println("[EVM Tools] 集計対象: " + name);
         FilePath root = build.getModuleRoot(); // ワークスペースのルート
+        listener.getLogger().println(
+                "[EVM Tools] (" + new FilePath(root, name) + ")");
 
         // 順番的に、日替わりチェックは、JSONファイルを作ってから行うようにした。
         // 速度が許せば、またこの処理はあとに持っていくべきだ。
@@ -285,7 +287,7 @@ public class EVMToolsBuilder extends Builder {
         File shimeFile2 = PMUtils.findBaseDateFile(build);
 
         logger.println("[EVM Tools] 前回取り込んだ最新ファイル(JSONファイル): "
-                + previousNewestFile.getName());
+                + previousNewestFile);
         if (!previousNewestFile.exists()) {
             logger.println("[EVM Tools] 前回取り込んだファイルが存在しないのでこのまま集計処理を実施します。");
             return true;
