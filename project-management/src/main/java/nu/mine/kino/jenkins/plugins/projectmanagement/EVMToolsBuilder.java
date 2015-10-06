@@ -152,9 +152,9 @@ public class EVMToolsBuilder extends Builder {
         // listener));
 
         watch.start();
-        listener.getLogger().println("[EVM Tools] JSONファイル作成開始");
+        listener.getLogger().println("[EVM Tools] 作成開始");
         FilePath pmJSON = executeAndCopies(root, buildRoot,
-                new ProjectWriterExecutor(name, !higawari));
+                new ProjectWriterExecutor(name, !higawari))[0];
         listener.getLogger().println("[EVM Tools] 作成完了。ファイル名: " + pmJSON);
         watch.stop();
         System.out.printf("%s 作成時間:[%d] ms\n", pmJSON.getName(),
@@ -163,40 +163,57 @@ public class EVMToolsBuilder extends Builder {
 
         watch.start();
         listener.getLogger().println("[EVM Tools] PVファイル作成開始");
-        executeAndCopies(root, buildRoot, new PVCreatorExecutor(name));
+        FilePath[] pvResult = executeAndCopies(root, buildRoot,
+                new PVCreatorExecutor(name));
+        listener.getLogger().println("[EVM Tools] 作成完了。ファイル名: " + pvResult[0]);
+        listener.getLogger().println("[EVM Tools] 作成完了。ファイル名: " + pvResult[1]);
         watch.stop();
         System.out.printf("PV作成時間:[%d] ms\n", watch.getTime());
         watch.reset();
 
         watch.start();
         listener.getLogger().println("[EVM Tools] ACファイル作成開始");
-        executeAndCopies(root, buildRoot, new ACCreatorExecutor(name));
+        FilePath[] acResult = executeAndCopies(root, buildRoot,
+                new ACCreatorExecutor(name));
+        for (FilePath result : acResult) {
+            listener.getLogger().println("[EVM Tools] 作成完了。ファイル名: " + result);
+        }
         watch.stop();
         System.out.printf("AC作成時間:[%d] ms\n", watch.getTime());
         watch.reset();
 
         watch.start();
         listener.getLogger().println("[EVM Tools] EVファイル作成開始");
-        executeAndCopies(root, buildRoot, new EVCreatorExecutor(name));
+        FilePath[] evResult = executeAndCopies(root, buildRoot,
+                new EVCreatorExecutor(name));
+        for (FilePath result : evResult) {
+            listener.getLogger().println("[EVM Tools] 作成完了。ファイル名: " + result);
+        }
         watch.stop();
         System.out.printf("EV作成時間:[%d] ms\n", watch.getTime());
         watch.reset();
 
         if (higawari && higawariOKFlag) { // 日替わり管理していて、かつ日替わりしていいよと言うことなので
             listener.getLogger().println(
-                    "[EVM Tools] 集計も完了したので、前回取り込んだファイルを上書き保存します");
+                    "[EVM Tools] 集計も完了したので、「前回取り込んだ最新ファイル」を上書き保存します");
             // FilePath targetFile = new FilePath(root, name);
             // FilePath previousNewestFile = new FilePath(root,
             // targetFile.getName() + "."+PMConstants.TMP_EXT); //
             // 前回取り込んだ最新ファイルへの参照
             // targetFile.copyTo(previousNewestFile); // 上書き。
-
+            
             watch.start();
             String tmpFile = pmJSON.getName() + "." + PMConstants.TMP_EXT;
             FilePath previousNewestJsonFile = new FilePath(root, tmpFile); // 前回取り込んだ最新ファイルへの参照
             FilePath previousNewestJsonFile2 = new FilePath(buildRoot, tmpFile);
             pmJSON.copyTo(previousNewestJsonFile); // そのうちディスコン
             pmJSON.copyTo(previousNewestJsonFile2);
+            listener.getLogger().println(
+                    "[EVM Tools] " + previousNewestJsonFile);
+            listener.getLogger().println(
+                    "[EVM Tools] " + previousNewestJsonFile2);
+            listener.getLogger().println(
+                    "[EVM Tools] " + "が " + pmJSON.getName() + " で上書きされました");
             watch.stop();
             System.out.printf("%s 作成時間:[%d] ms\n",
                     previousNewestJsonFile.getName(), watch.getTime());
@@ -287,14 +304,15 @@ public class EVMToolsBuilder extends Builder {
         File shimeFile2 = PMUtils.findBaseDateFile(build);
 
         logger.println("[EVM Tools] 前回取り込んだ最新ファイル(JSONファイル): "
-                + previousNewestFile);
+                + previousNewestFile.getName());
+        logger.println("[EVM Tools] (" + previousNewestFile + ")");
         if (!previousNewestFile.exists()) {
             logger.println("[EVM Tools] 前回取り込んだファイルが存在しないのでこのまま集計処理を実施します。");
             return true;
         }
         if (shimeFile2 == null) {
             logger.println("[EVM Tools] 日替わり基準日ファイルが存在しないので旧バージョンの基準日ファイルで処理を続けます。"); // この行は、旧基準日ファイルを参照するプロジェクトがなくなったら、コメントアウト。
-            logger.println("[EVM Tools] 日替わり基準日ファイル: " + shimeFile.getName());// この行は、旧基準日ファイルを参照するプロジェクトがなくなったら、コメントアウト。
+            logger.println("[EVM Tools] 旧日替わり基準日ファイル: " + shimeFile);// この行は、旧基準日ファイルを参照するプロジェクトがなくなったら、コメントアウト。
             if (!shimeFile.exists()) {// この行は、旧基準日ファイルを参照するプロジェクトがなくなったら、コメントアウト。
                 logger.println("[EVM Tools] 旧日替わり基準日ファイルが存在しないのでこのまま集計処理を実施します。");// この行は、旧基準日ファイルを参照するプロジェクトがなくなったら、コメントアウト。
                 return true;// この行は、旧基準日ファイルを参照するプロジェクトがなくなったら、コメントアウト。
@@ -421,7 +439,7 @@ public class EVMToolsBuilder extends Builder {
      * @throws IOException
      * @throws InterruptedException
      */
-    private FilePath executeAndCopies(FilePath root, FilePath buildRoot,
+    private FilePath[] executeAndCopies(FilePath root, FilePath buildRoot,
             FileCallable<FilePath[]> callable) throws IOException,
             InterruptedException {
         FilePath[] resultPaths = root.act(callable);
@@ -433,24 +451,24 @@ public class EVMToolsBuilder extends Builder {
                 resultPath.copyTo(targetPath); // remoteファイルを、ローカルにコピー。。
             }
         }
-        return resultPaths[0];
+        return resultPaths;
     }
 
-    private void executeAndCopy(FilePath root, FilePath buildRoot,
-            FileCallable<FilePath> callable) throws IOException,
-            InterruptedException {
-        FilePath resultPath = root.act(callable);
-
-        // FilePath returnPath = null;
-        // for (FilePath resultPath : resultPaths) {
-        FilePath targetPath = new FilePath(buildRoot, resultPath.getName());
-        resultPath.copyTo(targetPath); // remoteファイルを、ローカルにコピー。。
-        // if (returnPath == null) {
-        // returnPath = targetPath;
-        // }
-        // }
-        // return returnPath;
-    }
+    // private void executeAndCopy(FilePath root, FilePath buildRoot,
+    // FileCallable<FilePath> callable) throws IOException,
+    // InterruptedException {
+    // FilePath resultPath = root.act(callable);
+    //
+    // // FilePath returnPath = null;
+    // // for (FilePath resultPath : resultPaths) {
+    // FilePath targetPath = new FilePath(buildRoot, resultPath.getName());
+    // resultPath.copyTo(targetPath); // remoteファイルを、ローカルにコピー。。
+    // // if (returnPath == null) {
+    // // returnPath = targetPath;
+    // // }
+    // // }
+    // // return returnPath;
+    // }
 
     private static class AllCallable implements FileCallable<FilePath[]> {
 
@@ -673,7 +691,9 @@ public class EVMToolsBuilder extends Builder {
         List<FilePath> returnList = new ArrayList<FilePath>();
         for (String base_prefix : prefixArray) {
             FilePath result = executeAC(target, base_prefix + "_");
-            returnList.add(result);
+            if (result != null) {
+                returnList.add(result);
+            }
         }
         return returnList.toArray(new FilePath[returnList.size()]);
     }
@@ -742,7 +762,9 @@ public class EVMToolsBuilder extends Builder {
         List<FilePath> returnList = new ArrayList<FilePath>();
         for (String base_prefix : prefixArray) {
             FilePath result = executeEV(target, base_prefix + "_");
-            returnList.add(result);
+            if (result != null) {
+                returnList.add(result);
+            }
         }
         return returnList.toArray(new FilePath[returnList.size()]);
     }
