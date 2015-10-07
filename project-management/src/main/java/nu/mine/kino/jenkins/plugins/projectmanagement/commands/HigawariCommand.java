@@ -41,6 +41,7 @@ import org.kohsuke.args4j.Argument;
  * @author Masatomi KINO
  * @version $Revision$
  */
+@Deprecated
 @Extension
 public class HigawariCommand extends CLICommand {
 
