@@ -169,6 +169,8 @@ public class Higawari2Command extends CLICommand {
                         PMConstants.DATE_DAT_FILENAME));
         stdout.printf("基準日ファイル(%s)をビルド #%s に書き込みました。\n",
                 PMConstants.DATE_DAT_FILENAME, shimeBuild.getNumber());
+        stdout.printf("書き込み先: #%s \n", shimeBuild.getRootDir()
+                .getAbsolutePath());
     }
 
     // private static class DateFileCopyExecutor implements FileCallable<String>
