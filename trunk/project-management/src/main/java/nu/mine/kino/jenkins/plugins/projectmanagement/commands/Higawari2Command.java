@@ -93,6 +93,7 @@ public class Higawari2Command extends CLICommand {
                             someWorkspace, fileName).getName()));
             FilePath dest = new FilePath(someWorkspace, destFileName);
             jsonSource.copyTo(dest);
+            stdout.println(jsonSource.getParent() + " 内 でコピー");
             stdout.println("[" + jsonSource.getName() + "] -> ["
                     + dest.getName() + "] コピー完了");
 
@@ -156,6 +157,8 @@ public class Higawari2Command extends CLICommand {
         WriteUtils.writeFile(currentData.getBytes(), file);
         stdout.printf("EVM時系列情報ファイル(%s)に情報を追記してビルド #%s に書き込みました。\n", fileName,
                 shimeBuild.getNumber());
+        stdout.printf("書き込み先: #%s \n", shimeBuild.getRootDir()
+                .getAbsolutePath());
     }
 
     private void writeBaseDateFile(String baseDateStr,
