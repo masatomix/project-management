@@ -85,7 +85,6 @@ public class HigawariBuilder extends Builder {
             BuildListener listener) throws InterruptedException, IOException {
         PrintStream stdout = listener.getLogger();
         PrintStream stderr = listener.getLogger();
-        FilePath someWorkspace = build.getModuleRoot();
 
         Map<String, String> buildVariables = build.getBuildVariables();
         String paramProjectName = buildVariables.get("project");
@@ -111,7 +110,7 @@ public class HigawariBuilder extends Builder {
         stdout.println("EVMファイル名: " + originalExcelFileName);
 
         // 相対的に指定されたファイルについて、ワークスペースルートにファイルコピーします。
-        // FilePath someWorkspace = job.getSomeWorkspace();
+        FilePath someWorkspace = job.getSomeWorkspace();
         FilePath excelFilePath = new FilePath(someWorkspace,
                 originalExcelFileName);
         String previousJsonFileName = PMUtils
