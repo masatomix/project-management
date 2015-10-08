@@ -514,7 +514,7 @@ public class PMUtils {
                         PMConstants.DATE_DAT_FILENAME));
         out.printf("基準日ファイル(%s)をビルド #%s に書き込みました。\n",
                 PMConstants.DATE_DAT_FILENAME, shimeBuild.getNumber());
-        out.printf("書き込み先: #%s \n", shimeBuild.getRootDir().getAbsolutePath());
+        out.printf("書き込み先: %s \n", shimeBuild.getRootDir().getAbsolutePath());
     }
 
     /**
