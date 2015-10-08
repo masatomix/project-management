@@ -18,6 +18,7 @@ import hudson.util.FormValidation;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -25,15 +26,14 @@ import javax.servlet.ServletException;
 
 import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
-import nu.mine.kino.entity.Holiday;
 import nu.mine.kino.entity.Project;
-import nu.mine.kino.entity.ProjectUser;
 import nu.mine.kino.jenkins.plugins.projectmanagement.utils.PMUtils;
 import nu.mine.kino.projects.JSONProjectCreator;
 import nu.mine.kino.projects.ProjectException;
 import nu.mine.kino.projects.utils.ProjectUtils;
 
 import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.jenkinsci.remoting.RoleChecker;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
@@ -79,11 +79,14 @@ public class HigawariCheckBuilder extends Builder {
                             String dateStr = DateFormatUtils.format(
                                     baseDateFromBaseDateFile, "yyyyMMdd");
 
+                            StringBuffer buf = new StringBuffer();
                             String msg = String.format("%s\t%s",
                                     project.getName(), dateStr);
-                            listener.getLogger().println(msg);
-
-                            checkDateAndPrint(listener, project, builder);
+                            buf.append(msg);
+                            if (checkNextTradingDate(listener, project, builder)) {// 過去ならば
+                                buf.append("\t日替わりチェックエラー");
+                            }
+                            listener.getLogger().println(new String(buf));
 
                         } else {
                             String msg = String.format("%s\t日替処理が未実施か、"
@@ -109,7 +112,18 @@ public class HigawariCheckBuilder extends Builder {
         return true;
     }
 
-    private void checkDateAndPrint(BuildListener listener,
+    /**
+     * EVMスケジュールファイルの基準日の次営業日が、今日の日付より過去であるかをtrue/falseで返す
+     * 過去の場合true。同日か未来の場合false
+     * 
+     * @param listener
+     * @param jenkinsProject
+     * @param builder
+     * @return
+     * @throws IOException
+     * @throws AbortException
+     */
+    private boolean checkNextTradingDate(BuildListener listener,
             FreeStyleProject jenkinsProject, EVMToolsBuilder builder)
             throws IOException, AbortException {
         //
@@ -126,64 +140,19 @@ public class HigawariCheckBuilder extends Builder {
             Project evmProject = new JSONProjectCreator(newestJsonFile)
                     .createProject();
             Date nextTradingDate = ProjectUtils.nextTradingDate(evmProject);
-            System.out.println(nextTradingDate);
+            Date now = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
+            System.out.println(DateFormatUtils.format(nextTradingDate,
+                    "yyyyMMdd"));
+            System.out.println(DateFormatUtils.format(now, "yyyyMMdd"));
+            boolean before = nextTradingDate.before(now);
+            System.out.println(before);
+            return before;
         } catch (ProjectException e) {
             listener.getLogger().println(e);
             throw new AbortException(e.getMessage());
         }
         //
     }
-
-    private static class F implements FileCallable<String[]> {
-        private static final long serialVersionUID = 1L;
-
-        public String[] invoke(File f, VirtualChannel channel)
-                throws IOException, InterruptedException {
-            File file = new File(f, "root.txt"); // f
-                                                 // はFilePathから生成されるので場合によってスレーブのパスとなると予測
-            file.createNewFile();
-
-            File file2 = new File("/tmp/fullpath2.txt"); // このメソッド内はスレーブのパスになると予測
-            file2.createNewFile();
-
-            return new String[] { file.getAbsolutePath(),
-                    file2.getAbsolutePath() };
-        }
-
-        @Override
-        public void checkRoles(RoleChecker checker) throws SecurityException {
-            // TODO 自動生成されたメソッド・スタブ
-
-        }
-    }
-
-    // private static class Hoge implements FileCallable<Void> {
-    //
-    // /**
-    // * <code>serialVersionUID</code> のコメント
-    // */
-    // private static final long serialVersionUID = 8984513401663215528L;
-    //
-    // private final BuildListener listener;
-    //
-    // public Hoge(BuildListener listener) {
-    // this.listener = listener;
-    // }
-    //
-    // @Override
-    // public void checkRoles(RoleChecker checker) throws SecurityException {
-    // // TODO 自動生成されたメソッド・スタブ
-    //
-    // }
-    //
-    // @Override
-    // public Void invoke(File f, VirtualChannel channel) throws IOException,
-    // InterruptedException {
-    // listener.getLogger().print(f.toString());
-    // System.out.println(f);
-    // return null;
-    // }
-    // };
 
     // Overridden for better type safety.
     // If your plugin doesn't really define any property on Descriptor,
