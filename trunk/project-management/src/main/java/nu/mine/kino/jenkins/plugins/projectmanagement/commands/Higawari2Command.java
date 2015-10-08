@@ -26,6 +26,7 @@ import hudson.util.DescribableList;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Date;
 
 import nu.mine.kino.jenkins.plugins.projectmanagement.EVMToolsBuilder;
@@ -149,7 +150,7 @@ public class Higawari2Command extends CLICommand {
         // shimeBuild.getRootDir().getAbsolutePath());
         // stdout.printf("[%s]:[%s]:[%s]\n", baseDateStr,
         // shimeBuild.getNumber(), shimeBuild.getId());
-        String prevData = findSeriesFile(fileName);
+        String prevData = findSeriesFile(job, fileName, stdout);
         String currentData = appendData(prevData, shimeBuild.getNumber(),
                 baseDateStr);
         File file = new File(shimeBuild.getRootDir().getAbsolutePath(),
@@ -222,14 +223,23 @@ public class Higawari2Command extends CLICommand {
 
     }
 
-    private String findSeriesFile(String fileName) {
-        AbstractBuild<?, ?> build = PMUtils.findBuild(job, fileName);
+    /**
+     * 渡されたプロジェクトのうち、渡されたファイルがビルドディレクトリに存在する、直近のビルドを探して、返します。
+     * 
+     * @param project
+     * @param fileName
+     * @param out
+     * @return
+     */
+    private String findSeriesFile(AbstractProject<?, ?> project,
+            String fileName, PrintStream out) {
+        AbstractBuild<?, ?> build = PMUtils.findBuild(project, fileName);
         if (build == null) {
-            stdout.printf("EVM時系列情報ファイル(%s)がプロジェクト上に存在しないので、ファイルを新規作成します。\n",
+            out.printf("EVM時系列情報ファイル(%s)がプロジェクト上に存在しないので、ファイルを新規作成します。\n",
                     fileName);
             return null;
         } else {
-            stdout.printf("EVM時系列情報ファイル(%s)が ビルド #%s 上に見つかりました。\n", fileName,
+            out.printf("EVM時系列情報ファイル(%s)が ビルド #%s 上に見つかりました。\n", fileName,
                     build.getNumber());
         }
         try {
