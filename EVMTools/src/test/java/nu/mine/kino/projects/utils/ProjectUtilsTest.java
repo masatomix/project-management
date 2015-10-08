@@ -32,6 +32,7 @@ import nu.mine.kino.projects.PVCreator;
 import nu.mine.kino.projects.ProjectException;
 import nu.mine.kino.projects.ProjectWriter;
 
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.junit.Test;
@@ -45,6 +46,7 @@ public class ProjectUtilsTest {
     @Test
     public void test0() throws FileNotFoundException, ProjectException {
         test0("project_management_tools");
+        testDate("project_management_tools");
     }
 
     public void test0(String fileName) throws FileNotFoundException,
@@ -86,6 +88,34 @@ public class ProjectUtilsTest {
         // System.out.println("---------------");
         // assertEquals(expected, actual);
 
+    }
+
+    public void testDate(String fileName) throws FileNotFoundException,
+            ProjectException {
+        File baseDir = new File("./");
+        String input = fileName + "." + "xls";
+        File target = new File(baseDir, input);
+
+        StopWatch watch = new StopWatch();
+        watch.start();
+        Project projectOrg = new ExcelProjectCreator(target).createProject();
+        watch.stop();
+        System.out.println(watch.getTime() + " ms.");
+        watch.reset();
+        System.out.println(projectOrg.getBaseDate());
+        System.out.println(ProjectUtils.nextTradingDate(projectOrg));
+        System.out
+                .println(ProjectUtils.nextTradingDate(new Date(), projectOrg));
+
+        sevenDaysLater(projectOrg);
+    }
+
+    private void sevenDaysLater(Project project) {
+        Date date = project.getBaseDate();
+        for (int i = 0; i < 10; i++) {
+            System.out.println(DateFormatUtils.format(date, "yyyyMMdd"));
+            date = ProjectUtils.nextTradingDate(date, project);
+        }
     }
 
     @Test

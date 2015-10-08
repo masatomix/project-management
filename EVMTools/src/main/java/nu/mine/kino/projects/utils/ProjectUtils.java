@@ -624,7 +624,6 @@ public class ProjectUtils {
         return poiMap;
     }
 
-
     public static Date createBaseDate(Workbook workbook, Sheet sheet) {
         Date baseDate;
         Name name = workbook.getName("—‹üŠî€“ú");
@@ -726,6 +725,27 @@ public class ProjectUtils {
             throw new ProjectException(message);
         }
         return bean;
+    }
+
+    public static Date nextTradingDate(Date date, Project project) {
+        Date resultDate = date;
+        do {
+            Date tmp = resultDate;
+            resultDate = DateUtils.addDays(tmp, 1);
+        } while (isHoliday(project, resultDate));
+        return resultDate;
+    }
+
+    public static Date nextTradingDate(Project project) {
+        return nextTradingDate(project.getBaseDate(), project);
+    }
+
+    private static Map<Date, Holiday> toMap(Holiday[] holidays) {
+        Map<Date, Holiday> resultMap = new HashMap<Date, Holiday>();
+        for (Holiday holiday : holidays) {
+            resultMap.put(holiday.getDate(), holiday);
+        }
+        return resultMap;
     }
 
 }
