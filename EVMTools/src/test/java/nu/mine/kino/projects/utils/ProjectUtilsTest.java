@@ -112,10 +112,16 @@ public class ProjectUtilsTest {
 
     private void sevenDaysLater(Project project) {
         Date date = project.getBaseDate();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 7; i++) {
             System.out.println(DateFormatUtils.format(date, "yyyyMMdd"));
             date = ProjectUtils.nextTradingDate(date, project);
         }
+        Date base = new Date();
+        Date target = base;
+        System.out.println(base.after(target));
+        System.out.println(base.before(target));
+        System.out.println(base.before(DateUtils.addDays(target, 1)));
+        System.out.println(base.after(DateUtils.addDays(target, -1)));
     }
 
     @Test
