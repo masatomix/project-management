@@ -14,6 +14,7 @@ import hudson.util.FormValidation;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 
@@ -63,6 +64,10 @@ public class TestBuilder extends Builder {
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher,
             BuildListener listener) throws InterruptedException, IOException {
+        Map<String, String> buildVariables = build.getBuildVariables();
+        System.out.println(buildVariables);
+
+        System.out.println(buildVariables.get("param1"));
 
         System.out.println(build);
         FilePath root = build.getModuleRoot(); // ワークスペースのルート.スレーブでビルドが動くと、他サーバのディレクトリだったりする。
@@ -125,7 +130,7 @@ public class TestBuilder extends Builder {
         @Override
         public void checkRoles(RoleChecker checker) throws SecurityException {
             // TODO 自動生成されたメソッド・スタブ
-            
+
         }
     }
 
