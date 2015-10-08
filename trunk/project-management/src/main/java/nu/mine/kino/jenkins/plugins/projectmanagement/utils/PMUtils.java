@@ -30,7 +30,9 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -39,12 +41,13 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import jenkins.model.Jenkins;
+import nu.mine.kino.entity.Holiday;
 import nu.mine.kino.entity.PVACEVViewBean;
 import nu.mine.kino.entity.Project;
 import nu.mine.kino.entity.ProjectUser;
+import nu.mine.kino.jenkins.plugins.projectmanagement.PMConstants;
 import nu.mine.kino.jenkins.plugins.projectmanagement.EVMToolsBuilder;
 import nu.mine.kino.jenkins.plugins.projectmanagement.EVMToolsBuilder.DescriptorImpl;
-import nu.mine.kino.jenkins.plugins.projectmanagement.PMConstants;
 import nu.mine.kino.jenkins.plugins.projectmanagement.ProjectSummaryAction;
 import nu.mine.kino.jenkins.plugins.projectmanagement.RedmineEVMToolsBuilder;
 import nu.mine.kino.projects.ExcelProjectCreator;
@@ -352,6 +355,25 @@ public class PMUtils {
     }
 
     /**
+     * そのプロジェクトで、シメに使われたビルドの中で最新のビルドを返す。
+     * 
+     * @param project
+     * @return
+     * @throws IOException
+     */
+    public static AbstractBuild<?, ?> findNewestBuild(AbstractProject project)
+            throws IOException {
+        String shimeFileName = PMConstants.DATE_DAT_FILENAME;
+        AbstractBuild<?, ?> prevBuild = PMUtils.findBuild(project,
+                shimeFileName);
+
+        if (prevBuild != null) {
+            return prevBuild;
+        }
+        return null;
+    }
+
+    /**
      * ワークスペースにある基準日ファイルを探すメソッド。
      * 
      * @param build
@@ -449,4 +471,6 @@ public class PMUtils {
             return "/16x16/health-20to39.png";
         }
     }
+
+
 }
