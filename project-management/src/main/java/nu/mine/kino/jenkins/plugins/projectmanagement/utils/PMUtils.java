@@ -17,22 +17,27 @@ import hudson.AbortException;
 import hudson.FilePath;
 import hudson.model.Action;
 import hudson.model.BuildListener;
+import hudson.model.TopLevelItem;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
+import hudson.model.Descriptor;
+import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
+import hudson.tasks.Builder;
 import hudson.tasks.Mailer;
+import hudson.util.DescribableList;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -41,7 +46,6 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import jenkins.model.Jenkins;
-import nu.mine.kino.entity.Holiday;
 import nu.mine.kino.entity.PVACEVViewBean;
 import nu.mine.kino.entity.Project;
 import nu.mine.kino.entity.ProjectUser;
@@ -54,9 +58,11 @@ import nu.mine.kino.projects.ExcelProjectCreator;
 import nu.mine.kino.projects.JSONProjectCreator;
 import nu.mine.kino.projects.ProjectCreator;
 import nu.mine.kino.projects.ProjectException;
+import nu.mine.kino.projects.utils.ProjectUtils;
 import nu.mine.kino.projects.utils.ReadUtils;
 import nu.mine.kino.projects.utils.Utils;
 import nu.mine.kino.projects.utils.ViewUtils;
+import nu.mine.kino.projects.utils.WriteUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
@@ -472,5 +478,134 @@ public class PMUtils {
         }
     }
 
+    /**
+     * 渡されたプロジェクトのうち、渡されたファイルがビルドディレクトリに存在する、直近のビルドを探して、返します。
+     * 
+     * @param project
+     * @param fileName
+     * @param out
+     * @param err
+     * @return
+     */
+    public static String findSeriesFile(AbstractProject<?, ?> project,
+            String fileName, PrintStream out, PrintStream err) {
+        AbstractBuild<?, ?> build = PMUtils.findBuild(project, fileName);
+        if (build == null) {
+            out.printf("EVM時系列情報ファイル(%s)がプロジェクト上に存在しないので、ファイルを新規作成します。\n",
+                    fileName);
+            return null;
+        } else {
+            out.printf("EVM時系列情報ファイル(%s)が ビルド #%s 上に見つかりました。\n", fileName,
+                    build.getNumber());
+        }
+        try {
+            return ReadUtils.readFile(new File(build.getRootDir(), fileName));
+        } catch (IOException e) {
+            err.println("EVM時系列情報ファイルを探す際にエラーが発生したので、ファイルを新規作成します。");
+        }
+        return null;
+    }
 
+    public static void writeBaseDateFile(String baseDateStr,
+            final AbstractBuild<?, ?> shimeBuild, PrintStream out) {
+        WriteUtils
+                .writeFile(baseDateStr.getBytes(), new File(shimeBuild
+                        .getRootDir().getAbsolutePath(),
+                        PMConstants.DATE_DAT_FILENAME));
+        out.printf("基準日ファイル(%s)をビルド #%s に書き込みました。\n",
+                PMConstants.DATE_DAT_FILENAME, shimeBuild.getNumber());
+        out.printf("書き込み先: #%s \n", shimeBuild.getRootDir().getAbsolutePath());
+    }
+
+    /**
+     * 引数の Jenkinsのプロジェクトについて、EVM Excelのファイル名を返すメソッド
+     * 
+     * @param project
+     * @return
+     */
+    public static String findProjectFileName(AbstractProject<?, ?> project) {
+        if (project instanceof FreeStyleProject) {
+            DescribableList<Builder, Descriptor<Builder>> buildersList = ((FreeStyleProject) project)
+                    .getBuildersList();
+            EVMToolsBuilder builder = buildersList.get(EVMToolsBuilder.class);
+            if (builder != null) {
+                return builder.getName();
+            }
+        }
+        return null;
+
+    }
+
+    /**
+     * オリジナルのExcelファイル名から、直近読み込んだファイル(JSONファイル)のファイル名を生成する
+     * 
+     * @param originalExcelFileName
+     * @return
+     */
+    public static String getPreviousJsonFileName(String originalExcelFileName) {
+        return ProjectUtils.findJSONFileName(originalExcelFileName) + "."
+                + PMConstants.TMP_EXT;
+    }
+
+    public static String appendData(String prevData, int buildNumber,
+            String baseDateStr) {
+        StringBuffer buffer = new StringBuffer().append(baseDateStr)
+                .append("\t").append(buildNumber);
+        if (prevData != null) {
+            buffer.append("\n").append(prevData);
+        }
+        return new String(buffer);
+    }
+
+    public static void writeSeriesFile(AbstractProject<?, ?> project,
+            String baseDateStr, String fileName,
+            final AbstractBuild<?, ?> shimeBuild, PrintStream out,
+            PrintStream err) {
+        // stdout.printf("[%s]\n",
+        // shimeBuild.getRootDir().getAbsolutePath());
+        // stdout.printf("[%s]:[%s]:[%s]\n", baseDateStr,
+        // shimeBuild.getNumber(), shimeBuild.getId());
+        String prevData = PMUtils.findSeriesFile(project, fileName, out, err);
+        String currentData = PMUtils.appendData(prevData,
+                shimeBuild.getNumber(), baseDateStr);
+        File file = new File(shimeBuild.getRootDir().getAbsolutePath(),
+                fileName);
+        WriteUtils.writeFile(currentData.getBytes(), file);
+        out.printf("EVM時系列情報ファイル(%s)に情報を追記してビルド #%s に書き込みました。\n", fileName,
+                shimeBuild.getNumber());
+        out.printf("書き込み先: #%s \n", shimeBuild.getRootDir().getAbsolutePath());
+    }
+
+    public static AbstractProject<?, ?> findProject(String projectName) {
+        List<TopLevelItem> items = Jenkins.getInstance().getItems();
+        for (TopLevelItem item : items) {
+            if (item instanceof FreeStyleProject) {
+                FreeStyleProject project = (FreeStyleProject) item;
+                if (item.getName().equals(projectName)) {
+                    return project;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static List<AbstractProject<?, ?>> findProjectsWithEVMToolsBuilder() {
+        List<AbstractProject<?, ?>> returnList = new ArrayList<AbstractProject<?, ?>>();
+        List<TopLevelItem> items = Jenkins.getInstance().getItems();
+        for (TopLevelItem item : items) {
+            if (item instanceof FreeStyleProject) {
+                FreeStyleProject project = (FreeStyleProject) item;
+                if (!project.isDisabled()) {
+                    DescribableList<Builder, Descriptor<Builder>> buildersList = project
+                            .getBuildersList();
+                    EVMToolsBuilder builder = buildersList
+                            .get(EVMToolsBuilder.class);
+                    if (builder != null) {
+                        returnList.add(project);
+                    }
+                }
+            }
+        }
+        return returnList;
+    }
 }
