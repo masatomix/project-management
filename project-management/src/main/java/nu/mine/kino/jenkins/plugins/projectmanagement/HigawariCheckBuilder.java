@@ -1,5 +1,6 @@
 package nu.mine.kino.jenkins.plugins.projectmanagement;
 
+import hudson.AbortException;
 import hudson.Extension;
 import hudson.FilePath.FileCallable;
 import hudson.Launcher;
@@ -24,7 +25,13 @@ import javax.servlet.ServletException;
 
 import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
+import nu.mine.kino.entity.Holiday;
+import nu.mine.kino.entity.Project;
+import nu.mine.kino.entity.ProjectUser;
 import nu.mine.kino.jenkins.plugins.projectmanagement.utils.PMUtils;
+import nu.mine.kino.projects.JSONProjectCreator;
+import nu.mine.kino.projects.ProjectException;
+import nu.mine.kino.projects.utils.ProjectUtils;
 
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.jenkinsci.remoting.RoleChecker;
@@ -76,6 +83,8 @@ public class HigawariCheckBuilder extends Builder {
                                     project.getName(), dateStr);
                             listener.getLogger().println(msg);
 
+                            checkDateAndPrint(listener, project, builder);
+
                         } else {
                             String msg = String.format("%s\t日替処理が未実施か、"
                                     + "ワークスペースに存在する旧バージョンの日替ファイルしか存在しない。"
@@ -98,6 +107,31 @@ public class HigawariCheckBuilder extends Builder {
         }
 
         return true;
+    }
+
+    private void checkDateAndPrint(BuildListener listener,
+            FreeStyleProject jenkinsProject, EVMToolsBuilder builder)
+            throws IOException, AbortException {
+        //
+        String evmFileName = builder.getName();
+        String evmJSONFileName = ProjectUtils.findJSONFileName(evmFileName);
+        AbstractBuild<?, ?> newestBuild = PMUtils
+                .findNewestBuild(jenkinsProject);
+        File newestJsonFile = new File(newestBuild.getRootDir(),
+                evmJSONFileName + "." + PMConstants.TMP_EXT);
+        System.out.println(newestJsonFile.getAbsolutePath());
+        // Date baseDate = PMUtils
+        // .getBaseDateFromJSON(newestJsonFile);
+        try {
+            Project evmProject = new JSONProjectCreator(newestJsonFile)
+                    .createProject();
+            Date nextTradingDate = ProjectUtils.nextTradingDate(evmProject);
+            System.out.println(nextTradingDate);
+        } catch (ProjectException e) {
+            listener.getLogger().println(e);
+            throw new AbortException(e.getMessage());
+        }
+        //
     }
 
     private static class F implements FileCallable<String[]> {
