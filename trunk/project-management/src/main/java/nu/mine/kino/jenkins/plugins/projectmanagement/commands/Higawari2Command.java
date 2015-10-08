@@ -18,24 +18,16 @@ import hudson.FilePath.FileCallable;
 import hudson.cli.CLICommand;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.model.Descriptor;
-import hudson.model.FreeStyleProject;
 import hudson.remoting.VirtualChannel;
-import hudson.tasks.Builder;
-import hudson.util.DescribableList;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.Date;
 
-import nu.mine.kino.jenkins.plugins.projectmanagement.EVMToolsBuilder;
 import nu.mine.kino.jenkins.plugins.projectmanagement.PMConstants;
 import nu.mine.kino.jenkins.plugins.projectmanagement.utils.PMUtils;
 import nu.mine.kino.projects.ProjectException;
 import nu.mine.kino.projects.utils.ProjectUtils;
-import nu.mine.kino.projects.utils.ReadUtils;
-import nu.mine.kino.projects.utils.WriteUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
@@ -66,21 +58,20 @@ public class Higawari2Command extends CLICommand {
 
     @Override
     protected int run() throws Exception {
-        String fileName = findProjectFileName();
-        if (fileName == null) {
+        String originalExcelFileName = PMUtils.findProjectFileName(job);
+        if (originalExcelFileName == null) {
             throw new ProjectException("スケジュールファイルを見つけることができませんでした。");
         }
-        stdout.println("EVMファイル名: " + fileName);
+        stdout.println("EVMファイル名: " + originalExcelFileName);
 
         // 相対的に指定されたファイルについて、ワークスペースルートにファイルコピーします。
         FilePath someWorkspace = job.getSomeWorkspace();
-        FilePath org = new FilePath(someWorkspace, fileName);
-        // FilePath excelSource = new FilePath(someWorkspace, fileName +
-        // "."+PMConstants.TMP_EXT);
-        FilePath jsonSource = new FilePath(someWorkspace,
-                ProjectUtils.findJSONFileName(fileName) + "."
-                        + PMConstants.TMP_EXT);
-        stdout.println(org);
+        FilePath excelFilePath = new FilePath(someWorkspace,
+                originalExcelFileName);
+        String previousJsonFileName = PMUtils
+                .getPreviousJsonFileName(originalExcelFileName);
+        FilePath jsonSource = new FilePath(someWorkspace, previousJsonFileName);
+        stdout.println(excelFilePath);
         stdout.println("このファイルの日替わり処理を行います。");
         if (jsonSource.exists()) { //
             String tmpPrefix = prefix;
@@ -91,7 +82,7 @@ public class Higawari2Command extends CLICommand {
             String destFileName = tmpPrefix
                     + "_"
                     + ProjectUtils.findJSONFileName((new FilePath(
-                            someWorkspace, fileName).getName()));
+                            someWorkspace, originalExcelFileName).getName()));
             FilePath dest = new FilePath(someWorkspace, destFileName);
             jsonSource.copyTo(dest);
             stdout.println(jsonSource.getParent() + " 内 でコピー");
@@ -101,7 +92,7 @@ public class Higawari2Command extends CLICommand {
             final AbstractBuild<?, ?> shimeBuild = job.getLastSuccessfulBuild();
 
             String baseDateStr = jsonSource.act(new DateFileExecutor());
-            writeBaseDateFile(baseDateStr, shimeBuild);
+            PMUtils.writeBaseDateFile(baseDateStr, shimeBuild, stdout);
 
             // FilePath dest2 = new FilePath(
             // new FilePath(shimeBuild.getRootDir()), destFileName);
@@ -111,7 +102,8 @@ public class Higawari2Command extends CLICommand {
 
             // Prefix引数ナシの時だけ、時系列ファイルを書き込む
             String seriesFileName = tmpPrefix + "_" + seriesFileNameSuffix;
-            writeSeriesFile(baseDateStr, seriesFileName, shimeBuild);
+            PMUtils.writeSeriesFile(job, baseDateStr, seriesFileName,
+                    shimeBuild, stdout, stderr);
 
         } else {
             stderr.println("---- エラーが発生したため日替わり処理を停止します。------");
@@ -130,76 +122,6 @@ public class Higawari2Command extends CLICommand {
         }
         return 0;
     }
-
-    private String findProjectFileName() {
-        if (job instanceof FreeStyleProject) {
-            DescribableList<Builder, Descriptor<Builder>> buildersList = ((FreeStyleProject) job)
-                    .getBuildersList();
-            EVMToolsBuilder builder = buildersList.get(EVMToolsBuilder.class);
-            if (builder != null) {
-                return builder.getName();
-            }
-        }
-        return null;
-
-    }
-
-    private void writeSeriesFile(String baseDateStr, String fileName,
-            final AbstractBuild<?, ?> shimeBuild) {
-        // stdout.printf("[%s]\n",
-        // shimeBuild.getRootDir().getAbsolutePath());
-        // stdout.printf("[%s]:[%s]:[%s]\n", baseDateStr,
-        // shimeBuild.getNumber(), shimeBuild.getId());
-        String prevData = findSeriesFile(job, fileName, stdout);
-        String currentData = appendData(prevData, shimeBuild.getNumber(),
-                baseDateStr);
-        File file = new File(shimeBuild.getRootDir().getAbsolutePath(),
-                fileName);
-        WriteUtils.writeFile(currentData.getBytes(), file);
-        stdout.printf("EVM時系列情報ファイル(%s)に情報を追記してビルド #%s に書き込みました。\n", fileName,
-                shimeBuild.getNumber());
-        stdout.printf("書き込み先: #%s \n", shimeBuild.getRootDir()
-                .getAbsolutePath());
-    }
-
-    private void writeBaseDateFile(String baseDateStr,
-            final AbstractBuild<?, ?> shimeBuild) {
-        WriteUtils
-                .writeFile(baseDateStr.getBytes(), new File(shimeBuild
-                        .getRootDir().getAbsolutePath(),
-                        PMConstants.DATE_DAT_FILENAME));
-        stdout.printf("基準日ファイル(%s)をビルド #%s に書き込みました。\n",
-                PMConstants.DATE_DAT_FILENAME, shimeBuild.getNumber());
-        stdout.printf("書き込み先: #%s \n", shimeBuild.getRootDir()
-                .getAbsolutePath());
-    }
-
-    // private static class DateFileCopyExecutor implements FileCallable<String>
-    // {
-    //
-    // @Override
-    // public String invoke(File jsonFile, VirtualChannel channel)
-    // throws IOException, InterruptedException {
-    // Date baseDate = PMUtils.getBaseDateFromJSON(jsonFile);
-    // // Date baseDate = PMUtils.getBaseDateFromExcel(f);
-    // if (baseDate != null) {
-    // String baseDateStr = DateFormatUtils.format(baseDate,
-    // "yyyyMMdd");
-    // WriteUtils.writeFile(baseDateStr.getBytes(),
-    // new File(jsonFile.getParentFile(),
-    // PMConstants.DATE_DAT_FILENAME));
-    // return baseDateStr;
-    // }
-    // return null;
-    // }
-    //
-    // @Override
-    // public void checkRoles(RoleChecker checker) throws SecurityException {
-    // // TODO 自動生成されたメソッド・スタブ
-    //
-    // }
-    //
-    // }
 
     private static class DateFileExecutor implements FileCallable<String> {
 
@@ -223,40 +145,4 @@ public class Higawari2Command extends CLICommand {
 
     }
 
-    /**
-     * 渡されたプロジェクトのうち、渡されたファイルがビルドディレクトリに存在する、直近のビルドを探して、返します。
-     * 
-     * @param project
-     * @param fileName
-     * @param out
-     * @return
-     */
-    private String findSeriesFile(AbstractProject<?, ?> project,
-            String fileName, PrintStream out) {
-        AbstractBuild<?, ?> build = PMUtils.findBuild(project, fileName);
-        if (build == null) {
-            out.printf("EVM時系列情報ファイル(%s)がプロジェクト上に存在しないので、ファイルを新規作成します。\n",
-                    fileName);
-            return null;
-        } else {
-            out.printf("EVM時系列情報ファイル(%s)が ビルド #%s 上に見つかりました。\n", fileName,
-                    build.getNumber());
-        }
-        try {
-            return ReadUtils.readFile(new File(build.getRootDir(), fileName));
-        } catch (IOException e) {
-            stderr.println("EVM時系列情報ファイルを探す際にエラーが発生したので、ファイルを新規作成します。");
-        }
-        return null;
-    }
-
-    private String appendData(String prevData, int buildNumber,
-            String baseDateStr) {
-        StringBuffer buffer = new StringBuffer().append(baseDateStr)
-                .append("\t").append(buildNumber);
-        if (prevData != null) {
-            buffer.append("\n").append(prevData);
-        }
-        return new String(buffer);
-    }
 }
