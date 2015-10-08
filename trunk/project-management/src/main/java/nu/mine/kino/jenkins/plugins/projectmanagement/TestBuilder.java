@@ -1,4 +1,4 @@
-package nu.mine.kino.jenkins.plugins.projectmanagement;
+ package nu.mine.kino.jenkins.plugins.projectmanagement;
 
 import hudson.Extension;
 import hudson.FilePath;
@@ -64,11 +64,6 @@ public class TestBuilder extends Builder {
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher,
             BuildListener listener) throws InterruptedException, IOException {
-        Map<String, String> buildVariables = build.getBuildVariables();
-        System.out.println(buildVariables);
-
-        System.out.println(buildVariables.get("param1"));
-
         System.out.println(build);
         FilePath root = build.getModuleRoot(); // ワークスペースのルート.スレーブでビルドが動くと、他サーバのディレクトリだったりする。
         root.act(new Hoge(listener));
