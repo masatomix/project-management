@@ -50,10 +50,30 @@ import org.kohsuke.stapler.StaplerRequest;
  */
 public class HigawariCheckBuilder extends Builder {
 
+    private String targetProjects;
+
     // Fields in config.jelly must match the parameter names in the
     // "DataBoundConstructor"
     @DataBoundConstructor
-    public HigawariCheckBuilder() {
+    public HigawariCheckBuilder(EnableTextBlock useFilter) {
+//        System.out.println(useFilter.targetProjects != null);
+//        System.out.println(targetProjects != null);
+        if (useFilter != null) {
+            this.targetProjects = useFilter.targetProjects;
+        }
+    }
+
+    public static class EnableTextBlock {
+        private String targetProjects;
+
+        @DataBoundConstructor
+        public EnableTextBlock(String targetProjects) {
+            this.targetProjects = targetProjects;
+        }
+    }
+
+    public String getTargetProjects() {
+        return targetProjects;
     }
 
     /**
