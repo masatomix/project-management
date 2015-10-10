@@ -44,6 +44,7 @@ public class HigawariCheckBuilder extends Builder {
 
     private String targetProjects;
 
+    // ネストしたテキストボックスを作成するときの定石。
     public static class EnableTextBlock {
         private String targetProjects;
 
@@ -70,16 +71,7 @@ public class HigawariCheckBuilder extends Builder {
     }
 
     public String getSamples() {
-        StringBuffer buf = new StringBuffer();
-        List<AbstractProject<?, ?>> projects = PMUtils
-                .findProjectsWithEVMToolsBuilder();
-        for (int i = 0; i < projects.size(); i++) {
-            buf.append(projects.get(i).getName());
-            if (i < projects.size() - 1) {
-                buf.append("\n");
-            }
-        }
-        return new String(buf);
+        return getDescriptor().defaultSamples();
     }
 
     /**
@@ -91,10 +83,12 @@ public class HigawariCheckBuilder extends Builder {
         if (useFilter == null) {
             projects = PMUtils.findProjectsWithEVMToolsBuilder();
         } else {
-            String[] targetProjectsArray=targetProjects.split("\n");
-            projects = PMUtils.findProjectsWithEVMToolsBuilder(targetProjectsArray);
+            String[] targetProjectsArray = targetProjects.split("\n");
+            projects = PMUtils
+                    .findProjectsWithEVMToolsBuilder(targetProjectsArray);
         }
 
+        StringBuffer buf = new StringBuffer();
         for (AbstractProject<?, ?> project : projects) {
             File newBaseDateFile = PMUtils.findBaseDateFile(project); // buildDirの新しいファイル
             if (newBaseDateFile != null) {
@@ -103,7 +97,6 @@ public class HigawariCheckBuilder extends Builder {
                 String dateStr = DateFormatUtils.format(
                         baseDateFromBaseDateFile, "yyyyMMdd");
 
-                StringBuffer buf = new StringBuffer();
                 String msg = String
                         .format("%s\t%s", project.getName(), dateStr);
                 buf.append(msg);
@@ -111,15 +104,15 @@ public class HigawariCheckBuilder extends Builder {
                         PMUtils.findProjectFileName(project))) {// 過去ならば
                     buf.append("\t日替わりチェックエラー");
                 }
-                listener.getLogger().println(new String(buf));
-
             } else {
                 String msg = String.format("%s\t日替処理が未実施か、"
                         + "ワークスペースに存在する旧バージョンの日替ファイルしか存在しない。"
                         + "日替処理を実施後、ファイルが見つかるようになります。", project.getName());
-                listener.getLogger().println(msg);
+                buf.append(msg);
             }
+            buf.append("\n");
         }
+        listener.getLogger().println(new String(buf));
 
         return true;
     }
@@ -242,18 +235,20 @@ public class HigawariCheckBuilder extends Builder {
             return super.configure(req, formData);
         }
 
-        // /**
-        // * This method returns true if the global configuration says we should
-        // * speak French.
-        // *
-        // * The method name is bit awkward because global.jelly calls this
-        // method
-        // * to determine the initial state of the checkbox by the naming
-        // * convention.
-        // */
-        // public boolean getUseFrench() {
-        // return useFrench;
-        // }
+        // https://wiki.jenkins-ci.org/display/JENKINS/Basic+guide+to+Jelly+usage+in+Jenkins
+        // config.jellyから呼び出される、デフォルト値をセットするメソッド。
+        public String defaultSamples() {
+            StringBuffer buf = new StringBuffer();
+            List<AbstractProject<?, ?>> projects = PMUtils
+                    .findProjectsWithEVMToolsBuilder();
+            for (int i = 0; i < projects.size(); i++) {
+                buf.append(projects.get(i).getName());
+                if (i < projects.size() - 1) {
+                    buf.append("\n");
+                }
+            }
+            return new String(buf);
+        }
     }
 
 }
