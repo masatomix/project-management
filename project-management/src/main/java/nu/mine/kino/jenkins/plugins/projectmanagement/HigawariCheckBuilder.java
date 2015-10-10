@@ -2,18 +2,12 @@ package nu.mine.kino.jenkins.plugins.projectmanagement;
 
 import hudson.AbortException;
 import hudson.Extension;
-import hudson.FilePath.FileCallable;
 import hudson.Launcher;
 import hudson.model.BuildListener;
-import hudson.model.TopLevelItem;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.model.Descriptor;
-import hudson.model.FreeStyleProject;
-import hudson.remoting.VirtualChannel;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
-import hudson.util.DescribableList;
 import hudson.util.FormValidation;
 
 import java.io.File;
@@ -24,7 +18,6 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 
-import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 import nu.mine.kino.entity.Project;
 import nu.mine.kino.jenkins.plugins.projectmanagement.utils.PMUtils;
@@ -34,7 +27,6 @@ import nu.mine.kino.projects.utils.ProjectUtils;
 
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
-import org.jenkinsci.remoting.RoleChecker;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -50,25 +42,32 @@ import org.kohsuke.stapler.StaplerRequest;
  */
 public class HigawariCheckBuilder extends Builder {
 
+    // private String targetProjects;
+    //
+    // // Fields in config.jelly must match the parameter names in the
+    // // "DataBoundConstructor"
+    // @DataBoundConstructor
+    // public HigawariCheckBuilder(EnableTextBlock useFilter) {
+    // if (useFilter != null) { // targetProjectsは、ココを通らなければ初期値に戻る。
+    // this.targetProjects = useFilter.targetProjects;
+    // }
+    // }
+    //
+    // public String getTargetProjects() {
+    // return targetProjects;
+    // }
+
     private String targetProjects;
+
+    private final EnableTextBlock useFilter;
 
     // Fields in config.jelly must match the parameter names in the
     // "DataBoundConstructor"
     @DataBoundConstructor
     public HigawariCheckBuilder(EnableTextBlock useFilter) {
-//        System.out.println(useFilter.targetProjects != null);
-//        System.out.println(targetProjects != null);
-        if (useFilter != null) {
+        this.useFilter = useFilter;
+        if (useFilter != null) { // targetProjectsは、ココを通らなければ初期値に戻る。
             this.targetProjects = useFilter.targetProjects;
-        }
-    }
-
-    public static class EnableTextBlock {
-        private String targetProjects;
-
-        @DataBoundConstructor
-        public EnableTextBlock(String targetProjects) {
-            this.targetProjects = targetProjects;
         }
     }
 
@@ -76,56 +75,60 @@ public class HigawariCheckBuilder extends Builder {
         return targetProjects;
     }
 
+    public String getSamples() {
+        StringBuffer buf = new StringBuffer();
+        buf.append("a");
+        buf.append("\n");
+        buf.append("b");
+        buf.append("\n");
+        return new String(buf);
+    }
+
+    public static class EnableTextBlock {
+        private String targetProjects;
+
+        @DataBoundConstructor
+        public EnableTextBlock(String targetProjects, String samples) {
+            this.targetProjects = targetProjects;
+        }
+    }
+
     /**
      */
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher,
             BuildListener listener) throws InterruptedException, IOException {
-        List<TopLevelItem> items = Jenkins.getInstance().getItems();
-        for (TopLevelItem item : items) {
-            if (item instanceof FreeStyleProject) {
-                FreeStyleProject project = (FreeStyleProject) item;
-                if (!project.isDisabled()) {
-                    DescribableList<Builder, Descriptor<Builder>> buildersList = project
-                            .getBuildersList();
-                    EVMToolsBuilder builder = buildersList
-                            .get(EVMToolsBuilder.class);
-                    if (builder != null) {
-                        File newBaseDateFile = PMUtils
-                                .findBaseDateFile(project); // buildDirの新しいファイル
-                        if (newBaseDateFile != null) {
-                            Date baseDateFromBaseDateFile = PMUtils
-                                    .getBaseDateFromBaseDateFile(newBaseDateFile);
-                            String dateStr = DateFormatUtils.format(
-                                    baseDateFromBaseDateFile, "yyyyMMdd");
+        List<AbstractProject<?, ?>> projects = null;
+        if (useFilter == null) {
+            projects = PMUtils.findProjectsWithEVMToolsBuilder();
+        } else {
+            String[] targets = new String[] { "a", "b" };
+            projects = PMUtils.findProjectsWithEVMToolsBuilder(targets);
+        }
 
-                            StringBuffer buf = new StringBuffer();
-                            String msg = String.format("%s\t%s",
-                                    project.getName(), dateStr);
-                            buf.append(msg);
-                            if (checkNextTradingDate(listener, project, builder)) {// 過去ならば
-                                buf.append("\t日替わりチェックエラー");
-                            }
-                            listener.getLogger().println(new String(buf));
+        for (AbstractProject<?, ?> project : projects) {
+            File newBaseDateFile = PMUtils.findBaseDateFile(project); // buildDirの新しいファイル
+            if (newBaseDateFile != null) {
+                Date baseDateFromBaseDateFile = PMUtils
+                        .getBaseDateFromBaseDateFile(newBaseDateFile);
+                String dateStr = DateFormatUtils.format(
+                        baseDateFromBaseDateFile, "yyyyMMdd");
 
-                        } else {
-                            String msg = String.format("%s\t日替処理が未実施か、"
-                                    + "ワークスペースに存在する旧バージョンの日替ファイルしか存在しない。"
-                                    + "日替処理を実施後、ファイルが見つかるようになります。",
-                                    project.getName());
-                            listener.getLogger().println(msg);
-                        }
-
-                        // AbstractBuild<?, ?> b = ((FreeStyleProject) item)
-                        // .getLastSuccessfulBuild();
-                        // if (b != null) {
-                        // FilePath oldBaseDateFile =
-                        // PMUtils.findBaseDateFile1(b);
-                        // // workspaceの古いファイル。
-                        // }
-
-                    }
+                StringBuffer buf = new StringBuffer();
+                String msg = String
+                        .format("%s\t%s", project.getName(), dateStr);
+                buf.append(msg);
+                if (checkNextTradingDate(listener, project,
+                        PMUtils.findProjectFileName(project))) {// 過去ならば
+                    buf.append("\t日替わりチェックエラー");
                 }
+                listener.getLogger().println(new String(buf));
+
+            } else {
+                String msg = String.format("%s\t日替処理が未実施か、"
+                        + "ワークスペースに存在する旧バージョンの日替ファイルしか存在しない。"
+                        + "日替処理を実施後、ファイルが見つかるようになります。", project.getName());
+                listener.getLogger().println(msg);
             }
         }
 
@@ -144,18 +147,15 @@ public class HigawariCheckBuilder extends Builder {
      * @throws AbortException
      */
     private boolean checkNextTradingDate(BuildListener listener,
-            FreeStyleProject jenkinsProject, EVMToolsBuilder builder)
+            AbstractProject<?, ?> jenkinsProject, String evmFileName)
             throws IOException, AbortException {
-        //
-        String evmFileName = builder.getName();
+
         String evmJSONFileName = ProjectUtils.findJSONFileName(evmFileName);
         AbstractBuild<?, ?> newestBuild = PMUtils
                 .findNewestBuild(jenkinsProject);
         File newestJsonFile = new File(newestBuild.getRootDir(),
                 evmJSONFileName + "." + PMConstants.TMP_EXT);
         System.out.println(newestJsonFile.getAbsolutePath());
-        // Date baseDate = PMUtils
-        // .getBaseDateFromJSON(newestJsonFile);
         try {
             Project evmProject = new JSONProjectCreator(newestJsonFile)
                     .createProject();
@@ -265,7 +265,6 @@ public class HigawariCheckBuilder extends Builder {
         // public boolean getUseFrench() {
         // return useFrench;
         // }
-
     }
 
 }

@@ -589,7 +589,8 @@ public class PMUtils {
         return null;
     }
 
-    public static List<AbstractProject<?, ?>> findProjectsWithEVMToolsBuilder() {
+    public static List<AbstractProject<?, ?>> findProjectsWithEVMToolsBuilder(
+            String... projectNames) {
         List<AbstractProject<?, ?>> returnList = new ArrayList<AbstractProject<?, ?>>();
         List<TopLevelItem> items = Jenkins.getInstance().getItems();
         for (TopLevelItem item : items) {
@@ -601,11 +602,21 @@ public class PMUtils {
                     EVMToolsBuilder builder = buildersList
                             .get(EVMToolsBuilder.class);
                     if (builder != null) {
-                        returnList.add(project);
+                        if (projectNames.length != 0) {
+                            for (String projectName : projectNames) {
+                                if (project.getName().equals(projectName)) {
+                                    returnList.add(project);
+                                    break;
+                                }
+                            }
+                        } else {
+                            returnList.add(project);
+                        }
                     }
                 }
             }
         }
         return returnList;
     }
+
 }

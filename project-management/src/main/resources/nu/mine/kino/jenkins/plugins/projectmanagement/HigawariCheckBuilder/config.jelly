@@ -12,8 +12,11 @@
 <f:block>
   <table>
   <f:optionalBlock name="useFilter" title="プロジェクトを指定する" checked="${instance.targetProjects!=null}" >
-  <f:entry title="チェック対象プロジェクト" field="targetProjects" description="カンマ区切りで。">
-    <f:textbox />
+  <f:entry title="チェック対象プロジェクト" field="targetProjects" description="チェックしたいプロジェクトを記載してください(改行で)。">
+    <f:textarea />
+  </f:entry>
+  <f:entry title="定義されたプロジェクト" field="samples" description="「チェック対象プロジェクト」を作成する際、コピペなどで活用ください。">
+    <f:textarea />
   </f:entry>
     </f:optionalBlock>
   </table>
