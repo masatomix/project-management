@@ -11,12 +11,12 @@
   -->
 <f:block>
   <table>
-  <f:optionalBlock name="useFilter" title="プロジェクトを指定する" checked="${instance.targetProjects!=null}" >
-  <f:entry title="チェック対象プロジェクト" field="targetProjects" description="チェックしたいプロジェクトを記載してください(改行で)。">
+  <f:optionalBlock name="useFilter" title="チェック対象プロジェクトを指定する" checked="${instance.targetProjects!=null}" >
+  <f:entry title="チェック対象にしたいプロジェクト" field="targetProjects" description="チェック対象にしたいプロジェクトを改行で区切りながら記述してください。">
     <f:textarea />
   </f:entry>
-  <f:entry title="定義されたプロジェクト" field="samples" description="「チェック対象プロジェクト」を作成する際、コピペなどで活用ください。">
-    <f:textarea />
+  <f:entry title="Jenkinsに定義されたプロジェクト" field="samples" description="「チェック対象プロジェクト」を記述する際、ここからコピペすると便利です。">
+    <f:textarea default="${descriptor.defaultSamples()}"/>
   </f:entry>
     </f:optionalBlock>
   </table>
