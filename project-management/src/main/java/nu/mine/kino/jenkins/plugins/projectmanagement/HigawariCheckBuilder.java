@@ -42,22 +42,16 @@ import org.kohsuke.stapler.StaplerRequest;
  */
 public class HigawariCheckBuilder extends Builder {
 
-    // private String targetProjects;
-    //
-    // // Fields in config.jelly must match the parameter names in the
-    // // "DataBoundConstructor"
-    // @DataBoundConstructor
-    // public HigawariCheckBuilder(EnableTextBlock useFilter) {
-    // if (useFilter != null) { // targetProjectsは、ココを通らなければ初期値に戻る。
-    // this.targetProjects = useFilter.targetProjects;
-    // }
-    // }
-    //
-    // public String getTargetProjects() {
-    // return targetProjects;
-    // }
-
     private String targetProjects;
+
+    public static class EnableTextBlock {
+        private String targetProjects;
+
+        @DataBoundConstructor
+        public EnableTextBlock(String targetProjects) {
+            this.targetProjects = targetProjects;
+        }
+    }
 
     private final EnableTextBlock useFilter;
 
@@ -77,20 +71,15 @@ public class HigawariCheckBuilder extends Builder {
 
     public String getSamples() {
         StringBuffer buf = new StringBuffer();
-        buf.append("a");
-        buf.append("\n");
-        buf.append("b");
-        buf.append("\n");
-        return new String(buf);
-    }
-
-    public static class EnableTextBlock {
-        private String targetProjects;
-
-        @DataBoundConstructor
-        public EnableTextBlock(String targetProjects, String samples) {
-            this.targetProjects = targetProjects;
+        List<AbstractProject<?, ?>> projects = PMUtils
+                .findProjectsWithEVMToolsBuilder();
+        for (int i = 0; i < projects.size(); i++) {
+            buf.append(projects.get(i).getName());
+            if (i < projects.size() - 1) {
+                buf.append("\n");
+            }
         }
+        return new String(buf);
     }
 
     /**
@@ -102,8 +91,8 @@ public class HigawariCheckBuilder extends Builder {
         if (useFilter == null) {
             projects = PMUtils.findProjectsWithEVMToolsBuilder();
         } else {
-            String[] targets = new String[] { "a", "b" };
-            projects = PMUtils.findProjectsWithEVMToolsBuilder(targets);
+            String[] targetProjectsArray=targetProjects.split("\n");
+            projects = PMUtils.findProjectsWithEVMToolsBuilder(targetProjectsArray);
         }
 
         for (AbstractProject<?, ?> project : projects) {
