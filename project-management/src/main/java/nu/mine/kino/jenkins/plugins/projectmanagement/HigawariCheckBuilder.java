@@ -165,13 +165,13 @@ public class HigawariCheckBuilder extends Builder {
         buf.append(footer);
 
         StringBuffer msgBuf = new StringBuffer();
-        msgBuf.append("以下、" + PROJECT_NAME + "からのメールです。\n\n");
+        msgBuf.append("以下、" + PROJECT_NAME + " からのメールです。\n\n");
         msgBuf.append(buf);
         String message = new String(msgBuf);
 
         System.out.printf("[EVM Tools] 宛先: %s\n", addresses);
         System.out.printf("[EVM Tools] サブジェクト: %s\n", subject);
-        System.out.printf("[EVM Tools] 本文:\n %s\n", new String(buf));
+        System.out.printf("[EVM Tools] 本文:\n%s\n", new String(buf));
 
         if (useMail != null) {
             StopWatch watch = new StopWatch();
