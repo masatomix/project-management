@@ -6,6 +6,7 @@ import hudson.Launcher;
 import hudson.model.BuildListener;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
+import hudson.model.Hudson;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
@@ -16,17 +17,24 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.mail.MessagingException;
 import javax.servlet.ServletException;
+
+import jenkins.model.Jenkins;
 
 import net.sf.json.JSONObject;
 import nu.mine.kino.entity.Project;
+import nu.mine.kino.jenkins.plugins.projectmanagement.EVMToolsBuilder.DescriptorImpl;
 import nu.mine.kino.jenkins.plugins.projectmanagement.utils.PMUtils;
 import nu.mine.kino.projects.JSONProjectCreator;
 import nu.mine.kino.projects.ProjectException;
 import nu.mine.kino.projects.utils.ProjectUtils;
+import nu.mine.kino.projects.utils.Utils;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.lang.time.StopWatch;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -42,9 +50,9 @@ import org.kohsuke.stapler.StaplerRequest;
  */
 public class HigawariCheckBuilder extends Builder {
 
+    // ネストしたテキストボックスを作成するときの定石。
     private String targetProjects;
 
-    // ネストしたテキストボックスを作成するときの定石。
     public static class EnableTextBlock {
         private String targetProjects;
 
@@ -59,16 +67,43 @@ public class HigawariCheckBuilder extends Builder {
     // Fields in config.jelly must match the parameter names in the
     // "DataBoundConstructor"
     @DataBoundConstructor
-    public HigawariCheckBuilder(EnableTextBlock useFilter) {
+    public HigawariCheckBuilder(EnableTextBlock useFilter,
+            EnableUseMailTextBlock useMail) {
         this.useFilter = useFilter;
+        this.useMail = useMail;
         if (useFilter != null) { // targetProjectsは、ココを通らなければ初期値に戻る。
             this.targetProjects = useFilter.targetProjects;
+        }
+        if (useMail != null) { // targetProjectsは、ココを通らなければ初期値に戻る。
+            this.addresses = useMail.addresses;
         }
     }
 
     public String getTargetProjects() {
         return targetProjects;
     }
+
+    // ネストしたテキストボックスを作成するときの定石。
+
+    // ネストしたテキストボックスを作成するときの定石。
+    private String addresses;
+
+    public static class EnableUseMailTextBlock {
+        private String addresses;
+
+        @DataBoundConstructor
+        public EnableUseMailTextBlock(String addresses) {
+            this.addresses = addresses;
+        }
+    }
+
+    private final EnableUseMailTextBlock useMail;
+
+    public String getAddresses() {
+        return addresses;
+    }
+
+    // ネストしたテキストボックスを作成するときの定石。
 
     public String getSamples() {
         return getDescriptor().defaultSamples();
@@ -114,6 +149,60 @@ public class HigawariCheckBuilder extends Builder {
         }
         listener.getLogger().println(new String(buf));
 
+        String BUILD_URL = new StringBuilder()
+                .append(Jenkins.getInstance().getRootUrl())
+                .append(build.getUrl()).toString();
+        String PROJECT_NAME = build.getProject().getName();
+        String BUILD_NUMBER = String.valueOf(build.getNumber());
+        String subject = String.format("%s からのメール(#%s)", PROJECT_NAME,
+                BUILD_NUMBER);
+        String footer = String.format(
+                "Check console output at %s to view the results.", BUILD_URL);
+        String addresses = this.addresses;
+
+        buf.append("\n");
+        buf.append("\n");
+        buf.append(footer);
+
+        StringBuffer msgBuf = new StringBuffer();
+        msgBuf.append("以下、" + PROJECT_NAME + "からのメールです。\n\n");
+        msgBuf.append(buf);
+        String message = new String(msgBuf);
+
+        System.out.printf("[EVM Tools] 宛先: %s\n", addresses);
+        System.out.printf("[EVM Tools] サブジェクト: %s\n", subject);
+        System.out.printf("[EVM Tools] 本文:\n %s\n", new String(buf));
+
+        if (useMail != null) {
+            StopWatch watch = new StopWatch();
+            watch.start();
+            listener.getLogger().println("[EVM Tools] 宛先: " + addresses);
+            listener.getLogger().println("[EVM Tools] サブジェクト: " + subject);
+
+            if (!StringUtils.isEmpty(addresses)) {
+                String[] addressesArray = Utils.parseCommna(addresses);
+                for (String to : addressesArray) {
+                    System.out.printf("宛先: [%s]\n", to);
+                }
+                try {
+                    if (addressesArray.length > 0) {
+                        PMUtils.sendMail(addressesArray, subject, message);
+                    } else {
+                        String errorMsg = "メール送信に失敗しました。宛先の設定がされていません";
+                        listener.getLogger().println("[EVM Tools] " + errorMsg);
+                        throw new AbortException(errorMsg);
+                    }
+                } catch (MessagingException e) {
+                    String errorMsg = "メール送信に失敗しました。「システムの設定」で E-mail 通知 の設定や宛先などを見直してください";
+                    listener.getLogger().println("[EVM Tools] " + errorMsg);
+                    throw new AbortException(errorMsg);
+                }
+            }
+            watch.stop();
+            System.out.printf("メール送信時間:[%d] ms\n", watch.getTime());
+            watch.reset();
+            watch = null;
+        }
         return true;
     }
 
