@@ -1,14 +1,5 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-  <!--
-    This jelly script is used for per-project configuration.
 
-    See global.jelly for a general discussion about jelly script.
-  -->
-
-  <!--
-    Creates a text field that shows the value of the "name" property.
-    When submitted, it will be passed to the corresponding constructor parameter.
-  -->
 <f:block>
   <table>
   <f:optionalBlock name="useFilter" title="チェック対象プロジェクトを指定する" checked="${instance.targetProjects!=null}" >
@@ -22,4 +13,13 @@
   </table>
 </f:block>
 
+<f:block>
+  <table>
+  <f:optionalBlock name="useMail" title="チェック結果をメールで送信する" checked="${instance.addresses!=null}" >
+  <f:entry title="メール送信先" field="addresses" description="チェック結果をメール送信する宛先をカンマ区切りで指定してください。">
+    <f:textbox />
+  </f:entry>
+    </f:optionalBlock>
+  </table>
+</f:block>
 </j:jelly>
