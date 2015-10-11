@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>nu.mine.kino.project</groupId>
+  <artifactId>EVMTools</artifactId>
+  <version>0.9.13-SNAPSHOT</version><!--SNAPSHOTをつけている限り、デプロイは  snapshotRepository が使われるぽい。--> 
+  
+  <build>
+	<extensions>
+<!--
+	<extension>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-webdav</artifactId>
+	</extension>
+-->
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh</artifactId>
+        <version>2.8</version>
+      </extension>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+         <artifactId>wagon-ftp</artifactId>
+         <version>2.8</version>
+      </extension>
+	</extensions>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.2</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+          <encoding>Windows-31J</encoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.4</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+<!--<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-deploy-plugin</artifactId>
+    <version>2.8.2</version>
+    <dependencies>
+        <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh</artifactId>
+        <version>2.8</version>
+        </dependency>
+        <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+         <artifactId>wagon-ftp</artifactId>
+         <version>2.8</version>
+        </dependency>
+    </dependencies>
+</plugin>-->
+    </plugins>
+  </build>
+  <repositories>
+<!--    <repository>
+      <id>amateras</id>
+      <name>Project Amateras Maven2 Repository</name>
+      <url>http://amateras.sourceforge.jp/mvn/</url>
+    </repository>-->
+    <repository>
+      <id>nu.mine.kino</id>
+      <name>EVMTools Maven2 Repository</name>
+      <url>http://www.masatom.in/repo/</url>
+    </repository>
+    <repository>
+      <id>nu.mine.kino.snapshot</id>
+      <name>EVMTools Maven2 SNAPSHOT Repository</name>
+      <url>http://www.masatom.in/repo-snapshot/</url>
+	  <!-- localリポジトリに存在しても、snapshotは毎回サーバに取りに行く設定。 --> 
+	  <!-- 自前で開発しているプロジェクトが別サーバで分散ビルドされた場合、ローカルのSNAPSHOTが古いVerだったことがあったので。 --> 
+      <releases><enabled>true</enabled><updatePolicy>always</updatePolicy></releases>
+      <snapshots><enabled>true</enabled><updatePolicy>always</updatePolicy></snapshots>
+    </repository>
+  </repositories>
+  <dependencies>
+<!--    <dependency>
+      <groupId>jp.sf.amateras.xlsbeans</groupId>
+      <artifactId>xlsbeans</artifactId>
+      <version>1.2.5</version>
+    </dependency>-->
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.2</version>
+    </dependency>
+    <dependency>
+      <groupId>net.arnx</groupId>
+      <artifactId>jsonic</artifactId>
+      <version>1.3.5</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.1</version>
+	  <scope>test</scope>
+    </dependency>
+
+
+<dependency>
+	<groupId>org.apache.poi</groupId>
+	<artifactId>poi</artifactId>
+	<version>3.13</version>
+</dependency>
+<dependency>
+	<groupId>org.apache.poi</groupId>
+	<artifactId>poi-ooxml</artifactId>
+	<version>3.13</version>
+</dependency>
+<dependency>
+	<groupId>org.apache.poi</groupId>
+	<artifactId>poi-ooxml-schemas</artifactId>
+	<version>3.13</version>
+</dependency>
+
+
+<dependency>
+	<groupId>com.sun.jersey</groupId>
+	<artifactId>jersey-core</artifactId>
+	<version>1.17.1</version>
+</dependency>
+<dependency>
+	<groupId>com.sun.jersey</groupId>
+	<artifactId>jersey-client</artifactId>
+	<version>1.17.1</version>
+</dependency>
+
+
+<dependency>
+    <groupId>com.taskadapter</groupId>
+    <artifactId>redmine-java-api</artifactId>
+    <version>2.0.0</version>
+</dependency>
+
+    <dependency>
+	<groupId>nu.mine.kino</groupId>
+	<artifactId>opencsvPlus</artifactId>
+	<version>0.0.2-SNAPSHOT</version>
+    </dependency>
+		<dependency>
+			<groupId>au.com.bytecode</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>2.4</version>
+		</dependency>
+    <dependency>
+	<groupId>org.bbreak.excella</groupId>
+	<artifactId>excella-core</artifactId>
+	<version>1.8</version>
+    </dependency>
+  </dependencies>
+  
+  
+   <distributionManagement>
+<!--	<repository>
+      <id>nu.mine.kino</id>
+      <name>EVMTools Maven2 Repository</name>
+      <url>scp://masatomix@192.168.10.12/var/www/html/repo/</url>
+	</repository>
+-->
+	<repository>
+      <id>nu.mine.kino.ftp</id>
+      <name>EVMTools Maven2 Repository</name>
+      <url>ftp://masatomix@192.168.10.12/var/www/html/repo/</url>
+	</repository>
+	<snapshotRepository>
+      <id>nu.mine.kino.ftp</id>
+      <name>EVMTools Maven2 Repository</name>
+      <url>ftp://masatomix@192.168.10.12/var/www/html/repo-snapshot/</url>
+	</snapshotRepository>
+  </distributionManagement>
+  
+  
+</project>
+

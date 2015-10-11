@@ -1,0 +1,76 @@
+<j:jelly xmlns:j="jelly:core"
+         xmlns:d="jelly:define"
+         xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson"
+         xmlns:f="/lib/form"
+         xmlns:i="jelly:fmt">
+	<j:if test="${it.baseDate!=null and it.urlName=='project-summary_base'}">
+    <t:summary icon="document.gif">
+
+
+      <h2>直近(<i:formatDate value="${it.baseDate}"/>) 時点のプロジェクト全体のPV/AC/EV</h2>
+      <table class="pane bigtable" >
+        <tr>
+          <th class="pane-header">PV</th>
+          <th class="pane-header">EV</th>
+          <th class="pane-header">AC</th>
+          <th class="pane-header">SPI</th>
+          <th class="pane-header">CPI</th>
+          <th class="pane-header">BAC</th>
+        </tr>
+          <tr>
+            <td class="pane" style="text-align:center">${it.currentPVACEV.plannedValue!='NaN' ? it.currentPVACEV.plannedValue : "-"}</td>
+            <td class="pane" style="text-align:center">${it.currentPVACEV.earnedValue!='NaN'? it.currentPVACEV.earnedValue: "-"}</td>
+            <td class="pane" style="text-align:center">${it.currentPVACEV.actualCost!='NaN' ? it.currentPVACEV.actualCost:"-"}</td>
+            <td class="pane" style="text-align:center">${it.currentPVACEV.spi!='NaN' ? it.currentPVACEV.spi : "-"}</td>
+            <td class="pane" style="text-align:center">${it.currentPVACEV.cpi!='NaN' ? it.currentPVACEV.cpi : "-"}</td>
+            <td class="pane" style="text-align:center">${it.currentPVACEV.bac!='NaN' ? it.currentPVACEV.bac : "-"}</td>
+	</tr>
+      </table>
+<table>
+<tr hashelp="true" class="optional-block-start " ref="cb6">
+ <td colspan="3"><label class="attach-previous">EVM用語の説明</label></td>
+ <td><a helpurl="${resURL}/plugin/project-management/help/pvacev.html" href="#" class="help-button" tabindex="9999"><img src='${imagesURL}/16x16/help.png'  alt="Help for feature: evm" ></img></a></td>
+</tr>
+<tr class="help-area">
+  <td></td>
+  <td colspan="2"><div class="help">ロード中</div></td>
+  <td></td>
+</tr>
+</table>
+
+      <h1>直近(<i:formatDate value="${it.baseDate}"/>) の集計資料</h1>
+      <table class="pane sortable bigtable" >
+        <tr>
+          <th class="pane-header">ファイル</th>
+        </tr>
+        <j:forEach var="file" items="${it.summaryFiles}">
+          <tr>
+            <td class="pane"><a href="${it.urlName}/documents/${file.name}">${file.name}</a><!--<img src='${imagesURL}/16x16/help.png' ></img>--></td>
+			</tr>
+        </j:forEach>
+      </table>
+<!-- help
+<div tooltip="xxx_base_ACというTSVファイルは base_xxx.xlsファイルと差分をとったAC情報。
+xxx_base_EVというTSVファイルは base_xxx.xlsファイルと差分をとったEV情報。
+xxx_base1 というファイルは base1_xxx.xlsファイルと差分をとった情報になります。
+複数の基準データ(base_xxx,base1_xxx)を使い分けることで、日ごとのデータや週ごとのデータを作成することが可能です。
+想定ではbase_xxxで日ごと、base1_xxxで週ごとのデータを作成します。
+"><a tabindex="9999"><img src='${imagesURL}/16x16/help.png'  alt="Help for feature: evm" ></img></a></div>
+-->
+<!-- help -->
+<table>
+<tr hashelp="true" class="optional-block-start " ref="cb6">
+ <td colspan="3"><label class="attach-previous">ファイルの説明</label></td>
+ <td><a helpurl="${resURL}/plugin/project-management/help/files.html" href="#" class="help-button" tabindex="9999"><img src='${imagesURL}/16x16/help.png'  alt="Help for feature: evm" ></img></a></td>
+</tr>
+<tr class="help-area">
+  <td></td>
+  <td colspan="2"><div class="help">ロード中</div></td>
+  <td></td>
+</tr>
+</table>
+    </t:summary>
+
+	  </j:if>
+</j:jelly>
