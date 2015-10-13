@@ -46,6 +46,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import jenkins.model.Jenkins;
+import jenkins.model.JenkinsLocationConfiguration;
 import nu.mine.kino.entity.PVACEVViewBean;
 import nu.mine.kino.entity.Project;
 import nu.mine.kino.entity.ProjectUser;
@@ -122,11 +123,14 @@ public class PMUtils {
 
         MimeMessage mimeMessage = new MimeMessage(Mailer.descriptor()
                 .createSession());
+        String adminAddress = JenkinsLocationConfiguration.get()
+                .getAdminAddress();
 
         InternetAddress[] to = new InternetAddress[addresses.length];
         for (int i = 0; i < addresses.length; i++) {
             to[i] = new InternetAddress(addresses[i], true);
         }
+        mimeMessage.setSender(new InternetAddress(adminAddress));
         mimeMessage.setRecipients(Message.RecipientType.TO, to);
         mimeMessage.setSubject(subject, "ISO-2022-JP");
         mimeMessage.setText(message, "ISO-2022-JP");
