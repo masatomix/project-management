@@ -6,7 +6,7 @@
   <f:entry title="チェック対象にしたいプロジェクト" field="targetProjects" description="チェック対象にしたいプロジェクトを改行で区切りながら記述してください。">
     <f:textarea />
   </f:entry>
-  <f:entry title="Jenkinsに定義されたプロジェクト" field="samples" description="「チェック対象プロジェクト」を記述する際、ここからコピペすると便利です。">
+  <f:entry title="Jenkinsに定義されたプロジェクト" field="samples" description="「チェック対象プロジェクト」を記述する際、ここからコピー&ペーストすると便利です。">
     <f:textarea default="${descriptor.defaultSamples()}"/>
   </f:entry>
     </f:optionalBlock>
