@@ -125,17 +125,43 @@ public class HigawariCheckBuilder extends Builder {
     public boolean perform(AbstractBuild build, Launcher launcher,
             BuildListener listener) throws InterruptedException, IOException {
 
-        String subject = createSubject(build);
-        String message = extracted(build, listener, subject);
+        String subject = createSubject(build, listener);
+        String message = createMessage(build, listener);
+
+        System.out.printf("[EVM Tools] 宛先: %s\n", addresses);
+        System.out.printf("[EVM Tools] サブジェクト: %s\n", subject);
+        System.out.printf("[EVM Tools] 本文:\n%s\n", message);
 
         if (useMail != null) {
-            extracted(listener, subject, message);
+            listener.getLogger().println("[EVM Tools] 宛先: " + addresses);
+            listener.getLogger().println("[EVM Tools] サブジェクト: " + subject);
+            sendMail(listener, subject, message);
         }
         return true;
     }
 
-    private String extracted(AbstractBuild build, BuildListener listener,
-            String subject) throws IOException, InterruptedException,
+    private String createSubject(AbstractBuild build, BuildListener listener) {
+        return createDefaultSubject(build, listener);
+    }
+
+    private String createMessage(AbstractBuild build, BuildListener listener)
+            throws IOException, InterruptedException, AbortException {
+        return createDefaultMessage(build, listener);
+
+    }
+
+    private String createDefaultSubject(AbstractBuild build,
+            BuildListener listener) {
+        String PROJECT_NAME = build.getProject().getName();
+        String BUILD_NUMBER = String.valueOf(build.getNumber());
+
+        String subject = String.format("%s からのメール(#%s)", PROJECT_NAME,
+                BUILD_NUMBER);
+        return subject;
+    }
+
+    private String createDefaultMessage(AbstractBuild build,
+            BuildListener listener) throws IOException, InterruptedException,
             AbortException {
         String template = "${HIGAWARI_CHECK_RESULTS}";
         try {
@@ -163,18 +189,13 @@ public class HigawariCheckBuilder extends Builder {
         msgBuf.append(footer);
         String message = new String(msgBuf);
 
-        System.out.printf("[EVM Tools] 宛先: %s\n", addresses);
-        System.out.printf("[EVM Tools] サブジェクト: %s\n", subject);
-        System.out.printf("[EVM Tools] 本文:\n%s\n", message);
         return message;
     }
 
-    private void extracted(BuildListener listener, String subject,
-            String message) throws UnsupportedEncodingException, AbortException {
+    private void sendMail(BuildListener listener, String subject, String message)
+            throws UnsupportedEncodingException, AbortException {
         StopWatch watch = new StopWatch();
         watch.start();
-        listener.getLogger().println("[EVM Tools] 宛先: " + addresses);
-        listener.getLogger().println("[EVM Tools] サブジェクト: " + subject);
 
         if (!StringUtils.isEmpty(addresses)) {
             String[] addressesArray = Utils.parseCommna(addresses);
@@ -199,15 +220,6 @@ public class HigawariCheckBuilder extends Builder {
         System.out.printf("メール送信時間:[%d] ms\n", watch.getTime());
         watch.reset();
         watch = null;
-    }
-
-    private String createSubject(AbstractBuild build) {
-        String PROJECT_NAME = build.getProject().getName();
-        String BUILD_NUMBER = String.valueOf(build.getNumber());
-
-        String subject = String.format("%s からのメール(#%s)", PROJECT_NAME,
-                BUILD_NUMBER);
-        return subject;
     }
 
     // Overridden for better type safety.
