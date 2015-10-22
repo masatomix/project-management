@@ -173,9 +173,9 @@
       <attribute value="jar:file:/Users/masatomix/.m2/repository/commons-cli/commons-cli/1.2/commons-cli-1.2-javadoc.jar!/" name="javadoc_location"/>
     </attributes>
   </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/commons-codec/commons-codec/1.4/commons-codec-1.4.jar" sourcepath="M2_REPO/commons-codec/commons-codec/1.4/commons-codec-1.4-sources.jar">
+  <classpathentry kind="var" path="M2_REPO/commons-codec/commons-codec/1.8/commons-codec-1.8.jar" sourcepath="M2_REPO/commons-codec/commons-codec/1.8/commons-codec-1.8-sources.jar">
     <attributes>
-      <attribute value="jar:file:/Users/masatomix/.m2/repository/commons-codec/commons-codec/1.4/commons-codec-1.4-javadoc.jar!/" name="javadoc_location"/>
+      <attribute value="jar:file:/Users/masatomix/.m2/repository/commons-codec/commons-codec/1.8/commons-codec-1.8-javadoc.jar!/" name="javadoc_location"/>
     </attributes>
   </classpathentry>
   <classpathentry kind="var" path="M2_REPO/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.jar" sourcepath="M2_REPO/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1-sources.jar">
@@ -235,7 +235,6 @@
     </attributes>
   </classpathentry>
   <classpathentry kind="var" path="M2_REPO/net/sourceforge/cssparser/cssparser/0.9.5/cssparser-0.9.5.jar" sourcepath="M2_REPO/net/sourceforge/cssparser/cssparser/0.9.5/cssparser-0.9.5-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar" sourcepath="M2_REPO/dom4j/dom4j/1.6.1/dom4j-1.6.1-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jenkins-ci/dom4j/dom4j/1.6.1-jenkins-4/dom4j-1.6.1-jenkins-4.jar" sourcepath="M2_REPO/org/jenkins-ci/dom4j/dom4j/1.6.1-jenkins-4/dom4j-1.6.1-jenkins-4-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/maven/doxia/doxia-sink-api/1.0/doxia-sink-api-1.0.jar" sourcepath="M2_REPO/org/apache/maven/doxia/doxia-sink-api/1.0/doxia-sink-api-1.0-sources.jar">
     <attributes>
@@ -257,7 +256,7 @@
       <attribute value="jar:file:/Users/masatomix/.m2/repository/com/sun/solaris/embedded_su4j/1.1/embedded_su4j-1.1-javadoc.jar!/" name="javadoc_location"/>
     </attributes>
   </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/nu/mine/kino/project/EVMTools/0.9.12-SNAPSHOT/EVMTools-0.9.12-SNAPSHOT.jar"/>
+  <classpathentry kind="var" path="M2_REPO/nu/mine/kino/project/EVMTools/0.9.13-SNAPSHOT/EVMTools-0.9.13-SNAPSHOT.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/bbreak/excella/excella-core/1.8/excella-core-1.8.jar"/>
   <classpathentry kind="var" path="M2_REPO/net/sf/ezmorph/ezmorph/1.0.6/ezmorph-1.0.6.jar" sourcepath="M2_REPO/net/sf/ezmorph/ezmorph/1.0.6/ezmorph-1.0.6-sources.jar">
     <attributes>
@@ -272,11 +271,6 @@
   <classpathentry kind="var" path="M2_REPO/org/codehaus/geb/geb-implicit-assertions/0.7.2/geb-implicit-assertions-0.7.2.jar" sourcepath="M2_REPO/org/codehaus/geb/geb-implicit-assertions/0.7.2/geb-implicit-assertions-0.7.2-sources.jar">
     <attributes>
       <attribute value="jar:file:/Users/masatomix/.m2/repository/org/codehaus/geb/geb-implicit-assertions/0.7.2/geb-implicit-assertions-0.7.2-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/apache/geronimo/specs/geronimo-stax-api_1.0_spec/1.0/geronimo-stax-api_1.0_spec-1.0.jar" sourcepath="M2_REPO/org/apache/geronimo/specs/geronimo-stax-api_1.0_spec/1.0/geronimo-stax-api_1.0_spec-1.0-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/Users/masatomix/.m2/repository/org/apache/geronimo/specs/geronimo-stax-api_1.0_spec/1.0/geronimo-stax-api_1.0_spec-1.0-javadoc.jar!/" name="javadoc_location"/>
     </attributes>
   </classpathentry>
   <classpathentry kind="var" path="M2_REPO/org/codehaus/groovy/groovy-all/1.8.9/groovy-all-1.8.9.jar" sourcepath="M2_REPO/org/codehaus/groovy/groovy-all/1.8.9/groovy-all-1.8.9-sources.jar">
@@ -331,7 +325,6 @@
       <attribute value="jar:file:/Users/masatomix/.m2/repository/org/jenkins-ci/plugins/javadoc/1.0/javadoc-1.0-javadoc.jar!/" name="javadoc_location"/>
     </attributes>
   </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/javassist/javassist/3.11.0.GA/javassist-3.11.0.GA.jar" sourcepath="M2_REPO/javassist/javassist/3.11.0.GA/javassist-3.11.0.GA-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/jaxen/jaxen/1.1-beta-11/jaxen-1.1-beta-11.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/mindrot/jbcrypt/0.3m/jbcrypt-0.3m.jar" sourcepath="M2_REPO/org/mindrot/jbcrypt/0.3m/jbcrypt-0.3m-sources.jar">
     <attributes>
@@ -437,11 +430,6 @@
   <classpathentry kind="var" path="M2_REPO/org/jenkins-ci/plugins/junit/1.0/junit-1.0.jar" sourcepath="M2_REPO/org/jenkins-ci/plugins/junit/1.0/junit-1.0-sources.jar">
     <attributes>
       <attribute value="jar:file:/Users/masatomix/.m2/repository/org/jenkins-ci/plugins/junit/1.0/junit-1.0-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/net/sourceforge/jexcelapi/jxl/2.6.12/jxl-2.6.12.jar" sourcepath="M2_REPO/net/sourceforge/jexcelapi/jxl/2.6.12/jxl-2.6.12-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/Users/masatomix/.m2/repository/net/sourceforge/jexcelapi/jxl/2.6.12/jxl-2.6.12-javadoc.jar!/" name="javadoc_location"/>
     </attributes>
   </classpathentry>
   <classpathentry kind="var" path="M2_REPO/com/jcraft/jzlib/1.1.3-kohsuke-1/jzlib-1.1.3-kohsuke-1.jar" sourcepath="M2_REPO/com/jcraft/jzlib/1.1.3-kohsuke-1/jzlib-1.1.3-kohsuke-1-sources.jar">
@@ -612,11 +600,6 @@
     </attributes>
   </classpathentry>
   <classpathentry kind="var" path="M2_REPO/org/jvnet/hudson/netx/0.5-hudson-2/netx-0.5-hudson-2.jar" sourcepath="M2_REPO/org/jvnet/hudson/netx/0.5-hudson-2/netx-0.5-hudson-2-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/ognl/ognl/3.0.2/ognl-3.0.2.jar" sourcepath="M2_REPO/ognl/ognl/3.0.2/ognl-3.0.2-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/Users/masatomix/.m2/repository/ognl/ognl/3.0.2/ognl-3.0.2-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
   <classpathentry kind="var" path="M2_REPO/au/com/bytecode/opencsv/2.4/opencsv-2.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/nu/mine/kino/opencsvPlus/0.0.2-SNAPSHOT/opencsvPlus-0.0.2-SNAPSHOT.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/netbeans/modules/org-netbeans-insane/RELEASE72/org-netbeans-insane-RELEASE72.jar" sourcepath="M2_REPO/org/netbeans/modules/org-netbeans-insane/RELEASE72/org-netbeans-insane-RELEASE72-sources.jar"/>
@@ -667,9 +650,9 @@
       <attribute value="jar:file:/Users/masatomix/.m2/repository/org/codehaus/plexus/plexus-utils/3.0.10/plexus-utils-3.0.10-javadoc.jar!/" name="javadoc_location"/>
     </attributes>
   </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi/3.6/poi-3.6.jar" sourcepath="M2_REPO/org/apache/poi/poi/3.6/poi-3.6-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi-ooxml/3.6/poi-ooxml-3.6.jar" sourcepath="M2_REPO/org/apache/poi/poi-ooxml/3.6/poi-ooxml-3.6-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi-ooxml-schemas/3.6/poi-ooxml-schemas-3.6.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi/3.13/poi-3.13.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi-ooxml/3.13/poi-ooxml-3.13.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi-ooxml-schemas/3.13/poi-ooxml-schemas-3.13.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/taskadapter/redmine-java-api/2.0.0/redmine-java-api-2.0.0.jar" sourcepath="M2_REPO/com/taskadapter/redmine-java-api/2.0.0/redmine-java-api-2.0.0-sources.jar">
     <attributes>
       <attribute value="jar:file:/Users/masatomix/.m2/repository/com/taskadapter/redmine-java-api/2.0.0/redmine-java-api-2.0.0-javadoc.jar!/" name="javadoc_location"/>
@@ -880,9 +863,8 @@
   <classpathentry kind="var" path="M2_REPO/org/codehaus/woodstox/wstx-asl/3.2.9/wstx-asl-3.2.9.jar" sourcepath="M2_REPO/org/codehaus/woodstox/wstx-asl/3.2.9/wstx-asl-3.2.9-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/xalan/xalan/2.7.1/xalan-2.7.1.jar" sourcepath="M2_REPO/xalan/xalan/2.7.1/xalan-2.7.1-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/xerces/xercesImpl/2.9.1/xercesImpl-2.9.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/jp/sf/amateras/xlsbeans/xlsbeans/1.2.5/xlsbeans-1.2.5.jar"/>
   <classpathentry kind="var" path="M2_REPO/xml-apis/xml-apis/1.3.04/xml-apis-1.3.04.jar" sourcepath="M2_REPO/xml-apis/xml-apis/1.3.04/xml-apis-1.3.04-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/xmlbeans/xmlbeans/2.3.0/xmlbeans-2.3.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/xmlbeans/xmlbeans/2.6.0/xmlbeans-2.6.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/xpp3/xpp3/1.1.4c/xpp3-1.1.4c.jar" sourcepath="M2_REPO/xpp3/xpp3/1.1.4c/xpp3-1.1.4c-sources.jar">
     <attributes>
       <attribute value="jar:file:/Users/masatomix/.m2/repository/xpp3/xpp3/1.1.4c/xpp3-1.1.4c-javadoc.jar!/" name="javadoc_location"/>
@@ -893,5 +875,5 @@
       <attribute value="jar:file:/Users/masatomix/.m2/repository/org/jvnet/hudson/xstream/1.4.7-jenkins-1/xstream-1.4.7-jenkins-1-javadoc.jar!/" name="javadoc_location"/>
     </attributes>
   </classpathentry>
-  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 </classpath>

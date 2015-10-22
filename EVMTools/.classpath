@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
   <classpathentry kind="src" path="src/test/java" output="target/test-classes" including="**/*.java"/>
-  <classpathentry kind="src" path="src/test/resources" output="target/test-classes" excluding="**/*.java"/>
   <classpathentry kind="src" path="src/main/java" including="**/*.java"/>
-  <classpathentry kind="src" path="src/main/resources" excluding="**/*.java"/>
   <classpathentry kind="output" path="target/classes"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
   <classpathentry kind="var" path="M2_REPO/commons-lang/commons-lang/2.2/commons-lang-2.2.jar" sourcepath="M2_REPO/commons-lang/commons-lang/2.2/commons-lang-2.2-sources.jar"/>
@@ -17,13 +15,13 @@
   <classpathentry kind="var" path="M2_REPO/stax/stax-api/1.0.1/stax-api-1.0.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/sun/jersey/jersey-core/1.17.1/jersey-core-1.17.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/sun/jersey/jersey-client/1.17.1/jersey-client-1.17.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/taskadapter/redmine-java-api/2.0.0/redmine-java-api-2.0.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/httpcomponents/httpclient/4.2/httpclient-4.2.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/httpcomponents/httpcore/4.2/httpcore-4.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/taskadapter/redmine-java-api/2.0.0/redmine-java-api-2.0.0.jar" sourcepath="M2_REPO/com/taskadapter/redmine-java-api/2.0.0/redmine-java-api-2.0.0-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/httpcomponents/httpclient/4.2/httpclient-4.2.jar" sourcepath="M2_REPO/org/apache/httpcomponents/httpclient/4.2/httpclient-4.2-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/httpcomponents/httpcore/4.2/httpcore-4.2.jar" sourcepath="M2_REPO/org/apache/httpcomponents/httpcore/4.2/httpcore-4.2-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.2/commons-logging-1.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/json/json/20090211/json-20090211.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.7.1/slf4j-api-1.7.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/nu/mine/kino/opencsvPlus/0.0.2-SNAPSHOT/opencsvPlus-0.0.2-SNAPSHOT.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.7.1/slf4j-api-1.7.1.jar" sourcepath="M2_REPO/org/slf4j/slf4j-api/1.7.1/slf4j-api-1.7.1-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/nu/mine/kino/opencsvPlus/0.0.2-SNAPSHOT/opencsvPlus-0.0.2-SNAPSHOT.jar" sourcepath="M2_REPO/nu/mine/kino/opencsvPlus/0.0.2-SNAPSHOT/opencsvPlus-0.0.2-SNAPSHOT-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/au/com/bytecode/opencsv/2.4/opencsv-2.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-beanutils/commons-beanutils-core/1.8.3/commons-beanutils-core-1.8.3.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.jar" sourcepath="M2_REPO/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1-sources.jar"/>
