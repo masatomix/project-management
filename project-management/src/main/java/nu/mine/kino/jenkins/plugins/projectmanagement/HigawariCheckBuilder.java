@@ -11,6 +11,7 @@ import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import javax.mail.MessagingException;
@@ -124,6 +125,18 @@ public class HigawariCheckBuilder extends Builder {
     public boolean perform(AbstractBuild build, Launcher launcher,
             BuildListener listener) throws InterruptedException, IOException {
 
+        String subject = createSubject(build);
+        String message = extracted(build, listener, subject);
+
+        if (useMail != null) {
+            extracted(listener, subject, message);
+        }
+        return true;
+    }
+
+    private String extracted(AbstractBuild build, BuildListener listener,
+            String subject) throws IOException, InterruptedException,
+            AbortException {
         String template = "${HIGAWARI_CHECK_RESULTS}";
         try {
             template = TokenMacro.expandAll(build, listener, template);
@@ -133,8 +146,6 @@ public class HigawariCheckBuilder extends Builder {
             listener.getLogger().println("[EVM Tools] " + errorMsg);
             throw new AbortException(errorMsg);
         }
-
-        String subject = createSubject(build);
 
         String BUILD_URL = new StringBuilder()
                 .append(Jenkins.getInstance().getRootUrl())
@@ -155,38 +166,39 @@ public class HigawariCheckBuilder extends Builder {
         System.out.printf("[EVM Tools] 宛先: %s\n", addresses);
         System.out.printf("[EVM Tools] サブジェクト: %s\n", subject);
         System.out.printf("[EVM Tools] 本文:\n%s\n", message);
+        return message;
+    }
 
-        if (useMail != null) {
-            StopWatch watch = new StopWatch();
-            watch.start();
-            listener.getLogger().println("[EVM Tools] 宛先: " + addresses);
-            listener.getLogger().println("[EVM Tools] サブジェクト: " + subject);
+    private void extracted(BuildListener listener, String subject,
+            String message) throws UnsupportedEncodingException, AbortException {
+        StopWatch watch = new StopWatch();
+        watch.start();
+        listener.getLogger().println("[EVM Tools] 宛先: " + addresses);
+        listener.getLogger().println("[EVM Tools] サブジェクト: " + subject);
 
-            if (!StringUtils.isEmpty(addresses)) {
-                String[] addressesArray = Utils.parseCommna(addresses);
-                for (String to : addressesArray) {
-                    System.out.printf("宛先: [%s]\n", to);
-                }
-                try {
-                    if (addressesArray.length > 0) {
-                        PMUtils.sendMail(addressesArray, subject, message);
-                    } else {
-                        String errorMsg = "メール送信に失敗しました。宛先の設定がされていません";
-                        listener.getLogger().println("[EVM Tools] " + errorMsg);
-                        throw new AbortException(errorMsg);
-                    }
-                } catch (MessagingException e) {
-                    String errorMsg = "メール送信に失敗しました。「システムの設定」で E-mail 通知 の設定や宛先などを見直してください";
+        if (!StringUtils.isEmpty(addresses)) {
+            String[] addressesArray = Utils.parseCommna(addresses);
+            for (String to : addressesArray) {
+                System.out.printf("宛先: [%s]\n", to);
+            }
+            try {
+                if (addressesArray.length > 0) {
+                    PMUtils.sendMail(addressesArray, subject, message);
+                } else {
+                    String errorMsg = "メール送信に失敗しました。宛先の設定がされていません";
                     listener.getLogger().println("[EVM Tools] " + errorMsg);
                     throw new AbortException(errorMsg);
                 }
+            } catch (MessagingException e) {
+                String errorMsg = "メール送信に失敗しました。「システムの設定」で E-mail 通知 の設定や宛先などを見直してください";
+                listener.getLogger().println("[EVM Tools] " + errorMsg);
+                throw new AbortException(errorMsg);
             }
-            watch.stop();
-            System.out.printf("メール送信時間:[%d] ms\n", watch.getTime());
-            watch.reset();
-            watch = null;
         }
-        return true;
+        watch.stop();
+        System.out.printf("メール送信時間:[%d] ms\n", watch.getTime());
+        watch.reset();
+        watch = null;
     }
 
     private String createSubject(AbstractBuild build) {
