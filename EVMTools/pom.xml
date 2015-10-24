@@ -4,7 +4,14 @@
   <groupId>nu.mine.kino.project</groupId>
   <artifactId>EVMTools</artifactId>
   <version>0.9.13-SNAPSHOT</version><!--SNAPSHOTをつけている限り、デプロイは  snapshotRepository が使われるぽい。--> 
-  
+
+
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>http://opensource.org/licenses/MIT</url>
+    </license>
+  </licenses>
   <build>
 	<extensions>
 <!--

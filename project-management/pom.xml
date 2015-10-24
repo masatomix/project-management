@@ -6,7 +6,6 @@
     <version>1.580.1</version><!-- which version of Jenkins is this plugin built against? Users must have at least this Jenkins version to use this plugin. -->
   </parent>
 
-  <groupId>nu.mine.kino.jenkins.plugins</groupId>
   <artifactId>project-management</artifactId>
   <name>Project Management Plugin</name>
   <version>0.9.13-SNAPSHOT</version>
@@ -101,6 +100,13 @@
 			<artifactId>mailer</artifactId>
 				<version>1.5</version>
 	</dependency>
+
+    <dependency>
+        <groupId>org.jenkins-ci.plugins</groupId>
+        <artifactId>token-macro</artifactId>
+        <version>1.10</version>
+    </dependency>
+
 	</dependencies>
    <distributionManagement>
 	<repository>
