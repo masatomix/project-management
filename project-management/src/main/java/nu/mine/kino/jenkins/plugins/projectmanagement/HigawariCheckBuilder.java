@@ -1,23 +1,31 @@
 package nu.mine.kino.jenkins.plugins.projectmanagement;
 
 import hudson.AbortException;
+import hudson.CopyOnWrite;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.BuildListener;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
+import hudson.plugins.emailext.plugins.ContentBuilder;
+import hudson.plugins.emailext.plugins.EmailToken;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 
 import jenkins.model.Jenkins;
+import net.java.sezpoz.Index;
+import net.java.sezpoz.IndexItem;
 import net.sf.json.JSONObject;
 import nu.mine.kino.jenkins.plugins.projectmanagement.utils.PMUtils;
 import nu.mine.kino.projects.utils.Utils;
@@ -127,6 +135,7 @@ public class HigawariCheckBuilder extends Builder {
 
         String subject = createSubject(build, listener);
         String message = createMessage(build, listener);
+        listener.getLogger().println(message);
 
         System.out.printf("[EVM Tools] 宛先: %s\n", addresses);
         System.out.printf("[EVM Tools] サブジェクト: %s\n", subject);
@@ -140,14 +149,42 @@ public class HigawariCheckBuilder extends Builder {
         return true;
     }
 
-    private String createSubject(AbstractBuild build, BuildListener listener) {
-        return createDefaultSubject(build, listener);
+    private String createSubject(AbstractBuild build, BuildListener listener)
+            throws AbortException, IOException, InterruptedException {
+        if (StringUtils.isEmpty(mailSubject)) {
+            return createDefaultSubject(build, listener);
+        } else {
+            String target = mailSubject;
+            return convertText(build, listener, target);
+        }
     }
 
     private String createMessage(AbstractBuild build, BuildListener listener)
             throws IOException, InterruptedException, AbortException {
-        return createDefaultMessage(build, listener);
+        if (StringUtils.isEmpty(mailBody)) {
+            return createDefaultMessage(build, listener);
+        } else {
+            String target = mailBody;
+            return convertText(build, listener, target);
+        }
 
+    }
+
+    private String convertText(AbstractBuild build, BuildListener listener,
+            String target) throws IOException, InterruptedException,
+            AbortException {
+
+        List<TokenMacro> macros = new ArrayList<TokenMacro>(getPrivateMacros());
+        try {
+            String result = TokenMacro.expandAll(build, listener, target,
+                    false, macros);
+            return result;
+        } catch (MacroEvaluationException e) {
+            listener.getLogger().println("[EVM Tools] " + e.getMessage());
+            listener.getLogger().println("[EVM Tools] 設定された文字:\n");
+            listener.getLogger().println(target);
+            throw new AbortException(e.getMessage());
+        }
     }
 
     private String createDefaultSubject(AbstractBuild build,
@@ -166,7 +203,6 @@ public class HigawariCheckBuilder extends Builder {
         String template = "${HIGAWARI_CHECK_RESULTS}";
         try {
             template = TokenMacro.expandAll(build, listener, template);
-            listener.getLogger().println(template);
         } catch (MacroEvaluationException e) {
             String errorMsg = "${HIGAWARI_CHECK_RESULTS} の変換に失敗しました。処理を中断します。";
             listener.getLogger().println("[EVM Tools] " + errorMsg);
@@ -220,6 +256,26 @@ public class HigawariCheckBuilder extends Builder {
         System.out.printf("メール送信時間:[%d] ms\n", watch.getTime());
         watch.reset();
         watch = null;
+    }
+
+    @CopyOnWrite
+    private static volatile List<TokenMacro> privateMacros;
+
+    public static List<TokenMacro> getPrivateMacros() {
+        if (privateMacros != null)
+            return privateMacros;
+
+        privateMacros = new ArrayList<TokenMacro>();
+        ClassLoader cl = Jenkins.getInstance().pluginManager.uberClassLoader;
+        for (final IndexItem<EmailToken, TokenMacro> item : Index.load(
+                EmailToken.class, TokenMacro.class, cl)) {
+            try {
+                privateMacros.add(item.instance());
+            } catch (Exception e) {
+                // ignore errors loading tokens
+            }
+        }
+        return privateMacros;
     }
 
     // Overridden for better type safety.
