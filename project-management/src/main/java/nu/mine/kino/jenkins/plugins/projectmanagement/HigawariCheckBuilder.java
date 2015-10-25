@@ -17,7 +17,6 @@ import java.util.List;
 import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 
-import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 import nu.mine.kino.jenkins.plugins.projectmanagement.utils.PMUtils;
 import nu.mine.kino.projects.utils.Utils;
@@ -40,6 +39,10 @@ import org.kohsuke.stapler.StaplerRequest;
  * @author Masatomi KINO.
  */
 public class HigawariCheckBuilder extends Builder {
+
+    private static final String default_subject = "${PROJECT_NAME} からのメール(#${BUILD_NUMBER})";
+
+    private static final String default_message = "${HIGAWARI_CHECK_RESULTS}";
 
     // ネストしたテキストボックスを作成するときの定石。
     private String targetProjects;
@@ -125,9 +128,11 @@ public class HigawariCheckBuilder extends Builder {
     public boolean perform(AbstractBuild build, Launcher launcher,
             BuildListener listener) throws InterruptedException, IOException {
 
+        listener.getLogger().println(
+                convertText(build, listener, default_message));
+
         String subject = createSubject(build, listener);
         String message = createMessage(build, listener);
-        listener.getLogger().println(message);
 
         System.out.printf("[EVM Tools] 宛先: %s\n", addresses);
         System.out.printf("[EVM Tools] サブジェクト: %s\n", subject);
@@ -143,22 +148,24 @@ public class HigawariCheckBuilder extends Builder {
 
     private String createSubject(AbstractBuild build, BuildListener listener)
             throws AbortException, IOException, InterruptedException {
+        String target = null;
         if (StringUtils.isEmpty(mailSubject)) {
-            return createDefaultSubject(build, listener);
+            target = createDefaultSubject(build, listener);
         } else {
-            String target = mailSubject;
-            return convertText(build, listener, target);
+            target = mailSubject;
         }
+        return convertText(build, listener, target);
     }
 
     private String createMessage(AbstractBuild build, BuildListener listener)
             throws IOException, InterruptedException, AbortException {
+        String target = null;
         if (StringUtils.isEmpty(mailBody)) {
-            return createDefaultMessage(build, listener);
+            target = createDefaultMessage(build, listener);
         } else {
-            String target = mailBody;
-            return convertText(build, listener, target);
+            target = mailBody;
         }
+        return convertText(build, listener, target);
 
     }
 
@@ -166,8 +173,6 @@ public class HigawariCheckBuilder extends Builder {
             String target) throws IOException, InterruptedException,
             AbortException {
 
-        // List<TokenMacro> macros = new
-        // ArrayList<TokenMacro>(getPrivateMacros());
         try {
             String result = TokenMacro.expandAll(build, listener, target);
             return result;
@@ -181,39 +186,18 @@ public class HigawariCheckBuilder extends Builder {
 
     private String createDefaultSubject(AbstractBuild build,
             BuildListener listener) {
-        String PROJECT_NAME = build.getProject().getName();
-        String BUILD_NUMBER = String.valueOf(build.getNumber());
-
-        String subject = String.format("%s からのメール(#%s)", PROJECT_NAME,
-                BUILD_NUMBER);
-        return subject;
+        return default_subject;
     }
 
     private String createDefaultMessage(AbstractBuild build,
             BuildListener listener) throws IOException, InterruptedException,
             AbortException {
-        String template = "${HIGAWARI_CHECK_RESULTS}";
-        try {
-            template = TokenMacro.expandAll(build, listener, template);
-        } catch (MacroEvaluationException e) {
-            String errorMsg = "${HIGAWARI_CHECK_RESULTS} の変換に失敗しました。処理を中断します。";
-            listener.getLogger().println("[EVM Tools] " + errorMsg);
-            throw new AbortException(errorMsg);
-        }
-
-        String BUILD_URL = new StringBuilder()
-                .append(Jenkins.getInstance().getRootUrl())
-                .append(build.getUrl()).toString();
-        String PROJECT_NAME = build.getProject().getName();
-
-        String header = "以下、" + PROJECT_NAME + " からのメールです。\n\n";
-        String footer = String.format(
-                "\n\nCheck console output at %s to view the results.",
-                BUILD_URL);
+        String header = "以下、${PROJECT_NAME} からのメールです。\n\n";
+        String footer = "\n\nCheck console output at ${BUILD_URL} to view the results.";
 
         StringBuffer msgBuf = new StringBuffer();
         msgBuf.append(header);
-        msgBuf.append(template);
+        msgBuf.append(default_message);
         msgBuf.append(footer);
         String message = new String(msgBuf);
 
@@ -249,26 +233,6 @@ public class HigawariCheckBuilder extends Builder {
         watch.reset();
         watch = null;
     }
-
-    // @CopyOnWrite
-    // private static volatile List<TokenMacro> privateMacros;
-    //
-    // public static List<TokenMacro> getPrivateMacros() {
-    // if (privateMacros != null)
-    // return privateMacros;
-    //
-    // privateMacros = new ArrayList<TokenMacro>();
-    // ClassLoader cl = Jenkins.getInstance().pluginManager.uberClassLoader;
-    // for (final IndexItem<EmailToken, TokenMacro> item : Index.load(
-    // EmailToken.class, TokenMacro.class, cl)) {
-    // try {
-    // privateMacros.add(item.instance());
-    // } catch (Exception e) {
-    // // ignore errors loading tokens
-    // }
-    // }
-    // return privateMacros;
-    // }
 
     // Overridden for better type safety.
     // If your plugin doesn't really define any property on Descriptor,
