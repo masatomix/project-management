@@ -174,10 +174,10 @@ public class HigawariCheckBuilder extends Builder {
             String target) throws IOException, InterruptedException,
             AbortException {
 
-        List<TokenMacro> macros = new ArrayList<TokenMacro>(getPrivateMacros());
+        // List<TokenMacro> macros = new
+        // ArrayList<TokenMacro>(getPrivateMacros());
         try {
-            String result = TokenMacro.expandAll(build, listener, target,
-                    false, macros);
+            String result = TokenMacro.expandAll(build, listener, target);
             return result;
         } catch (MacroEvaluationException e) {
             listener.getLogger().println("[EVM Tools] " + e.getMessage());
@@ -258,25 +258,25 @@ public class HigawariCheckBuilder extends Builder {
         watch = null;
     }
 
-    @CopyOnWrite
-    private static volatile List<TokenMacro> privateMacros;
-
-    public static List<TokenMacro> getPrivateMacros() {
-        if (privateMacros != null)
-            return privateMacros;
-
-        privateMacros = new ArrayList<TokenMacro>();
-        ClassLoader cl = Jenkins.getInstance().pluginManager.uberClassLoader;
-        for (final IndexItem<EmailToken, TokenMacro> item : Index.load(
-                EmailToken.class, TokenMacro.class, cl)) {
-            try {
-                privateMacros.add(item.instance());
-            } catch (Exception e) {
-                // ignore errors loading tokens
-            }
-        }
-        return privateMacros;
-    }
+    // @CopyOnWrite
+    // private static volatile List<TokenMacro> privateMacros;
+    //
+    // public static List<TokenMacro> getPrivateMacros() {
+    // if (privateMacros != null)
+    // return privateMacros;
+    //
+    // privateMacros = new ArrayList<TokenMacro>();
+    // ClassLoader cl = Jenkins.getInstance().pluginManager.uberClassLoader;
+    // for (final IndexItem<EmailToken, TokenMacro> item : Index.load(
+    // EmailToken.class, TokenMacro.class, cl)) {
+    // try {
+    // privateMacros.add(item.instance());
+    // } catch (Exception e) {
+    // // ignore errors loading tokens
+    // }
+    // }
+    // return privateMacros;
+    // }
 
     // Overridden for better type safety.
     // If your plugin doesn't really define any property on Descriptor,

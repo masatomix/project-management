@@ -24,7 +24,7 @@
 </f:block>
 
 
-  <f:section title="メールの内容をカスタマイズする">
+  <f:section title="送信内容をカスタマイズする">
   <f:advanced>
 
   <f:entry title="題名" field="mailSubject" description="チェック結果のメールの題名をカスタマイズしたいときに設定してください。">
