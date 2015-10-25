@@ -24,14 +24,14 @@
 </f:block>
 
 
-  <f:section title="プロジェクトの高度なオプション">
+  <f:section title="送信内容をカスタマイズする">
   <f:advanced>
 
-  <f:entry title="メール題名" field="mailSubject" description="チェック結果のメールの題名をカスタマイズしたいときに設定してください。">
+  <f:entry title="題名" field="mailSubject" description="チェック結果のメールの題名をカスタマイズしたいときに設定してください。">
     <f:textbox />
   </f:entry>
   
-    <f:entry title="メール本文" field="mailBody" description="チェック結果のメールの本文をカスタマイズしたいときに設定してください。">
+    <f:entry title="本文" field="mailBody" description="チェック結果のメールの本文をカスタマイズしたいときに設定してください。">
     <f:textarea />
   </f:entry>
 
