@@ -1,31 +1,23 @@
 package nu.mine.kino.jenkins.plugins.projectmanagement;
 
 import hudson.AbortException;
-import hudson.CopyOnWrite;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.BuildListener;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.plugins.emailext.plugins.ContentBuilder;
-import hudson.plugins.emailext.plugins.EmailToken;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 
 import jenkins.model.Jenkins;
-import net.java.sezpoz.Index;
-import net.java.sezpoz.IndexItem;
 import net.sf.json.JSONObject;
 import nu.mine.kino.jenkins.plugins.projectmanagement.utils.PMUtils;
 import nu.mine.kino.projects.utils.Utils;
