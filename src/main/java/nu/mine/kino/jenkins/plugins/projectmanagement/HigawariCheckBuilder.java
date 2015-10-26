@@ -128,6 +128,8 @@ public class HigawariCheckBuilder extends Builder {
     public boolean perform(AbstractBuild build, Launcher launcher,
             BuildListener listener) throws InterruptedException, IOException {
 
+        String header = createHeader();
+        listener.getLogger().println(convertText(build, listener, header));
         listener.getLogger().println(
                 convertText(build, listener, default_message));
 
@@ -144,6 +146,17 @@ public class HigawariCheckBuilder extends Builder {
             sendMail(listener, subject, message);
         }
         return true;
+    }
+
+    private String createHeader() {
+        StringBuffer buf = new StringBuffer();
+        buf.append("${BUILD_DATE}時点の日回し確認の結果報告です。\n\n");
+        buf.append("【凡例】\n");
+        buf.append("○･･･前営業日分の日替処理が行われている\n");
+        buf.append("×･･･前営業日分の日替処理が行われていない\n");
+        buf.append("\n------------------------------------------------------------");
+        String target = new String(buf);
+        return target;
     }
 
     private String createSubject(AbstractBuild build, BuildListener listener)
@@ -193,6 +206,7 @@ public class HigawariCheckBuilder extends Builder {
             BuildListener listener) throws IOException, InterruptedException,
             AbortException {
         String header = "以下、${PROJECT_NAME} からのメールです。\n\n";
+        header += createHeader();
         String footer = "\n\nCheck console output at ${BUILD_URL} to view the results.";
 
         StringBuffer msgBuf = new StringBuffer();

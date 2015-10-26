@@ -30,7 +30,7 @@ import org.jenkinsci.plugins.tokenmacro.MacroEvaluationException;
 @Extension
 public class BuildDateTokenMacro extends DataBoundTokenMacro {
     @Parameter
-    public String format = "yyyy/MM/dd hh:mm";
+    public String format = "yyyy/MM/dd HH:mm";
 
     @Override
     public boolean acceptsMacroName(String macroName) {
