@@ -93,17 +93,18 @@ public class HigawariCheckResultsTokenMacro extends DataBoundTokenMacro {
                 Date baseDateFromBaseDateFile = PMUtils
                         .getBaseDateFromBaseDateFile(newBaseDateFile);
                 String dateStr = DateFormatUtils.format(
-                        baseDateFromBaseDateFile, "yyyyMMdd");
-
-                String msg = String
-                        .format("%s\t%s", project.getName(), dateStr);
-                buf.append(msg);
+                        baseDateFromBaseDateFile, "yyyy/MM/dd");
                 if (checkNextTradingDate(project,
                         PMUtils.findProjectFileName(project))) {// 過去ならば
-                    buf.append("\t日替わりチェックエラー");
+                    buf.append("×");
+                } else {
+                    buf.append("○");
                 }
+                String msg = String.format("\t%s\t%s", project.getName(),
+                        dateStr);
+                buf.append(msg);
             } else {
-                String msg = String.format("%s\t日替処理が未実施か、"
+                String msg = String.format("×\t%s\t日替処理が未実施か、"
                         + "ワークスペースに存在する旧バージョンの日替ファイルしか存在しない。"
                         + "日替処理を実施後、ファイルが見つかるようになります。", project.getName());
                 buf.append(msg);
