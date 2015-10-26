@@ -205,8 +205,11 @@ public class HigawariCheckBuilder extends Builder {
     private String createDefaultMessage(AbstractBuild build,
             BuildListener listener) throws IOException, InterruptedException,
             AbortException {
-        String header = "以下、${PROJECT_NAME} からのメールです。\n\n";
-        header += createHeader();
+        StringBuffer headerBuf = new StringBuffer();
+        headerBuf.append("以下、${PROJECT_NAME} からのメールです。\n\n");
+        headerBuf.append(createHeader());
+        headerBuf.append("\n");
+        String header = new String(headerBuf);
         String footer = "\n\nCheck console output at ${BUILD_URL} to view the results.";
 
         StringBuffer msgBuf = new StringBuffer();
