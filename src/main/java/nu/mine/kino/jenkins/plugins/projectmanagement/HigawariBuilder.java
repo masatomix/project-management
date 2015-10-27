@@ -240,7 +240,7 @@ public class HigawariBuilder extends Builder {
          * This human readable name is used in the configuration screen.
          */
         public String getDisplayName() {
-            return "日替がわりビルド";
+            return "日替わりビルド";
         }
 
         @Override
