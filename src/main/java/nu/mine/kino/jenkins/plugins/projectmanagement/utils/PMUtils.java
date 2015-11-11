@@ -314,17 +314,17 @@ public class PMUtils {
         return null;
     }
 
-    public static Date getBaseDateFromBaseDateFile(File file) {
-        try {
-            String string = ReadUtils.readFile(file);
-            return DateUtils.parseDate(string, new String[] { "yyyyMMdd" });
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+    // public static Date getBaseDateFromBaseDateFile(File file) {
+    // try {
+    // String string = ReadUtils.readFile(file);
+    // return DateUtils.parseDate(string, new String[] { "yyyyMMdd" });
+    // } catch (ParseException e) {
+    // e.printStackTrace();
+    // } catch (IOException e) {
+    // e.printStackTrace();
+    // }
+    // return null;
+    // }
 
     /**
      * そのビルドを含むプロジェクトの基準日ファイルをさがし、基準日を取得する。
