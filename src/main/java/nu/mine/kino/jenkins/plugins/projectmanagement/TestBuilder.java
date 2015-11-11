@@ -1,4 +1,4 @@
- package nu.mine.kino.jenkins.plugins.projectmanagement;
+package nu.mine.kino.jenkins.plugins.projectmanagement;
 
 import hudson.Extension;
 import hudson.FilePath;
@@ -174,7 +174,7 @@ public class TestBuilder extends Builder {
      * <tt>src/main/resources/hudson/plugins/hello_world/HelloWorldBuilder/*.jelly</tt>
      * for the actual HTML fragment for the configuration screen.
      */
-    @Extension
+    // @Extension
     // This indicates to Jenkins that this is an implementation of an extension
     // point.
     public static final class DescriptorImpl extends
