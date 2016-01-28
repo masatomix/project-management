@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 import nu.mine.kino.entity.EVMViewBean;
+import nu.mine.kino.entity.Holiday;
 import nu.mine.kino.entity.Project;
 import nu.mine.kino.jenkins.plugins.projectmanagement.utils.PMUtils;
 import nu.mine.kino.projects.ProjectException;
@@ -199,7 +200,7 @@ public class ProjectSummaryProjectAction implements Action {
             if (!actionsMap.containsKey(evmViewBean.getBaseDate())) {
                 // かつ、休日でデータなしの場合も追加しない。
                 if (!ProjectUtils.isHoliday(
-                        getProject(project, PMConstants.BASE),
+                        getHolidays(project, PMConstants.BASE),
                         evmViewBean.getBaseDate())) {
                     actionsMap.put(evmViewBean.getBaseDate(), evmViewBean);
                 }
@@ -257,6 +258,15 @@ public class ProjectSummaryProjectAction implements Action {
         Map<Date, Double> bacMap = ProjectUtils.calculateBACOfProject(
                 targetProject, actionsMap);
         return bacMap;
+    }
+
+    private Holiday[] getHolidays(AbstractProject<?, ?> jenkinsProject,
+            String suffix) throws IOException {
+        AbstractBuild<?, ?> record = jenkinsProject
+                .getBuildByNumber(getBuildNumber());
+        ProjectSummaryAction a = PMUtils.findActionByUrlEndsWith(record,
+                ProjectSummaryAction.class, suffix);
+        return a.getHolidays();
     }
 
     private Project getProject(AbstractProject<?, ?> jenkinsProject,
