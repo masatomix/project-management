@@ -12,8 +12,6 @@
 
 package nu.mine.kino.jenkins.plugins.projectmanagement;
 
-import static nu.mine.kino.projects.utils.Utils.round;
-import static nu.mine.kino.projects.utils.Utils.isNonZeroNumeric;
 import hudson.model.Action;
 import hudson.model.AbstractBuild;
 import hudson.model.User;
@@ -125,6 +123,8 @@ public class ProjectSummaryAction implements Action {
     private EVMViewBean delegate = null;
 
     private Date baseDateDelegate = null;
+
+    private Holiday[] holidaysDelegate;
 
     private synchronized EVMViewBean internalCreateCurrentEVM() {
         System.out.printf("EVMViewBean internalCreateCurrentEVM() 実際に作成開始\n");
@@ -583,6 +583,9 @@ public class ProjectSummaryAction implements Action {
     }
 
     public Holiday[] getHolidays() {
+        if (holidaysDelegate != null) {
+            return holidaysDelegate;
+        }
 
         StopWatch watch = new StopWatch();
         watch.start();
@@ -591,7 +594,8 @@ public class ProjectSummaryAction implements Action {
         }
         try {
             Project targetProject = getProject(name);
-            return targetProject.getHolidays();
+            holidaysDelegate = targetProject.getHolidays();
+            return holidaysDelegate;
 
         } catch (ProjectException e) {
             // TODO 自動生成された catch ブロック
