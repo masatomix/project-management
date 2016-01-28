@@ -90,8 +90,8 @@ public class HigawariCheckResultsTokenMacro extends DataBoundTokenMacro {
         for (AbstractProject<?, ?> project : projects) {
             File newBaseDateFile = PMUtils.findBaseDateFile(project); // buildDirの新しいファイル
             if (newBaseDateFile != null) {
-                Date baseDateFromBaseDateFile = PMUtils
-                        .getBaseDateFromBaseDateFile(newBaseDateFile);
+                
+                Date baseDateFromBaseDateFile = ProjectUtils.createDateData(newBaseDateFile);
                 String dateStr = DateFormatUtils.format(
                         baseDateFromBaseDateFile, "yyyy/MM/dd");
                 if (checkNextTradingDate(project,

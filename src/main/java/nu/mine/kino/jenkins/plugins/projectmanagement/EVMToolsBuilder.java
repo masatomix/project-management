@@ -201,7 +201,7 @@ public class EVMToolsBuilder extends Builder {
             // targetFile.getName() + "."+PMConstants.TMP_EXT); //
             // 前回取り込んだ最新ファイルへの参照
             // targetFile.copyTo(previousNewestFile); // 上書き。
-            
+
             watch.start();
             String tmpFile = pmJSON.getName() + "." + PMConstants.TMP_EXT;
             FilePath previousNewestJsonFile = new FilePath(root, tmpFile); // 前回取り込んだ最新ファイルへの参照
@@ -350,7 +350,7 @@ public class EVMToolsBuilder extends Builder {
         if (shimeFile2 == null) {// この行は、旧基準日ファイルを参照するプロジェクトがなくなったら、コメントアウト。
             shimeDate = root.act(new DateGetter(shimeFileName, "txt")); // この行は、旧基準日ファイルを参照するプロジェクトがなくなったら、コメントアウト。
         } else {// この行は、旧基準日ファイルを参照するプロジェクトがなくなったら、コメントアウト。
-            shimeDate = PMUtils.getBaseDateFromBaseDateFile(shimeFile2); // この行は、旧基準日ファイルを参照するプロジェクトがなくなったら、コメントアウト。
+            shimeDate = ProjectUtils.createDateData(shimeFile2); // この行は、旧基準日ファイルを参照するプロジェクトがなくなったら、コメントアウト。
         }// この行は、旧基準日ファイルを参照するプロジェクトがなくなったら、コメントアウト。
 
         // 下の行は、旧基準日ファイルを参照するプロジェクトがなくなったら、アンコメント。
@@ -410,16 +410,17 @@ public class EVMToolsBuilder extends Builder {
             } else if ("json".equals(format)) {
                 return PMUtils.getBaseDateFromJSON(target);
             } else {
-                String string = ReadUtils.readFile(target);
-                try {
-                    Date parseDate = DateUtils.parseDate(string,
-                            new String[] { "yyyyMMdd" });
-                    return parseDate;
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                return ProjectUtils.createDateData(target);
+                // String string = ReadUtils.readFile(target);
+                // try {
+                // Date parseDate = DateUtils.parseDate(string,
+                // new String[] { "yyyyMMdd" });
+                // return parseDate;
+                // } catch (ParseException e) {
+                // e.printStackTrace();
+                // }
             }
-            return null;
+            // return null;
         }
 
         @Override
