@@ -625,7 +625,7 @@ public class PMUtils {
         return returnList;
     }
 
-    public static EVMViewBean getCurrentPVACEV(Job project) {
+    public static EVMViewBean getCurrentPVACEV(Job<?, ?> project) {
         final Run<?, ?> tb = project.getLastSuccessfulBuild();
         Run<?, ?> b = project.getLastBuild();
         while (b != null) {
