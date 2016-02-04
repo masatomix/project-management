@@ -17,9 +17,12 @@ import hudson.AbortException;
 import hudson.FilePath;
 import hudson.model.Action;
 import hudson.model.BuildListener;
+import hudson.model.Job;
+import hudson.model.Run;
 import hudson.model.TopLevelItem;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
+import hudson.model.Actionable;
 import hudson.model.Descriptor;
 import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
@@ -34,7 +37,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -47,6 +49,7 @@ import javax.mail.internet.MimeMessage;
 
 import jenkins.model.Jenkins;
 import jenkins.model.JenkinsLocationConfiguration;
+import nu.mine.kino.entity.EVMViewBean;
 import nu.mine.kino.entity.PVACEVViewBean;
 import nu.mine.kino.entity.Project;
 import nu.mine.kino.entity.ProjectUser;
@@ -67,7 +70,6 @@ import nu.mine.kino.projects.utils.WriteUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Name;
@@ -420,7 +422,7 @@ public class PMUtils {
     }
 
     public static <ACTION extends Action> ACTION findActionByUrlEndsWith(
-            AbstractBuild<?, ?> b, Class<ACTION> type, String suffix) {
+            Actionable b, Class<ACTION> type, String suffix) {
         ACTION ret = null;
         for (Action a : b.getActions()) {
             if (type.isInstance(a) && a.getUrlName().endsWith(suffix)) {
@@ -623,4 +625,21 @@ public class PMUtils {
         return returnList;
     }
 
+    public static EVMViewBean getCurrentPVACEV(Job<?, ?> project) {
+        final Run<?, ?> tb = project.getLastSuccessfulBuild();
+        Run<?, ?> b = project.getLastBuild();
+        while (b != null) {
+            ProjectSummaryAction a = PMUtils.findActionByUrlEndsWith(b,
+                    ProjectSummaryAction.class, PMConstants.BASE);
+            if (a != null)
+                return a.getCurrentPVACEV();
+            if (b == tb)
+                // if even the last successful build didn't produce the test
+                // result,
+                // that means we just don't have any tests configured.
+                return null;
+            b = b.getPreviousBuild();
+        }
+        return null;
+    }
 }

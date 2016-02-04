@@ -12,8 +12,6 @@
 
 package nu.mine.kino.jenkins.plugins.projectmanagement;
 
-import static nu.mine.kino.projects.utils.Utils.round;
-import static nu.mine.kino.projects.utils.Utils.isNonZeroNumeric;
 import hudson.model.Action;
 import hudson.model.AbstractBuild;
 import hudson.model.User;
@@ -124,8 +122,12 @@ public class ProjectSummaryAction implements Action {
 
     private EVMViewBean delegate = null;
 
-    private EVMViewBean internalCreateCurrentEVM() {
-        System.out.printf("EVMViewBean getCurrentPVACEV() 実際に作成開始\n");
+    private Date baseDateDelegate = null;
+
+    private Holiday[] holidaysDelegate;
+
+    private synchronized EVMViewBean internalCreateCurrentEVM() {
+        System.out.printf("EVMViewBean internalCreateCurrentEVM() 実際に作成開始\n");
         try {
             Project project = null;
             if (!StringUtils.isEmpty(name)) {
@@ -144,7 +146,8 @@ public class ProjectSummaryAction implements Action {
                     .getCpi()));
 
             delegate = bean;
-            System.out.printf("EVMViewBean getCurrentPVACEV() 実際の作成完了\n");
+            System.out
+                    .printf("EVMViewBean internalCreateCurrentEVM() 実際の作成完了\n");
             return bean;
         } catch (ProjectException e) {
             // TODO 自動生成された catch ブロック
@@ -220,7 +223,7 @@ public class ProjectSummaryAction implements Action {
         return user;
     }
 
-    private Map<String, Project> map = new HashMap<String, Project>();
+    // private Map<String, Project> map = new HashMap<String, Project>();
 
     public synchronized Project getProject(String name) throws ProjectException {
         StopWatch watch = new StopWatch();
@@ -228,10 +231,10 @@ public class ProjectSummaryAction implements Action {
         if (StringUtils.isEmpty(name)) {
             return null;
         }
-        if (map.containsKey(name)) {
-            Project project = map.get(name);
-            return project;
-        }
+        // if (map.containsKey(name)) {
+        // Project project = map.get(name);
+        // return project;
+        // }
         File target = new File(owner.getRootDir(), name);
         if (!target.exists()) {
             return null;
@@ -240,7 +243,7 @@ public class ProjectSummaryAction implements Action {
         watch.stop();
         System.out.printf("%s -> Project 時間: [%d] ms\n", name, watch.getTime());
         watch = null;
-        map.put(name, targetProject);
+        // map.put(name, targetProject);
         return targetProject;
     }
 
@@ -337,8 +340,12 @@ public class ProjectSummaryAction implements Action {
         try {
             String inputName = (!StringUtils.isEmpty(name)) ? name
                     : redmineFileName;
+            if (baseDateDelegate != null) {
+                return baseDateDelegate;
+            }
             Project project = getProject(inputName);
-            return project.getBaseDate();
+            baseDateDelegate = project.getBaseDate();
+            return baseDateDelegate;
         } catch (ProjectException e) {
             // TODO 自動生成された catch ブロック
             e.printStackTrace();
@@ -576,6 +583,9 @@ public class ProjectSummaryAction implements Action {
     }
 
     public Holiday[] getHolidays() {
+        if (holidaysDelegate != null) {
+            return holidaysDelegate;
+        }
 
         StopWatch watch = new StopWatch();
         watch.start();
@@ -584,7 +594,8 @@ public class ProjectSummaryAction implements Action {
         }
         try {
             Project targetProject = getProject(name);
-            return targetProject.getHolidays();
+            holidaysDelegate = targetProject.getHolidays();
+            return holidaysDelegate;
 
         } catch (ProjectException e) {
             // TODO 自動生成された catch ブロック
