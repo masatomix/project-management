@@ -25,9 +25,15 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler">
 	
     <j:set var="pvacev" value="${it.getCurrentPVACEV(job)}"/>
+    <j:set var="tips" 
+		value="PV: ${pvacev.plannedValue!='NaN' ? pvacev.plannedValue : '-'},
+		       EV:${pvacev.earnedValue!='NaN'? pvacev.earnedValue: '-'},
+			   AC:${pvacev.actualCost!='NaN' ? pvacev.actualCost:'-'},
+			   基準日:yyyy/mm/dd"/>
+	 
     <td style="${indenter.getCss(job)}">
        <a href="${jobBaseUrl}${job.shortUrl}"
-      	tooltip="PV: 1.0, EV: 1.0, AC:1.1,基準日: xxxx/mm/dd ">
+      	tooltip="${tips}">
 		${pvacev.spi!='NaN' ? pvacev.spi : "-"}
 			<j:if test="${pvacev.spi!='NaN'}">
 				<img src='${imagesURL}${pvacev.spiIconFileName}'></img>
@@ -36,7 +42,7 @@
 			<j:if test="${pvacev.cpi!='NaN'}">
 				<img src='${imagesURL}${pvacev.cpiIconFileName}'></img>
 			</j:if>	</a>
-
+<!--
 	      <table class="pane bigtable" >
         <tr>
           <th class="pane-header">BAC</th>
@@ -64,5 +70,6 @@
 			</td>
 	</tr>
       </table>
+	  -->
     </td>
 </j:jelly>

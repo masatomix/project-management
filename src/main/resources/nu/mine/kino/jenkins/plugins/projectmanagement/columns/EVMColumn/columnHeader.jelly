@@ -24,7 +24,5 @@
 
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core">
-  <th>
-    ${%BuildDescriptionColumn.Header}
-  </th>
+  <th>EVM情報</th>
 </j:jelly>
