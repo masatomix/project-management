@@ -285,21 +285,22 @@ public class ProjectSummaryProjectAction implements Action {
     }
 
     public EVMViewBean getCurrentPVACEV() {
-        final AbstractBuild<?, ?> tb = project.getLastSuccessfulBuild();
-        AbstractBuild<?, ?> b = project.getLastBuild();
-        while (b != null) {
-            ProjectSummaryAction a = PMUtils.findActionByUrlEndsWith(b,
-                    ProjectSummaryAction.class, PMConstants.BASE);
-            if (a != null)
-                return a.getCurrentPVACEV();
-            if (b == tb)
-                // if even the last successful build didn't produce the test
-                // result,
-                // that means we just don't have any tests configured.
-                return null;
-            b = b.getPreviousBuild();
-        }
-        return null;
+        return PMUtils.getCurrentPVACEV(project);
+        // final AbstractBuild<?, ?> tb = project.getLastSuccessfulBuild();
+        // AbstractBuild<?, ?> b = project.getLastBuild();
+        // while (b != null) {
+        // ProjectSummaryAction a = PMUtils.findActionByUrlEndsWith(b,
+        // ProjectSummaryAction.class, PMConstants.BASE);
+        // if (a != null)
+        // return a.getCurrentPVACEV();
+        // if (b == tb)
+        // // if even the last successful build didn't produce the test
+        // // result,
+        // // that means we just don't have any tests configured.
+        // return null;
+        // b = b.getPreviousBuild();
+        // }
+        // return null;
     }
 
     public Date getBaseDate() {

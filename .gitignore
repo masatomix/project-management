@@ -4,3 +4,4 @@ work
 *.bak
 .project
 .classpath
+.DS_Store

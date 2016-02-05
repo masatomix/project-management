@@ -1,0 +1,31 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"  xmlns:i="jelly:fmt">
+	
+    <j:set var="pvacev" value="${it.getCurrentPVACEV(job)}"/>
+	<j:if test="${pvacev.baseDate!=null}">
+    <j:set var="baseDate" >
+		<i:formatDate value='${pvacev.baseDate}'/>
+	</j:set>
+	</j:if>
+    <j:set var="tips">
+PV: ${pvacev.plannedValue!='NaN' ? pvacev.plannedValue : '-'}<br/>
+EV: ${pvacev.earnedValue!='NaN'? pvacev.earnedValue: '-'}<br/>
+AC: ${pvacev.actualCost!='NaN' ? pvacev.actualCost:'-'}<br/>
+基準日: ${baseDate}
+    </j:set>
+			
+    <td style="${indenter.getCss(job)}">
+	<j:if test="${baseDate!=null}">
+       <a href="${jobBaseUrl}${job.shortUrl}" tooltip="${tips} ">
+		SPI / CPI:   
+		<j:if test="${pvacev.spi!='NaN'}">
+			<img src='${imagesURL}${pvacev.spiIconFileName}'></img> ${pvacev.spi}
+		</j:if>
+		&amp;nbsp;/&amp;nbsp;
+		<j:if test="${pvacev.cpi!='NaN'}">
+			<img src='${imagesURL}${pvacev.cpiIconFileName}'></img> ${pvacev.cpi}
+		</j:if>
+		 &amp;nbsp;(${baseDate})
+		</a>
+	</j:if>
+    </td>
+</j:jelly>
