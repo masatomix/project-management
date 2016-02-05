@@ -27,34 +27,5 @@ AC: ${pvacev.actualCost!='NaN' ? pvacev.actualCost:'-'}<br/>
 		 &amp;nbsp;(${baseDate})
 		</a>
 	</j:if>
-<!--
-	      <table class="pane bigtable" >
-        <tr>
-          <th class="pane-header">BAC</th>
-          <th class="pane-header">PV</th>
-          <th class="pane-header">EV</th>
-          <th class="pane-header">AC</th>
-          <th class="pane-header">SPI</th>
-          <th class="pane-header">CPI</th>
-          <th class="pane-header">ビルドNo</th>
-        </tr>
-          <tr>
-            <td class="pane" style="text-align:center">${pvacev.bac!='NaN' ? pvacev.bac : "-"}</td>
-            <td class="pane" style="text-align:center">${pvacev.plannedValue!='NaN' ? pvacev.plannedValue : "-"}</td>
-            <td class="pane" style="text-align:center">${pvacev.earnedValue!='NaN'? pvacev.earnedValue: "-"}</td>
-            <td class="pane" style="text-align:center">${pvacev.actualCost!='NaN' ? pvacev.actualCost:"-"}</td>
-            <td class="pane" style="text-align:center">${pvacev.spi!='NaN' ? pvacev.spi : "-"}
-			<j:if test="${pvacev.spi!='NaN'}">
-				<img src='${imagesURL}${pvacev.spiIconFileName}'></img>
-			</j:if>	
-			</td>
-            <td class="pane" style="text-align:center">${pvacev.cpi!='NaN' ? pvacev.cpi : "-"}
-			<j:if test="${pvacev.cpi!='NaN'}">
-				<img src='${imagesURL}${pvacev.cpiIconFileName}'></img>
-			</j:if>	
-			</td>
-	</tr>
-      </table>
-	  -->
     </td>
 </j:jelly>
