@@ -51,9 +51,7 @@ public class EVMColumn extends ListViewColumn {
     }
 
     public EVMViewBean getCurrentPVACEV(Job<?, ?> project) {
-        // System.out.println(project);
         EVMViewBean currentPVACEV = PMUtils.getCurrentPVACEV(project);
-        // System.out.println(currentPVACEV);
         return currentPVACEV;
     }
 

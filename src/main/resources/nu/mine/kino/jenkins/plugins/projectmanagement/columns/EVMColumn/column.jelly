@@ -1,47 +1,32 @@
-<!--
-  The MIT License
-
-  Copyright (c) 2012, Frederic Gurr
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
--->
-
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"  xmlns:i="jelly:fmt">
 	
     <j:set var="pvacev" value="${it.getCurrentPVACEV(job)}"/>
-    <j:set var="tips" 
-		value="PV: ${pvacev.plannedValue!='NaN' ? pvacev.plannedValue : '-'},
-		       EV:${pvacev.earnedValue!='NaN'? pvacev.earnedValue: '-'},
-			   AC:${pvacev.actualCost!='NaN' ? pvacev.actualCost:'-'},
-			   基準日:yyyy/mm/dd"/>
-	 
+	<j:if test="${pvacev.baseDate!=null}">
+    <j:set var="baseDate" >
+		<i:formatDate value='${pvacev.baseDate}'/>
+	</j:set>
+	</j:if>
+    <j:set var="tips">
+PV: ${pvacev.plannedValue!='NaN' ? pvacev.plannedValue : '-'}<br/>
+EV: ${pvacev.earnedValue!='NaN'? pvacev.earnedValue: '-'}<br/>
+AC: ${pvacev.actualCost!='NaN' ? pvacev.actualCost:'-'}<br/>
+基準日: ${baseDate}
+    </j:set>
+			
     <td style="${indenter.getCss(job)}">
-       <a href="${jobBaseUrl}${job.shortUrl}"
-      	tooltip="${tips}">
-		${pvacev.spi!='NaN' ? pvacev.spi : "-"}
-			<j:if test="${pvacev.spi!='NaN'}">
-				<img src='${imagesURL}${pvacev.spiIconFileName}'></img>
-			</j:if>	
-		${pvacev.cpi!='NaN' ? pvacev.cpi : "-"}
-			<j:if test="${pvacev.cpi!='NaN'}">
-				<img src='${imagesURL}${pvacev.cpiIconFileName}'></img>
-			</j:if>	</a>
+	<j:if test="${baseDate!=null}">
+       <a href="${jobBaseUrl}${job.shortUrl}" tooltip="${tips} ">
+		SPI / CPI:   
+		<j:if test="${pvacev.spi!='NaN'}">
+			<img src='${imagesURL}${pvacev.spiIconFileName}'></img> ${pvacev.spi}
+		</j:if>
+		&amp;nbsp;/&amp;nbsp;
+		<j:if test="${pvacev.cpi!='NaN'}">
+			<img src='${imagesURL}${pvacev.cpiIconFileName}'></img> ${pvacev.cpi}
+		</j:if>
+		 &amp;nbsp;(${baseDate})
+		</a>
+	</j:if>
 <!--
 	      <table class="pane bigtable" >
         <tr>
